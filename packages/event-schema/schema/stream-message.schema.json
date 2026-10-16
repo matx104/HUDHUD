@@ -1,0 +1,840 @@
+{
+  "$defs": {
+    "MatchMeta": {
+      "additionalProperties": false,
+      "description": "First message of every stream. `synthetic` is a machine-readable promise.",
+      "properties": {
+        "away": {
+          "$ref": "#/$defs/Team"
+        },
+        "competition": {
+          "title": "Competition",
+          "type": "string"
+        },
+        "generator_version": {
+          "title": "Generator Version",
+          "type": "string"
+        },
+        "home": {
+          "$ref": "#/$defs/Team"
+        },
+        "home_attacks_right_first": {
+          "title": "Home Attacks Right First",
+          "type": "boolean"
+        },
+        "match_id": {
+          "title": "Match Id",
+          "type": "string"
+        },
+        "players": {
+          "items": {
+            "$ref": "#/$defs/Player"
+          },
+          "title": "Players",
+          "type": "array"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "synthetic": {
+          "const": true,
+          "default": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "type": {
+          "const": "match_meta",
+          "default": "match_meta",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "seed",
+        "generator_version",
+        "competition",
+        "home",
+        "away",
+        "players",
+        "home_attacks_right_first"
+      ],
+      "title": "MatchMeta",
+      "type": "object"
+    },
+    "Pass": {
+      "additionalProperties": false,
+      "properties": {
+        "accuracy": {
+          "description": "How close the ball arrived to the intended target",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Accuracy",
+          "type": "number"
+        },
+        "ball_speed_kmh": {
+          "minimum": 0,
+          "title": "Ball Speed Kmh",
+          "type": "number"
+        },
+        "cross": {
+          "title": "Cross",
+          "type": "boolean"
+        },
+        "difficulty": {
+          "description": "Pre-pass difficulty: 1 - P(complete)",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Difficulty",
+          "type": "number"
+        },
+        "distance_m": {
+          "minimum": 0,
+          "title": "Distance M",
+          "type": "number"
+        },
+        "end_x": {
+          "maximum": 105.0,
+          "minimum": 0,
+          "title": "End X",
+          "type": "number"
+        },
+        "end_y": {
+          "maximum": 68.0,
+          "minimum": 0,
+          "title": "End Y",
+          "type": "number"
+        },
+        "height": {
+          "enum": [
+            "ground",
+            "low",
+            "high"
+          ],
+          "title": "Height",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^e\\d{5}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "outcome": {
+          "$ref": "#/$defs/PassOutcome"
+        },
+        "period": {
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Period",
+          "type": "integer"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "possession": {
+          "description": "Possession sequence number",
+          "minimum": 1,
+          "title": "Possession",
+          "type": "integer"
+        },
+        "recipient_id": {
+          "description": "Intended recipient",
+          "title": "Recipient Id",
+          "type": "string"
+        },
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "t": {
+          "description": "Match clock in seconds",
+          "minimum": 0,
+          "title": "T",
+          "type": "number"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        },
+        "type": {
+          "const": "pass",
+          "default": "pass",
+          "title": "Type",
+          "type": "string"
+        },
+        "under_pressure": {
+          "title": "Under Pressure",
+          "type": "boolean"
+        },
+        "x": {
+          "maximum": 105.0,
+          "minimum": 0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 68.0,
+          "minimum": 0,
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "seq",
+        "t",
+        "period",
+        "team",
+        "possession",
+        "player_id",
+        "recipient_id",
+        "x",
+        "y",
+        "end_x",
+        "end_y",
+        "outcome",
+        "height",
+        "cross",
+        "distance_m",
+        "ball_speed_kmh",
+        "difficulty",
+        "accuracy",
+        "under_pressure"
+      ],
+      "title": "Pass",
+      "type": "object"
+    },
+    "PassOutcome": {
+      "enum": [
+        "complete",
+        "incomplete",
+        "intercepted",
+        "out"
+      ],
+      "title": "PassOutcome",
+      "type": "string"
+    },
+    "PeriodEnd": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^e\\d{5}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "period": {
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Period",
+          "type": "integer"
+        },
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "t": {
+          "description": "Match clock in seconds",
+          "minimum": 0,
+          "title": "T",
+          "type": "number"
+        },
+        "type": {
+          "const": "period_end",
+          "default": "period_end",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "seq",
+        "t",
+        "period"
+      ],
+      "title": "PeriodEnd",
+      "type": "object"
+    },
+    "PeriodStart": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^e\\d{5}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kickoff_team": {
+          "$ref": "#/$defs/Side"
+        },
+        "period": {
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Period",
+          "type": "integer"
+        },
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "t": {
+          "description": "Match clock in seconds",
+          "minimum": 0,
+          "title": "T",
+          "type": "number"
+        },
+        "type": {
+          "const": "period_start",
+          "default": "period_start",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "seq",
+        "t",
+        "period",
+        "kickoff_team"
+      ],
+      "title": "PeriodStart",
+      "type": "object"
+    },
+    "Player": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "number": {
+          "maximum": 99,
+          "minimum": 1,
+          "title": "Number",
+          "type": "integer"
+        },
+        "position": {
+          "enum": [
+            "GK",
+            "DF",
+            "MF",
+            "FW"
+          ],
+          "title": "Position",
+          "type": "string"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "number",
+        "position",
+        "team"
+      ],
+      "title": "Player",
+      "type": "object"
+    },
+    "PossessionChange": {
+      "additionalProperties": false,
+      "description": "Every possession begins with one of these; `team` is the side gaining the ball.",
+      "properties": {
+        "cause_event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cause Event Id"
+        },
+        "id": {
+          "pattern": "^e\\d{5}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "period": {
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Period",
+          "type": "integer"
+        },
+        "possession": {
+          "description": "Possession sequence number",
+          "minimum": 1,
+          "title": "Possession",
+          "type": "integer"
+        },
+        "reason": {
+          "enum": [
+            "kickoff",
+            "interception",
+            "tackle",
+            "out_of_play",
+            "goal_kick",
+            "shot_end",
+            "loose_ball"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "t": {
+          "description": "Match clock in seconds",
+          "minimum": 0,
+          "title": "T",
+          "type": "number"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        },
+        "type": {
+          "const": "possession_change",
+          "default": "possession_change",
+          "title": "Type",
+          "type": "string"
+        },
+        "x": {
+          "maximum": 105.0,
+          "minimum": 0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 68.0,
+          "minimum": 0,
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "seq",
+        "t",
+        "period",
+        "team",
+        "possession",
+        "reason",
+        "x",
+        "y"
+      ],
+      "title": "PossessionChange",
+      "type": "object"
+    },
+    "Pressure": {
+      "additionalProperties": false,
+      "description": "`team` is the pressing side; coordinates are in the presser's frame.",
+      "properties": {
+        "duration_s": {
+          "minimum": 0,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "id": {
+          "pattern": "^e\\d{5}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "period": {
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Period",
+          "type": "integer"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "possession": {
+          "description": "Possession sequence number",
+          "minimum": 1,
+          "title": "Possession",
+          "type": "integer"
+        },
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "t": {
+          "description": "Match clock in seconds",
+          "minimum": 0,
+          "title": "T",
+          "type": "number"
+        },
+        "target_player_id": {
+          "title": "Target Player Id",
+          "type": "string"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        },
+        "type": {
+          "const": "pressure",
+          "default": "pressure",
+          "title": "Type",
+          "type": "string"
+        },
+        "x": {
+          "maximum": 105.0,
+          "minimum": 0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 68.0,
+          "minimum": 0,
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "seq",
+        "t",
+        "period",
+        "team",
+        "possession",
+        "player_id",
+        "target_player_id",
+        "x",
+        "y",
+        "duration_s"
+      ],
+      "title": "Pressure",
+      "type": "object"
+    },
+    "Shot": {
+      "additionalProperties": false,
+      "properties": {
+        "assist_event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Pass that set up the shot",
+          "title": "Assist Event Id"
+        },
+        "body_part": {
+          "enum": [
+            "right_foot",
+            "left_foot",
+            "head"
+          ],
+          "title": "Body Part",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^e\\d{5}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "outcome": {
+          "$ref": "#/$defs/ShotOutcome"
+        },
+        "period": {
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Period",
+          "type": "integer"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "possession": {
+          "description": "Possession sequence number",
+          "minimum": 1,
+          "title": "Possession",
+          "type": "integer"
+        },
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "shot_speed_kmh": {
+          "minimum": 0,
+          "title": "Shot Speed Kmh",
+          "type": "number"
+        },
+        "situation": {
+          "enum": [
+            "open_play",
+            "set_piece",
+            "penalty"
+          ],
+          "title": "Situation",
+          "type": "string"
+        },
+        "t": {
+          "description": "Match clock in seconds",
+          "minimum": 0,
+          "title": "T",
+          "type": "number"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        },
+        "type": {
+          "const": "shot",
+          "default": "shot",
+          "title": "Type",
+          "type": "string"
+        },
+        "under_pressure": {
+          "title": "Under Pressure",
+          "type": "boolean"
+        },
+        "x": {
+          "maximum": 105.0,
+          "minimum": 0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 68.0,
+          "minimum": 0,
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "seq",
+        "t",
+        "period",
+        "team",
+        "possession",
+        "player_id",
+        "x",
+        "y",
+        "body_part",
+        "situation",
+        "outcome",
+        "shot_speed_kmh",
+        "under_pressure"
+      ],
+      "title": "Shot",
+      "type": "object"
+    },
+    "ShotOutcome": {
+      "enum": [
+        "goal",
+        "saved",
+        "off_target",
+        "blocked",
+        "woodwork"
+      ],
+      "title": "ShotOutcome",
+      "type": "string"
+    },
+    "Side": {
+      "enum": [
+        "home",
+        "away"
+      ],
+      "title": "Side",
+      "type": "string"
+    },
+    "Tackle": {
+      "additionalProperties": false,
+      "description": "`team` is the tackling side; coordinates are in the tackler's frame.",
+      "properties": {
+        "id": {
+          "pattern": "^e\\d{5}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "opponent_id": {
+          "title": "Opponent Id",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "won",
+            "lost",
+            "foul"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "period": {
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Period",
+          "type": "integer"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "possession": {
+          "description": "Possession sequence number",
+          "minimum": 1,
+          "title": "Possession",
+          "type": "integer"
+        },
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "t": {
+          "description": "Match clock in seconds",
+          "minimum": 0,
+          "title": "T",
+          "type": "number"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        },
+        "type": {
+          "const": "tackle",
+          "default": "tackle",
+          "title": "Type",
+          "type": "string"
+        },
+        "x": {
+          "maximum": 105.0,
+          "minimum": 0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 68.0,
+          "minimum": 0,
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "seq",
+        "t",
+        "period",
+        "team",
+        "possession",
+        "player_id",
+        "opponent_id",
+        "x",
+        "y",
+        "outcome"
+      ],
+      "title": "Tackle",
+      "type": "object"
+    },
+    "Team": {
+      "additionalProperties": false,
+      "properties": {
+        "color": {
+          "pattern": "^#[0-9A-F]{6}$",
+          "title": "Color",
+          "type": "string"
+        },
+        "formation": {
+          "title": "Formation",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "short_name": {
+          "maxLength": 3,
+          "minLength": 3,
+          "title": "Short Name",
+          "type": "string"
+        },
+        "side": {
+          "$ref": "#/$defs/Side"
+        }
+      },
+      "required": [
+        "side",
+        "name",
+        "short_name",
+        "color",
+        "formation"
+      ],
+      "title": "Team",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "One message of a synthetic match stream: match_meta first, then events ordered by seq. Coordinates are in the acting team's attacking frame.",
+  "discriminator": {
+    "mapping": {
+      "match_meta": "#/$defs/MatchMeta",
+      "pass": "#/$defs/Pass",
+      "period_end": "#/$defs/PeriodEnd",
+      "period_start": "#/$defs/PeriodStart",
+      "possession_change": "#/$defs/PossessionChange",
+      "pressure": "#/$defs/Pressure",
+      "shot": "#/$defs/Shot",
+      "tackle": "#/$defs/Tackle"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/MatchMeta"
+    },
+    {
+      "$ref": "#/$defs/Pass"
+    },
+    {
+      "$ref": "#/$defs/Shot"
+    },
+    {
+      "$ref": "#/$defs/Tackle"
+    },
+    {
+      "$ref": "#/$defs/PossessionChange"
+    },
+    {
+      "$ref": "#/$defs/Pressure"
+    },
+    {
+      "$ref": "#/$defs/PeriodStart"
+    },
+    {
+      "$ref": "#/$defs/PeriodEnd"
+    }
+  ],
+  "title": "StreamMessage"
+}

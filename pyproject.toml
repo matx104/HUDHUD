@@ -1,0 +1,18 @@
+# Workspace tooling config only. Installable packages live in packages/* and apps/*.
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["match_events", "court"]
+
+[tool.pytest.ini_options]
+addopts = "-q --import-mode=importlib"
+testpaths = ["packages/event-schema/tests", "apps/api/tests"]
+pythonpath = ["apps/api/tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

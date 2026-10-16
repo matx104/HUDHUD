@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "match-events"
+version = "0.1.0"
+description = "Synthetic football match event schema and deterministic generator"
+requires-python = ">=3.12"
+dependencies = ["pydantic>=2.8,<3"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/match_events"]
