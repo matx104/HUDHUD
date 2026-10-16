@@ -15,6 +15,8 @@
 - **project-names.md** — verified candidate register (all roots, live RDAP-checked 2026-10-16)
 - **projects.md** — the reusable arsenal: existing projects → patterns → which idea they feed
 - **inspiration.md** + **inspiration-projects.json** — the 150-project competitive field: lane census, threat tiers, differentiation memo
+- **awards.md** — the six prize lanes: official per-member packages, FMV, sweep math
+- **goals.md** — the Grand Slam doctrine: all-six declaration, award→feature build contract, public-intention language, kill criteria
 
 ## Build window
 
