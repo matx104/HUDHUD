@@ -1,0 +1,3 @@
+# The only supported install path: both workspace packages, editable, from local paths.
+-e ./packages/event-schema
+-e ./apps/api[dev]
