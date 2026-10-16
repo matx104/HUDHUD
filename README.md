@@ -1,0 +1,25 @@
+# pl-hackathon *(placeholder name — see project-names.md)*
+
+> Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
+> AI match intelligence on synthetic football-realistic data. **Solo build.**
+
+**Status:** 🥚 incubating — solution shape not yet locked (gates: Challenge-brief dataset schema → Azure credits → name+domain).
+
+## Files
+
+- **task.md** — the official ask, decoded: rubric, prize categories, hard requirements, dates
+- **ideas.md** — solution options + the current fusion lean + decision gates
+- **brand.md** — naming program, identity system, video compliance laws
+- **project-names.md** — verified candidate register (all roots, live RDAP-checked 2026-10-16)
+- **projects.md** — the reusable arsenal: existing projects → patterns → which idea they feed
+
+## Build window
+
+Oct 18–20 explore/architect · Oct 21–25 build · Oct 26 polish + 110s video · **Oct 27 submit** · winners Nov 20.
+
+## Rules that bind
+
+- Synthetic data only — no real PL match data
+- Demo video < 2:00 hard cap · public URL
+- Repo goes **public** at submission (private until showcase-ready)
+- New code — patterns reused from existing projects, never the repos themselves
