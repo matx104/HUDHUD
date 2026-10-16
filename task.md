@@ -56,8 +56,40 @@
 - **Calendar:** Oct 17 IBA SANS case first → Oct 18–20 explore/architect → Oct 21–25 build → Oct 26 polish + 110-second video → Oct 27 submit
 - **Video law (110s):** 15s problem → 45s live demo → 30s Critic rejecting an unevidenced claim (money shot) → 20s architecture + multilingual
 
+## THE CHALLENGE BRIEF — full text (received 2026-10-16, Monarch paste)
+
+> **Challenge name: "The Synthetic Match Insights Engine for Premier League Studio"** — *"An AI insights engine runs on Azure that explains the game beyond the stats, turning football events into real-time insights, key narratives and recaps — personalized for every fan, for studio and streaming use."* (198 projects linked at time of read)
+
+**The one-pipeline-five-stages law (the brief's spine):**
+1. **Ingest** synthetic match events as they happen (passes, shots, tackles, possession changes, pressure events, match metadata)
+2. **Interpret** into meaningful football statistics, patterns, and context
+3. **Explain** why a moment matters — not only that it happened (control vs. chaos, tactical pressure changes, game rhythm)
+4. **Render** insight that can sit on screen alongside the match — timed, machine-readable enough for synchronized graphical overlays on a live feed (the platform's rendering partner path)
+5. **Personalize** — the same intelligence reaches a data-hungry analyst and a casual fan as two genuinely different experiences: custom modes, favorite clubs/players, player-focus mode, "and welcome many more ideas"
+
+**The both-and law (verbatim logic):** *"a Project that only generates metrics has no audience, and a solution that only personalizes has nothing to personalize."* Overlays-lane OR audience-lane OR both — both wins.
+
+**Real-time features named by the brief (ii):**
+- Player identification — real-time name tagging, optional speed/distance indicators on threshold triggers
+- Pass quality — distance, accuracy, difficulty rating
+- Speed metrics — ball speed, shot speed
+- Auto-eventing — model over incoming video feed generating the above automatically (not hand-tagged)
+
+**The other pillars:** (iii) narrative generation — key narratives, player-performance context, milestones, recaps · (iv) explainability — *why* moments matter: control vs chaos, tactical pressure, game rhythm · (v) data innovation — create/extend synthetic datasets · (vi) multi-language storytelling for global studio/streaming.
+
+**Accepted forms:** AI agent, workflow, integration, data platform, analytics experience, automation, or new experience — responsive enough for live play.
+
+## Constraints update (2026-10-16)
+
+- **Azure budget:** no existing benefits. **Azure for Students** available (edu email + GitHub Student Pack) — $100 credit, no credit card. Architecture assumes ~$100 total spend ceiling; "spend depends on the project" — design to the free/student tier first, justify every paid service by name.
+
+## Competition intel (first pass, from gallery card names)
+
+Crowded lanes: match-intelligence dashboards (MatchMind ×2, MatchPulse, MatchLens, TactIQ/TactiCore, Touchline AI), multilingual commentary (Sauti, Msimulizi — Swahili lane taken), accessibility (Audio Eyes), what-if (Second Guess). **The example card project "Synthetic Match Insights Engine" IS our fusion shape — multi-agent pipeline + studio UI + multilingual + overlays + personalized.** Validation + warning in one: the shape is right, and it is no longer differentiating by itself. Differentiators to press: evidence-chain explainability (Critic/isnad — adversarial verification, few will build it), enterprise/production-readiness discipline, broadcast-overlay machine-readability. Full study: inspiration.md once the gallery extraction lands.
+
 ## Open unknowns
 
-- [ ] **Challenge-menu brief + dataset schema/format** — the single biggest blocker to architecture lock (Monarch to paste next login)
-- [ ] Azure credits/subscription status (Monarch reviewing)
+- [x] ~~Challenge-menu brief~~ — **RECEIVED 2026-10-16** (above). Note: brief describes event types but no formal dataset schema/format — synthetic data may be ours to generate (pillar v invites it); confirm whether a sample dataset ships on the platform (resources tab) at next login
+- [x] ~~Azure credits~~ — student plan path chosen ($100 credit, no card); activate when architecture locks
+- [ ] **Gallery extraction → inspiration.md** — Monarch runs the console snippet (provided in channel) on the logged-in projects page; paste output back
 - [ ] Final name + domain purchase (see project-names.md — depends on chosen solution shape)
