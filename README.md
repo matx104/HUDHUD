@@ -7,11 +7,14 @@
 
 ## Files
 
-- **task.md** — the official ask, decoded: rubric, prize categories, hard requirements, dates
+- **super-prompt.md** — the Claude Code master brief: read-first order, locked architecture, hard constraints, session definitions of done
+- **plan.md** — phased build plan (Oct 18 → 27) with definitions of done, cut order, and standing risks
+- **task.md** — the official ask, decoded: rubric, prize categories, hard requirements, dates + the full Challenge brief
 - **ideas.md** — solution options + the current fusion lean + decision gates
 - **brand.md** — naming program, identity system, video compliance laws
 - **project-names.md** — verified candidate register (all roots, live RDAP-checked 2026-10-16)
 - **projects.md** — the reusable arsenal: existing projects → patterns → which idea they feed
+- **inspiration.md** + **inspiration-projects.json** — the 150-project competitive field: lane census, threat tiers, differentiation memo
 
 ## Build window
 
