@@ -4,23 +4,25 @@
 
 ## Phase 0 — Weekend intel (Oct 17–19, Monarch's Playwright session)
 
-- [ ] Detail pass on the 18 HIGH-tier projects (inspiration.md list) — what they promise vs. what they show; update threat tiers
-- [ ] Sharpen the differentiation sentence (inspiration.md §Differentiation memo) against what the top 10 actually build
-- [ ] Check platform Resources tab for a sample dataset / schema (if one exists, it replaces the generator in Phase 1)
-- [ ] Pick name from project-names.md + buy domain (re-run RDAP day-of; Cloudflare/Porkbun; cheap TLDs only)
+- [ ] Detail pass on the 18 HIGH-tier projects (inspiration.md list) — what they promise vs. what they show; update threat tiers — **BLOCKED 2026-10-17:** Playwright MCP needs Chrome (`/opt/google/chrome` missing) + Monarch's Microsoft login
+- [ ] Sharpen the differentiation sentence (inspiration.md §Differentiation memo) against what the top 10 actually build — gated on the detail pass
+- [ ] Check platform Resources tab for a sample dataset / schema (if one exists, it replaces the generator in Phase 1) — **BLOCKED** (same login); generator built meanwhile, so a platform schema would become an adapter, not a rewrite
+- [ ] Pick name from project-names.md + buy domain (re-run RDAP day-of; Cloudflare/Porkbun; cheap TLDs only) — RDAP re-verified 2026-10-17, shortlist unchanged; **awaiting Monarch's pick**
 - **Done when:** differentiation memo v2 written, name+domain owned.
 
 ## Phase 1 — Architecture lock + skeleton (Oct 18–20)
 
-- [ ] Activate Azure for Students ($100 credit — the ceiling, not the budget)
-- [ ] **Synthetic match event generator** (if no platform dataset): full match stream — passes (start/end coords, player ids), shots (xG-able coords, speed), tackles, possession changes, pressure events, match metadata; deterministic seed for reproducible demos
-- [ ] Agent spine: Orchestrator + Scout + Narrator + Critic + Localizer on Microsoft Agent Framework (Foundry); shared match-state store; defined handoff contracts
-- [ ] Repo scaffold: apps/api (agents + pipeline), apps/web (studio UI), packages/event-schema; CI from first commit
-- **Done when:** one synthetic match flows end-to-end Scout→Narrator→Critic→console, with tests green.
+- [ ] Activate Azure for Students ($100 credit — the ceiling, not the budget) — Monarch-manual
+- [x] **Synthetic match event generator** — `packages/event-schema` (2026-10-17). Deterministic per seed; calibrated over 100 seeds to ~3.0 goals, 78.5% pass completion, 29 shots, ~320 pressures, 46 tackles per match. Emits hidden ground-truth *momentum spells* (never streamed) so Scout detection can be scored. JSON Schema committed for the web side
+- [~] Agent spine — Orchestrator + Scout + Narrator + Critic + Localizer on Agent Framework 1.22 workflow (see docs/adr/0001). Shared `MatchState`, typed handoff contracts. **Offline backends only:** template Narrator, EN-only Localizer; Foundry-hosted LLM backends wait on Azure activation
+- [x] Repo scaffold: `apps/api` (package `court`), `packages/event-schema` (package `match_events`); CI from first commit. `apps/web` deferred to Phase 2 (nothing to render until the cue stream is real)
+- **Done when:** one synthetic match flows end-to-end Scout→Narrator→Critic→console, with tests green. — **MET 2026-10-17** (offline backends): `make demo`, 48 tests green
 
 ## Phase 2 — Core build (Oct 21–23)
 
 - [ ] Scout: live pattern detection — momentum swings, chance quality (xG-style), pressure shifts, control-vs-chaos index; severity-ranked live alert feed
+  - **Eval finding (2026-10-17, seed 7):** only 1 of 5 momentum alerts overlaps a true spell. All three true spells were the away side's, yet 4 of the 5 alerts went to the stronger home side. The Scout reads *relative* dominance, so it reports a stronger team's baseline as momentum. Fix: baseline-relative (anomaly) detection, i.e. each side vs its own match-to-date rate (the SOCIRIS pattern). Score precision/recall against `GroundTruth.spells` over N seeds
+- [ ] Critic momentum evidence rule — `court/critic.py::momentum_rule` is a TODO(human); momentum claims fail closed (NO_RULE → spiked) until it's registered
 - [ ] Narrator: live tactical narrative + key-moment explainers (the "why", cited to events)
 - [ ] **Critic: the moat — adversarial verification.** Every claim must cite event evidence; rejections visible in UI with reasons; rewrite loop
 - [ ] Overlay cue stream: timed, machine-readable JSON (broadcast-renderer ready) — the platform's rendering-partner lane

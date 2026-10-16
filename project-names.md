@@ -84,4 +84,5 @@
 - Buy at Cloudflare Registrar (at-cost, no markup) or Porkbun — both sell .dev/.app/.xyz at standard band
 - .dev and .app enforce HTTPS (HSTS preload) — fine for a showcase site
 - Re-run the RDAP check the day of purchase; snapshots age
+- **2026-10-17 re-check** (registry RDAP direct: Google Registry for .dev/.app, CentralNic for .xyz; rdap.org rate-limits bulk lookups): 13 shortlist names checked (tahlil, binesh, kashf, opsis, chroniq, dugouthq, fasti, minbymin, gegenpress, raftaar, khulasa, dastaan, anlati), **no change** from the 10-16 snapshot. Fully free on .dev/.app/.xyz: **ANLATI** only. Free on .dev + .app: DASTAAN
 - Domain can wait until the name is chosen — the repo is the build vehicle; the domain is the launch vehicle

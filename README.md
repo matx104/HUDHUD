@@ -3,7 +3,23 @@
 > Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
 > AI match intelligence on synthetic football-realistic data. **Solo build.**
 
-**Status:** 🥚 incubating — solution shape not yet locked (gates: Challenge-brief dataset schema → Azure credits → name+domain).
+**Status:** 🐣 Phase 1 skeleton: one synthetic match flows end to end through all five agents (offline backends), 48 tests green, CI on every push. Pending: name + domain, Azure activation, Foundry-hosted LLM backends.
+
+## Quickstart
+
+```sh
+make setup   # python3.13 venv + both workspace packages, editable
+make test    # pytest: generator realism, Critic checks, workflow loop, warm-path failure
+make demo    # one synthetic match, all five agents, in the console
+```
+
+`python -m court run --help` lists the options (`--mode casual|analyst`, `--speed`, `--json` for the machine-readable cue stream, `--overreach` to make the offline narrator deliberately overreach so the Critic has something to reject).
+
+## Layout
+
+- `packages/event-schema/` (`match_events`): the stream contract (Pydantic + committed JSON Schema) and the deterministic synthetic match generator
+- `apps/api/` (`court`): the agents. Orchestrator + Scout (hot path); Narrator → Critic → Localizer as an Agent Framework workflow (warm path)
+- `docs/adr/`: architecture decisions (start with 0001, hot path / warm path)
 
 ## Files
 
