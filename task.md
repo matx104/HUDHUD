@@ -91,5 +91,5 @@ Crowded lanes: match-intelligence dashboards (MatchMind ×2, MatchPulse, MatchLe
 
 - [x] ~~Challenge-menu brief~~ — **RECEIVED 2026-10-16** (above). Note: brief describes event types but no formal dataset schema/format — synthetic data may be ours to generate (pillar v invites it); confirm whether a sample dataset ships on the platform (resources tab) at next login
 - [x] ~~Azure credits~~ — student plan path chosen ($100 credit, no card); activate when architecture locks
-- [ ] **Gallery extraction → inspiration.md** — Monarch runs the console snippet (provided in channel) on the logged-in projects page; paste output back
+- [ ] **Gallery extraction → inspiration.md** — Claude Code lane: persistent Playwright session (login once, save storageState) → harvest all 198 via selectors+snippet in inspiration.md → inspiration-projects.json + register update. WAZIR walled (login.microsoftonline.com OAuth, verified)
 - [ ] Final name + domain purchase (see project-names.md — depends on chosen solution shape)
