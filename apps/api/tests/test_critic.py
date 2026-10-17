@@ -103,3 +103,21 @@ def test_unregistered_claim_kind_fails_closed(goal_case):
     verdict = Critic(rules={}).review(claim, state)
     assert codes(verdict) == {RejectionCode.NO_RULE}
     assert not verdict.rewritable
+
+
+def test_scouted_momentum_numbers_survive_recomputation(swing_match):
+    """Whatever evidence rule the Critic adopts, the numbers a momentum line states must be
+    the numbers the raw events give: the Scout and the Critic share one set of metrics."""
+    match = swing_match
+    state, scout, narrator = MatchState(match.meta), Scout(), TemplateNarrator()
+    lenient = Critic(rules={AlertKind.MOMENTUM_SWING: lambda claim, cited: None})
+    checked = 0
+    for event in match.events:
+        state.apply(event)
+        for alert in scout.observe(event, state):
+            if alert.kind is not AlertKind.MOMENTUM_SWING:
+                continue
+            verdict = lenient.review(narrator.draft(alert, state), state)
+            assert verdict.approved, verdict.reasons
+            checked += 1
+    assert checked, "seed 21 should produce momentum swings"

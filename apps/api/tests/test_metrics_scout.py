@@ -85,9 +85,9 @@ def test_scout_never_cites_the_future_or_the_unknown(match):
             assert by_id[event_id].seq <= alert.as_of_seq
 
 
-def test_momentum_alerts_are_windowed_and_well_evidenced(match):
-    swings = [a for a in _scout_run(match) if a.kind is AlertKind.MOMENTUM_SWING]
-    assert swings, "seed 7 should produce at least one momentum swing"
+def test_momentum_alerts_are_windowed_and_well_evidenced(swing_match):
+    swings = [a for a in _scout_run(swing_match) if a.kind is AlertKind.MOMENTUM_SWING]
+    assert swings, "seed 21 should produce momentum swings"
     for alert in swings:
         assert len(alert.evidence) >= 3
         assert alert.window and alert.window.period == alert.period

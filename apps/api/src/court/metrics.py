@@ -13,6 +13,7 @@ GOAL_Y = 34.0
 BOX_X = 88.5
 BOX_Y = (13.84, 54.16)
 PENALTY_XG = 0.76
+FINAL_THIRD_X = 70.0
 
 
 def shot_distance(shot: Shot) -> float:
@@ -46,6 +47,15 @@ def is_box_entry(event: MatchEvent) -> bool:
     )
 
 
+def is_final_third_pass(event: MatchEvent) -> bool:
+    """A completed pass that ends in the attacking third."""
+    return (
+        isinstance(event, Pass)
+        and event.outcome is PassOutcome.COMPLETE
+        and event.end_x >= FINAL_THIRD_X
+    )
+
+
 def compute(metric: str, team: Side, events: Iterable[MatchEvent]) -> float:
     mine = [e for e in events if getattr(e, "team", None) == team]
     if metric == "goals":
@@ -56,6 +66,12 @@ def compute(metric: str, team: Side, events: Iterable[MatchEvent]) -> float:
         return round(sum(shot_xg(e) for e in mine if isinstance(e, Shot)), 2)
     if metric == "box_entries":
         return sum(is_box_entry(e) for e in mine)
+    if metric == "passes":
+        return sum(isinstance(e, Pass) for e in mine)
+    if metric == "passes_completed":
+        return sum(isinstance(e, Pass) and e.outcome is PassOutcome.COMPLETE for e in mine)
+    if metric == "final_third_passes":
+        return sum(is_final_third_pass(e) for e in mine)
     raise ValueError(f"unknown metric {metric!r}")
 
 

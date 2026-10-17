@@ -45,7 +45,16 @@ class Alert(_Frozen):
     window: Window | None = None
 
 
-Metric = Literal["goals", "shots", "xg", "box_entries", "shot_xg"]
+Metric = Literal[
+    "goals",
+    "shots",
+    "xg",
+    "box_entries",
+    "shot_xg",
+    "passes",
+    "passes_completed",
+    "final_third_passes",
+]
 
 
 class Assertion(_Frozen):

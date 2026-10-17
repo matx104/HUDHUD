@@ -1,4 +1,8 @@
-"""Console runner: `python -m court run --seed 7`. One synthetic match, end to end."""
+"""Console runner.
+
+python -m court run --seed 7   # one synthetic match, end to end
+python -m court eval           # the Scout's momentum calls against hidden ground truth
+"""
 
 import argparse
 import asyncio
@@ -9,6 +13,7 @@ from match_events import Side, generate, read_jsonl
 
 from .config import ARCHITECTURE_NAME, product_name
 from .contracts import OUTPUT_ADAPTER, Cue, Degradation, Output, RejectionNotice, Spiked
+from .evals import evaluate, report
 from .localizer import Localizer
 from .narrator import TemplateNarrator
 from .orchestrator import run_match
@@ -54,6 +59,13 @@ async def _run(args: argparse.Namespace) -> int:
     return 0
 
 
+def _eval(args: argparse.Namespace) -> int:
+    seeds = range(args.first, args.first + args.seeds)
+    print(f"Scout momentum calls against hidden ground truth, seeds {seeds[0]}-{seeds[-1]}")
+    print(report(evaluate(seeds)))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="court")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -69,5 +81,10 @@ def main(argv: list[str] | None = None) -> int:
         help="rate at which the offline narrator deliberately overreaches",
     )
     run.add_argument("--json", action="store_true", help="emit outputs as JSONL")
+    ev = sub.add_parser("eval", help="score the Scout's momentum calls against ground truth")
+    ev.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
+    ev.add_argument("--seeds", type=int, default=40, help="how many seeds to score")
     args = parser.parse_args(argv)
+    if args.cmd == "eval":
+        return _eval(args)
     return asyncio.run(_run(args))

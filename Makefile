@@ -1,7 +1,7 @@
 PY ?= python3.13
 BIN := .venv/bin
 
-.PHONY: setup test lint fmt schema demo site-data site
+.PHONY: setup test lint fmt schema demo eval site-data site
 
 setup:  ## create .venv and install both workspace packages (editable)
 	$(PY) -m venv .venv
@@ -23,6 +23,9 @@ schema:  ## regenerate the committed JSON Schema after editing models.py
 
 demo:  ## one synthetic match, end to end, in the console
 	$(BIN)/python -m court run --seed 7
+
+eval:  ## score the Scout's momentum calls against hidden ground truth (unseen seeds 60-99)
+	$(BIN)/python -m court eval
 
 site-data:  ## regenerate the showcase data: the hero claim (chain.js) and the match (match.js)
 	$(BIN)/python scripts/site_sample.py

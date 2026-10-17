@@ -37,9 +37,17 @@ def big_chance_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
 
 
 def momentum_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
-    """What evidence proves that one side has seized momentum?"""
+    """What evidence proves that one side has seized momentum?
+
+    `cited` holds the citations that passed the earlier checks: real events, from before
+    the claim, in the same period and recent. The Scout cites the claiming side's shots
+    and completed passes into the final third from the claim's window, up to ten. The
+    claim's numbers are recomputed separately, so this rule decides only whether the
+    cited events are enough to stand on. Return None if they are, else a one-line reason.
+    """
     # TODO(human): decide what a momentum claim must cite, then register this rule in
-    # EVIDENCE_RULES below. Until then momentum claims fail closed with NO_RULE.
+    # EVIDENCE_RULES below. Until then momentum claims fail closed with NO_RULE, and
+    # tests/test_momentum_rule.py skips; it switches on once the rule is registered.
     raise NotImplementedError
 
 

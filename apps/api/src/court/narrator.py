@@ -11,7 +11,7 @@ from typing import Protocol
 
 from match_events import Shot, Side
 
-from .contracts import Alert, AlertKind, Assertion, Claim, Verdict
+from .contracts import Alert, AlertKind, Assertion, Claim, Verdict, Window
 from .metrics import shot_distance
 from .state import MatchState
 
@@ -21,6 +21,15 @@ OUTCOME_PHRASE = {
     "blocked": "blocked at the last moment",
     "woodwork": "off the woodwork",
 }
+
+
+def _count(n: float, one: str, many: str | None = None) -> str:
+    """'1 shot', '3 shots', '0 shots': counts read as English, never '1 shots'."""
+    return f"{n:.0f} {one if round(n) == 1 else many or one + 's'}"
+
+
+def _pct(done: float, total: float) -> int:
+    return round(100 * done / total) if total else 0
 
 
 class Narrator(Protocol):
@@ -115,19 +124,40 @@ class TemplateNarrator:
     def _momentum(self, alert: Alert, state: MatchState, m: dict[str, float]):
         team, opp = state.meta.team(alert.team), state.meta.team(alert.team.other())
         minutes = max(1, round(m["window_s"] / 60))
+        span = "minute" if minutes == 1 else f"{minutes} minutes"
+        now = _pct(m["passes_completed"], m["passes"])
+        trend = ""
+        if m["base_passes"]:
+            base = _pct(m["base_passes_completed"], m["base_passes"])
+            word = "up from" if now > base else "down from" if now < base else "level with"
+            trend = f", {word} {base}% earlier in the half"
         text = (
-            f"{team.name} are turning the screw: {m['shots']:.0f} shots, "
-            f"{m['box_entries']:.0f} box entries and {m['xg']:.2f} xG in the last {minutes} "
-            f"minutes, against {m['opp_shots']:.0f} shots from {opp.name}."
+            f"{team.name} have taken control, completing {m['passes_completed']:.0f} of "
+            f"{_count(m['passes'], 'pass', 'passes')} in the last {span} ({now}%{trend}). "
+            f"They've found the final third {_count(m['final_third'], 'time')} "
+            f"to {opp.name}'s {m['opp_final_third']:.0f}."
         )
-        w = alert.window
-        assertions = (
-            Assertion(metric="shots", team=alert.team, value=m["shots"], window=w),
-            Assertion(metric="box_entries", team=alert.team, value=m["box_entries"], window=w),
-            Assertion(metric="xg", team=alert.team, value=m["xg"], window=w),
-            Assertion(metric="shots", team=alert.team.other(), value=m["opp_shots"], window=w),
-        )
-        return f"MOMENTUM · {team.short_name} on top", text, assertions
+        w, mine = alert.window, alert.team
+        assertions = [
+            Assertion(metric="passes_completed", team=mine, value=m["passes_completed"], window=w),
+            Assertion(metric="passes", team=mine, value=m["passes"], window=w),
+            Assertion(metric="final_third_passes", team=mine, value=m["final_third"], window=w),
+            Assertion(
+                metric="final_third_passes", team=mine.other(), value=m["opp_final_third"], window=w
+            ),
+        ]
+        if m["base_passes"] and w is not None:
+            earlier = Window(period=alert.period, start_t=m["base_start_t"], end_t=w.start_t)
+            assertions += [
+                Assertion(metric="passes", team=mine, value=m["base_passes"], window=earlier),
+                Assertion(
+                    metric="passes_completed",
+                    team=mine,
+                    value=m["base_passes_completed"],
+                    window=earlier,
+                ),
+            ]
+        return f"MOMENTUM · {team.short_name} on top", text, tuple(assertions)
 
     # --- deliberate overreach (demo + tests) ----------------------------------------
 
@@ -139,6 +169,8 @@ class TemplateNarrator:
             phantom = f"e{alert.as_of_seq + 3:05d}"  # an event that hasn't happened yet
             return claim.model_copy(update={"citations": (*claim.citations, phantom)})
         metrics = dict(alert.metrics)
-        key = "shots" if alert.kind is AlertKind.MOMENTUM_SWING else "xg"
-        metrics[key] = metrics[key] + (2 if key == "shots" else 0.25)
+        if alert.kind is AlertKind.MOMENTUM_SWING:
+            metrics["final_third"] += 3
+        else:
+            metrics["xg"] += 0.25
         return self._compose(alert, state, attempt=claim.attempt, metrics=metrics)
