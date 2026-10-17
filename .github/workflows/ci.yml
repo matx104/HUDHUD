@@ -32,3 +32,5 @@ jobs:
         run: python -m match_events schema && git diff --exit-code packages/event-schema/schema
       - name: Smoke-run one match through all five agents
         run: python -m court run --seed 7 --overreach 0.25
+      - name: Showcase hero data matches the pipeline
+        run: python scripts/site_sample.py && git diff --exit-code site/data

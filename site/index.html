@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evidence-checked match commentary</title>
+  <meta name="description" content="AI agents commentate a live football match, and a Critic agent checks every claim against the raw match events before it airs.">
+  <meta name="color-scheme" content="dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <header class="top wrap">
+    <a class="wordmark" href="#" data-product-name></a>
+    <nav aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#recovery">Recovery</a>
+      <a href="#data">Data</a>
+      <a data-repo-link href="#">Code</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <h1>Every call comes with its evidence.</h1>
+        <p class="lede">AI agents commentate a live football match. Before any line goes to air, a Critic agent checks it against the raw match events. If a claim can't be proven, it's rewritten or dropped.</p>
+        <div class="actions">
+          <a class="button" data-repo-link href="#">Read the code</a>
+          <span class="button button-quiet" data-video-link aria-disabled="true">Demo video coming soon</span>
+        </div>
+      </div>
+
+      <figure class="board" aria-labelledby="board-headline">
+        <div class="board-head">
+          <span class="minute" data-chain="minute"></span>
+          <p class="board-headline" id="board-headline" data-chain="headline"></p>
+        </div>
+        <div class="switch" role="group" aria-label="Version of the claim">
+          <button type="button" data-view="aired" aria-pressed="true">What aired</button>
+          <button type="button" data-view="draft" aria-pressed="false">First draft</button>
+        </div>
+        <div class="board-body" aria-live="polite">
+          <blockquote class="claim" data-chain="claim"></blockquote>
+          <ol class="chain" data-chain="events"></ol>
+          <div class="verdict" data-chain="verdict"></div>
+        </div>
+        <noscript><p class="claim">The evidence chain needs JavaScript to draw.</p></noscript>
+        <figcaption>A real exchange from synthetic match seed 7. Switch to the first draft to see what the Critic caught.</figcaption>
+      </figure>
+    </section>
+
+    <section class="how wrap" id="how" aria-labelledby="how-title">
+      <h2 id="how-title">How a claim gets on air</h2>
+      <ol class="steps">
+        <li>
+          <h3>Spot</h3>
+          <p>The Scout reads every event as it arrives and flags goals, big chances and swings in momentum.</p>
+        </li>
+        <li>
+          <h3>Write</h3>
+          <p>The Narrator drafts the line for air and cites the event behind every fact in it.</p>
+        </li>
+        <li>
+          <h3>Check</h3>
+          <p>The Critic recomputes each number from the raw events, with the same formulas the Scout uses. A wrong number, a missing citation or an event from the future sends the claim back for a rewrite, up to three attempts.</p>
+        </li>
+        <li>
+          <h3>Air</h3>
+          <p>The Localizer turns the verified claim into an on-screen cue for casual fans or analysts. A claim that never passes never airs.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="recovery wrap" id="recovery" aria-labelledby="recovery-title">
+      <div class="recovery-copy">
+        <h2 id="recovery-title">When an agent fails, the broadcast keeps going</h2>
+        <p>The Orchestrator supervises the line. If the Narrator or Critic stops responding, it retries once. If the agent is still down, viewers get detection-only cues, marked as unverified, and the broadcast says when full service is back.</p>
+        <p class="aside">A test fails the Narrator four times in a row mid-match and checks that cues never stop.</p>
+      </div>
+      <ol class="states" aria-label="Service states">
+        <li data-state="full"><strong>Full service</strong><span>Every cue verified by the Critic</span></li>
+        <li data-state="degraded"><strong>Detection only</strong><span>Cues keep airing, marked unverified</span></li>
+        <li data-state="full"><strong>Recovered</strong><span>Announced on air, verification resumes</span></li>
+      </ol>
+    </section>
+
+    <section class="data wrap" id="data" aria-labelledby="data-title">
+      <h2 id="data-title">Synthetic by design</h2>
+      <div class="data-copy">
+        <p>Every match is generated from a seed: invented clubs, invented players and realistic volumes, about a thousand passes, 29 shots and three goals a match on average. The same seed always replays the same match, so every claim on this page can be reproduced.</p>
+        <pre><code>python -m court run --seed 7</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p><span data-product-name></span> is being built for the Inside the Game developer hackathon, October 2026. <a data-repo-link href="#">Source on GitHub</a>.</p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="data/chain.js"></script>
+  <script src="assets/site.js"></script>
+</body>
+</html>

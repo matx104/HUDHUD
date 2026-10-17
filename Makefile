@@ -1,7 +1,7 @@
 PY ?= python3.13
 BIN := .venv/bin
 
-.PHONY: setup test lint fmt schema demo
+.PHONY: setup test lint fmt schema demo site-data site
 
 setup:  ## create .venv and install both workspace packages (editable)
 	$(PY) -m venv .venv
@@ -22,3 +22,9 @@ schema:  ## regenerate the committed JSON Schema after editing models.py
 
 demo:  ## one synthetic match, end to end, in the console
 	$(BIN)/python -m court run --seed 7
+
+site-data:  ## regenerate the showcase hero (a real claim, its rejected draft, its evidence)
+	$(BIN)/python scripts/site_sample.py
+
+site:  ## serve the showcase site at http://localhost:8000
+	$(PY) -m http.server 8000 -d site
