@@ -30,9 +30,14 @@ make demo    # one synthetic match, all five agents, in the console
 - **brand.md** — naming program, identity system, video compliance laws
 - **project-names.md** — verified candidate register (all roots, live RDAP-checked 2026-10-16)
 - **projects.md** — the reusable arsenal: existing projects → patterns → which idea they feed
-- **inspiration.md** + **inspiration-projects.json** — the 150-project competitive field: lane census, threat tiers, differentiation memo
 - **awards.md** — the six prize lanes: official per-member packages, FMV, sweep math
 - **goals.md** — the Grand Slam doctrine: all-six declaration, award→feature build contract, public-intention language, kill criteria
+
+## Studying the tape
+
+I did my homework. The greatest footballers and coaches study tape on the sides they're about to face, and while building this I studied the competition the same way. I read the other entries in the gallery for what each one promised, how it framed the problem and what it chose to show. It gave me inspiration as much as strategy: seeing the field side by side showed me which ideas were already well covered and where the open ground was. That study shaped this build's two headline features. One is a Critic that rejects unevidenced claims live, on screen; the other is an orchestrator that recovers from agent failure without dropping the broadcast.
+
+My scouting notes stay off this repo out of respect for the other entrants. What I learned from them is in the code.
 
 ## Build window
 

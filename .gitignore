@@ -21,3 +21,7 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# private scouting notes: studied locally, never published
+inspiration.md
+inspiration-projects.json
