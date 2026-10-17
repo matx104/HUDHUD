@@ -1,6 +1,6 @@
 # BRAND — Name, Identity, Positioning
 
-> Status: name deliberately UNDECIDED — it depends on the solution shape (see ideas.md decision gates). This file records the naming program: candidates, verified availability, and the identity system that applies once a name is chosen.
+> Status: **HUDHUD** — chosen by the Monarch 2026-10-17. Domain not yet bought (see project-names.md §H). This file records the naming program, the name's story, and the identity system.
 
 ## Naming program
 
@@ -17,6 +17,20 @@
 - **Agents:** Scout · Narrator · Critic · Localizer · Orchestrator
 - **Core promise:** every conclusion is grounded in match-event evidence
 - **Mechanism name (internal):** the evidence-chain check — **ISNAD** (every claim carries its chain back to the raw event; Arabic-origin story optional in branding, not required)
+
+## HUDHUD — the name and its story
+
+**Written:** HUDHUD (wordmark) · **Short form:** HUD² (monogram, app icon, favicon crest). Not HUDX (one letter from Hudl, the football-analysis company) and not HUD-2 (reads as a version number).
+
+**The story, primary anchor first** (the showcase site's "The name" section tells it):
+1. **Sure news, Surah An-Naml 27:20–28.** The hoopoe returns to Solomon "with sure news" (*bi-naba'in yaqīn*, 27:22); Solomon: "We will see whether you have told the truth" (27:27). Checked before acted on = the Critic. The hoopoe reports to a court = the `court` package.
+2. **The guide, Attar's *Conference of the Birds*.** The hoopoe (once Solomon's messenger) leads the birds to the Simurgh; thirty arrive and *si murgh* = "thirty birds". Agents that together see the whole match; the Orchestrator leads.
+3. **Heads-up display.** HUD = the broadcast overlay layer = what the product emits.
+4. **Five feathers.** The crest fans like a broadcast signal: one feather per agent, the Critic's gold at the centre. Two beats, hud-hud, like a chant from the stands.
+
+**Kin myths** (supporting, never the anchor): Odin's ravens Huginn and Muninn, Noah's dove and the olive leaf, Hermes the messenger.
+
+**Known namesake:** Hudhud, a Saudi navigation app (maps, 1M+ users) — different category; run a proper trademark search (class 9/42) before any commercial use.
 
 ## Identity system (applies to any chosen name)
 
@@ -44,3 +58,4 @@
 ## Decision log
 
 - 2026-10-16 — Arabic/Persian/Urdu/Turkish/Greek/Latin roots opened into scope. Repo born as `pl-hackathon` (placeholder). GAFFR/ISNAAD families excluded — variations taken on the domains that matter. Final name gates on solution shape + domain purchase.
+- 2026-10-17 — Folklore round (Arabic/Persian/Urdu roots, global myth parallels). **HUDHUD chosen by the Monarch.** Wordmark HUDHUD, monogram HUD²; HUDX/HUD-2 rejected. Story anchored on Surah An-Naml, then Attar. Every `hudhud.*` on .com/.dev/.app/.xyz is taken; domain candidates in project-names.md §H.

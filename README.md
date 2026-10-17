@@ -1,9 +1,9 @@
-# pl-hackathon *(placeholder name — see project-names.md)*
+# HUDHUD
 
 > Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
 > AI match intelligence on synthetic football-realistic data. **Solo build.**
 
-**Status:** 🐣 Phase 1 skeleton: one synthetic match flows end to end through all five agents (offline backends), 48 tests green, CI on every push. Showcase site scaffolded (`site/`), not yet published. Pending: name + domain, Azure activation, Foundry-hosted LLM backends.
+**Status:** 🐣 Phase 1 skeleton: one synthetic match flows end to end through all five agents (offline backends), 48 tests green, CI on every push. Showcase site scaffolded (`site/`), not yet published. Pending: domain, Azure activation, Foundry-hosted LLM backends.
 
 ## Quickstart
 
@@ -30,7 +30,7 @@ make site    # the showcase site at http://localhost:8000
 - **task.md** — the official ask, decoded: rubric, prize categories, hard requirements, dates + the full Challenge brief
 - **ideas.md** — solution options + the current fusion lean + decision gates
 - **brand.md** — naming program, identity system, video compliance laws
-- **project-names.md** — verified candidate register (all roots, live RDAP-checked 2026-10-16)
+- **project-names.md** — verified candidate register (all roots, live RDAP-checked 2026-10-16 and 2026-10-17); HUDHUD chosen
 - **projects.md** — the reusable arsenal: existing projects → patterns → which idea they feed
 - **awards.md** — the six prize lanes: official per-member packages, FMV, sweep math
 - **goals.md** — the Grand Slam doctrine: all-six declaration, award→feature build contract, public-intention language, kill criteria

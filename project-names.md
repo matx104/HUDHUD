@@ -71,6 +71,42 @@
 | **FASTI** | the Roman chronicle of days/events | .dev | "match chronicles" — judges who know Latin grin |
 | *(taken, for the record)* | acta (the record of proceedings — perfect, taken) · ludus (game, taken) · specto (I watch, taken) | — | acta was made for this |
 
+## H. Folklore round → **HUDHUD chosen** (verified 2026-10-17)
+
+Registry RDAP direct (Verisign, Google Registry, CentralNic, Identity Digital, others via the IANA bootstrap; whois where a ccTLD has no RDAP). Prices: Porkbun public price list, 2026-10-17, first year / renewal (USD).
+
+**HUDHUD domains**
+
+| Domain | Status | Price | Note |
+|---|---|---|---|
+| hudhud.com / .dev / .app / .xyz / .net / .org / .ai / .tv / .live / .studio / .news / .media / .co / .me / .pk | taken | — | hudhud.io is in redemption (may drop, timing unknowable); hudhud.live expires 2026-11-27 |
+| **hudhud.football** | **FREE** | 10.81 / 23.17 | the exact name + the sport |
+| hudhud.fans | FREE | 3.60 / 8.75 | cheapest renewal |
+| hudhud.watch · .show · .games · .team · .zone | FREE | 3–8 / 30–40 | renewals climb |
+| hudhud.club · .stream · .one | FREE | 4–5 / 6–20 | |
+| hudhud.gg · .fm · .sh | FREE | 31–88 / 47–88 | pricey |
+| **hud2.app** | **FREE** | 8.75 / 14.93 | matches the HUD² monogram |
+| hud2.dev · .xyz · .live · .tv · .football · .watch · .studio · .io · .gg · .ai · .fm | FREE | varies | hud2.com taken |
+| hudsquared.com / .dev / .app / .xyz / .live / .football | FREE | 11.08 (.com) | spelled-out monogram |
+| usehudhud · hudhudhq · joinhudhud · hudhudfootball · hudhudsports · hudhudfc · hudhudcast · hudhudlabs (.com) | FREE | 11.08 / 11.08 | compound .com fallbacks |
+| thehudhud · gohudhud · heyhudhud · hudhudapp · hudhudtv · hudhudnews (.com) | taken | — | |
+
+**Rest of the folklore round** (com / dev / app / xyz):
+
+| Name | Root | Free |
+|---|---|---|
+| RAAVI / RAWI | راوی narrator, isnad link; the river Ravi | all taken |
+| SHAHMAT | شاہ مات → "checkmate"; *check* comes from *shāh* | .app, .xyz |
+| TILISM | طلسم, *Tilism-e-Hoshruba* → "talisman" | .app, .xyz |
+| KAMAAN | کمان bow / command; sounds like "come on!" | .dev, .app, .xyz |
+| LAJAWAB | لاجواب "unanswerable", peerless | .dev, .app, .xyz |
+| DASTANGO | داستان گو, live Urdu storyteller | .dev, .app, .xyz |
+| TARJUMAN | ترجمان interpreter | .dev, .app, .xyz |
+| GAWAH · QIYAFA | گواہ witness · قيافة reading of traces | .dev, .app, .xyz |
+| HAKAWATI · DOORBEEN · RAKHSH · JHALAK | storyteller · telescope · Rustam's horse · glimpse | .xyz (+ .app for jhalak) |
+| MUNADI · QASID · HOSHRUBA · FIRASA · AAINA | herald · messenger · the epic · insight · mirror | .dev (+ .xyz, except aaina) |
+| *(taken on all four)* | simurgh, shaheen, baaz, diwan, mizan, burhan, athar, nazar, lisan, daleel, hoopoe, shabash | — |
+
 ## Matching guide (solution shape → name family)
 
 - **Live-feed product** (Idea 1 lean) → MINBYMIN · GEGENPRESS · RAFTAAR · TOPBIN

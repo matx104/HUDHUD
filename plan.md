@@ -8,7 +8,8 @@
 - [ ] Detail pass on the 18 HIGH-tier projects (inspiration.md list) — what they promise vs. what they show; update threat tiers — **DEFERRED 2026-10-17:** automated browsing stopped at the gallery sign-in. Monarch reviews the 18 by hand via the local-only review page `site/review/` (gitignored, never deployed; "Copy notes as Markdown" brings the notes back)
 - [ ] Sharpen the differentiation sentence (inspiration.md §Differentiation memo) against what the top 10 actually build — gated on the detail pass
 - [ ] Check platform Resources tab for a sample dataset / schema (if one exists, it replaces the generator in Phase 1) — **DEFERRED** to the Monarch's manual pass; generator built meanwhile, so a platform schema would become an adapter, not a rewrite
-- [ ] Pick name from project-names.md + buy domain (re-run RDAP day-of; Cloudflare/Porkbun; cheap TLDs only) — RDAP re-verified 2026-10-17, shortlist unchanged; **awaiting Monarch's pick**
+- [x] Pick name — **HUDHUD** (Monarch, 2026-10-17; story in brand.md, set in `site/config.js` + `court/config.py`)
+- [ ] Buy domain (re-run RDAP day-of; Cloudflare/Porkbun) — candidates in project-names.md §H, lead: hudhud.football
 - **Done when:** differentiation memo v2 written, name+domain owned.
 
 ## Phase 1 — Architecture lock + skeleton (Oct 18–20)
