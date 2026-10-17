@@ -1,0 +1,5 @@
+# Takes effect once the site has its own domain: crawlers read robots.txt from a host's root.
+User-agent: *
+Allow: /
+
+Sitemap: https://matx104.github.io/HUDHUD/sitemap.xml

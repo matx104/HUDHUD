@@ -3,125 +3,495 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Evidence-checked match commentary</title>
-  <meta name="description" content="AI agents commentate a live football match, and a Critic agent checks every claim against the raw match events before it airs.">
+  <script>document.documentElement.classList.add("js")</script>
+  <!-- Crawlers and link previews don't run JavaScript, so the name is written into these tags.
+       tests/site/site.test.cjs fails if they drift from config.js. -->
+  <title>HUDHUD: AI match commentary that proves every call</title>
+  <meta name="description" content="HUDHUD is a team of five AI agents that commentate a live football match. A Critic agent checks every claim against the raw match events before it airs, and the broadcast keeps going when an agent fails.">
+  <link rel="canonical" href="https://matx104.github.io/HUDHUD/">
+  <meta name="author" content="Muhammad Abdullah Tariq">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A1F2E">
   <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="HUDHUD">
+  <meta property="og:title" content="HUDHUD: every call comes with its evidence">
+  <meta property="og:description" content="Five AI agents commentate a live football match, and a Critic checks every claim against the match events before it airs.">
+  <meta property="og:url" content="https://matx104.github.io/HUDHUD/">
+  <meta property="og:image" content="https://matx104.github.io/HUDHUD/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The HUDHUD crest, five feathers over the words: every call comes with its evidence.">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@MATX104">
+  <link rel="icon" href="assets/crest.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-  <!-- Urdu and Arabic faces, subset to the exact letters the name section uses -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+  <!-- Urdu and Arabic faces, subset to the exact letters the name page uses -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@700&text=%DB%81%D8%AF&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400&text=%20%D8%A3%D8%A5%D8%A7%D8%A8%D8%AA%D8%AF%D8%B0%D8%B1%D8%B3%D8%B5%D8%B8%D9%82%D9%83%D9%84%D9%85%D9%86%D9%8A%D9%8D%D9%8E%D9%8F%D9%90%D9%92&display=swap">
-  <link rel="icon" href="assets/crest.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://matx104.github.io/HUDHUD/#website",
+        "url": "https://matx104.github.io/HUDHUD/",
+        "name": "HUDHUD",
+        "inLanguage": "en",
+        "publisher": { "@id": "https://matx104.github.io/HUDHUD/#author" }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://matx104.github.io/HUDHUD/#app",
+        "name": "HUDHUD",
+        "url": "https://matx104.github.io/HUDHUD/",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Web",
+        "description": "Five AI agents commentate a live football match. A Critic agent checks every claim against the raw match events before it airs, and the broadcast keeps going when an agent fails.",
+        "image": "https://matx104.github.io/HUDHUD/assets/og.png",
+        "author": { "@id": "https://matx104.github.io/HUDHUD/#author" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://matx104.github.io/HUDHUD/#author",
+        "name": "Muhammad Abdullah Tariq",
+        "url": "https://matx104.com.pk/",
+        "jobTitle": "Principal Software Engineer (DevOps)",
+        "sameAs": ["https://github.com/matx104", "https://linkedin.com/in/matx104", "https://x.com/MATX104", "https://medium.com/@matx104", "https://www.youtube.com/@matx104"]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
-  <header class="top wrap">
-    <a class="wordmark" href="#" data-product-name></a>
-    <nav aria-label="Sections">
-      <a href="#how">How it works</a>
-      <a href="#recovery">Recovery</a>
-      <a href="#data">Data</a>
-      <a href="#name">The name</a>
-      <a data-repo-link href="#">Code</a>
-    </nav>
+  <a class="skip" href="#main" data-skip>Skip to content</a>
+
+  <header class="top">
+    <div class="top-inner wrap">
+      <a class="brand" href="#/">
+        <svg class="brand-crest crest-art" viewBox="36 12 168 168" aria-hidden="true">
+          <g transform="translate(120 150)">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+          </g>
+        </svg>
+        <span class="brand-name" data-product-name></span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#/problem">Problem</a>
+        <a href="#/goal">Goal</a>
+        <a href="#/how">How it works</a>
+        <a href="#/why">Why</a>
+        <a href="#/roadmap">Roadmap</a>
+        <a href="#/who">Who</a>
+        <a data-repo-link data-when-repo="public" href="#">Code</a>
+      </nav>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="chapters">
+        <span class="menu-icon" aria-hidden="true"></span><span data-menu-label>Chapters</span>
+      </button>
+    </div>
   </header>
 
-  <main>
-    <section class="hero wrap">
-      <div class="hero-copy">
-        <h1>Every call comes with its evidence.</h1>
-        <p class="lede">AI agents commentate a live football match. Before any line goes to air, a Critic agent checks it against the raw match events. If a claim can't be proven, it's rewritten or dropped.</p>
-        <div class="actions">
-          <a class="button" data-repo-link href="#">Read the code</a>
-          <span class="button button-quiet" data-video-link aria-disabled="true">Demo video coming soon</span>
+  <div class="chapters" id="chapters" hidden>
+    <nav class="chapters-inner wrap" aria-label="Chapters">
+      <ol class="chapters-list" data-chapter-menu></ol>
+    </nav>
+  </div>
+
+  <!-- Feather shapes for every crest on the page -->
+  <svg class="sprite" aria-hidden="true">
+    <defs>
+      <path id="f78" d="M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z"/>
+      <path id="f96" d="M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z"/>
+      <path id="f112" d="M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z"/>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker>
+    </defs>
+  </svg>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ============ KICK-OFF ============ -->
+    <section class="page page-home" data-page="" data-title="Kick-off" data-summary="Every call comes with its evidence" aria-labelledby="home-title">
+      <div class="hero">
+        <canvas class="field" aria-hidden="true"></canvas>
+        <div class="hero-inner wrap">
+          <div class="hero-copy">
+            <p class="live"><span class="live-dot" aria-hidden="true"></span>Running on a synthetic match, right now</p>
+            <h1 id="home-title" tabindex="-1">Every call comes with its evidence.</h1>
+            <p class="lede">AI agents commentate a live football match. Before any line goes to air, a Critic agent checks it against the raw match events. If a claim can't be proven, it's rewritten or dropped.</p>
+            <div class="actions">
+              <a class="button" href="#/problem">Start with the problem</a>
+              <a class="button button-quiet" href="#/how">See how it works</a>
+            </div>
+            <p class="video-note" data-video-link>The 110-second demo video is coming soon.</p>
+          </div>
+
+          <figure class="board" aria-labelledby="board-headline">
+            <div class="board-head">
+              <span class="minute" data-chain="minute"></span>
+              <p class="board-headline" id="board-headline" data-chain="headline"></p>
+            </div>
+            <div class="switch" role="group" aria-label="Version of the claim">
+              <button type="button" data-view="aired" aria-pressed="true">What aired</button>
+              <button type="button" data-view="draft" aria-pressed="false">First draft</button>
+            </div>
+            <div class="board-body" aria-live="polite">
+              <blockquote class="claim" data-chain="claim"></blockquote>
+              <ol class="chain" data-chain="events"></ol>
+              <div class="verdict" data-chain="verdict"></div>
+            </div>
+            <noscript><p class="claim">The evidence chain needs JavaScript to draw.</p></noscript>
+            <figcaption>A real exchange from synthetic match seed 7. Switch to the first draft to see what the Critic caught.</figcaption>
+          </figure>
         </div>
       </div>
 
-      <figure class="board" aria-labelledby="board-headline">
-        <div class="board-head">
-          <span class="minute" data-chain="minute"></span>
-          <p class="board-headline" id="board-headline" data-chain="headline"></p>
+      <div class="home-chapters wrap" data-reveal>
+        <h2>The whole story, chapter by chapter</h2>
+        <ol class="chapter-index" data-chapter-index></ol>
+      </div>
+    </section>
+
+    <!-- ============ 01 THE PROBLEM ============ -->
+    <section class="page wrap" data-page="problem" data-title="The problem" data-summary="Fluent AI commentary that can't prove what it says" aria-labelledby="problem-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">01</span>
+        <h1 id="problem-title" tabindex="-1">AI can talk about football. It can't prove what it says.</h1>
+        <p class="lede">Language models write fluent commentary in seconds. They also invent numbers, mix up minutes and cite moments that haven't happened yet. On a live broadcast, a wrong line reaches every viewer before anyone can check it.</p>
+      </header>
+
+      <figure class="exhibit" data-reveal>
+        <div class="exhibit-screen">
+          <p class="exhibit-meta"><span class="minute" data-chain="minute"></span><span data-chain="headline"></span></p>
+          <p class="typed" data-typed aria-hidden="true"></p>
+          <p class="sr-only" data-typed-full></p>
+          <p class="exhibit-cites" data-exhibit-cites></p>
+          <div class="red-card" aria-hidden="true"></div>
+          <p class="exhibit-verdict" data-exhibit-verdict></p>
         </div>
-        <div class="switch" role="group" aria-label="Version of the claim">
-          <button type="button" data-view="aired" aria-pressed="true">What aired</button>
-          <button type="button" data-view="draft" aria-pressed="false">First draft</button>
-        </div>
-        <div class="board-body" aria-live="polite">
-          <blockquote class="claim" data-chain="claim"></blockquote>
-          <ol class="chain" data-chain="events"></ol>
-          <div class="verdict" data-chain="verdict"></div>
-        </div>
-        <noscript><p class="claim">The evidence chain needs JavaScript to draw.</p></noscript>
-        <figcaption>A real exchange from synthetic match seed 7. Switch to the first draft to see what the Critic caught.</figcaption>
+        <figcaption>A first draft from the Narrator in this repo, written during synthetic match seed 7. It reads well. One of the events it cites hadn't happened yet.</figcaption>
       </figure>
-    </section>
 
-    <section class="how wrap" id="how" aria-labelledby="how-title">
-      <h2 id="how-title">How a claim gets on air</h2>
-      <ol class="steps">
-        <li>
-          <h3>Spot</h3>
-          <p>The Scout reads every event as it arrives and flags goals, big chances and swings in momentum.</p>
-        </li>
-        <li>
-          <h3>Write</h3>
-          <p>The Narrator drafts the line for air and cites the event behind every fact in it.</p>
-        </li>
-        <li>
-          <h3>Check</h3>
-          <p>The Critic recomputes each number from the raw events, with the same formulas the Scout uses. A wrong number, a missing citation or an event from the future sends the claim back for a rewrite, up to three attempts.</p>
-        </li>
-        <li>
-          <h3>Air</h3>
-          <p>The Localizer turns the verified claim into an on-screen cue for casual fans or analysts. A claim that never passes never airs.</p>
-        </li>
-      </ol>
-    </section>
-
-    <section class="recovery wrap" id="recovery" aria-labelledby="recovery-title">
-      <div class="recovery-copy">
-        <h2 id="recovery-title">When an agent fails, the broadcast keeps going</h2>
-        <p>The Orchestrator supervises the line. If the Narrator or Critic stops responding, it retries once. If the agent is still down, viewers get detection-only cues, marked as unverified, and the broadcast says when full service is back.</p>
-        <p class="aside">A test fails the Narrator four times in a row mid-match and checks that cues never stop.</p>
+      <div class="problems">
+        <article data-reveal>
+          <h2>Confident and unchecked</h2>
+          <p>A model sounds just as sure when it's wrong. Without a check between the draft and the screen, every error goes out live.</p>
+        </article>
+        <article data-reveal>
+          <h2>One feed for every fan</h2>
+          <p>An analyst wants expected goals and pressing patterns. A casual viewer wants to know why the crowd just roared. Most feeds serve one and lose the other.</p>
+        </article>
+        <article data-reveal>
+          <h2>English first, everyone else later</h2>
+          <p>The game is watched around the world, but live commentary is mostly written in English. Urdu and Arabic speakers usually get a translation, not commentary written for them.</p>
+        </article>
+        <article data-reveal>
+          <h2>When the model stalls, the feed goes dark</h2>
+          <p>A live system that waits on one slow or failed model call goes quiet at exactly the moment the match needs it.</p>
+        </article>
       </div>
-      <ol class="states" aria-label="Service states">
-        <li data-state="full"><strong>Full service</strong><span>Every cue verified by the Critic</span></li>
-        <li data-state="degraded"><strong>Detection only</strong><span>Cues keep airing, marked unverified</span></li>
-        <li data-state="full"><strong>Recovered</strong><span>Announced on air, verification resumes</span></li>
+    </section>
+
+    <!-- ============ 02 THE GOAL ============ -->
+    <section class="page wrap" data-page="goal" data-title="The goal" data-summary="Every award declared, and honest about the odds" aria-labelledby="goal-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">02</span>
+        <h1 id="goal-title" tabindex="-1">We declared for every award. Judge us against it.</h1>
+        <p class="lede"><span data-product-name></span> is built to compete for all six awards in the Inside the Game hackathon. Not because a sweep is likely, but because building for six forces the discipline of six.</p>
+      </header>
+
+      <ol class="lanes">
+        <li data-reveal>
+          <h2>Grand prize</h2>
+          <p>Every lane below, in one match, end to end, without seams.</p>
+          <span class="chip" data-status="progress">In progress</span>
+        </li>
+        <li data-reveal>
+          <h2>Best multi-agent orchestration</h2>
+          <p>Five agents with typed handoffs and shared match state. Knock one out mid-match and the broadcast keeps going.</p>
+          <span class="chip" data-status="done">Running offline</span>
+        </li>
+        <li data-reveal>
+          <h2>Best enterprise solution</h2>
+          <p>An audit trail for every claim, from claim to events to verdict, reviewable after the match. Costs governed under a $100 ceiling.</p>
+          <span class="chip" data-status="progress">Audit trail built</span>
+        </li>
+        <li data-reveal>
+          <h2>Best use of Microsoft Foundry</h2>
+          <p>Agents built, hosted and orchestrated in Foundry, with a cheaper model for detection and a stronger one for narrative.</p>
+          <span class="chip" data-status="next">Next</span>
+        </li>
+        <li data-reveal>
+          <h2>Best Azure cloud-native integration</h2>
+          <p>Event-driven from end to end: an event stream into an agent pipeline on Container Apps, out to an overlay cue stream. One command deploys it.</p>
+          <span class="chip" data-status="planned">Planned</span>
+        </li>
+      </ol>
+      <p class="aside">The sixth award, second place overall, is the same build.</p>
+
+      <h2 class="section-title" data-reveal>Ten days, six phases</h2>
+      <ol class="timeline">
+        <li data-status="done" data-reveal><time>Oct 17–19</time><strong>Groundwork</strong><span>The field studied, the name chosen, a synthetic match generator calibrated over 100 seeds.</span></li>
+        <li data-status="progress" data-reveal><time>Oct 18–20</time><strong>Skeleton</strong><span>All five agents run a match end to end with offline backends, tested on every push.</span></li>
+        <li data-status="next" data-reveal><time>Oct 21–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
+        <li data-status="planned" data-reveal><time>Oct 24–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, Urdu and Arabic, automated recaps, the cost meter.</span></li>
+        <li data-status="planned" data-reveal><time>Oct 26</time><strong>Ship kit</strong><span>The 110-second video, the README, the repo made public.</span></li>
+        <li data-status="planned" data-reveal><time>Oct 27</time><strong>Submit</strong><span>A day early, never on deadline day.</span></li>
+      </ol>
+
+      <blockquote class="pledge" data-reveal>
+        <p>If the core loop can't be demonstrated end to end by October 24, we'll narrow this declaration in public, to the two lanes we can defend. A narrower claim we can hold beats a sweep we can't.</p>
+      </blockquote>
+
+      <a class="beyond" href="#/roadmap" data-reveal>
+        <span>Beyond the hackathon</span>
+        <strong>The road to an AI fourth official</strong>
+      </a>
+    </section>
+
+    <!-- ============ 03 HOW IT WORKS ============ -->
+    <section class="page wrap" data-page="how" data-title="How it works" data-summary="Five agents, a hot path and a warm path" aria-labelledby="how-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">03</span>
+        <h1 id="how-title" tabindex="-1">How a claim gets on air</h1>
+        <p class="lede">Every event takes the hot path: fast, deterministic, no language model. Each alert then takes the warm path, where one agent writes, another checks, and nothing airs until it passes.</p>
+      </header>
+
+      <figure class="diagram" data-reveal>
+        <div class="diagram-scroll">
+          <svg viewBox="0 -30 1000 340" role="img" aria-labelledby="diagram-caption" data-diagram>
+            <g class="d-edges">
+              <path d="M160 72H204" marker-end="url(#arrow)"/>
+              <path d="M360 72H414" marker-end="url(#arrow)"/>
+              <path d="M570 72H624" marker-end="url(#arrow)"/>
+              <path class="d-verified" d="M780 72H834" marker-end="url(#arrow)"/>
+              <path class="d-verified" d="M915 104V224" marker-end="url(#arrow)"/>
+              <path class="d-reject" d="M705 40C705-6 495-6 495 36" marker-end="url(#arrow)"/>
+              <path class="d-super" d="M285 230V108M495 230V108M705 230V108"/>
+              <path class="d-fallback" d="M790 262H834" marker-end="url(#arrow)"/>
+            </g>
+            <g class="d-labels">
+              <text x="387" y="62">alert</text>
+              <text x="597" y="62">claim</text>
+              <text x="810" y="30" class="d-gold">verified</text>
+              <text x="600" y="-12" class="d-red">rejected: rewrite</text>
+              <text x="285" y="164" class="d-lime">Hot path: every event</text>
+              <text x="600" y="164" class="d-gold">Warm path: one run per alert</text>
+            </g>
+            <g class="d-packets">
+              <circle r="4.5" class="p-lime"><animateMotion dur="0.9s" repeatCount="indefinite" path="M160 72H360"/></circle>
+              <circle r="4.5" class="p-lime"><animateMotion dur="0.9s" begin="0.45s" repeatCount="indefinite" path="M160 72H360"/></circle>
+              <circle r="5.5" class="p-lime"><animateMotion dur="2.6s" repeatCount="indefinite" path="M360 72H630"/></circle>
+              <circle r="5.5" class="p-red"><animateMotion dur="2s" begin="1.3s" repeatCount="indefinite" path="M705 40C705-6 495-6 495 36"/></circle>
+              <circle r="5.5" class="p-gold"><animateMotion dur="1.8s" begin="0.6s" repeatCount="indefinite" path="M780 72H915V230"/></circle>
+            </g>
+            <g class="d-nodes">
+              <g><rect x="10" y="40" width="150" height="64" rx="10"/><text x="85" y="68">Match events</text><text x="85" y="88" class="d-sub">synthetic stream</text></g>
+              <g><rect x="210" y="40" width="150" height="64" rx="10"/><text x="285" y="68">Scout</text><text x="285" y="88" class="d-sub">detects, no LLM</text></g>
+              <g><rect x="420" y="40" width="150" height="64" rx="10"/><text x="495" y="68">Narrator</text><text x="495" y="88" class="d-sub">drafts and cites</text></g>
+              <g class="d-critic"><rect x="630" y="40" width="150" height="64" rx="10"/><text x="705" y="68">Critic</text><text x="705" y="88" class="d-sub">recomputes, rules</text></g>
+              <g><rect x="840" y="40" width="150" height="64" rx="10"/><text x="915" y="68">Localizer</text><text x="915" y="88" class="d-sub">casual or analyst</text></g>
+              <g class="d-out"><rect x="840" y="230" width="150" height="64" rx="10"/><text x="915" y="258">Overlay cues</text><text x="915" y="278" class="d-sub">to the broadcast</text></g>
+              <g class="d-orch"><rect x="10" y="230" width="780" height="64" rx="10"/><text x="400" y="258">Orchestrator</text><text x="400" y="278" class="d-sub">supervises the line: retries once, falls back to detection-only cues, announces recovery</text></g>
+            </g>
+          </svg>
+        </div>
+        <figcaption id="diagram-caption">The five agents. Events stream through the Scout; each alert goes from the Narrator to the Critic, back for a rewrite if it fails, and on to the Localizer when it passes. The Orchestrator supervises the whole line.</figcaption>
+      </figure>
+
+      <h2 class="section-title" data-reveal>One claim, followed all the way</h2>
+      <p class="section-lede" data-reveal>The claim from the front page, through each step of synthetic match seed 7.</p>
+      <ol class="steps">
+        <li class="step" data-reveal>
+          <div class="step-copy">
+            <h3>Spot</h3>
+            <p>The Scout reads every event as it arrives and flags goals, big chances and swings in momentum.</p>
+          </div>
+          <div class="example" data-example="spot"></div>
+        </li>
+        <li class="step" data-reveal>
+          <div class="step-copy">
+            <h3>Write</h3>
+            <p>The Narrator drafts the line for air and cites the event behind every fact in it.</p>
+          </div>
+          <div class="example" data-example="write"></div>
+        </li>
+        <li class="step" data-reveal>
+          <div class="step-copy">
+            <h3>Check</h3>
+            <p>The Critic recomputes each number from the raw events, with the same formulas the Scout uses. A wrong number, a missing citation or an event from the future sends the claim back, up to three attempts.</p>
+          </div>
+          <div class="example" data-example="check"></div>
+        </li>
+        <li class="step" data-reveal>
+          <div class="step-copy">
+            <h3>Air</h3>
+            <p>The Localizer turns the verified claim into an on-screen cue for casual fans or analysts. A claim that never passes never airs.</p>
+          </div>
+          <div class="example" data-example="air"></div>
+        </li>
       </ol>
     </section>
 
-    <section class="data wrap" id="data" aria-labelledby="data-title">
-      <h2 id="data-title">Synthetic by design</h2>
-      <div class="data-copy">
-        <p>Every match is generated from a seed: invented clubs, invented players and realistic volumes, about a thousand passes, 29 shots and three goals a match on average. The same seed always replays the same match, so every claim on this page can be reproduced.</p>
+    <!-- ============ 04 RECOVERY ============ -->
+    <section class="page wrap" data-page="recovery" data-title="When an agent fails" data-summary="The broadcast never goes dark" aria-labelledby="recovery-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">04</span>
+        <h1 id="recovery-title" tabindex="-1">When an agent fails, the broadcast keeps going</h1>
+        <p class="lede">The Orchestrator supervises the line. If the Narrator or Critic stops responding, it retries once. If the agent is still down, viewers get detection-only cues, marked as unverified, and the broadcast says when full service is back.</p>
+      </header>
+
+      <figure class="signal" data-reveal>
+        <svg viewBox="0 0 1000 150" role="img" aria-labelledby="signal-caption" data-signal></svg>
+        <figcaption id="signal-caption">The cue stream through a failure: full service, then detection-only cues while the Narrator is down, then recovery. The line never breaks.</figcaption>
+      </figure>
+
+      <ol class="states" aria-label="Service states">
+        <li data-state="full" data-reveal><strong>Full service</strong><span>Every cue verified by the Critic</span></li>
+        <li data-state="degraded" data-reveal><strong>Detection only</strong><span>Cues keep airing, marked unverified</span></li>
+        <li data-state="full" data-reveal><strong>Recovered</strong><span>Announced on air, verification resumes</span></li>
+      </ol>
+      <p class="aside" data-reveal>A test knocks the Narrator out four times in a row mid-match and checks that the cues never stop.</p>
+    </section>
+
+    <!-- ============ 05 DATA ============ -->
+    <section class="page wrap" data-page="data" data-title="Synthetic by design" data-summary="Invented clubs, real volumes, every match reproducible" aria-labelledby="data-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">05</span>
+        <h1 id="data-title" tabindex="-1">Synthetic by design</h1>
+        <p class="lede">Every match is generated from a seed: invented clubs, invented players and realistic volumes, about a thousand passes, 29 shots and three goals a match on average. The same seed always replays the same match, so every claim on this site can be reproduced.</p>
+      </header>
+
+      <dl class="stats" data-stats data-reveal></dl>
+
+      <figure class="shotmap" data-reveal>
+        <div class="shotmap-head" data-shotmap-head></div>
+        <svg viewBox="-3 -3 111 74" role="img" aria-labelledby="shotmap-caption" data-shotmap></svg>
+        <figcaption id="shotmap-caption" data-shotmap-caption>Every shot in synthetic match seed 7. Bigger circles are better chances; filled circles are goals.</figcaption>
+      </figure>
+
+      <div class="replay" data-reveal>
+        <p>Replay this match yourself:</p>
         <pre><code>python -m court run --seed 7</code></pre>
       </div>
     </section>
 
+    <!-- ============ 06 WHY ============ -->
+    <section class="page wrap" data-page="why" data-title="Why it matters" data-summary="Trust is the product" aria-labelledby="why-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">06</span>
+        <h1 id="why-title" tabindex="-1">Trust is the product</h1>
+        <p class="lede">A model can already write commentary. The open question is whether anyone can rely on it, live, with millions watching. <span data-product-name></span> is built around that question.</p>
+      </header>
+
+      <blockquote class="thesis" data-reveal>
+        <p>“We will see whether you have told the truth.”</p>
+        <footer>King Solomon to the hoopoe, Surah An-Naml 27:27. <a href="#/name">Why that line is the name</a></footer>
+      </blockquote>
+
+      <ol class="reasons">
+        <li data-reveal><h2>Nothing unverified goes to air</h2><p>Broadcasters answer for every word on screen. Each claim carries its own audit trail: the events behind it, the check it passed and the attempt it took.</p></li>
+        <li data-reveal><h2>The model writes, the evidence decides</h2><p>We don't ask the model to be careful. We check its work with the same formulas the Scout uses, and refuse anything that doesn't add up.</p></li>
+        <li data-reveal><h2>Commentary in the fan's own language</h2><p>Urdu and Arabic are part of the plan from the start, at native register, and every string is reviewed by a native speaker before it ships.</p></li>
+        <li data-reveal><h2>Failure is designed in</h2><p>Models will be slow, rate-limited or down mid-match. The system degrades, says so on air and recovers, instead of falling silent.</p></li>
+        <li data-reveal><h2>Built in the open</h2><p>The goals are declared on this site before the deadline, and the code goes public with the entry. Judge the work against the promise.</p></li>
+      </ol>
+    </section>
+
+    <!-- ============ 07 ROADMAP ============ -->
+    <section class="page wrap" data-page="roadmap" data-title="Onwards & upwards" data-summary="From checking claims to an AI fourth official" aria-labelledby="roadmap-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">07</span>
+        <h1 id="roadmap-title" tabindex="-1">Onwards &amp; upwards</h1>
+        <p class="lede">The hackathon is stage one. <span data-product-name></span> keeps going after it, toward an AI fourth official that sits beside the referee team.</p>
+      </header>
+
+      <div class="north-star" data-reveal>
+        <svg class="star-crest crest-art" viewBox="36 12 168 168" aria-hidden="true">
+          <g transform="translate(120 150)">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+          </g>
+        </svg>
+        <div>
+          <h2>The north star: the fourth official</h2>
+          <p>An official that watches every moment and judges calls in a blink, at the strictness the competition chooses. It shows the evidence for every decision and explains it to the referee, the broadcast and the crowd, each in their own language. It advises. The human referee decides.</p>
+        </div>
+      </div>
+
+      <ol class="stairs">
+        <li data-stage="1" data-reveal>
+          <span class="chip" data-status="progress">In progress</span>
+          <h2>The court of claims</h2>
+          <time>The hackathon, October 2026</time>
+          <p>Commentary that proves every claim. Five agents, a Critic that refuses what it can't verify, and a broadcast that survives failure.</p>
+          <p class="gate"><strong>Bridge:</strong> a “Ref's call” cue, if time allows. The Scout flags a foul, the Narrator states the likely decision, the Critic checks it at a chosen strictness.</p>
+        </li>
+        <li data-stage="2" data-reveal>
+          <span class="chip" data-status="next">Next</span>
+          <h2>The decision explainer</h2>
+          <time>Late 2026 into 2027</time>
+          <p>When the referee makes a call, <span data-product-name></span> explains it to the crowd and the viewers, with the evidence and the Law it rests on, in their language.</p>
+          <p class="gate"><strong>Gate:</strong> agreement with ground-truth decisions measured over many seeds, and explanations signed off by a referee panel.</p>
+        </li>
+        <li data-stage="3" data-reveal>
+          <span class="chip" data-status="planned">Planned</span>
+          <h2>Perception</h2>
+          <time>2027</time>
+          <p>The Scout gets eyes: fouls classified from multiple camera angles and from player tracking, with every prediction citing its frames.</p>
+          <p class="gate"><strong>Gate:</strong> matching published results on a public benchmark, with evidence attached to every call.</p>
+        </li>
+        <li data-stage="4" data-reveal>
+          <span class="chip" data-status="star">North star</span>
+          <h2>The fourth official</h2>
+          <time>Beyond</time>
+          <p>Real-time advice to the referee team, faster than a video review takes today. Flashpoint predictions, a published strictness spectrum, and announcements the whole stadium understands.</p>
+          <p class="gate"><strong>Path:</strong> simulation and esports first, then grassroots football, then professional trials inside the game's own rules.</p>
+        </li>
+      </ol>
+
+      <h2 class="section-title" data-reveal>What holds at every stage</h2>
+      <ul class="principles">
+        <li data-reveal><strong>Evidence before verdict.</strong> No evidence, no call.</li>
+        <li data-reveal><strong>The human decides.</strong> <span data-product-name></span> advises and explains, never overrules.</li>
+        <li data-reveal><strong>Strictness is a setting.</strong> The same incident gets the same call.</li>
+        <li data-reveal><strong>The Laws come first.</strong> Encoded as rules where they can be; judgment is flagged as judgment.</li>
+        <li data-reveal><strong>Explain to everyone.</strong> Referee, broadcast and crowd, each at their own depth.</li>
+        <li data-reveal><strong>Never go dark.</strong> Degrade, announce, recover.</li>
+      </ul>
+    </section>
+
+    <!-- ============ 08 THE NAME ============ -->
     <!-- Non-English strings (lang="ur", lang="ar") are marked data-owner-review: the owner signs them off. -->
-    <section class="name wrap" id="name" aria-labelledby="name-title">
+    <section class="page name wrap" data-page="name" data-title="The name" data-summary="The messenger who came back with proof" aria-labelledby="name-title">
       <div class="name-head">
         <div class="name-copy">
           <p class="nastaliq" lang="ur" dir="rtl" data-owner-review>ہدہد</p>
           <p class="gloss"><i>hudhud</i>, the hoopoe, in Urdu, Persian and Arabic</p>
-          <h2 id="name-title">Named for the messenger who came back with proof</h2>
+          <h1 id="name-title" tabindex="-1">Named for the messenger who came back with proof</h1>
           <p class="lede"><span data-product-name></span> is the hoopoe's name. The bird carries news through some of the oldest stories in those languages, and in the best known, no one acts on its news until it has been checked.</p>
         </div>
         <figure class="crest">
-          <svg viewBox="-30 0 300 206" role="img" aria-labelledby="crest-caption">
-            <defs>
-              <path id="f78" d="M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z"/>
-              <path id="f96" d="M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z"/>
-              <path id="f112" d="M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z"/>
-            </defs>
+          <svg class="crest-art" viewBox="-30 0 300 206" role="img" aria-labelledby="crest-caption">
             <g transform="translate(120 150)">
-              <g class="feather"><use href="#f78" transform="rotate(-52)"/><line x1="-9.4" x2="9.4" y1="-60.8" y2="-60.8" transform="rotate(-52)"/></g>
-              <g class="feather"><use href="#f96" transform="rotate(-26)"/><line x1="-9.4" x2="9.4" y1="-74.9" y2="-74.9" transform="rotate(-26)"/></g>
-              <g class="feather feather-critic"><use href="#f112"/><line x1="-10.1" x2="10.1" y1="-87.4" y2="-87.4"/></g>
-              <g class="feather"><use href="#f96" transform="rotate(26)"/><line x1="-9.4" x2="9.4" y1="-74.9" y2="-74.9" transform="rotate(26)"/></g>
-              <g class="feather"><use href="#f78" transform="rotate(52)"/><line x1="-9.4" x2="9.4" y1="-60.8" y2="-60.8" transform="rotate(52)"/></g>
+              <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/><line x1="-9.4" x2="9.4" y1="-60.8" y2="-60.8"/></g>
+              <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/><line x1="-9.4" x2="9.4" y1="-74.9" y2="-74.9"/></g>
+              <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/><line x1="-10.1" x2="10.1" y1="-87.4" y2="-87.4"/></g>
+              <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/><line x1="-9.4" x2="9.4" y1="-74.9" y2="-74.9"/></g>
+              <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/><line x1="-9.4" x2="9.4" y1="-60.8" y2="-60.8"/></g>
             </g>
             <g class="crest-labels" aria-hidden="true">
               <text x="52" y="102" text-anchor="end">Scout</text>
@@ -137,8 +507,8 @@
       </div>
 
       <div class="readings">
-        <article class="reading reading-wide">
-          <h3>Sure news</h3>
+        <article class="reading reading-wide" data-reveal>
+          <h2>Sure news</h2>
           <p class="source">The Quran, Surah An-Naml 27:20–28</p>
           <p>King Solomon notices the hoopoe is missing and demands a clear reason for its absence. It returns from Sheba with news it calls certain. Solomon doesn't take its word for it.</p>
           <div class="ayat">
@@ -153,33 +523,108 @@
           </div>
           <p>He tests the report before he acts on it. That is the Critic's job: no claim reaches the screen until it has been checked against the match events. The hoopoe reported to a court, and so do the agents, which is why the code is called <code>court</code>.</p>
         </article>
-        <article class="reading">
-          <h3>The guide</h3>
+        <article class="reading" data-reveal>
+          <h2>The guide</h2>
           <p class="source">Farid ud-Din Attar, <i>The Conference of the Birds</i>, 12th century</p>
           <p>In Attar's Persian poem the hoopoe, once Solomon's messenger, leads the birds of the world in search of the Simurgh, their king. Thirty survive the journey and discover that <i>si murgh</i> means “thirty birds”: together, they are what they were looking for. The agents work the same way. None of them sees the whole match, together they do, and the Orchestrator leads.</p>
         </article>
-        <article class="reading">
-          <h3>Heads-up display</h3>
+        <article class="reading" data-reveal>
+          <h2>Heads-up display</h2>
           <p class="source">Broadcast English</p>
           <p>A HUD is a heads-up display, the layer of graphics over a live picture. That's what <span data-product-name></span> makes: verified cues, timed to the match and ready to overlay.</p>
         </article>
-        <article class="reading">
-          <h3>Five feathers</h3>
+        <article class="reading" data-reveal>
+          <h2>Five feathers</h2>
           <p class="source">The mark</p>
           <p>The hoopoe's crest fans open like a broadcast signal, and the mark gives it one feather per agent. The name says itself twice, hud-hud, two beats like a chant from the stands. Written short, it's <span data-product-mark></span>: the display, squared.</p>
         </article>
       </div>
 
-      <p class="kin">Every culture has a messenger that brings back the truth. Odin's ravens, Huginn and Muninn, fly over the world each day and report what they saw. Noah's dove returns with an olive leaf, proof in its beak that the flood is going down. Hermes carries the Greek gods' messages on winged sandals. In Urdu, Persian and Arabic, the messenger is the hudhud.</p>
+      <p class="kin" data-reveal>Every culture has a messenger that brings back the truth. Odin's ravens, Huginn and Muninn, fly over the world each day and report what they saw. Noah's dove returns with an olive leaf, proof in its beak that the flood is going down. Hermes carries the Greek gods' messages on winged sandals. In Urdu, Persian and Arabic, the messenger is the hudhud.</p>
+    </section>
+
+    <!-- ============ 09 WHO ============ -->
+    <section class="page wrap" data-page="who" data-title="Who's building it" data-summary="One engineer, from Karachi" aria-labelledby="who-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">09</span>
+        <h1 id="who-title" tabindex="-1">Built by one engineer, from Karachi</h1>
+      </header>
+
+      <div class="profile" data-reveal>
+        <div class="monogram" aria-hidden="true"><span>MAT</span></div>
+        <div class="profile-copy">
+          <p class="profile-name">Muhammad Abdullah Tariq</p>
+          <p class="profile-role">Principal Software Engineer (DevOps), CISSP. Karachi, Pakistan.</p>
+          <p>I've spent seven years on cloud architecture, DevSecOps and migrations across 23 sites around the world. I grew up in Kuwait and speak Arabic, which is why <span data-product-name></span> is built to speak Urdu and Arabic as well as English. I'm building it alone: one engineer, five agents, ten days, and a road that goes well past the deadline.</p>
+        </div>
+      </div>
+
+      <div class="tape" data-reveal>
+        <h2>Studying the tape</h2>
+        <p>The greatest footballers and coaches study tape on the sides they're about to face, and while building this I studied the competition the same way. I read the other entries for what each one promised, how it framed the problem and what it chose to show. Seeing the field side by side showed me which ideas were well covered and where the open ground was. That study shaped this build's two headline features: a Critic that rejects unevidenced claims live, on screen, and an Orchestrator that recovers from agent failure without dropping the broadcast. My notes stay private out of respect for the other entrants. What I learned from them is in the work.</p>
+      </div>
+
+      <h2 class="section-title" data-reveal>Find me</h2>
+      <ul class="links" data-reveal>
+        <li><a href="https://matx104.com.pk/" rel="me">matx104.com.pk</a></li>
+        <li><a href="https://github.com/matx104" rel="me">GitHub</a></li>
+        <li><a href="https://linkedin.com/in/matx104" rel="me">LinkedIn</a></li>
+        <li><a href="https://x.com/MATX104" rel="me">X</a></li>
+        <li><a href="https://medium.com/@matx104" rel="me">Medium</a></li>
+        <li><a href="https://www.youtube.com/@matx104" rel="me">YouTube</a></li>
+        <li><a href="https://www.credly.com/users/matx104" rel="me">Credly</a></li>
+        <li><a href="https://linktr.ee/matx104" rel="me">Everything else</a></li>
+      </ul>
+
+      <h2 class="section-title" data-reveal>Other things I've built</h2>
+      <ul class="projects">
+        <li data-reveal><a href="https://sociris.com/"><strong>SOCIRIS</strong><span>An AI-powered security intelligence platform: event streams in, severity-ranked alerts out.</span></a></li>
+        <li data-reveal><a href="https://matx104.github.io/the-sovereign-court/"><strong>The Sovereign Court</strong><span>Ten minds, two wings, one throne: a multi-agent council with adversarial review.</span></a></li>
+        <li data-reveal><a href="https://matx104.github.io/AETHERIX/"><strong>AETHERIX</strong><span>An interplanetary delay-tolerant networking platform.</span></a></li>
+        <li data-reveal><a href="https://matx104.github.io/OMNI-GRC/"><strong>OMNI-GRC</strong><span>AI-powered governance, risk and compliance in one platform.</span></a></li>
+        <li data-reveal><a href="https://matx104.github.io/ARENA/"><strong>ARENA</strong><span>A modular live game platform: real-time rooms, a host console and live scoring.</span></a></li>
+        <li data-reveal><a href="https://matx104.github.io/Phish-Wiz/"><strong>Phish-Wiz</strong><span>An open-source human-risk platform.</span></a></li>
+        <li data-reveal><a href="https://matx104.github.io/NAFA-BOX/"><strong>NAFA-BOX</strong><span>A study library: searchable transcripts synced to video.</span></a></li>
+        <li data-reveal><a href="https://matx104.github.io/qutub/"><strong>Qutub</strong><span>The pole you navigate by: a life-journey OS where progress needs proof.</span></a></li>
+      </ul>
+
+      <div class="reach" data-reveal>
+        <h2>Get in touch</h2>
+        <p>Questions about <span data-product-name></span>, the fourth-official roadmap or working together: message me on LinkedIn or X, or book a call.</p>
+        <div class="actions">
+          <a class="button" href="https://linkedin.com/in/matx104">Message me on LinkedIn</a>
+          <a class="button button-quiet" href="https://topmate.io/matx104">Book a call</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NOT FOUND ============ -->
+    <section class="page page-missing wrap" data-page="missing" data-title="Page not found" aria-labelledby="missing-title">
+      <header class="page-head">
+        <h1 id="missing-title" tabindex="-1">No page here</h1>
+        <p class="lede">There's no page at <code data-missing-path></code>. Pick a chapter from the menu, or start from the beginning.</p>
+      </header>
+      <a class="button" href="#/">Go to the home page</a>
     </section>
   </main>
 
-  <footer class="wrap">
-    <p><span data-product-name></span> is being built for the Inside the Game developer hackathon, October 2026. <a data-repo-link href="#">Source on GitHub</a>.</p>
+  <footer class="foot">
+    <div class="wrap">
+      <nav class="pager" aria-label="Previous and next chapter" data-pager></nav>
+      <p class="credit"><span data-product-name></span> is being built for the Inside the Game developer hackathon, October 2026, and keeps going after it. Every club and player on this site is invented.
+        <span data-when-repo="public"><a data-repo-link href="#">Source on GitHub</a>.</span>
+        <span data-when-repo="private">The source goes public when the entry is submitted.</span>
+      </p>
+    </div>
   </footer>
+
+  <div class="sting" aria-hidden="true"><span></span><img src="assets/crest.svg" alt=""></div>
 
   <script src="config.js"></script>
   <script src="data/chain.js"></script>
+  <script src="data/match.js"></script>
+  <script src="assets/router.js"></script>
   <script src="assets/site.js"></script>
+  <script src="assets/field.js"></script>
 </body>
 </html>

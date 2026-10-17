@@ -10,6 +10,7 @@ setup:  ## create .venv and install both workspace packages (editable)
 
 test:
 	$(BIN)/pytest
+	node --test tests/site/*.test.cjs
 
 lint:
 	$(BIN)/ruff check . && $(BIN)/ruff format --check .
@@ -23,7 +24,7 @@ schema:  ## regenerate the committed JSON Schema after editing models.py
 demo:  ## one synthetic match, end to end, in the console
 	$(BIN)/python -m court run --seed 7
 
-site-data:  ## regenerate the showcase hero (a real claim, its rejected draft, its evidence)
+site-data:  ## regenerate the showcase data: the hero claim (chain.js) and the match (match.js)
 	$(BIN)/python scripts/site_sample.py
 
 site:  ## serve the showcase site at http://localhost:8000
