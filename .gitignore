@@ -23,5 +23,9 @@ Thumbs.db
 .vscode/
 
 # private scouting notes: studied locally, never published
+.playwright-mcp/
 inspiration.md
 inspiration-projects.json
+
+# local-only review page for the scouting list: never committed, never deployed
+site/review/
