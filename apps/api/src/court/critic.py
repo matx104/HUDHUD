@@ -16,7 +16,7 @@ from collections.abc import Callable, Mapping, Sequence
 from match_events import MatchEvent, Shot, ShotOutcome
 
 from .contracts import AlertKind, Claim, Reason, RejectionCode, Verdict
-from .metrics import measure
+from .metrics import is_final_third_pass, measure
 from .state import MatchState
 
 # An evidence rule inspects the (valid) cited events and returns a failure detail,
@@ -43,20 +43,51 @@ def momentum_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
     """What evidence proves that one side has seized momentum?
 
     `cited` holds the citations that passed the earlier checks: real events, from before
-    the claim, in the same period and recent. The Scout cites the claiming side's shots
-    and completed passes into the final third from the claim's window, up to ten. The
-    claim's numbers are recomputed separately, so this rule decides only whether the
-    cited events are enough to stand on. Return None if they are, else a one-line reason.
+    the claim, in the same period and recent. The claim's numbers are recomputed
+    separately, so this rule decides only whether the cited events are enough to stand on:
+
+    - every one is the side's own attacking play (a shot, or a completed pass into the
+      final third): the other side's events, or a square pass at the back, prove nothing
+      about who is on top, and a viewer opening the evidence must see only support
+    - every one falls inside the stretch of play the claim describes: an attack from
+      before the spell began is not part of it
+    - there are at least MOMENTUM_MIN_ACTIONS of them: one chance is a moment, not a spell
+
+    It doesn't ask the evidence to be spread out. On seeds 0-99 the Scout's calls whose
+    actions came in one tight burst were real swings as often as the rest (a side pinning
+    its opponent in attacks in bursts), so a spread test would cost true calls for nothing.
     """
-    # TODO(human): decide what a momentum claim must cite, then register this rule in
-    # EVIDENCE_RULES below. Until then momentum claims fail closed with NO_RULE, and
-    # tests/test_momentum_rule.py skips; it switches on once the rule is registered.
-    raise NotImplementedError
+    windows = [a.window for a in claim.assertions if a.window is not None]
+    if not windows:
+        return "a momentum claim must say which stretch of play it covers"
+    spell = max(windows, key=lambda w: w.end_t)
+    for event in cited:
+        if getattr(event, "team", None) != claim.team or not _attacking(event):
+            return (
+                f"{event.id} is not {claim.team}'s attacking play; momentum stands on the "
+                "side's own shots and passes into the final third"
+            )
+        if not spell.start_t <= event.t <= spell.end_t:
+            return f"{event.id} came before the spell the claim describes"
+    if len(cited) < MOMENTUM_MIN_ACTIONS:
+        return (
+            f"momentum needs at least {MOMENTUM_MIN_ACTIONS} attacking actions from the spell; "
+            f"the claim cites {len(cited)}"
+        )
+    return None
+
+
+MOMENTUM_MIN_ACTIONS = 3  # the Scout's min_events: it never raises a swing it can't cite
+
+
+def _attacking(event: MatchEvent) -> bool:
+    return isinstance(event, Shot) or is_final_third_pass(event)
 
 
 EVIDENCE_RULES: Mapping[AlertKind, EvidenceRule] = {
     AlertKind.GOAL: goal_rule,
     AlertKind.BIG_CHANCE: big_chance_rule,
+    AlertKind.MOMENTUM_SWING: momentum_rule,
 }
 
 TOLERANCE = {"xg": 0.011, "shot_xg": 0.011}  # rounding slack; counts must match exactly

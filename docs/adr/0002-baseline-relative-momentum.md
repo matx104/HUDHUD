@@ -48,7 +48,11 @@ the window in absolute terms. Scored on seeds 60–99, 64% of its calls were noi
 - About one and a half momentum calls a match, most of them real. Seed 7, the showcase match, has
   none; **seed 21** (a 2-2 draw, two calls, both real) is the momentum demo match and the test fixture.
 - `tests/test_evals.py` keeps a precision floor on seeds 60–79, so detection can't quietly regress.
-- Momentum claims still fail closed until the Critic's evidence rule (`critic.momentum_rule`,
-  TODO(human)) is registered; `tests/test_momentum_rule.py` switches on when it is.
+- **The Critic's momentum evidence rule** (`critic.momentum_rule`, registered 2026-10-18): every
+  cited event must be the side's own attacking play (a shot, or a completed pass into the final
+  third), inside the spell the claim describes, and there must be at least three. The rule doesn't
+  ask the evidence to be spread out: on seeds 0–99, calls whose actions came in one tight burst
+  were real swings as often as the rest, so a spread test would cost true calls for nothing. First
+  live match with the rule: both of seed 21's momentum calls aired, written by `gpt-5-mini`.
 - The spreads and threshold are calibrated on our own generator. Real match data would recalibrate
   them with the same harness; the method, not the constants, is the decision.

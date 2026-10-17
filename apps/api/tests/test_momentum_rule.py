@@ -1,21 +1,13 @@
-"""What the Critic's momentum evidence rule must do, whatever its details.
+"""What the Critic's momentum evidence rule must do: the Scout's calls air, and evidence
+that doesn't show this side on top in this spell is refused."""
 
-These switch on once `momentum_rule` is registered in EVIDENCE_RULES. Until then momentum
-claims fail closed with NO_RULE and the tests skip, so CI stays green.
-"""
-
-import pytest
-
-from court.contracts import AlertKind, Claim, RejectionCode
-from court.critic import EVIDENCE_RULES, Critic
+from court.contracts import AlertKind, Claim, RejectionCode, Window
+from court.critic import Critic
+from court.metrics import is_final_third_pass
 from court.narrator import TemplateNarrator
 from court.scout import Scout
 from court.state import MatchState
-from match_events import Pass
-
-pytestmark = pytest.mark.skipif(
-    AlertKind.MOMENTUM_SWING not in EVIDENCE_RULES, reason="critic.momentum_rule is TODO(human)"
-)
+from match_events import Pass, Shot
 
 
 def _reviewed(match, edit=lambda claim, state: claim):
@@ -60,4 +52,20 @@ def test_the_other_sides_events_do_not_prove_this_side_is_on_top(swing_match):
         return claim.model_copy(update={"citations": tuple(other[-10:])})
 
     for verdict in _reviewed(swing_match, theirs):
+        assert RejectionCode.INSUFFICIENT_EVIDENCE in _codes(verdict)
+
+
+def test_attacks_from_before_the_spell_are_not_part_of_it(swing_match):
+    def earlier(claim: Claim, state) -> Claim:
+        spell = max((a.window for a in claim.assertions if a.window), key=lambda w: w.end_t)
+        before = Window(period=claim.period, start_t=claim.t - 900, end_t=spell.start_t - 1)
+        old = [
+            e.id
+            for e in state.in_window(before)
+            if getattr(e, "team", None) == claim.team
+            and (isinstance(e, Shot) or is_final_third_pass(e))
+        ]
+        return claim.model_copy(update={"citations": (*old[-3:], *claim.citations)})
+
+    for verdict in _reviewed(swing_match, earlier):
         assert RejectionCode.INSUFFICIENT_EVIDENCE in _codes(verdict)
