@@ -35,6 +35,7 @@
 - [ ] **Narrator eval, "evaluation decides which model serves"** (Reactor 27536): `gpt-5-mini` vs `gpt-4.1-mini` on the same alerts; first-attempt Critic pass rate, grounding failures, latency, cost
 - [ ] **"What this data can't tell you"** on the site and in the UI: momentum precision, synthetic clubs and players, no video
 - [ ] **Counterattack and high-press alerts** (overview themes): transitions after a won tackle or interception, press efficiency from pressure events
+- [ ] **Realism report** (judging: "optimized synthetic data creation"): compare the generator's scorelines with real international results (goals per match, home-win and draw rates, scoreline frequencies). Source: the international results dataset by martj42 (Kaggle/GitHub, public domain), suggested by the Monarch 2026-10-18. **Benchmark only, never product data** (rules §4.7): downloaded locally with attribution, never committed; only our computed comparison is. Results-level only: it can't check event volumes
   - Copy bug seen in the seed-7 run: the momentum template pluralizes blindly ("1 box entries", "1 shots")
 - [ ] **Critic: the moat — adversarial verification.** Every claim must cite event evidence; rejections visible in UI with reasons; rewrite loop
 - [ ] Overlay cue stream: timed, machine-readable JSON (broadcast-renderer ready) — the platform's rendering-partner lane
