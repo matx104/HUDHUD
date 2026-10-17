@@ -44,7 +44,7 @@
 
 - [ ] README: pitch (what/stack/problem), architecture diagram, quickstart, evidence philosophy
 - [ ] **Video: 110 seconds, hard law** — 15s problem → 45s live demo → 30s Critic rejection (money shot) → 20s architecture + multilingual. No third-party trademarks/logos, no unlicensed music. Public URL (YouTube unlisted is fine — link must be public)
-- [ ] Repo goes **public**; showcase site if time allows (domain from Phase 0) — **scaffold started 2026-10-17:** `site/` with an evidence-chain hero from a real seed-7 run (CI drift-checked). `pages.yml` is manual-only until the repo is public: enable Pages (source: GitHub Actions) and add a push trigger at submission
+- [ ] Repo goes **public**; showcase site if time allows (domain from Phase 0) — **scaffold started 2026-10-17:** `site/` with an evidence-chain hero from a real seed-7 run (CI drift-checked). **Live 2026-10-17** at matx104.github.io/HUDHUD: Pages source = GitHub Actions, `pages.yml` deploys only `site/` on every push touching it (repo stays private until submission)
 - **Done when:** submission package complete per task.md checklist.
 
 ## Phase 5 — Submit (Oct 27)

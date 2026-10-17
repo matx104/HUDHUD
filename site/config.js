@@ -3,6 +3,6 @@
 window.SITE = {
   productName: "HUDHUD",
   productMark: "HUD²", // the short form: monogram, app icon
-  repoUrl: "https://github.com/matx104/pl-hackathon",
+  repoUrl: "https://github.com/matx104/HUDHUD",
   videoUrl: null, // the 110-second demo, once it has a public URL
 };

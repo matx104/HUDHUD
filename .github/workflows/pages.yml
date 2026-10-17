@@ -1,8 +1,11 @@
 name: pages
 
-# Manual only while the repo is private: a Pages site is public the moment it deploys.
-# At submission (plan.md Phase 4) enable Pages (source: GitHub Actions) and add a push trigger.
+# Pages source is "GitHub Actions": only site/ is published. A Pages site is public even while
+# the repo is private, so never switch the source back to a branch: that serves every tracked file.
 on:
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:

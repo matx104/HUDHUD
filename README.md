@@ -3,7 +3,7 @@
 > Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
 > AI match intelligence on synthetic football-realistic data. **Solo build.**
 
-**Status:** 🐣 Phase 1 skeleton: one synthetic match flows end to end through all five agents (offline backends), 48 tests green, CI on every push. Showcase site scaffolded (`site/`), not yet published. Pending: domain, Azure activation, Foundry-hosted LLM backends.
+**Status:** 🐣 Phase 1 skeleton: one synthetic match flows end to end through all five agents (offline backends), 48 tests green, CI on every push. Showcase site live at https://matx104.github.io/HUDHUD/ (only `site/` is published). Pending: domain, Azure activation, Foundry-hosted LLM backends.
 
 ## Quickstart
 
