@@ -5,9 +5,9 @@
 ## Phase 0 — Weekend intel (Oct 17–19, Monarch's Playwright session)
 
 - [ ] **WATCH: Reactor session "Build AI-powered soccer insights apps with AKS and ACA"** — <https://developer.microsoft.com/en-us/reactor/events/27536/> — aired Oct 14 (recording embedded on page), Brian Benz, part of the hackathon's own series. Reference architecture for deploying AI apps **and agents on AKS + ACA** with PL-inspired scenarios (play styles, counterattacks, performance patterns) — *"practical guidance attendees can extend into their hackathon projects."* This is Microsoft showing the Cloud-Native lane's expected shape — watch before architecture lock. Also check the **Series Page** link there for sibling episodes
-- [ ] Detail pass on the 18 HIGH-tier projects (inspiration.md list) — what they promise vs. what they show; update threat tiers — **BLOCKED 2026-10-17:** Playwright MCP needs Chrome (`/opt/google/chrome` missing) + Monarch's Microsoft login
+- [ ] Detail pass on the 18 HIGH-tier projects (inspiration.md list) — what they promise vs. what they show; update threat tiers — **DEFERRED 2026-10-17:** automated browsing stopped at the gallery sign-in. Monarch reviews the 18 by hand via the local-only review page `site/review/` (gitignored, never deployed; "Copy notes as Markdown" brings the notes back)
 - [ ] Sharpen the differentiation sentence (inspiration.md §Differentiation memo) against what the top 10 actually build — gated on the detail pass
-- [ ] Check platform Resources tab for a sample dataset / schema (if one exists, it replaces the generator in Phase 1) — **BLOCKED** (same login); generator built meanwhile, so a platform schema would become an adapter, not a rewrite
+- [ ] Check platform Resources tab for a sample dataset / schema (if one exists, it replaces the generator in Phase 1) — **DEFERRED** to the Monarch's manual pass; generator built meanwhile, so a platform schema would become an adapter, not a rewrite
 - [ ] Pick name from project-names.md + buy domain (re-run RDAP day-of; Cloudflare/Porkbun; cheap TLDs only) — RDAP re-verified 2026-10-17, shortlist unchanged; **awaiting Monarch's pick**
 - **Done when:** differentiation memo v2 written, name+domain owned.
 
@@ -25,6 +25,7 @@
   - **Eval finding (2026-10-17, seed 7):** only 1 of 5 momentum alerts overlaps a true spell. All three true spells were the away side's, yet 4 of the 5 alerts went to the stronger home side. The Scout reads *relative* dominance, so it reports a stronger team's baseline as momentum. Fix: baseline-relative (anomaly) detection, i.e. each side vs its own match-to-date rate (the SOCIRIS pattern). Score precision/recall against `GroundTruth.spells` over N seeds
 - [ ] Critic momentum evidence rule — `court/critic.py::momentum_rule` is a TODO(human); momentum claims fail closed (NO_RULE → spiked) until it's registered
 - [ ] Narrator: live tactical narrative + key-moment explainers (the "why", cited to events)
+  - Copy bug seen in the seed-7 run: the momentum template pluralizes blindly ("1 box entries", "1 shots")
 - [ ] **Critic: the moat — adversarial verification.** Every claim must cite event evidence; rejections visible in UI with reasons; rewrite loop
 - [ ] Overlay cue stream: timed, machine-readable JSON (broadcast-renderer ready) — the platform's rendering-partner lane
 - [ ] Personalization: analyst mode vs casual fan mode; club/player focus; preference drives both content AND depth
@@ -42,7 +43,7 @@
 
 - [ ] README: pitch (what/stack/problem), architecture diagram, quickstart, evidence philosophy
 - [ ] **Video: 110 seconds, hard law** — 15s problem → 45s live demo → 30s Critic rejection (money shot) → 20s architecture + multilingual. No third-party trademarks/logos, no unlicensed music. Public URL (YouTube unlisted is fine — link must be public)
-- [ ] Repo goes **public**; showcase site if time allows (domain from Phase 0)
+- [ ] Repo goes **public**; showcase site if time allows (domain from Phase 0) — **scaffold started 2026-10-17:** `site/` with an evidence-chain hero from a real seed-7 run (CI drift-checked). `pages.yml` is manual-only until the repo is public: enable Pages (source: GitHub Actions) and add a push trigger at submission
 - **Done when:** submission package complete per task.md checklist.
 
 ## Phase 5 — Submit (Oct 27)
