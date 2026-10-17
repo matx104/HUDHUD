@@ -23,8 +23,9 @@
 ## Phase 2 — Core build (Oct 21–23)
 
 - [ ] Scout: live pattern detection — momentum swings, chance quality (xG-style), pressure shifts, control-vs-chaos index; severity-ranked live alert feed
+  - [x] **Momentum, measured (2026-10-18, ADR 0002):** baseline-relative completion + final-third rate, held 3 min; scored against hidden ground truth by `make eval`. Sure-call operating point (Monarch): precision 62% / recall 26% on unseen seeds, vs 36% / 69% before. Momentum demo match: **seed 21**
   - **Eval finding (2026-10-17, seed 7):** only 1 of 5 momentum alerts overlaps a true spell. All three true spells were the away side's, yet 4 of the 5 alerts went to the stronger home side. The Scout reads *relative* dominance, so it reports a stronger team's baseline as momentum. Fix: baseline-relative (anomaly) detection, i.e. each side vs its own match-to-date rate (the SOCIRIS pattern). Score precision/recall against `GroundTruth.spells` over N seeds
-- [ ] Critic momentum evidence rule — `court/critic.py::momentum_rule` is a TODO(human); momentum claims fail closed (NO_RULE → spiked) until it's registered
+- [ ] Critic momentum evidence rule — `court/critic.py::momentum_rule` is a TODO(human); momentum claims fail closed (NO_RULE → spiked) until it's registered; `tests/test_momentum_rule.py` (3 tests, skipped until then) defines what it must do
 - [ ] Narrator: live tactical narrative + key-moment explainers (the "why", cited to events)
   - Copy bug seen in the seed-7 run: the momentum template pluralizes blindly ("1 box entries", "1 shots")
 - [ ] **Critic: the moat — adversarial verification.** Every claim must cite event evidence; rejections visible in UI with reasons; rewrite loop
