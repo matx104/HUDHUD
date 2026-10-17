@@ -67,7 +67,7 @@ Compose, on Azure Container Apps and on AKS. The UI shows which platform served 
 
 | His dashboard | HUDHUD |
 |---|---|
-| A "basic sanity and coherency check" on the model's JSON | An adversarial **Critic** that recomputes every number from raw events, rejects on screen and sends the claim back for a rewrite |
+| A grounding check that rejects any number the model writes that the tools didn't return (the repo shows it's stricter than the talk's "sanity check") | The same number check, plus an adversarial **Critic** that recomputes each assertion from raw events as of the claim's moment, rejects on screen and sends the claim back for a rewrite |
 | Q&A after the fact | Live: claims made *during* a match, checked against only the events that had happened yet (a citation from the future is rejected) |
 | Real open data; legality unclear to the presenter | **Synthetic by design**, as the rules require, with hidden ground truth that scores the Scout (`make eval`) |
 | One agent with tools | Five agents with typed handoffs, a hot and a warm path, and failure recovery that keeps the broadcast going |
@@ -106,6 +106,25 @@ From the presenter's public posts, three ideas that sharpen ours (`plan.md`):
 
 ## The second dataset he used
 
-He also used global development indicators for 1960–2025 (regions, income groups), mainly to map
-country names that changed over time. HUDHUD has no countries and no real teams, so it has no use
+He also used **Global Development Data (1960–2025)** by Yogesh Mishra on Kaggle (from the World
+Bank's World Development Indicators, CC BY 4.0), mainly for regions and income groups and to map
+country names that changed over time. The results data is **International football results from
+1872 to 2026** by Mart Jürisoo (Kaggle and GitHub, CC0). HUDHUD has no countries and no real teams, so it has no use
 here; it stays out, like the results data, which may only ever serve as a credited benchmark.
+
+## The reference repo (github.com/bbenz/football-results-dashboard, MIT; studied 2026-10-18)
+
+Read for ideas only; HUDHUD's code is its own (rules §4.6). What we take into the control room:
+
+- **Telemetry with keys off:** the Azure Monitor OpenTelemetry distro exports to Application
+  Insights with an Entra credential, the resource has local auth disabled, and prompts and
+  responses are never recorded. Agent Framework's spans (`invoke_agent`, `chat <model>`,
+  `execute_tool`) carry `gen_ai.*` token attributes into `dependencies.customDimensions`.
+- **App attributes on the agent span:** answer status, grounding result and estimated cost, so
+  one KQL query gives answers per day, the grounded share, p50/p95 latency and cost per answer.
+- **A query for hidden failure:** answers that should have been live but weren't. Ours: cues that
+  aired detection-only, and every `Degradation`.
+- **Evaluation with a decision rule agreed before the run:** gates on grounding, tool selection,
+  limitations and latency, several repeats per case because model output varies.
+- **Data attribution on the front page and in the README**, with authors and licenses, and the data
+  never redistributed.
