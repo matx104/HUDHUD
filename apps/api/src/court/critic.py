@@ -6,8 +6,11 @@ Checks, in order (all failures are collected so the UI can show every reason):
 3. cited events are fresh: same period and recent
 4. the claim kind's evidence rule is satisfied (unregistered kind -> refuse)
 5. every numeric assertion survives independent recomputation from raw events
+6. every number the text states is one the claim accounts for (its figures or assertions):
+   a model that invents a statistic is caught here, whatever else it got right
 """
 
+import re
 from collections.abc import Callable, Mapping, Sequence
 
 from match_events import MatchEvent, Shot, ShotOutcome
@@ -57,6 +60,8 @@ EVIDENCE_RULES: Mapping[AlertKind, EvidenceRule] = {
 }
 
 TOLERANCE = {"xg": 0.011, "shot_xg": 0.011}  # rounding slack; counts must match exactly
+# A number standing on its own: not part of an event id (e00599) or a longer number.
+NUMBER = re.compile(r"(?<![\w.])\d+(?:\.\d+)?")
 
 
 class Critic:
@@ -116,7 +121,20 @@ class Critic:
                     f"{assertion.team}, events show {shown}",
                 )
 
+        for number in _ungrounded(claim):
+            refuse(
+                RejectionCode.UNGROUNDED_NUMBER,
+                f"the text says {number}, which none of the claim's figures or assertions support",
+            )
+
         return Verdict(claim=claim, reasons=tuple(reasons))
+
+
+def _ungrounded(claim: Claim) -> list[str]:
+    """Numbers in the text that the claim's figures and assertions don't account for."""
+    known = [*claim.figures.values(), *(a.value for a in claim.assertions)]
+    stated = dict.fromkeys(NUMBER.findall(claim.text))
+    return [n for n in stated if not any(abs(float(n) - k) < 0.005 for k in known)]
 
 
 def _seq_of(event_id: str) -> int:

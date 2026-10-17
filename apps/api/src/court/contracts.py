@@ -83,6 +83,11 @@ class Claim(_Frozen):
     text: str
     citations: tuple[str, ...]
     assertions: tuple[Assertion, ...] = ()
+    figures: dict[str, float] = Field(
+        default_factory=dict,
+        description="Numbers the text may state, computed by code from events; the Critic "
+        "rejects any number in the text that is neither here nor in an assertion",
+    )
 
 
 class RejectionCode(StrEnum):
@@ -92,6 +97,7 @@ class RejectionCode(StrEnum):
     STALE_EVENT = "stale_event"
     ASSERTION_MISMATCH = "assertion_mismatch"
     INSUFFICIENT_EVIDENCE = "insufficient_evidence"
+    UNGROUNDED_NUMBER = "ungrounded_number"
     NO_RULE = "no_rule"
 
 

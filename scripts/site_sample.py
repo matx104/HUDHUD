@@ -12,28 +12,15 @@ import json
 from pathlib import Path
 
 from court.contracts import Cue, Output, RejectionNotice
+from court.describe import describe
 from court.localizer import Localizer
-from court.metrics import shot_distance, shot_xg
+from court.metrics import shot_xg
 from court.narrator import TemplateNarrator
 from court.orchestrator import run_match
-from match_events import MatchEvent, Pass, Shot, generate, minute_label
+from court.state import MatchState
+from match_events import Pass, Shot, generate, minute_label
 
 DATA = Path(__file__).resolve().parents[1] / "site" / "data"
-
-
-def _describe(event: MatchEvent, names: dict[str, str]) -> str:
-    match event:
-        case Shot():
-            where = "penalty" if event.situation == "penalty" else f"{shot_distance(event):.0f} m"
-            outcome = event.outcome.replace("_", " ")
-            return f"Shot by {names[event.player_id]}, {where}, {outcome}, xG {shot_xg(event):.2f}"
-        case Pass():
-            to = names[event.recipient_id]
-            return f"Pass from {names[event.player_id]} to {to}, {event.distance_m:.0f} m"
-        case _:
-            reason = getattr(event, "reason", None)
-            label = event.type.replace("_", " ").capitalize()
-            return f"{label} ({reason.replace('_', ' ')})" if reason else label
 
 
 async def build(seed: int, overreach: float) -> dict:
@@ -63,7 +50,7 @@ async def build(seed: int, overreach: float) -> dict:
     draft = first_drafts[aired.alert_id]
 
     by_id = {e.id: e for e in match.events}
-    names = {p.id: p.name for p in match.meta.players}
+    names = MatchState(match.meta)  # describes events with the players' names
     as_of = next(e.id for e in match.events if e.seq == draft.claim.as_of_seq)
     cited = sorted({*draft.claim.citations, *aired.evidence}, key=lambda i: by_id[i].seq)
     teams = (match.meta.home, match.meta.away)
@@ -83,7 +70,7 @@ async def build(seed: int, overreach: float) -> dict:
             {
                 "id": i,
                 "minute": minute_label(by_id[i].t, by_id[i].period),
-                "text": _describe(by_id[i], names),
+                "text": describe(by_id[i], names),
                 "after_claim": by_id[i].seq > draft.claim.as_of_seq,
             }
             for i in cited

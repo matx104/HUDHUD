@@ -121,3 +121,13 @@ def test_scouted_momentum_numbers_survive_recomputation(swing_match):
             assert verdict.approved, verdict.reasons
             checked += 1
     assert checked, "seed 21 should produce momentum swings"
+
+
+def test_a_number_the_claim_cannot_account_for_is_refused(goal_case):
+    state, alert = goal_case
+    claim = TemplateNarrator().draft(alert, state)
+    invented = claim.model_copy(update={"text": claim.text + " His 12th of the season."})
+    verdict = Critic().review(invented, state)
+    assert [r.code for r in verdict.reasons] == [RejectionCode.UNGROUNDED_NUMBER]
+    assert "12" in verdict.reasons[0].detail
+    assert Critic().review(claim, state).approved  # every number in the template line is grounded

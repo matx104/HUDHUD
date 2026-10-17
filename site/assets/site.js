@@ -26,6 +26,7 @@
     stale_event: "Cites events too old to support it",
     assertion_mismatch: "A number in it doesn't match the events",
     insufficient_evidence: "Not enough evidence for the claim",
+    ungrounded_number: "States a number nothing in the evidence supports",
     no_rule: "No rule yet for checking this kind of claim",
   };
   // Events the first draft cited before they had happened.

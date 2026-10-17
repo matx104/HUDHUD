@@ -1,11 +1,16 @@
 """Console runner.
 
-python -m court run --seed 7   # one synthetic match, end to end
-python -m court eval           # the Scout's momentum calls against hidden ground truth
+    python -m court run --seed 7                        # one synthetic match, end to end
+    python -m court run --seed 21 --narrator foundry    # the same, narrated by Foundry models
+    python -m court eval                                # momentum calls vs hidden ground truth
+
+The Foundry narrator reads FOUNDRY_PROJECT_ENDPOINT and FOUNDRY_MODELS (comma-separated,
+primary first). scripts/live sets them and puts the project's Azure CLI first on PATH.
 """
 
 import argparse
 import asyncio
+import os
 import sys
 from pathlib import Path
 
@@ -28,7 +33,8 @@ def _console(output: Output) -> None:
             print(f"{output.minute:>7} {mark} {output.headline}  {output.text}{retry}  [{cites}]")
         case RejectionNotice():
             why = "; ".join(f"{r.code}: {r.detail}" for r in output.reasons)
-            print(f"{output.minute:>7} ✘ REJECTED {output.claim.id}  {why}")
+            line = f'"{output.claim.text}"'
+            print(f"{output.minute:>7} ✘ REJECTED {output.claim.id}  {line}  {why}")
         case Spiked():
             print(f"{output.minute:>7} ✖ SPIKED {output.claim.id}  never aired")
         case Degradation():
@@ -45,18 +51,36 @@ async def _run(args: argparse.Namespace) -> int:
     if not args.json:
         print(f"{product_name()} · {ARCHITECTURE_NAME} · synthetic data only")
         print(f"{meta.match_id}  {meta.home.name} vs {meta.away.name}  (seed {meta.seed})\n")
+    narrator = _narrator(args, meta.seed)
     orch = await run_match(
         messages,
         sink=_jsonl if args.json else _console,
         speed=args.speed,
-        narrator=TemplateNarrator(overreach_rate=args.overreach, seed=meta.seed),
+        narrator=narrator,
         localizer=Localizer(mode=args.mode),
     )
     if not args.json:
         s, st = orch.state.score, orch.stats
         print(f"\n     FT  {meta.home.name} {s[Side.HOME]}-{s[Side.AWAY]} {meta.away.name}")
         print("         " + " · ".join(f"{k} {v}" for k, v in sorted(st.items())))
+        if meter := getattr(narrator, "meter", None):
+            handovers = getattr(narrator, "handovers", 0)
+            print(f"   cost  {meter.summary()}  ·  handovers {handovers}")
     return 0
+
+
+def _narrator(args: argparse.Namespace, seed: int):
+    if args.narrator == "template":
+        return TemplateNarrator(overreach_rate=args.overreach, seed=seed)
+    from .foundry import FoundryNarrator
+
+    endpoint = os.environ.get("FOUNDRY_PROJECT_ENDPOINT")
+    if not endpoint:
+        raise SystemExit("set FOUNDRY_PROJECT_ENDPOINT (scripts/live does), or use the template")
+    models = [
+        m.strip() for m in os.environ.get("FOUNDRY_MODELS", "gpt-5-mini,gpt-4.1-mini").split(",")
+    ]
+    return FoundryNarrator(project_endpoint=endpoint, models=[m for m in models if m])
 
 
 def _eval(args: argparse.Namespace) -> int:
@@ -81,6 +105,12 @@ def main(argv: list[str] | None = None) -> int:
         help="rate at which the offline narrator deliberately overreaches",
     )
     run.add_argument("--json", action="store_true", help="emit outputs as JSONL")
+    run.add_argument(
+        "--narrator",
+        choices=("template", "foundry"),
+        default="template",
+        help="offline template (default) or models deployed in the Foundry project",
+    )
     ev = sub.add_parser("eval", help="score the Scout's momentum calls against ground truth")
     ev.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
     ev.add_argument("--seeds", type=int, default=40, help="how many seeds to score")

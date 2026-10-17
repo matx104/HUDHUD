@@ -39,8 +39,8 @@ def test_momentum_line_says_the_numbers_the_critic_will_check(match):
     home, away = match.meta.home.name, match.meta.away.name
     assert claim.text == (
         f"{home} have taken control, completing 41 of 46 passes in the last 5 minutes "
-        f"(89%, up from 76% earlier in the half). They've found the final third 14 times "
-        f"to {away}'s 4."
+        f"(89%, up from 76% earlier in the half). 14 of them ended in the final third, "
+        f"against 4 for {away}."
     )
     asserted = {(a.metric, a.team, a.window.start_t): a.value for a in claim.assertions}
     assert asserted[("passes_completed", Side.HOME, 900.0)] == 41
@@ -54,7 +54,7 @@ def test_momentum_counts_read_as_english_in_the_singular(match):
     )
     text = TemplateNarrator().draft(alert, state).text
     assert "completing 1 of 1 pass in the last minute (100%)." in text
-    assert "the final third 1 time to" in text
+    assert "1 of them ended in the final third, against 4 for" in text
 
 
 def test_a_fall_in_completion_is_said_plainly(match):

@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# Run the court against the Foundry project, as the Monarch, on the student subscription.
+#   scripts/live run --seed 21 --narrator foundry
+# The Azure credential shells out to `az`: the project's Linux CLI goes first on PATH (the Windows
+# az is signed in to another account) and the tenant is pinned, so a wrong login fails loudly.
+here="$(cd "$(dirname "$0")/.." && pwd)"
+export AZURE_CONFIG_DIR="${AZURE_CONFIG_DIR:-$HOME/.azure-hudhud}"
+export PATH="$HOME/.local/bin:$PATH"
+export AZURE_TENANT_ID="${AZURE_TENANT_ID:-$("$here/scripts/az" account show --query tenantId -o tsv)}"
+export FOUNDRY_PROJECT_ENDPOINT="${FOUNDRY_PROJECT_ENDPOINT:-https://hudhud-foundry.services.ai.azure.com/api/projects/hudhud}"
+export FOUNDRY_MODELS="${FOUNDRY_MODELS:-gpt-5-mini,gpt-4.1-mini}"
+exec "$here/.venv/bin/python" -m court "$@"

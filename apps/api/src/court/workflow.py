@@ -9,6 +9,8 @@ One run per alert. The Critic yields every rejection as an output, so refusals a
 first-class artifacts in the stream rather than lines in a log.
 """
 
+import inspect
+
 from agent_framework import Executor, Workflow, WorkflowBuilder, WorkflowContext, handler
 
 from match_events import minute_label
@@ -27,11 +29,16 @@ class NarratorExecutor(Executor):
 
     @handler
     async def on_alert(self, alert: Alert, ctx: WorkflowContext[Claim]) -> None:
-        await ctx.send_message(self._narrator.draft(alert, self._state))
+        await ctx.send_message(await _settled(self._narrator.draft(alert, self._state)))
 
     @handler
     async def on_rejection(self, verdict: Verdict, ctx: WorkflowContext[Claim]) -> None:
-        await ctx.send_message(self._narrator.rewrite(verdict, self._state))
+        await ctx.send_message(await _settled(self._narrator.rewrite(verdict, self._state)))
+
+
+async def _settled(claim):
+    """The template narrator answers at once; a model-backed one answers when awaited."""
+    return await claim if inspect.isawaitable(claim) else claim
 
 
 class CriticExecutor(Executor):
