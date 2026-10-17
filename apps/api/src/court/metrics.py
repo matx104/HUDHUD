@@ -15,6 +15,11 @@ BOX_Y = (13.84, 54.16)
 PENALTY_XG = 0.76
 
 
+def shot_distance(shot: Shot) -> float:
+    """Metres from the shot to the centre of the goal mouth."""
+    return math.hypot(PITCH_LENGTH - shot.x, GOAL_Y - shot.y)
+
+
 def shot_xg(shot: Shot) -> float:
     """Expected goals: logistic in distance and the angle the goal mouth subtends."""
     if shot.situation == "penalty":
@@ -23,7 +28,7 @@ def shot_xg(shot: Shot) -> float:
     angle = math.atan2(7.32 * dx, dx * dx + dy * dy - (7.32 / 2) ** 2)
     if angle < 0:
         angle += math.pi
-    logit = -1.1 - 0.10 * math.hypot(dx, dy) + 1.6 * angle
+    logit = -1.1 - 0.10 * shot_distance(shot) + 1.6 * angle
     logit -= 0.9 * (shot.body_part == "head") + 0.25 * shot.under_pressure
     return 1 / (1 + math.exp(-logit))
 

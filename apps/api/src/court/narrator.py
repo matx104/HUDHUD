@@ -6,13 +6,13 @@ backend can also *overreach on purpose* (seeded, so reproducible), which is how 
 Critic's on-camera rejection is guaranteed rather than left to LLM luck.
 """
 
-import math
 import random
 from typing import Protocol
 
-from match_events import PITCH_LENGTH, Shot, Side
+from match_events import Shot, Side
 
 from .contracts import Alert, AlertKind, Assertion, Claim, Verdict
+from .metrics import shot_distance
 from .state import MatchState
 
 OUTCOME_PHRASE = {
@@ -88,7 +88,7 @@ class TemplateNarrator:
             how = "from the penalty spot"
         else:
             quality = "gilt-edged" if xg >= 0.4 else "good" if xg >= 0.15 else "speculative"
-            how = f"from {_distance(shot):.0f} m, a {quality} chance (xG {xg:.2f})"
+            how = f"from {shot_distance(shot):.0f} m, a {quality} chance (xG {xg:.2f})"
         text = f"{scorer} scores for {team.name} {how}."
         if shot.assist_event_id and (assist := state.get(shot.assist_event_id)):
             text += f" Set up by {state.player_name(assist.player_id)}."
@@ -142,7 +142,3 @@ class TemplateNarrator:
         key = "shots" if alert.kind is AlertKind.MOMENTUM_SWING else "xg"
         metrics[key] = metrics[key] + (2 if key == "shots" else 0.25)
         return self._compose(alert, state, attempt=claim.attempt, metrics=metrics)
-
-
-def _distance(shot: Shot) -> float:
-    return math.hypot(PITCH_LENGTH - shot.x, 34 - shot.y)
