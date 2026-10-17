@@ -489,6 +489,21 @@ pre {
 
 .page-missing code { color: var(--card); }
 
+/* ---------- the hackathon clock ---------- */
+.countdown-clock { font: 500 1rem / 1 var(--mono); color: var(--lime); font-variant-numeric: tabular-nums; }
+.countdown-label { color: var(--chalk-dim); }
+.countdown[data-state="closed"] .countdown-clock { color: var(--gold); }
+.countdown-head { display: flex; align-items: baseline; gap: 0.5rem; margin-left: auto; font-size: 0.8125rem; white-space: nowrap; }
+.countdown-head + .nav { margin-left: 1.5rem; }
+.countdown-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; margin-top: 0.6rem; font-size: 0.9375rem; }
+.countdown-big {
+  margin-bottom: clamp(2.5rem, 6vw, 4rem); padding: 1.5rem 1.75rem; border-radius: 10px;
+  border: 1px solid rgba(184, 245, 61, 0.35); background: var(--navy-raised);
+}
+.countdown-big .countdown-label { font-size: 0.9375rem; }
+.countdown-big .countdown-clock { margin-top: 0.5rem; font: 800 clamp(3rem, 9vw, 6rem) / 1 var(--display); letter-spacing: 0.02em; text-shadow: 0 0 40px rgba(184, 245, 61, 0.3); }
+.countdown-big .countdown-when { margin-top: 0.75rem; font-size: 0.9375rem; color: var(--chalk-dim); }
+
 /* ---------- footer and pager ---------- */
 .foot { border-top: 1px solid var(--chalk-faint); padding-block: 2rem 3rem; }
 .pager { display: flex; gap: 1rem; justify-content: space-between; margin-bottom: 2rem; }
@@ -560,7 +575,7 @@ pre {
 /* ---------- layout breakpoints ---------- */
 @media (max-width: 72rem) {
   .nav { display: none; }
-  .menu-button { margin-left: auto; }
+  .menu-button { margin-left: 1rem; }
   .timeline { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 2rem; }
 }
 @media (max-width: 60rem) {
@@ -576,6 +591,10 @@ pre {
   .states { grid-template-columns: minmax(0, 1fr); }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .north-star { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 48rem) {
+  .countdown-head { display: none; }
+  .menu-button { margin-left: auto; }
 }
 @media (max-width: 34rem) {
   .chapter-index, .projects, .principles, .stairs, .timeline { grid-template-columns: minmax(0, 1fr); }

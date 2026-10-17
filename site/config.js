@@ -8,4 +8,5 @@ window.SITE = {
   repoUrl: "https://github.com/matx104/HUDHUD",
   repoPublic: false, // flip at submission: shows the Code links (a private repo 404s for visitors)
   videoUrl: null, // the 110-second demo, once it has a public URL
+  deadline: "2026-10-28T06:59:00Z", // submissions close: Oct 27, 11:59 PM Pacific (official rules §1)
 };

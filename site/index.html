@@ -87,6 +87,10 @@
         </svg>
         <span class="brand-name" data-product-name></span>
       </a>
+      <div class="countdown countdown-head" data-countdown role="timer" aria-label="Time until hackathon submissions close">
+        <span class="countdown-label" data-countdown-label>Closes in</span>
+        <span class="countdown-clock" data-countdown-clock>--</span>
+      </div>
       <nav class="nav" aria-label="Main">
         <a href="#/problem">Problem</a>
         <a href="#/goal">Goal</a>
@@ -134,6 +138,10 @@
               <a class="button button-quiet" href="#/how">See how it works</a>
             </div>
             <p class="video-note" data-video-link>The 110-second demo video is coming soon.</p>
+            <div class="countdown countdown-line" data-countdown role="timer" aria-label="Time until hackathon submissions close">
+              <span class="countdown-label" data-countdown-label>Submissions close in</span>
+              <span class="countdown-clock" data-countdown-clock>--</span>
+            </div>
           </div>
 
           <figure class="board" aria-labelledby="board-headline">
@@ -203,12 +211,18 @@
     </section>
 
     <!-- ============ 02 THE GOAL ============ -->
-    <section class="page wrap" data-page="goal" data-title="The goal" data-summary="Every award declared, and honest about the odds" aria-labelledby="goal-title">
+    <section class="page wrap" data-page="goal" data-title="The goal" data-summary="Built for every category, honest about the odds" aria-labelledby="goal-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">02</span>
-        <h1 id="goal-title" tabindex="-1">We declared for every award. Judge us against it.</h1>
-        <p class="lede"><span data-product-name></span> is built to compete for all six awards in the Inside the Game hackathon. Not because a sweep is likely, but because building for six forces the discipline of six.</p>
+        <h1 id="goal-title" tabindex="-1">We built for every category. Judge us against it.</h1>
+        <p class="lede"><span data-product-name></span> is built for all six categories of the Inside the Game hackathon. The rules let one project win one grand prize and one category prize, so that's the aim. Building for all six forces the discipline of six.</p>
       </header>
+
+      <div class="countdown countdown-big" data-countdown role="timer" aria-labelledby="goal-clock-label" data-reveal>
+        <p class="countdown-label" id="goal-clock-label" data-countdown-label>Submissions close in</p>
+        <p class="countdown-clock" data-countdown-clock>--</p>
+        <p class="countdown-when" data-countdown-when></p>
+      </div>
 
       <ol class="lanes">
         <li data-reveal>

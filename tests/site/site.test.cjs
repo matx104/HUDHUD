@@ -49,3 +49,10 @@ test("every asset the head points at exists", () => {
   }
   for (const icon of JSON.parse(read("site.webmanifest")).icons) assert.ok(fs.existsSync(path.join(SITE, icon.src)), icon.src);
 });
+
+test("the countdown ends at the official close: Oct 27, 11:59 PM Pacific", () => {
+  const pacific = new Date(config.deadline).toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false,
+  });
+  assert.equal(pacific, "10/27/2026, 23:59");
+});

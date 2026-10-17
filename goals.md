@@ -1,6 +1,6 @@
 # GOALS — The Grand Slam Doctrine
 
-> **Declaration:** We intend to win ALL SIX categories. Solo entry, one build, six lanes. This file maps every award to the features that win it — if a feature doesn't serve a lane, it's cut; if a lane lacks a feature, the gap closes before build ends. The intention goes **public on the showcase site**: stated plainly, backed by the artifact.
+> **Declaration:** We build for ALL SIX categories. Solo entry, one build, six lanes. *(Official rules §4.2: one project can win at most **one Grand Prize and one Category Prize**, so the target is one of each; building for all six is the discipline.)* This file maps every award to the features that win it — if a feature doesn't serve a lane, it's cut; if a lane lacks a feature, the gap closes before build ends. The intention goes **public on the showcase site**: stated plainly, backed by the artifact.
 
 ## The doctrine in one line
 
