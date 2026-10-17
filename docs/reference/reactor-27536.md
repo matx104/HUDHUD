@@ -1,10 +1,33 @@
 # Reactor 27536: "Build AI-powered soccer insights apps with AKS and ACA"
 
-> Microsoft Reactor, 2026-10-15, 63 minutes. Speaker: Brian Benz, Principal AI Advocate, Microsoft.
+> Microsoft Reactor, streamed live 2026-10-14 (Pacific), 63 minutes. Speaker: Brian Benz, Principal AI Advocate, Microsoft.
+> The only session in the hackathon's Reactor series, "Inside the Game: Developer Hackathon" (S-1709, aka.ms/PremierLeagueHack). The series page also features a project, "The Synthetic Match Insights Engine for Premier League Studio" (real-time insights, narratives and recaps on Azure).
 > Video: https://www.youtube.com/watch?v=EQ187ohgCbo · Reference app: aka.ms/football-results-dashboard
 > Watched through its transcript on 2026-10-18 (plan.md, Phase 0). The full transcript is local and
 > gitignored (`reactor-27536-transcript.local.md`); these are our notes, in our words.
 > **New code only:** the reference app is inspiration, never a source to copy (rules §4.6, §4.11).
+
+## Chapters (from the video description)
+
+| Time | Chapter |
+|---|---|
+| 0:00 | Introduction and housekeeping |
+| 1:13 | Hackathon details and goals |
+| 2:56 | Live demo of the football results dashboard |
+| 4:49 | Exploring 150 years of international football data |
+| 8:19 | Agenda |
+| 9:17 | Reference architecture (AKS and ACA) |
+| 11:29 | Data flow and ingestion |
+| 12:33 | **Deterministic code vs. Microsoft Foundry logic** |
+| 14:43 | Security and Microsoft Entra ID |
+| 18:01 | The Azure resource group and its components |
+| 20:41 | Data sources and handling in the repository |
+| 27:06 | Data reconciliation and naming |
+| 31:13 | AKS versus ACA |
+| 38:03 | Scaling, revisions and rolling updates (and "every answer carries its receipts", 38:39) |
+| 42:41 | Building the app with GitHub Copilot |
+| 43:40 | The generation prompt |
+| 57:00 | Final thoughts, resources and Q&A |
 
 ## What he built
 
