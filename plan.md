@@ -4,6 +4,7 @@
 
 ## Phase 0 — Weekend intel (Oct 17–19, Monarch's Playwright session)
 
+- [ ] **WATCH: Reactor session "Build AI-powered soccer insights apps with AKS and ACA"** — <https://developer.microsoft.com/en-us/reactor/events/27536/> — aired Oct 14 (recording embedded on page), Brian Benz, part of the hackathon's own series. Reference architecture for deploying AI apps **and agents on AKS + ACA** with PL-inspired scenarios (play styles, counterattacks, performance patterns) — *"practical guidance attendees can extend into their hackathon projects."* This is Microsoft showing the Cloud-Native lane's expected shape — watch before architecture lock. Also check the **Series Page** link there for sibling episodes
 - [ ] Detail pass on the 18 HIGH-tier projects (inspiration.md list) — what they promise vs. what they show; update threat tiers — **BLOCKED 2026-10-17:** Playwright MCP needs Chrome (`/opt/google/chrome` missing) + Monarch's Microsoft login
 - [ ] Sharpen the differentiation sentence (inspiration.md §Differentiation memo) against what the top 10 actually build — gated on the detail pass
 - [ ] Check platform Resources tab for a sample dataset / schema (if one exists, it replaces the generator in Phase 1) — **BLOCKED** (same login); generator built meanwhile, so a platform schema would become an adapter, not a rewrite
