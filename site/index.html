@@ -96,6 +96,7 @@
         <a href="#/goal">Goal</a>
         <a href="#/how">How it works</a>
         <a href="#/why">Why</a>
+        <a href="#/log">Build log</a>
         <a href="#/roadmap">Roadmap</a>
         <a href="#/who">Who</a>
         <a data-repo-link data-when-repo="public" href="#">Code</a>
@@ -256,8 +257,8 @@
       <h2 class="section-title" data-reveal>Ten days, six phases</h2>
       <ol class="timeline">
         <li data-status="done" data-reveal><time>Oct 17–19</time><strong>Groundwork</strong><span>The field studied, the name chosen, a synthetic match generator calibrated over 100 seeds.</span></li>
-        <li data-status="progress" data-reveal><time>Oct 18–20</time><strong>Skeleton</strong><span>All five agents run a match end to end with offline backends, tested on every push.</span></li>
-        <li data-status="next" data-reveal><time>Oct 21–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
+        <li data-status="done" data-reveal><time>Oct 18–20</time><strong>Skeleton</strong><span>All five agents run a match end to end with offline backends, tested on every push.</span></li>
+        <li data-status="progress" data-reveal><time>Oct 18–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
         <li data-status="planned" data-reveal><time>Oct 24–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, Urdu and Arabic, automated recaps, the cost meter.</span></li>
         <li data-status="planned" data-reveal><time>Oct 26</time><strong>Ship kit</strong><span>The 110-second video, the README, the repo made public.</span></li>
         <li data-status="planned" data-reveal><time>Oct 27</time><strong>Submit</strong><span>A day early, never on deadline day.</span></li>
@@ -422,10 +423,59 @@
       </ol>
     </section>
 
-    <!-- ============ 07 ROADMAP ============ -->
-    <section class="page wrap" data-page="roadmap" data-title="Onwards & upwards" data-summary="From checking claims to an AI fourth official" aria-labelledby="roadmap-title">
+    <!-- ============ 07 BUILD LOG ============ -->
+    <section class="page wrap" data-page="log" data-title="Build log" data-summary="What runs today, and what's next" aria-labelledby="log-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">07</span>
+        <h1 id="log-title" tabindex="-1">What runs today, and what's next</h1>
+        <p class="lede">Built in the open, one tested commit at a time. Everything under “Live” runs today, on synthetic matches.</p>
+      </header>
+
+      <div class="log-grid">
+        <figure class="receipt" data-reveal>
+          <figcaption>One match, start to finish</figcaption>
+          <dl>
+            <div><dt>Match</dt><dd>Synthetic, seed 21, 2-2</dd></div>
+            <div><dt>Written by</dt><dd>gpt-5-mini on Microsoft Foundry</dd></div>
+            <div><dt>Alerts</dt><dd>9</dd></div>
+            <div><dt>Cues on air</dt><dd>9, every one verified</dd></div>
+            <div><dt>Numbers not computed by code</dt><dd>0 aired</dd></div>
+            <div><dt>Model calls</dt><dd>9</dd></div>
+            <div><dt>Tokens</dt><dd>3,667 in, 3,052 out</dd></div>
+            <div><dt>Backup model needed</dt><dd>No</dd></div>
+            <div class="receipt-total"><dt>Model cost</dt><dd>$0.0070</dd></div>
+          </dl>
+          <p class="receipt-note">October 18, 2026. Cost is estimated from token counts at list prices; Azure Cost Management has the actual bill.</p>
+        </figure>
+
+        <div class="log-lists">
+          <h2 class="log-heading">Live</h2>
+          <ol class="log">
+            <li data-reveal><time>Oct 18</time><div><strong>Commentary written on Microsoft Foundry</strong><p>gpt-5-mini writes each line from a fact sheet that code prepared, and gpt-4.1-mini takes over if it fails. There are no keys: access is through Microsoft Entra ID only.</p></div></li>
+            <li data-reveal><time>Oct 18</time><div><strong>The Critic checks every number</strong><p>If a line states a number that code didn't compute, the Critic refuses it and sends it back to the model with its reasons.</p></div></li>
+            <li data-reveal><time>Oct 18</time><div><strong>Momentum calls on air</strong><p>A momentum claim must cite at least three of the side's own shots or passes into the final third, all from inside the spell it describes.</p></div></li>
+            <li data-reveal><time>Oct 18</time><div><strong>Recovery, proven by a real fault</strong><p>When model access failed during a test run, the broadcast switched to detection-only cues and said so on air, instead of going silent.</p></div></li>
+            <li data-reveal><time>Oct 18</time><div><strong>Momentum measured against the truth</strong><p>Each synthetic match hides the real momentum swings. The Scout makes few, sure calls: on matches never used for tuning, 62% of its calls are right, and it catches about a quarter of the swings.</p></div></li>
+            <li data-reveal><time>Oct 17</time><div><strong>A synthetic match generator</strong><p>Invented clubs and players, real-match volumes, calibrated over 100 seeds. The same seed gives the same match every time.</p></div></li>
+          </ol>
+
+          <h2 class="log-heading">Next</h2>
+          <ol class="log log-next">
+            <li data-reveal><span class="chip" data-status="progress">Building</span><div><strong>The control room</strong><p>Application Insights and Log Analytics record every agent's work, and a <span data-product-name></span> workbook charts it. One click opens cost, budget, app health, AI usage or the model logs in the Azure portal. The demo video walks through it.</p></div></li>
+            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>A receipt on every cue</strong><p>Like the one on this page, for every line: the model, latency, tokens, cost and how many numbers were checked.</p></div></li>
+            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>The models compete for the job</strong><p>gpt-5-mini and gpt-4.1-mini narrate the same alerts. The Critic scores how often each passes first time, how often each invents a number, and its latency and cost. The winner writes the commentary.</p></div></li>
+            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>An audit trail on Microsoft Fabric</strong><p>Every claim, verdict and cue kept, and queryable after the match.</p></div></li>
+            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>What this data can't tell you</strong><p>The system's limits stated plainly, on this site and in the app.</p></div></li>
+            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>A live demo for the judges</strong><p>On Azure Container Apps, open for the whole judging period.</p></div></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 08 ROADMAP ============ -->
+    <section class="page wrap" data-page="roadmap" data-title="Onwards & upwards" data-summary="From checking claims to an AI fourth official" aria-labelledby="roadmap-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">08</span>
         <h1 id="roadmap-title" tabindex="-1">Onwards &amp; upwards</h1>
         <p class="lede">The hackathon is stage one. <span data-product-name></span> keeps going after it, toward an AI fourth official that sits beside the referee team.</p>
       </header>
@@ -488,7 +538,7 @@
       </ul>
     </section>
 
-    <!-- ============ 08 THE NAME ============ -->
+    <!-- ============ 09 THE NAME ============ -->
     <!-- Non-English strings (lang="ur", lang="ar") are marked data-owner-review: the owner signs them off. -->
     <section class="page name wrap" data-page="name" data-title="The name" data-summary="The messenger who came back with proof" aria-labelledby="name-title">
       <div class="name-head">
@@ -557,10 +607,10 @@
       <p class="kin" data-reveal>Every culture has a messenger that brings back the truth. Odin's ravens, Huginn and Muninn, fly over the world each day and report what they saw. Noah's dove returns with an olive leaf, proof in its beak that the flood is going down. Hermes carries the Greek gods' messages on winged sandals. In Urdu, Persian and Arabic, the messenger is the hudhud.</p>
     </section>
 
-    <!-- ============ 09 WHO ============ -->
+    <!-- ============ 10 WHO ============ -->
     <section class="page wrap" data-page="who" data-title="Who's building it" data-summary="One engineer, from Karachi" aria-labelledby="who-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">09</span>
+        <span class="chapter-no" aria-hidden="true">10</span>
         <h1 id="who-title" tabindex="-1">Built by one engineer, from Karachi</h1>
       </header>
 
@@ -612,6 +662,80 @@
       </div>
     </section>
 
+    <!-- ============ 11 CREDITS ============ -->
+    <section class="page wrap" data-page="credits" data-title="Credits" data-summary="The data, people and tools this stands on" aria-labelledby="credits-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">11</span>
+        <h1 id="credits-title" tabindex="-1">Credits</h1>
+        <p class="lede"><span data-product-name></span> stands on other people's data, teaching and tools. Each is named here with its author and license.</p>
+      </header>
+
+      <div class="credits">
+        <section data-reveal>
+          <h2>Data</h2>
+          <dl>
+            <dt>Every match on this site</dt>
+            <dd>Synthetic, made by <span data-product-name></span>'s own generator. No real club, player or match data is used, as the hackathon's rules require.</dd>
+          </dl>
+        </section>
+
+        <section data-reveal>
+          <h2>Learned from</h2>
+          <dl>
+            <dt><a href="https://www.youtube.com/watch?v=EQ187ohgCbo">Build AI-powered soccer insights apps with AKS and ACA</a></dt>
+            <dd>A Microsoft Reactor session presented by Brian Benz, October 14, 2026. Three ideas from it are on the build log: a receipt on every answer, letting evaluation pick the model, and saying plainly what the data can't tell you.</dd>
+            <dt><a href="https://github.com/microsoft/insidethegamehackathon">Inside the Game hackathon repository</a></dt>
+            <dd>Microsoft's official rules and guides for the hackathon.</dd>
+          </dl>
+        </section>
+
+        <section data-reveal>
+          <h2>Built on</h2>
+          <dl>
+            <dt>Microsoft Foundry</dt>
+            <dd>Hosts the models that write the commentary: gpt-5-mini and gpt-4.1-mini, from OpenAI.</dd>
+            <dt><a href="https://github.com/microsoft/agent-framework">Microsoft Agent Framework</a></dt>
+            <dd>The agents and their workflow. MIT license.</dd>
+            <dt><a href="https://github.com/pydantic/pydantic">Pydantic</a></dt>
+            <dd>The typed contracts every agent hands to the next. MIT license.</dd>
+            <dt>Azure Identity, pytest, Ruff</dt>
+            <dd>Sign-in without keys, the tests, and the linter. MIT licenses.</dd>
+            <dt>GitHub Actions and GitHub Pages</dt>
+            <dd>Tests on every push, and the home of this site.</dd>
+          </dl>
+        </section>
+
+        <section data-reveal>
+          <h2>Built with</h2>
+          <dl>
+            <dt>Claude Code, by Anthropic</dt>
+            <dd>The coding agent that pairs on most of the build.</dd>
+            <dt>GitHub Copilot agent mode</dt>
+            <dd>Used in the editor, working from the repository's own instructions, so it follows the same evidence rules.</dd>
+          </dl>
+        </section>
+
+        <section data-reveal>
+          <h2>Type</h2>
+          <dl>
+            <dt>Big Shoulders Display</dt><dd>By Patric King. SIL Open Font License.</dd>
+            <dt>Hanken Grotesk</dt><dd>By Alfredo Marco Pradil. SIL Open Font License.</dd>
+            <dt>JetBrains Mono</dt><dd>By JetBrains. SIL Open Font License.</dd>
+            <dt>Noto Nastaliq Urdu</dt><dd>By the Google Noto project. SIL Open Font License.</dd>
+            <dt>Amiri</dt><dd>By Khaled Hosny. SIL Open Font License.</dd>
+          </dl>
+        </section>
+
+        <section data-reveal>
+          <h2>The name</h2>
+          <dl>
+            <dt>Surah An-Naml, 27:20–28</dt>
+            <dd>The Quran's account of the hoopoe, the messenger whose news was checked before anyone acted on it. <a href="#/name">The name page tells it.</a></dd>
+          </dl>
+        </section>
+      </div>
+    </section>
+
     <!-- ============ NOT FOUND ============ -->
     <section class="page page-missing wrap" data-page="missing" data-title="Page not found" aria-labelledby="missing-title">
       <header class="page-head">
@@ -628,6 +752,7 @@
       <p class="credit"><span data-product-name></span> is being built for the Inside the Game developer hackathon, October 2026, and keeps going after it. Every club and player on this site is invented.
         <span data-when-repo="public"><a data-repo-link href="#">Source on GitHub</a>.</span>
         <span data-when-repo="private">The source goes public when the entry is submitted.</span>
+        <a href="#/credits">Credits</a>.
       </p>
     </div>
   </footer>
