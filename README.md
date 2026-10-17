@@ -34,6 +34,7 @@ make site    # the showcase site at http://localhost:8000
 - **projects.md** — the reusable arsenal: existing projects → patterns → which idea they feed
 - **awards.md** — the six prize lanes: official per-member packages, FMV, sweep math
 - **goals.md** — the Grand Slam doctrine: all-six declaration, award→feature build contract, public-intention language, kill criteria
+- **roadmap.md** — Onwards & Upwards: the stages beyond the hackathon, from evidence-checked commentary to an AI fourth official that advises the referee
 
 ## Studying the tape
 

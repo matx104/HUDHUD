@@ -38,6 +38,7 @@
 - [ ] Multilingual: EN native + UR + AR native-register output (owner-review loop on non-English strings — flag, don't self-trust)
 - [ ] Automated recap: post-match report, evidence-linked, exportable
 - [ ] Observability: agent traces, token/cost meter vs the $100 ceiling (the day-job flex)
+- [ ] **"Ref's call" cue** (roadmap.md bridge item, **cut first**, only if Phase 2 lands by Oct 23): Scout flags a foul tackle → Narrator states the likely decision → Critic checks it against the evidence under a lenient/standard/strict profile
 - **Done when:** recovery demo + trilingual output + recap all work in one run.
 
 ## Phase 4 — Ship kit (Oct 26)
@@ -55,7 +56,7 @@
 
 ## Scope law (cut order, first to go)
 
-1. Showcase site (repo README carries launch) → 2. Extra languages beyond UR/AR → 3. What-if simulation → 4. Recap export formats (one format ships) → 5. NEVER cut: Critic loop, recovery demo, video, submission buffer.
+0. "Ref's call" cue (roadmap bridge) → 1. Showcase site (repo README carries launch) → 2. Extra languages beyond UR/AR → 3. What-if simulation → 4. Recap export formats (one format ships) → 5. NEVER cut: Critic loop, recovery demo, video, submission buffer.
 
 ## Standing risks
 
