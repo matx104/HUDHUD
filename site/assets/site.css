@@ -158,7 +158,7 @@ p { margin: 0; max-width: 62ch; }
 @keyframes swap { from { opacity: 0.35; } to { opacity: 1; } }
 
 /* sections */
-.how, .recovery, .data { padding-block: clamp(3rem, 7vw, 5rem); border-top: 1px solid var(--chalk-faint); }
+.how, .recovery, .data, .name { padding-block: clamp(3rem, 7vw, 5rem); border-top: 1px solid var(--chalk-faint); }
 
 .steps {
   list-style: none; margin: 2.5rem 0 0; padding: 0; counter-reset: step;
@@ -195,11 +195,63 @@ pre {
   font: 400 0.9375rem / 1.5 var(--mono); color: var(--lime);
 }
 
+/* the name: the story behind it. The Nastaliq word is this section's one loud thing */
+.name-head {
+  display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+.nastaliq {
+  font: 700 clamp(4.5rem, 11vw, 8rem) / 1.25 "Noto Nastaliq Urdu", serif;
+  color: var(--gold); text-align: left; max-width: none;
+  margin-top: -0.15em; padding-bottom: 0.3em; /* Nastaliq descends deep: give the room below, not above */
+}
+.gloss { color: var(--chalk-dim); }
+.name h2 { margin-top: 1.5rem; }
+.name .lede { max-width: 46ch; }
+
+.crest { margin: 0; }
+.crest svg { display: block; width: 100%; max-width: 22rem; height: auto; margin-inline: auto; overflow: visible; }
+.feather use { fill: var(--lime); }
+.feather line { stroke: var(--navy); stroke-width: 3; }
+.feather-critic use { fill: var(--gold); }
+.crest-labels text { font: 500 13px var(--body); fill: var(--chalk-dim); }
+.crest-labels .label-critic { fill: var(--gold); text-anchor: middle; }
+.crest-mark { font: 800 44px var(--display); fill: var(--chalk); text-anchor: middle; letter-spacing: 0.02em; }
+.crest figcaption { margin-top: 1rem; font-size: 0.875rem; color: var(--chalk-dim); text-align: center; }
+
+.readings {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3rem 2rem;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+}
+.reading-wide {
+  grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-rows: auto auto auto 1fr; column-gap: 3rem;
+}
+.reading-wide .ayat { grid-column: 2; grid-row: 1 / span 4; align-self: start; }
+.reading > .source { margin-top: 0.35rem; font-size: 0.875rem; color: var(--gold); }
+.reading > p { margin-top: 0.75rem; color: var(--chalk-dim); }
+.reading code { font: 0.9em var(--mono); color: var(--lime); }
+
+/* the verses take the verdict's gold rule, on the side the Arabic starts from */
+.ayat { display: grid; gap: 1rem; }
+.ayat blockquote {
+  margin: 0; padding: 1rem 1.25rem; border-right: 4px solid var(--gold);
+  background: rgba(201, 162, 39, 0.08); border-radius: 4px 0 0 4px;
+}
+.arabic { font: 400 clamp(1.75rem, 3.5vw, 2.5rem) / 1.8 "Amiri", serif; text-align: right; max-width: none; }
+.ayat blockquote p:not(.arabic) { margin-top: 0.25rem; font-size: 0.9375rem; color: var(--chalk-dim); }
+.ayat cite { margin-left: 0.35rem; font: normal 0.8125rem var(--mono); color: var(--gold); }
+
+.kin { margin-top: clamp(2.5rem, 6vw, 4rem); font-size: var(--step-1); color: var(--chalk-dim); }
+
 footer { padding-block: 2.5rem 3rem; border-top: 1px solid var(--chalk-faint); font-size: 0.9375rem; color: var(--chalk-dim); }
 
 @media (max-width: 60rem) {
-  .hero, .recovery, .data { grid-template-columns: minmax(0, 1fr); }
+  .hero, .recovery, .data, .name-head, .readings { grid-template-columns: minmax(0, 1fr); }
   .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reading-wide { display: block; }
+  .ayat { margin-top: 1rem; }
+  .crest svg { max-width: 18rem; }
 }
 @media (max-width: 34rem) {
   .steps { grid-template-columns: minmax(0, 1fr); }

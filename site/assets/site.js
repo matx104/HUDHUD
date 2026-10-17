@@ -5,6 +5,7 @@
   const chain = window.CHAIN;
 
   document.querySelectorAll("[data-product-name]").forEach((el) => { el.textContent = site.productName ?? ""; });
+  document.querySelectorAll("[data-product-mark]").forEach((el) => { el.textContent = site.productMark ?? site.productName ?? ""; });
   if (site.productName) document.title = `${site.productName}: evidence-checked match commentary`;
   document.querySelectorAll("[data-repo-link]").forEach((el) => { el.href = site.repoUrl ?? "#"; });
   if (site.videoUrl) {

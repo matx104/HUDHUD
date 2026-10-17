@@ -9,6 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <!-- Urdu and Arabic faces, subset to the exact letters the name section uses -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@700&text=%DB%81%D8%AF&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400&text=%20%D8%A3%D8%A5%D8%A7%D8%A8%D8%AA%D8%AF%D8%B0%D8%B1%D8%B3%D8%B5%D8%B8%D9%82%D9%83%D9%84%D9%85%D9%86%D9%8A%D9%8D%D9%8E%D9%8F%D9%90%D9%92&display=swap">
+  <link rel="icon" href="assets/crest.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
@@ -18,6 +22,7 @@
       <a href="#how">How it works</a>
       <a href="#recovery">Recovery</a>
       <a href="#data">Data</a>
+      <a href="#name">The name</a>
       <a data-repo-link href="#">Code</a>
     </nav>
   </header>
@@ -93,6 +98,79 @@
         <p>Every match is generated from a seed: invented clubs, invented players and realistic volumes, about a thousand passes, 29 shots and three goals a match on average. The same seed always replays the same match, so every claim on this page can be reproduced.</p>
         <pre><code>python -m court run --seed 7</code></pre>
       </div>
+    </section>
+
+    <!-- Non-English strings (lang="ur", lang="ar") are marked data-owner-review: the owner signs them off. -->
+    <section class="name wrap" id="name" aria-labelledby="name-title">
+      <div class="name-head">
+        <div class="name-copy">
+          <p class="nastaliq" lang="ur" dir="rtl" data-owner-review>ہدہد</p>
+          <p class="gloss"><i>hudhud</i>, the hoopoe, in Urdu, Persian and Arabic</p>
+          <h2 id="name-title">Named for the messenger who came back with proof</h2>
+          <p class="lede"><span data-product-name></span> is the hoopoe's name. The bird carries news through some of the oldest stories in those languages, and in the best known, no one acts on its news until it has been checked.</p>
+        </div>
+        <figure class="crest">
+          <svg viewBox="-30 0 300 206" role="img" aria-labelledby="crest-caption">
+            <defs>
+              <path id="f78" d="M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z"/>
+              <path id="f96" d="M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z"/>
+              <path id="f112" d="M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z"/>
+            </defs>
+            <g transform="translate(120 150)">
+              <g class="feather"><use href="#f78" transform="rotate(-52)"/><line x1="-9.4" x2="9.4" y1="-60.8" y2="-60.8" transform="rotate(-52)"/></g>
+              <g class="feather"><use href="#f96" transform="rotate(-26)"/><line x1="-9.4" x2="9.4" y1="-74.9" y2="-74.9" transform="rotate(-26)"/></g>
+              <g class="feather feather-critic"><use href="#f112"/><line x1="-10.1" x2="10.1" y1="-87.4" y2="-87.4"/></g>
+              <g class="feather"><use href="#f96" transform="rotate(26)"/><line x1="-9.4" x2="9.4" y1="-74.9" y2="-74.9" transform="rotate(26)"/></g>
+              <g class="feather"><use href="#f78" transform="rotate(52)"/><line x1="-9.4" x2="9.4" y1="-60.8" y2="-60.8" transform="rotate(52)"/></g>
+            </g>
+            <g class="crest-labels" aria-hidden="true">
+              <text x="52" y="102" text-anchor="end">Scout</text>
+              <text x="76" y="58" text-anchor="end">Narrator</text>
+              <text x="120" y="30" class="label-critic">Critic</text>
+              <text x="164" y="58" text-anchor="start">Localizer</text>
+              <text x="188" y="102" text-anchor="start">Orchestrator</text>
+            </g>
+            <text class="crest-mark" x="120" y="198" aria-hidden="true" data-product-mark></text>
+          </svg>
+          <figcaption id="crest-caption">The mark: a hoopoe's crest of five feathers, one for each agent, with the Critic at the centre.</figcaption>
+        </figure>
+      </div>
+
+      <div class="readings">
+        <article class="reading reading-wide">
+          <h3>Sure news</h3>
+          <p class="source">The Quran, Surah An-Naml 27:20–28</p>
+          <p>King Solomon notices the hoopoe is missing and demands a clear reason for its absence. It returns from Sheba with news it calls certain. Solomon doesn't take its word for it.</p>
+          <div class="ayat">
+            <blockquote>
+              <p class="arabic" lang="ar" dir="rtl" data-owner-review>بِنَبَإٍ يَقِينٍ</p>
+              <p>“With sure news.” <cite>27:22</cite></p>
+            </blockquote>
+            <blockquote>
+              <p class="arabic" lang="ar" dir="rtl" data-owner-review>سَنَنظُرُ أَصَدَقْتَ أَمْ كُنتَ مِنَ الْكَاذِبِينَ</p>
+              <p>“We will see whether you have told the truth, or are one of the liars.” <cite>27:27</cite></p>
+            </blockquote>
+          </div>
+          <p>He tests the report before he acts on it. That is the Critic's job: no claim reaches the screen until it has been checked against the match events. The hoopoe reported to a court, and so do the agents, which is why the code is called <code>court</code>.</p>
+        </article>
+        <article class="reading">
+          <h3>The guide</h3>
+          <p class="source">Farid ud-Din Attar, <i>The Conference of the Birds</i>, 12th century</p>
+          <p>In Attar's Persian poem the hoopoe, once Solomon's messenger, leads the birds of the world in search of the Simurgh, their king. Thirty survive the journey and discover that <i>si murgh</i> means “thirty birds”: together, they are what they were looking for. The agents work the same way. None of them sees the whole match, together they do, and the Orchestrator leads.</p>
+        </article>
+        <article class="reading">
+          <h3>Heads-up display</h3>
+          <p class="source">Broadcast English</p>
+          <p>A HUD is a heads-up display, the layer of graphics over a live picture. That's what <span data-product-name></span> makes: verified cues, timed to the match and ready to overlay.</p>
+        </article>
+        <article class="reading">
+          <h3>Five feathers</h3>
+          <p class="source">The mark</p>
+          <p>The hoopoe's crest fans open like a broadcast signal, and the mark gives it one feather per agent. The name says itself twice, hud-hud, two beats like a chant from the stands. Written short, it's <span data-product-mark></span>: the display, squared.</p>
+        </article>
+      </div>
+
+      <p class="kin">Every culture has a messenger that brings back the truth. Odin's ravens, Huginn and Muninn, fly over the world each day and report what they saw. Noah's dove returns with an olive leaf, proof in its beak that the flood is going down. Hermes carries the Greek gods' messages on winged sandals. In Urdu, Persian and Arabic, the messenger is the hudhud.</p>
     </section>
   </main>
 
