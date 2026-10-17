@@ -119,9 +119,10 @@ They should create AI-powered applications and agents that:
 
 **Where we stand against that list (2026-10-18):**
 - **Covered or planned:** 1 (the Scout, live), 3 (the Critic-checked claims, the momentum ADR), 4 (the seeded generator with hidden ground truth *is* dataset expansion), 5 (EN now, UR/AR in Phase 3), 6 (analyst and casual modes), Foundry (Phase A), cloud-native (Phase 3).
-- **Open decisions for the Monarch:**
-  - **GitHub Copilot** is named and not yet in the build story.
-  - **Microsoft Fabric** is named; we planned Cosmos DB for the audit trail.
+- **Decided by the Monarch (2026-10-18):**
+  - **Registered** for the hackathon (the deadline was Oct 20, 12:00 PM PT).
+  - **GitHub Copilot agent mode** is in the build: the Monarch uses it (GitHub Student plan). The repo carries `.github/copilot-instructions.md` so it follows the evidence law, and `.vscode/mcp.json` gives it the Azure MCP Server, signed in as the project's CLI.
+  - **Microsoft Fabric** holds the audit trail: Cosmos DB in Fabric, on the 60-day trial (ADR 0004).
   - Recaps (2) are planned for Phase 3.
 
 ## Constraints we've set ourselves

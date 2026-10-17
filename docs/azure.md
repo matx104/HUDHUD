@@ -84,6 +84,26 @@ prices with the pricing calculator before creating anything.
    length, responses are cached, and token cost is metered from the first call.
 4. **No resource without a named reason** tied to the rubric (super-prompt.md).
 
+## Fabric (the audit trail, ADR 0004)
+
+Fabric doesn't accept a personal Microsoft account, so the workspace belongs to a member user of
+the project's tenant: Microsoft's documented route for a personal-email trial
+(learn.microsoft.com/fabric/fundamentals/free-trial-account-personal-email). The owner does these
+steps; nobody else ever handles that user's password.
+
+1. Azure portal → **Microsoft Entra ID** → **Users** → **New user** → **Create new user**, for
+   example `hudhud@<tenant>.onmicrosoft.com`. Set its password yourself. It needs no Azure roles.
+2. Sign in at app.fabric.microsoft.com as that user, and set up two-step sign-in when asked.
+3. Profile icon → **Free trial** → pick the capacity region (UAE North if it's listed, beside the
+   Foundry resource) → **Activate**. The trial lasts 60 days.
+4. Later, for the cloud demo: give the user the **Fabric Administrator** role in Entra, and allow
+   service principals to use Fabric APIs in the Fabric admin portal, so the Container App's
+   managed identity can be added to the workspace.
+
+Costs: the trial is free. A paid F2 capacity in UAE North is $0.44 an hour (about $321 a month
+running), out of reach on the credit, so at the trial's end the audit trail moves to an Azure
+Cosmos DB free-tier account with the same code.
+
 ## The CLI: `scripts/az`, never the bare `az`
 
 This machine's `az` on PATH is the Windows install (2.63.0). It is signed in to a **different

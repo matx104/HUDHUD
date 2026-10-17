@@ -89,3 +89,23 @@ Compose, on Azure Container Apps and on AKS. The UI shows which platform served 
    side by side for the cloud-native category if the budget allows.
 7. **His IP allow-list doesn't fit us:** rule 4.8 requires judges to reach a working demo through
    Nov 10. We stay public and protect the bill with rate limits and the spending limit instead.
+
+## The presenter's other public sessions (October 2026)
+
+From the presenter's public posts, three ideas that sharpen ours (`plan.md`):
+
+- **"Who can call this MCP tool?"** (MCP Dev Summit Toronto, Oct 6): MCP authorization at
+  `tools/call`, and an audit record tying each call to the user, client, resource, policy and
+  result. When the Critic becomes an MCP tool, each call gets that record in the audit trail.
+- **A "referee" engine for coding-agent sandboxes** (Reactor, Oct 13): a coding agent's fixes run
+  in isolated Container Apps sandboxes, and a referee compiles, tests and judges each one. A fix
+  that passed every test but tried to send a secret out was blocked, logged and disqualified. The
+  same stance as our Critic: passing isn't enough when the evidence says otherwise.
+- **Observability from laptop to cluster** (AGNTCon + MCPCon workshop, Oct 23): OpenTelemetry
+  traces for every agent step, tools over MCP, the same containers from Compose to Kubernetes.
+
+## The second dataset he used
+
+He also used global development indicators for 1960–2025 (regions, income groups), mainly to map
+country names that changed over time. HUDHUD has no countries and no real teams, so it has no use
+here; it stays out, like the results data, which may only ever serve as a credited benchmark.
