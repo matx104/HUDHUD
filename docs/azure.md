@@ -52,8 +52,10 @@ there. It's also the closest region to Karachi.
 | `gpt-5-mini` | deployment, model version 2025-08-07, GlobalStandard, 50K TPM | primary Narrator and Localizer |
 | `gpt-4.1-mini` | deployment, model version 2025-04-14, GlobalStandard, 50K TPM | backup: the Orchestrator reassigns to it when the primary fails |
 
-The Monarch's account holds **Azure AI Developer** on `hudhud-foundry` (the data-plane role for
-calling models; "Azure AI User" isn't offered in this tenant yet). Deployments cost nothing until
+The Monarch's account holds **Cognitive Services User** on `hudhud-foundry`: the Foundry project
+endpoint needs `Microsoft.CognitiveServices/*` data actions. (Azure AI Developer, tried first, covers
+only OpenAI, Speech, Content Safety and model-catalog actions, so the project returned 403; "Azure AI
+User" isn't offered in this tenant yet. A new role took about four minutes to take effect.) Deployments cost nothing until
 called. A test call on 2026-10-18 cost a fraction of a cent. `gpt-5-mini` spends hidden reasoning
 tokens, so live cues set its reasoning effort to minimal.
 

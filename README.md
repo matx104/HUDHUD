@@ -11,6 +11,10 @@
 make setup   # python3.13 venv + both workspace packages, editable
 make test    # pytest: generator realism, Critic checks, workflow loop, warm-path failure
 make eval    # the Scout's momentum calls scored against hidden ground truth (unseen seeds)
+
+# live, on the models deployed in Foundry (Azure sign-in via scripts/az; see docs/azure.md)
+.venv/bin/pip install -e "apps/api[foundry]"
+scripts/live run --seed 21 --narrator foundry   # prints the cues and what the match cost
 make demo    # one synthetic match, all five agents, in the console
 make site    # the showcase site at http://localhost:8000
 ```

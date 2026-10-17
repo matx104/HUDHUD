@@ -28,7 +28,7 @@
 - [ ] Critic momentum evidence rule — `court/critic.py::momentum_rule` is a TODO(human); momentum claims fail closed (NO_RULE → spiked) until it's registered; `tests/test_momentum_rule.py` (3 tests, skipped until then) defines what it must do
 - [ ] Narrator: live tactical narrative + key-moment explainers (the "why", cited to events)
 - [x] **Azure Phase A (2026-10-18):** Foundry resource `hudhud-foundry` and project `hudhud` in UAE North, `gpt-5-mini` (primary) and `gpt-4.1-mini` (backup) deployed, Entra-only (docs/azure.md)
-- [ ] **Foundry Narrator:** behind the `Narrator` protocol via `agent-framework-foundry` (`FoundryChatClient`), structured JSON claims the Critic checks; the template narrator stays the default for tests and CI; a token-cost meter from the first call
+- [x] **Foundry Narrator (2026-10-18, ADR 0003):** `gpt-5-mini` writes the line from a fact sheet, `gpt-4.1-mini` takes over on failure; the Critic's new grounded-numbers check rejects any number code didn't compute; token meter. First live match: 7 verified cues, $0.0066
 - [ ] **The rules' feature list (§4.1 ii):** pass-quality cues (distance, accuracy, difficulty), speed cues (ball and shot speed), player tags. The generator already emits every field
 - [ ] **Personal modes (§4.1 i e):** favourite club, favourite player, player-focus, single-metric
 - [ ] **Receipts on every cue** (Reactor 27536): verified or detection-only, numbers checked, model, latency, tokens, estimated cost, evidence IDs
