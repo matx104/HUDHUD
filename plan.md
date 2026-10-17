@@ -4,7 +4,7 @@
 
 ## Phase 0 — Weekend intel (Oct 17–19, Monarch's Playwright session)
 
-- [ ] **WATCH: Reactor session "Build AI-powered soccer insights apps with AKS and ACA"** — <https://developer.microsoft.com/en-us/reactor/events/27536/> — aired Oct 14 (recording embedded on page), Brian Benz, part of the hackathon's own series. Reference architecture for deploying AI apps **and agents on AKS + ACA** with PL-inspired scenarios (play styles, counterattacks, performance patterns) — *"practical guidance attendees can extend into their hackathon projects."* This is Microsoft showing the Cloud-Native lane's expected shape — watch before architecture lock. Also check the **Series Page** link there for sibling episodes
+- [x] **WATCHED (2026-10-18, via transcript; notes in docs/reference/reactor-27536.md): Reactor session "Build AI-powered soccer insights apps with AKS and ACA"** — <https://developer.microsoft.com/en-us/reactor/events/27536/> — aired Oct 14 (recording embedded on page), Brian Benz, part of the hackathon's own series. Reference architecture for deploying AI apps **and agents on AKS + ACA** with PL-inspired scenarios (play styles, counterattacks, performance patterns) — *"practical guidance attendees can extend into their hackathon projects."* This is Microsoft showing the Cloud-Native lane's expected shape — watch before architecture lock. Also check the **Series Page** link there for sibling episodes
 - [ ] Detail pass on the 18 HIGH-tier projects (inspiration.md list) — what they promise vs. what they show; update threat tiers — **DEFERRED 2026-10-17:** automated browsing stopped at the gallery sign-in. Monarch reviews the 18 by hand via the local-only review page `site/review/` (gitignored, never deployed; "Copy notes as Markdown" brings the notes back)
 - [ ] Sharpen the differentiation sentence (inspiration.md §Differentiation memo) against what the top 10 actually build — gated on the detail pass
 - [ ] Check platform Resources tab for a sample dataset / schema (if one exists, it replaces the generator in Phase 1) — **DEFERRED** to the Monarch's manual pass; generator built meanwhile, so a platform schema would become an adapter, not a rewrite
@@ -31,6 +31,10 @@
 - [ ] **Foundry Narrator:** behind the `Narrator` protocol via `agent-framework-foundry` (`FoundryChatClient`), structured JSON claims the Critic checks; the template narrator stays the default for tests and CI; a token-cost meter from the first call
 - [ ] **The rules' feature list (§4.1 ii):** pass-quality cues (distance, accuracy, difficulty), speed cues (ball and shot speed), player tags. The generator already emits every field
 - [ ] **Personal modes (§4.1 i e):** favourite club, favourite player, player-focus, single-metric
+- [ ] **Receipts on every cue** (Reactor 27536): verified or detection-only, numbers checked, model, latency, tokens, estimated cost, evidence IDs
+- [ ] **Narrator eval, "evaluation decides which model serves"** (Reactor 27536): `gpt-5-mini` vs `gpt-4.1-mini` on the same alerts; first-attempt Critic pass rate, grounding failures, latency, cost
+- [ ] **"What this data can't tell you"** on the site and in the UI: momentum precision, synthetic clubs and players, no video
+- [ ] **Counterattack and high-press alerts** (overview themes): transitions after a won tackle or interception, press efficiency from pressure events
   - Copy bug seen in the seed-7 run: the momentum template pluralizes blindly ("1 box entries", "1 shots")
 - [ ] **Critic: the moat — adversarial verification.** Every claim must cite event evidence; rejections visible in UI with reasons; rewrite loop
 - [ ] Overlay cue stream: timed, machine-readable JSON (broadcast-renderer ready) — the platform's rendering-partner lane

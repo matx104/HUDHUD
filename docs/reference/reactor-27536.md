@@ -1,0 +1,68 @@
+# Reactor 27536: "Build AI-powered soccer insights apps with AKS and ACA"
+
+> Microsoft Reactor, 2026-10-15, 63 minutes. Speaker: Brian Benz, Principal AI Advocate, Microsoft.
+> Video: https://www.youtube.com/watch?v=EQ187ohgCbo · Reference app: aka.ms/football-results-dashboard
+> Watched through its transcript on 2026-10-18 (plan.md, Phase 0). The full transcript is local and
+> gitignored (`reactor-27536-transcript.local.md`); these are our notes, in our words.
+> **New code only:** the reference app is inspiration, never a source to copy (rules §4.6, §4.11).
+
+## What he built
+
+A football Q&A dashboard over open match data, built with GitHub Copilot in about a day. One set of
+container images (web, insights, an ingest job) runs three ways side by side: locally under Docker
+Compose, on Azure Container Apps and on AKS. The UI shows which platform served each answer.
+
+- **Data:** public-domain international results from Kaggle plus development indicators. The data is
+  kept out of the repo: an ingest job builds a curated copy into Blob Storage and DuckDB. Attribution
+  is on the front page. Half the work was reconciling team names that changed over 150 years.
+- **The split of labour:** deterministic code computes every number, table and chart. A Foundry model
+  chooses which read-only tools to call, writes a grounded narrative, and says when a question is out
+  of scope ("this data covers national teams, not club football, and has no counterattack data").
+- **The request path:** question, plan, schemas, compute; facts come back with **evidence IDs**; the
+  model reasons and returns JSON; a basic sanity and coherency check runs; the answer is displayed.
+- **Limits:** at most 6 tool calls, 1,200 output tokens and 45 seconds per answer; conversation
+  storage is off.
+- **"Every answer carries its receipts":** live and grounded status, "five numbers were checked", the
+  model, latency (5.8 s), output tokens (254) and an estimated price. An evidence ID for every
+  number, charts built from tool data, a **"what this data can't tell you"** panel, and an in-app
+  trace view (OpenTelemetry to Application Insights).
+- **"Evaluation decides which model serves":** grounding, tool selection, limitations and framing,
+  live narratives, content-filter blocks (zero) and latency. The fast model won: the stronger
+  reasoning model was slower and no better.
+- **Security:** Entra ID everywhere, a user-assigned managed identity per service (workload identity
+  on AKS), no keys, endpoints limited to his IP. Locally, a short-lived token refreshed every 15 minutes.
+- **AKS vs ACA, his view:** ACA for disposable dev and test (built-in ingress, HTTP-rule autoscale,
+  revisions with traffic weights); AKS for full lifecycle control (gateway API, rolling updates,
+  pinned versions). Performance was comparable for this app.
+- **How it was built:** a 498-line generation prompt, iterated a dozen times, then GitHub Copilot in
+  agent mode ran it (with Claude Opus 5.5, at max effort). Presenter notes and the env file stayed in
+  ignored local files. About a day in all.
+- **From the Q&A:** asked whether real data is allowed when the hackathon requires synthetic data,
+  he wasn't sure and deferred to the organizers. The hackathon provides no Azure credits.
+
+## Where HUDHUD already goes further
+
+| His dashboard | HUDHUD |
+|---|---|
+| A "basic sanity and coherency check" on the model's JSON | An adversarial **Critic** that recomputes every number from raw events, rejects on screen and sends the claim back for a rewrite |
+| Q&A after the fact | Live: claims made *during* a match, checked against only the events that had happened yet (a citation from the future is rejected) |
+| Real open data; legality unclear to the presenter | **Synthetic by design**, as the rules require, with hidden ground truth that scores the Scout (`make eval`) |
+| One agent with tools | Five agents with typed handoffs, a hot and a warm path, and failure recovery that keeps the broadcast going |
+
+## What we take from it (in plan.md)
+
+1. **Receipts on every cue:** verified or detection-only, numbers checked, model, latency, tokens,
+   estimated cost and evidence IDs. Our token meter feeds it.
+2. **"What this data can't tell you":** state limits plainly on the site and in the UI. For example,
+   momentum calls are right 62% of the time on unseen matches, and every club and player is invented.
+3. **Evaluation decides which model serves:** a narrator eval that runs `gpt-5-mini` and
+   `gpt-4.1-mini` over the same alerts and scores first-attempt pass rate with the Critic, grounding
+   failures, latency and cost. A Foundry story, measured.
+4. **Traces in the product:** OpenTelemetry to Application Insights, linked from the local control
+   room for the video.
+5. **Hard per-request limits:** timeouts, token caps, bounded retries (the Foundry narrator has a 30 s
+   timeout and a backup model).
+6. **One image, more than one platform:** run the same images on Container Apps, and consider AKS
+   side by side for the cloud-native category if the budget allows.
+7. **His IP allow-list doesn't fit us:** rule 4.8 requires judges to reach a working demo through
+   Nov 10. We stay public and protect the bill with rate limits and the spending limit instead.

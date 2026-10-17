@@ -71,6 +71,20 @@
   - personal modes: favourite club, favourite player, player focus, a single metric.
   - Our generator already emits pass distance, accuracy, difficulty, ball speed and shot speed, but the cues don't surface them yet.
 
+## A secondary summary (pasted 2026-10-18): useful themes, two errors
+
+A third-party summary of the hackathon (it reads as an AI assistant's answer) lists focus areas:
+team play styles and tactics, **counterattack and match-flow analysis** (transitions, high-press
+efficiency), player performance and spatial AI, and automated recaps and narratives. It also lists
+AKS/ACA, Azure SQL, PostgreSQL, Cosmos DB, Azure AI Search vector search, Azure OpenAI, Foundry and
+Semantic Kernel. **Two claims in it are wrong for this hackathon and must not steer us:**
+- "official football data" and "30+ seasons of historical data": the rules require synthetic data
+  (§4.7);
+- Semantic Kernel: its successor, Microsoft Agent Framework, is the named hero technology.
+
+The themes match Reactor 27536's (docs/reference/reactor-27536.md). The counterattack and press
+ideas are in plan.md.
+
 ## Key dates (official overview page, pasted 2026-10-18)
 
 | When (Pacific) | When (Karachi, PKT) | What |
