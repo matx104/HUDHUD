@@ -28,6 +28,35 @@
 - **Judging:** the hackathon runs until Nov 21, but the credit expires on Nov 13. Anything live for the judges after Nov 13 needs the renewal, or the demo has to work without Azure (the offline backends already do).
 - **The spending limit cuts both ways:** it can't overspend, but when the credit runs out the subscription is disabled and everything stops. Spending the credit before the deadline would take the demo down.
 
+## Where it runs: UAE North
+
+The student subscription may deploy to only five regions: Central India, India South Central,
+UAE North, Austria East and East Asia. Only **UAE North** offers pay-per-token model deployments
+(GlobalStandard); the others offer provisioned throughput only. UAE North also has Container
+Apps, Cosmos DB, Service Bus, Container Registry, Log Analytics and Key Vault, so everything lives
+there. It's also the closest region to Karachi.
+
+**Model quota on this subscription (thousands of tokens per minute, GlobalStandard):**
+- `gpt-5-mini` 500, `gpt-4.1-mini` 200, `o4-mini` 100.
+- Foundry open models: `gpt-oss-120b`, Phi-4, Llama 3.3/4, Mistral.
+- Newer models (`gpt-5.4-mini`, `gpt-5.5` and up) are listed in the region but have zero quota for
+  students.
+
+## Resources (Phase A, created 2026-10-18)
+
+| Resource | What | Notes |
+|---|---|---|
+| `rg-hudhud` | resource group, UAE North | tags `project=hudhud`, `owner=monarch`; delete it to remove everything |
+| `hudhud-foundry` | Foundry resource (AIServices, S0) | **key auth disabled**: Entra ID only, nothing to leak; system-assigned identity |
+| `hudhud` | Foundry project | endpoint `https://hudhud-foundry.services.ai.azure.com/api/projects/hudhud` |
+| `gpt-5-mini` | deployment, model version 2025-08-07, GlobalStandard, 50K TPM | primary Narrator and Localizer |
+| `gpt-4.1-mini` | deployment, model version 2025-04-14, GlobalStandard, 50K TPM | backup: the Orchestrator reassigns to it when the primary fails |
+
+The Monarch's account holds **Azure AI Developer** on `hudhud-foundry` (the data-plane role for
+calling models; "Azure AI User" isn't offered in this tenant yet). Deployments cost nothing until
+called. A test call on 2026-10-18 cost a fraction of a cent. `gpt-5-mini` spends hidden reasoning
+tokens, so live cues set its reasoning effort to minimal.
+
 ## Free services that fit this build (from the portal's free-services page; confirm per subscription before relying on one)
 
 | Need in our architecture | Free allowance shown | Use |

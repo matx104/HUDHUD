@@ -27,6 +27,10 @@
   - **Eval finding (2026-10-17, seed 7):** only 1 of 5 momentum alerts overlaps a true spell. All three true spells were the away side's, yet 4 of the 5 alerts went to the stronger home side. The Scout reads *relative* dominance, so it reports a stronger team's baseline as momentum. Fix: baseline-relative (anomaly) detection, i.e. each side vs its own match-to-date rate (the SOCIRIS pattern). Score precision/recall against `GroundTruth.spells` over N seeds
 - [ ] Critic momentum evidence rule — `court/critic.py::momentum_rule` is a TODO(human); momentum claims fail closed (NO_RULE → spiked) until it's registered; `tests/test_momentum_rule.py` (3 tests, skipped until then) defines what it must do
 - [ ] Narrator: live tactical narrative + key-moment explainers (the "why", cited to events)
+- [x] **Azure Phase A (2026-10-18):** Foundry resource `hudhud-foundry` and project `hudhud` in UAE North, `gpt-5-mini` (primary) and `gpt-4.1-mini` (backup) deployed, Entra-only (docs/azure.md)
+- [ ] **Foundry Narrator:** behind the `Narrator` protocol via `agent-framework-foundry` (`FoundryChatClient`), structured JSON claims the Critic checks; the template narrator stays the default for tests and CI; a token-cost meter from the first call
+- [ ] **The rules' feature list (§4.1 ii):** pass-quality cues (distance, accuracy, difficulty), speed cues (ball and shot speed), player tags. The generator already emits every field
+- [ ] **Personal modes (§4.1 i e):** favourite club, favourite player, player-focus, single-metric
   - Copy bug seen in the seed-7 run: the momentum template pluralizes blindly ("1 box entries", "1 shots")
 - [ ] **Critic: the moat — adversarial verification.** Every claim must cite event evidence; rejections visible in UI with reasons; rewrite loop
 - [ ] Overlay cue stream: timed, machine-readable JSON (broadcast-renderer ready) — the platform's rendering-partner lane
@@ -39,6 +43,9 @@
 - [ ] Multilingual: EN native + UR + AR native-register output (owner-review loop on non-English strings — flag, don't self-trust)
 - [ ] Automated recap: post-match report, evidence-linked, exportable
 - [ ] Observability: agent traces, token/cost meter vs the $100 ceiling (the day-job flex)
+  - Application Insights + Log Analytics + Foundry tracing; a HUDHUD workbook with the charts; a **local-only control room** page in the site whose buttons open the Azure portal views (cost, budget, app health, AI usage, AI logs) for the demo recording. Public site never shows it: the links carry subscription and tenant IDs
+- [ ] **MCP server:** expose the Critic (`verify_claim`) and match state as MCP tools, so any assistant (Copilot included) can have a football claim checked. Agentic Design scores "MCP integration"; Azure MCP is a named hero technology
+- [ ] **Judge-accessible live demo (rules §4.8):** free, unrestricted, up through **Nov 10** (judging end); Container Apps. Credit expires Nov 13, so it lasts
 - [ ] **"Ref's call" cue** (roadmap.md bridge item, **cut first**, only if Phase 2 lands by Oct 23): Scout flags a foul tackle → Narrator states the likely decision → Critic checks it against the evidence under a lenient/standard/strict profile
 - **Done when:** recovery demo + trilingual output + recap all work in one run.
 
@@ -54,6 +61,11 @@
 - [ ] Submit on Innovation Studio by **evening PKT** (deadline = Oct 28 ~11:59 AM PKT; never deadline-day heroics)
 - [ ] Pitch text: what was built, Microsoft/Azure stack used, problem solved — one paragraph, no fluff
 - **Done when:** confirmation screenshot in #pl-hackathon.
+
+## Open decisions (from the official rules, 2026-10-18)
+
+- **GitHub Copilot Agent Mode** is a named hero technology and a multi-agent option ("GitHub Copilot, Microsoft Agent Framework, A2A"). How does it enter the build story?
+- **Microsoft Fabric** is named; we planned Cosmos DB for the audit trail.
 
 ## Scope law (cut order, first to go)
 
