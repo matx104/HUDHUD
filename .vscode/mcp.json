@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "azure": {
+      "type": "stdio",
+      "command": "${workspaceFolder}/scripts/azure-mcp"
+    }
+  }
+}

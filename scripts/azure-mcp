@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+# The Azure MCP Server for GitHub Copilot agent mode (.vscode/mcp.json starts it), signed in as
+# the project's Azure CLI on the student subscription, never the machine's default az.
+# The version is pinned: an MCP server acts with your Azure identity, so it upgrades on purpose.
+here="$(cd "$(dirname "$0")/.." && pwd)"
+export AZURE_CONFIG_DIR="${AZURE_CONFIG_DIR:-$HOME/.azure-hudhud}"
+export PATH="$HOME/.local/bin:$PATH"
+export AZURE_TOKEN_CREDENTIALS=AzureCliCredential
+export AZURE_TENANT_ID="${AZURE_TENANT_ID:-$("$here/scripts/az" account show --query tenantId -o tsv)}"
+export AZURE_SUBSCRIPTION_ID="${AZURE_SUBSCRIPTION_ID:-$("$here/scripts/az" account show --query id -o tsv)}"
+exec npx -y @azure/mcp@2.0.5 server start

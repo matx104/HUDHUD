@@ -20,7 +20,8 @@ dist/
 Thumbs.db
 *.swp
 .idea/
-.vscode/
+.vscode/*
+!.vscode/mcp.json
 
 # private scouting notes: studied locally, never published
 .playwright-mcp/
