@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+# The Azure CLI for this project only: the Linux az, with its own config folder. The Windows az
+# on PATH is signed in to a different account, so it is never used and never changed.
+# See docs/azure.md.
+export AZURE_CONFIG_DIR="${AZURE_CONFIG_DIR:-$HOME/.azure-hudhud}"
+exec "${HUDHUD_AZ:-$HOME/.local/bin/az}" "$@"

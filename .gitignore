@@ -29,3 +29,6 @@ inspiration-projects.json
 
 # local-only review page for the scouting list: never committed, never deployed
 site/review/
+
+# Azure identifiers and other machine-local notes: never committed (the repo goes public)
+*.local.md
