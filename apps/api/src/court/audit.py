@@ -13,7 +13,6 @@ whole story, including what the Critic refused, not only what aired.
 """
 
 import asyncio
-import os
 import uuid
 from datetime import UTC, datetime
 from typing import Any, Protocol
@@ -48,10 +47,10 @@ class CosmosStore:
 
     def __init__(self, endpoint: str, *, database: str = "hudhud", container: str = "audit"):
         from azure.cosmos.aio import CosmosClient
-        from azure.identity.aio import AzureCliCredential
 
-        # Pinned to the project's tenant when known, as the Foundry narrator is.
-        self._credential = AzureCliCredential(tenant_id=os.environ.get("AZURE_TENANT_ID") or None)
+        from .identity import credential
+
+        self._credential = credential(aio=True)
         self._client = CosmosClient(endpoint, credential=self._credential)
         self._container = self._client.get_database_client(database).get_container_client(container)
 

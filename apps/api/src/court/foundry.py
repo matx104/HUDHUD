@@ -16,7 +16,6 @@ detection-only cues.
 """
 
 import asyncio
-import os
 from collections import Counter
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
@@ -208,13 +207,11 @@ class FoundryNarrator:
     def _foundry_agent(self, model: str) -> Any:
         from agent_framework import Agent
         from agent_framework.foundry import FoundryChatClient
-        from azure.identity import AzureCliCredential
 
-        # Pin the tenant when it's known: a CLI signed in to another account then fails
-        # loudly instead of billing the wrong subscription.
-        credential = AzureCliCredential(tenant_id=os.environ.get("AZURE_TENANT_ID") or None)
+        from .identity import credential
+
         client = FoundryChatClient(
-            project_endpoint=self.project_endpoint, model=model, credential=credential
+            project_endpoint=self.project_endpoint, model=model, credential=credential()
         )
         return Agent(client=client, name="Narrator", instructions=instructions())
 

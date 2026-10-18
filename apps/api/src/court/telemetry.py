@@ -7,7 +7,7 @@ detection-only or spiked, the attempts, and the Critic's rejection codes. Prompt
 are never recorded: Agent Framework's sensitive-data capture stays off.
 
 With APPLICATIONINSIGHTS_CONNECTION_STRING unset nothing is configured, and every span is a no-op.
-The resource has local auth disabled, so the exporter signs in with the project's Azure CLI and
+The resource has local auth disabled, so the exporter signs in with Entra (court.identity) and
 needs Monitoring Metrics Publisher on it (docs/azure.md).
 
     pip install -e "apps/api[telemetry]"    # azure-monitor-opentelemetry, azure-identity
@@ -27,16 +27,18 @@ def configure(service: str = "court") -> bool:
     connection = os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING")
     if not connection:
         return False
-    from azure.identity import AzureCliCredential
     from azure.monitor.opentelemetry import configure_azure_monitor
     from opentelemetry.sdk.resources import Resource
 
-    # Off Azure, the Azure VM detector's metadata probe only fails and shows up as an error.
-    os.environ.setdefault("OTEL_EXPERIMENTAL_RESOURCE_DETECTORS", "otel")
+    from .identity import credential, in_azure
+
+    if not in_azure():
+        # Off Azure, the Azure VM detector's metadata probe only fails and shows up as an error.
+        os.environ.setdefault("OTEL_EXPERIMENTAL_RESOURCE_DETECTORS", "otel")
 
     configure_azure_monitor(
         connection_string=connection,
-        credential=AzureCliCredential(tenant_id=os.environ.get("AZURE_TENANT_ID") or None),
+        credential=credential(),
         resource=Resource.create(
             {"service.name": service, "service.namespace": product_name().lower()}
         ),
