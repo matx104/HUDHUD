@@ -4,6 +4,7 @@
     python -m court run --seed 21 --narrator foundry    # the same, narrated by Foundry models
     python -m court run --seed 21 --audit cosmos        # and keep every output in Cosmos DB
     python -m court eval                                # momentum calls vs hidden ground truth
+    python -m court narrator-eval --seeds 5             # which model writes the commentary
 
 The Foundry narrator reads FOUNDRY_PROJECT_ENDPOINT and FOUNDRY_MODELS (comma-separated,
 primary first); the Cosmos DB audit trail reads COSMOS_ENDPOINT. scripts/live sets them and
@@ -12,6 +13,7 @@ puts the project's Azure CLI first on PATH.
 
 import argparse
 import asyncio
+import json
 import os
 import sys
 from pathlib import Path
@@ -154,6 +156,38 @@ def _eval(args: argparse.Namespace) -> int:
     return 0
 
 
+def _narrator_eval(args: argparse.Namespace) -> int:
+    from dataclasses import asdict
+    from datetime import UTC, datetime
+
+    from .foundry import FoundryNarrator
+    from .narrator_eval import report, run, summarize
+
+    endpoint = os.environ.get("FOUNDRY_PROJECT_ENDPOINT")
+    if not endpoint:
+        raise SystemExit("set FOUNDRY_PROJECT_ENDPOINT (scripts/live does)")
+    models = [m.strip() for m in os.environ.get("FOUNDRY_MODELS", "").split(",") if m.strip()]
+    seeds = range(args.first, args.first + args.seeds)
+    print(f"Narrator eval: {', '.join(models)} on the alerts of seeds {seeds[0]}-{seeds[-1]}")
+
+    def make(model: str) -> FoundryNarrator:
+        return FoundryNarrator(project_endpoint=endpoint, models=(model,))
+
+    trials = asyncio.run(run(models, seeds, make))
+    summaries = summarize(trials)
+    print(report(summaries))
+    if args.out:
+        record = {
+            "ran": datetime.now(UTC).isoformat(timespec="seconds"),
+            "seeds": list(seeds),
+            "summaries": {m: asdict(s) for m, s in summaries.items()},
+            "trials": [asdict(t) for t in trials],
+        }
+        args.out.write_text(json.dumps(record, indent=2, default=str) + "\n")
+        print(f"wrote {args.out}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="court")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -184,8 +218,18 @@ def main(argv: list[str] | None = None) -> int:
     ev = sub.add_parser("eval", help="score the Scout's momentum calls against ground truth")
     ev.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
     ev.add_argument("--seeds", type=int, default=40, help="how many seeds to score")
+    ne = sub.add_parser("narrator-eval", help="the Foundry models narrate the same alerts")
+    ne.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
+    ne.add_argument("--seeds", type=int, default=5, help="how many matches")
+    ne.add_argument("--out", type=Path, help="write the summaries and every trial as JSON")
     args = parser.parse_args(argv)
     if args.cmd == "eval":
         return _eval(args)
+    if args.cmd == "narrator-eval":
+        telemetry.configure()
+        try:
+            return _narrator_eval(args)
+        finally:
+            telemetry.flush()
     telemetry.configure()
     return asyncio.run(_run(args))
