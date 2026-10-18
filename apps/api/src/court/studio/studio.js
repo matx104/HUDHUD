@@ -94,7 +94,10 @@
     source.addEventListener("end", (e) => finish(JSON.parse(e.data)));
     // An EventSource reconnects by itself, which would start a new match: close on any error.
     source.addEventListener("error", (e) => {
-      if (e.data) notice(`Something went wrong on the server: ${JSON.parse(e.data).detail}`);
+      if (e.data) {
+        const { detail, ref } = JSON.parse(e.data);
+        notice(ref ? `Sorry: ${detail} (reference ${ref}).` : `Sorry: ${detail}.`);
+      }
       else if (source.readyState !== EventSource.CLOSED) notice("The connection to the studio dropped.");
       stop();
     });

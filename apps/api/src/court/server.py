@@ -16,6 +16,7 @@ narrator takes over, and the studio says so), and so are concurrent streams.
 import asyncio
 import inspect
 import json
+import logging
 import os
 import random
 import uuid
@@ -27,6 +28,7 @@ from typing import Any, Literal
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
+from opentelemetry import trace
 from opentelemetry.trace import SpanKind
 
 from match_events import MatchMeta, Shot, ShotOutcome, Side, generate, minute_label
@@ -45,6 +47,8 @@ STUDIO = Path(__file__).parent / "studio"
 # second-half momentum call.
 DEMO_SEEDS = (21, 7, 33)
 MAX_STREAMS = int(os.environ.get("STUDIO_MAX_STREAMS", "8"))
+MAX_SESSION_S = 15 * 60  # a backstop: no stream outlives this, whatever the client does
+log = logging.getLogger("court.studio")
 DAILY_MODEL_MATCHES = int(os.environ.get("STUDIO_DAILY_MODEL_MATCHES", "200"))
 
 
@@ -174,8 +178,11 @@ class Session:
                 span.set_attributes({f"hudhud.{k}": v for k, v in orch.stats.items()})
                 span.set_attribute("hudhud.cost_usd", cost)
                 self.send("end", summary)
-        except Exception as error:  # tell the page; never leave it waiting
-            self.send("error", {"detail": f"{type(error).__name__}: {error}"[:300]})
+        except Exception as error:  # tell the page, never leave it waiting; details stay here
+            ref = uuid.uuid4().hex[:8]
+            log.exception("studio match %s failed (ref %s)", self.match.meta.match_id, ref)
+            trace.get_current_span().record_exception(error)
+            self.send("error", {"detail": "the match stopped on a server error", "ref": ref})
         finally:
             self.queue.put_nowait(None)
 
@@ -237,6 +244,7 @@ def create_app() -> FastAPI:
     app = FastAPI(title=f"{product_name()} studio", docs_url=None, redoc_url=None)
     sessions: dict[str, Session] = {}
     budget = ModelBudget(DAILY_MODEL_MATCHES)
+    app.state.sessions = sessions  # read by the tests: every stream must leave none behind
 
     @app.get("/healthz")
     def healthz() -> dict[str, str]:
@@ -273,27 +281,38 @@ def create_app() -> FastAPI:
             raise HTTPException(404, f"no demo match with seed {seed}")
         if len(sessions) >= MAX_STREAMS:
             raise HTTPException(503, "the studio is full: try again in a minute")
-        session = Session(
-            seed,
-            narration=narration,
-            speed=max(0.0, min(speed, 600.0)),
-            start=max(0, min(start, 90)),
-            mode=mode,
-            stress=max(0.0, min(stress, 0.5)),
-            budget=budget,
-        )
-        sessions[session.id] = session
-        task = asyncio.create_task(session.run())
+        options = {
+            "narration": narration,
+            "speed": max(0.0, min(speed, 600.0)),
+            "start": max(0, min(start, 90)),
+            "mode": mode,
+            "stress": max(0.0, min(stress, 0.5)),
+        }
 
         async def events() -> AsyncIterator[str]:
+            # The session exists only once streaming starts, and leaves with its task: a client
+            # that disconnects early can't strand one and slip past the stream cap.
+            session = Session(seed, budget=budget, **options)
+            sessions[session.id] = session
+            task = asyncio.create_task(session.run())
+            task.add_done_callback(lambda _: sessions.pop(session.id, None))
+            deadline = asyncio.get_running_loop().time() + MAX_SESSION_S
             meta = session.match.meta
             hello = {"session": session.id, "seed": seed, "narration": session.narration}
             hello |= {"home": _team(meta.home), "away": _team(meta.away)}
             hello |= {"notices": session.notices, "competition": meta.competition}
             try:
                 yield _sse("hello", hello)
-                while (item := await session.queue.get()) is not None:
-                    if await request.is_disconnected():
+                while True:
+                    left = deadline - asyncio.get_running_loop().time()
+                    try:
+                        item = await asyncio.wait_for(session.queue.get(), timeout=max(left, 0))
+                    except TimeoutError:
+                        yield _sse(
+                            "error", {"detail": "this match ran past the studio's time limit"}
+                        )
+                        break
+                    if item is None or await request.is_disconnected():
                         break
                     yield _sse(*item)
             finally:

@@ -88,3 +88,19 @@ def test_joining_late_narrates_only_what_comes_after(client):
     cues = [d for k, d in events if k == "output" and d["type"] == "cue"]
     assert cues and all(c["t"] >= 54 * 60 for c in cues)
     assert events[-1][1]["stats"]["alerts_before_joining"] > 0
+
+
+def test_a_finished_stream_leaves_no_session_behind(client):
+    _events(client, "seed=7&speed=0")
+    assert client.app.state.sessions == {}
+
+
+def test_a_server_error_reaches_the_page_without_its_details(client, monkeypatch):
+    async def broken(*args, **kwargs):
+        raise RuntimeError("internal detail that must stay on the server")
+
+    monkeypatch.setattr("court.server.run_match", broken)
+    kind, data = _events(client, "seed=21&speed=0")[-1]
+    assert kind == "error" and data["detail"] == "the match stopped on a server error"
+    assert "internal detail" not in json.dumps(data) and len(data["ref"]) == 8
+    assert client.app.state.sessions == {}
