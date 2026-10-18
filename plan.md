@@ -45,7 +45,7 @@
 ## Phase 3 — Differentiators + polish (Oct 24–25)
 
 - [ ] **Failure recovery demo (0/150 competitors claim it):** kill an agent mid-match on camera → orchestrator detects, retries/reassigns, broadcast never drops; surfaced as a feature, not a footnote
-- [ ] Multilingual: EN native + UR + AR native-register output (owner-review loop on non-English strings — flag, don't self-trust)
+- [x] **Multilingual** (2026-10-18, ADR 0009): Urdu and Arabic translated from the verified line under the same law (no invented number, names kept); refused translations air in English; the English original rides along. **Owner review pending:** docs/review/ur-ar.md
 - [ ] Automated recap: post-match report, evidence-linked, exportable
 - [ ] Observability: agent traces, token/cost meter vs the $100 ceiling (the day-job flex)
   - Application Insights + Log Analytics + Foundry tracing; a HUDHUD workbook with the charts; a **local-only control room** page in the site whose buttons open the Azure portal views (cost, budget, app health, AI usage, AI logs) for the demo recording. Public site never shows it: the links carry subscription and tenant IDs
