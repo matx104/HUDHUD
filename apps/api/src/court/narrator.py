@@ -80,6 +80,10 @@ class TemplateNarrator:
         alert = self._alerts[verdict.claim.alert_id]
         return self.compose(alert, state, attempt=verdict.claim.attempt + 1)
 
+    def spend(self, alert_id: str) -> dict[str, object]:
+        """The receipt's writer line: a template costs nothing and calls no model."""
+        return {"writer": "template"}
+
     # --- composition ---------------------------------------------------------------
 
     def compose(

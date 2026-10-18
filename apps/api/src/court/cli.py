@@ -23,7 +23,15 @@ from match_events import Side, generate, read_jsonl
 from . import telemetry
 from .audit import AuditTrail, CosmosStore
 from .config import ARCHITECTURE_NAME, product_name
-from .contracts import OUTPUT_ADAPTER, Cue, Degradation, Output, RejectionNotice, Spiked
+from .contracts import (
+    OUTPUT_ADAPTER,
+    Cue,
+    Degradation,
+    Output,
+    Receipt,
+    RejectionNotice,
+    Spiked,
+)
 from .evals import evaluate, report
 from .localizer import Localizer
 from .narrator import TemplateNarrator
@@ -37,6 +45,8 @@ def _console(output: Output) -> None:
             retry = f"  (attempt {output.attempts})" if output.attempts > 1 else ""
             cites = " ".join(output.evidence)
             print(f"{output.minute:>7} {mark} {output.headline}  {output.text}{retry}  [{cites}]")
+            if output.receipt:
+                print(f"{'':>9}receipt  {_receipt(output.receipt)}")
         case RejectionNotice():
             why = "; ".join(f"{r.code}: {r.detail}" for r in output.reasons)
             line = f'"{output.claim.text}"'
@@ -45,6 +55,23 @@ def _console(output: Output) -> None:
             print(f"{output.minute:>7} ✖ SPIKED {output.claim.id}  never aired")
         case Degradation():
             print(f"{output.minute:>7} ⚠ SERVICE {output.level.upper()}  {output.detail}")
+
+
+def _receipt(r: Receipt) -> str:
+    def n(count: int, noun: str) -> str:
+        return f"{count} {noun}" + ("" if count == 1 else "s")
+
+    if r.writer == "none":
+        parts = ["detection only: the Scout's facts, no writer", n(r.evidence, "event") + " cited"]
+    else:
+        parts = [r.writer, n(r.attempts, "attempt"), n(r.numbers_checked, "number") + " checked"]
+        parts += [n(r.facts_recomputed, "fact") + " recomputed", n(r.evidence, "event") + " cited"]
+    parts.append(f"{r.latency_ms / 1000:.1f} s")
+    if r.model_calls:
+        parts.append(f"{r.tokens_in:,} in / {r.tokens_out:,} out, ${r.cost_usd:.4f}")
+    if r.handovers:
+        parts.append(n(r.handovers, "handover"))
+    return " · ".join(parts)
 
 
 def _jsonl(output: Output) -> None:

@@ -61,19 +61,23 @@ class TokenMeter:
     tokens_in: Counter[str] = field(default_factory=Counter)
     tokens_out: Counter[str] = field(default_factory=Counter)
 
-    def record(self, model: str, usage: Any) -> None:
-        self.calls[model] += 1
+    def record(self, model: str, usage: Any) -> tuple[int, int]:
+        """Counts one call; returns its tokens (in, out)."""
+        tokens = (0, 0)
         if usage is not None:
-            self.tokens_in[model] += usage.get("input_token_count") or 0
-            self.tokens_out[model] += usage.get("output_token_count") or 0
+            tokens = (usage.get("input_token_count") or 0, usage.get("output_token_count") or 0)
+        self.calls[model] += 1
+        self.tokens_in[model] += tokens[0]
+        self.tokens_out[model] += tokens[1]
+        return tokens
+
+    def price(self, model: str, tokens_in: int, tokens_out: int) -> float:
+        price_in, price_out = self.prices.get(model, (0.0, 0.0))
+        return (tokens_in * price_in + tokens_out * price_out) / 1_000_000
 
     def cost_usd(self, model: str | None = None) -> float:
         models = [model] if model else list(self.calls)
-        total = 0.0
-        for m in models:
-            price_in, price_out = self.prices.get(m, (0.0, 0.0))
-            total += (self.tokens_in[m] * price_in + self.tokens_out[m] * price_out) / 1_000_000
-        return total
+        return sum(self.price(m, self.tokens_in[m], self.tokens_out[m]) for m in models)
 
     def summary(self) -> str:
         parts = [
@@ -117,11 +121,12 @@ class FoundryNarrator:
         self._make_agent = agent_factory or self._foundry_agent
         self._agents: dict[str, Any] = {}
         self._drafts: dict[str, tuple[Alert, Claim]] = {}
+        self._spend: dict[str, dict[str, Any]] = {}  # per alert, for the cue's receipt
 
     async def draft(self, alert: Alert, state: MatchState) -> Claim:
         facts = self._template.compose(alert, state, attempt=1)
         self._drafts[alert.id] = (alert, facts)
-        text = await self._write(self._sheet(alert, facts, state))
+        text = await self._write(self._sheet(alert, facts, state), alert.id)
         return facts.model_copy(update={"text": text})
 
     async def rewrite(self, verdict: Verdict, state: MatchState) -> Claim:
@@ -134,7 +139,7 @@ class FoundryNarrator:
             "Write the line again from the same facts, fixing exactly that.\n\n"
             + self._sheet(alert, facts, state)
         )
-        text = await self._write(prompt)
+        text = await self._write(prompt, alert.id)
         return facts.model_copy(
             update={"id": f"{alert.id}.{attempt}", "attempt": attempt, "text": text}
         )
@@ -165,7 +170,18 @@ class FoundryNarrator:
 
     # --- calling the models -------------------------------------------------------------
 
-    async def _write(self, prompt: str) -> str:
+    def spend(self, alert_id: str) -> dict[str, Any]:
+        """The receipt's writer line for one alert: the model, its calls, tokens and cost."""
+        ledger = dict(self._spend.get(alert_id, {}))
+        if "cost_usd" in ledger:
+            ledger["cost_usd"] = round(ledger["cost_usd"], 6)
+        return ledger
+
+    async def _write(self, prompt: str, alert_id: str) -> str:
+        ledger = self._spend.setdefault(
+            alert_id,
+            {"model_calls": 0, "tokens_in": 0, "tokens_out": 0, "cost_usd": 0.0, "handovers": 0},
+        )
         failure: Exception | None = None
         for i, model in enumerate(self.models):
             try:
@@ -175,12 +191,18 @@ class FoundryNarrator:
                 response = await asyncio.wait_for(
                     agent.run(prompt, options=_options(model)), timeout=self.timeout_s
                 )
-                self.meter.record(model, getattr(response, "usage_details", None))
+                tokens = self.meter.record(model, getattr(response, "usage_details", None))
+                ledger["writer"] = model
+                ledger["model_calls"] += 1
+                ledger["tokens_in"] += tokens[0]
+                ledger["tokens_out"] += tokens[1]
+                ledger["cost_usd"] += self.meter.price(model, *tokens)
                 return response.value.text.strip()
             except Exception as error:  # timeouts, throttling, outages: hand over to the next
                 failure = error
                 if i + 1 < len(self.models):
                     self.handovers += 1
+                    ledger["handovers"] += 1
         raise NarrationUnavailable(f"no deployment answered: {failure!r}") from failure
 
     def _foundry_agent(self, model: str) -> Any:

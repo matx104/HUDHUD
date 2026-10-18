@@ -10,6 +10,7 @@ resumes and that is announced too.
 """
 
 import asyncio
+import time
 from collections import Counter
 from collections.abc import AsyncIterable, Callable, Iterable
 
@@ -43,8 +44,9 @@ class Orchestrator:
         self.state = MatchState(meta)
         self.scout = scout or Scout()
         self.localizer = localizer or Localizer()
+        self.narrator = narrator or TemplateNarrator()
         self.workflow = build_narrative_workflow(
-            narrator=narrator or TemplateNarrator(),
+            narrator=self.narrator,
             critic=critic or Critic(),
             localizer=self.localizer,
             state=self.state,
@@ -70,6 +72,7 @@ class Orchestrator:
             span.set_attributes(_outcome(alert, self._outputs, self.level))
 
     async def _warm_path(self, alert: Alert) -> None:
+        started = time.perf_counter()
         failure: Exception | None = None
         for _ in range(self.retries + 1):
             try:
@@ -81,12 +84,26 @@ class Orchestrator:
             if self.level != "full":
                 self._set_level("full", alert, "narrative path recovered; full service resumed")
             for output in result.get_outputs():
-                self._emit(output)
+                self._emit(self._receipted(output, alert, started))
             return
         if self.level != "detection_only":
             detail = f"narrative path failed ({type(failure).__name__}): detection-only cues"
             self._set_level("detection_only", alert, detail)
-        self._emit(self.localizer.detection_cue(alert, self.state))
+        cue = self.localizer.detection_cue(alert, self.state)
+        self._emit(self._receipted(cue, alert, started))
+
+    def _receipted(self, output: Output, alert: Alert, started: float) -> Output:
+        """Completes a cue's receipt: the writer and its spend (the narrator's ledger), the time."""
+        if not isinstance(output, Cue) or output.receipt is None:
+            return output
+        update: dict[str, object] = {"latency_ms": round((time.perf_counter() - started) * 1000, 1)}
+        spend = getattr(self.narrator, "spend", None)
+        if spend:
+            ledger = spend(alert.id)
+            if output.status != "verified":
+                ledger.pop("writer", None)  # a detection-only cue had no writer, whoever tried
+            update |= ledger
+        return output.model_copy(update={"receipt": output.receipt.model_copy(update=update)})
 
     def _set_level(self, level: str, alert: Alert, detail: str) -> None:
         self.level = level
@@ -131,6 +148,20 @@ def _outcome(alert: Alert, outputs: list[Output], level: str) -> dict[str, str |
         "hudhud.rejections": len(refused),
         "hudhud.rejection_codes": ",".join(sorted({r.code for o in refused for r in o.reasons})),
         "hudhud.service_level": level,
+        **(_receipt_attributes(cue) if cue else {}),
+    }
+
+
+def _receipt_attributes(cue: Cue) -> dict[str, str | int | float]:
+    r = cue.receipt
+    if r is None:
+        return {}
+    return {
+        "hudhud.writer": r.writer,
+        "hudhud.numbers_checked": r.numbers_checked,
+        "hudhud.facts_recomputed": r.facts_recomputed,
+        "hudhud.cost_usd": r.cost_usd,
+        "hudhud.latency_ms": r.latency_ms,
     }
 
 

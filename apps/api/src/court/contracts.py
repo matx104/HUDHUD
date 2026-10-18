@@ -113,6 +113,9 @@ class Reason(_Frozen):
 class Verdict(_Frozen):
     claim: Claim
     reasons: tuple[Reason, ...]
+    numbers_checked: int = Field(
+        default=0, description="Numbers in the text matched to figures or recomputed assertions"
+    )
 
     @property
     def approved(self) -> bool:
@@ -124,6 +127,30 @@ class Verdict(_Frozen):
 
 
 # --- outputs: what leaves the system -------------------------------------------------
+
+
+class Receipt(_Frozen):
+    """How a cue got on air: who wrote it, what was checked, and what it cost.
+
+    Each part comes from the agent that knows it: the checks from the Critic's verdict, the
+    writer and its spend from the narrator, the time from the Orchestrator. Nothing is estimated
+    from the outside except cost, which is tokens at list prices.
+    """
+
+    writer: str = Field(
+        default="unknown",
+        description="The model that wrote the line, 'template', or 'none' for detection-only cues",
+    )
+    attempts: int = 0
+    numbers_checked: int = Field(default=0, description="Numbers in the line the Critic matched")
+    facts_recomputed: int = Field(default=0, description="Assertions recomputed from raw events")
+    evidence: int = Field(default=0, description="Events cited")
+    model_calls: int = 0
+    tokens_in: int = 0
+    tokens_out: int = 0
+    cost_usd: float = 0.0
+    handovers: int = Field(default=0, description="Times a backup model took over for this cue")
+    latency_ms: float = Field(default=0.0, description="From the alert to the cue")
 
 
 class Cue(_Frozen):
@@ -146,6 +173,7 @@ class Cue(_Frozen):
     attempts: int
     priority: float
     ttl_s: float
+    receipt: Receipt | None = None
 
 
 class RejectionNotice(_Frozen):

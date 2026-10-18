@@ -8,7 +8,7 @@ from typing import Literal
 
 from match_events import minute_label
 
-from .contracts import Alert, AlertKind, Cue, Verdict
+from .contracts import Alert, AlertKind, Cue, Receipt, Verdict
 from .state import MatchState
 
 Mode = Literal["casual", "analyst"]
@@ -45,6 +45,13 @@ class Localizer:
             attempts=claim.attempt,
             priority=claim.severity,
             ttl_s=TTL_S[claim.kind],
+            # The checks; the Orchestrator adds the writer, its spend and the time.
+            receipt=Receipt(
+                attempts=claim.attempt,
+                numbers_checked=verdict.numbers_checked,
+                facts_recomputed=len(claim.assertions),
+                evidence=len(claim.citations),
+            ),
         )
 
     def detection_cue(self, alert: Alert, state: MatchState) -> Cue:
@@ -80,6 +87,8 @@ class Localizer:
             attempts=0,
             priority=alert.severity,
             ttl_s=TTL_S[alert.kind],
+            # No writer and no Critic: the Scout's own computed facts, cited.
+            receipt=Receipt(writer="none", evidence=len(alert.evidence)),
         )
 
 

@@ -3,6 +3,7 @@
 import asyncio
 
 from court.audit import AuditTrail, MemoryStore
+from court.contracts import Cue
 from court.narrator import TemplateNarrator
 from court.orchestrator import run_match
 
@@ -47,10 +48,20 @@ async def test_a_rejection_is_kept_with_the_critics_reasons(swing_match):
     assert all(r["reasons"] and r["claim"]["citations"] is not None for r in rejected)
 
 
+def _untimed(outputs):
+    """The same match airs the same outputs; only the receipts' timings differ run to run."""
+    return [
+        o.model_copy(update={"receipt": o.receipt.model_copy(update={"latency_ms": 0.0})})
+        if isinstance(o, Cue) and o.receipt
+        else o
+        for o in outputs
+    ]
+
+
 async def test_a_broken_store_costs_the_trail_not_the_broadcast(swing_match):
     _, expected = await _run(swing_match, MemoryStore())
     trail, aired = await _run(swing_match, BrokenStore())
-    assert aired == expected
+    assert _untimed(aired) == _untimed(expected)
     assert trail.written == 0 and trail.failure.startswith("ConnectionError")
     assert trail.dropped == len(expected) + 2
 

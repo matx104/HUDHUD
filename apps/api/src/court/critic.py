@@ -152,13 +152,17 @@ class Critic:
                     f"{assertion.team}, events show {shown}",
                 )
 
-        for number in _ungrounded(claim):
+        ungrounded = _ungrounded(claim)
+        for number in ungrounded:
             refuse(
                 RejectionCode.UNGROUNDED_NUMBER,
                 f"the text says {number}, which none of the claim's figures or assertions support",
             )
 
-        return Verdict(claim=claim, reasons=tuple(reasons))
+        stated = len(dict.fromkeys(NUMBER.findall(claim.text)))
+        return Verdict(
+            claim=claim, reasons=tuple(reasons), numbers_checked=stated - len(ungrounded)
+        )
 
 
 def _ungrounded(claim: Claim) -> list[str]:
