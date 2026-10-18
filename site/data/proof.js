@@ -1,2 +1,2 @@
-// Written by scripts/redact.py: the redacted Azure screenshots on the Control room page.
+// Written by scripts/redact.py: redacted, reviewed Azure screenshots (#/control).
 window.PROOF = [];

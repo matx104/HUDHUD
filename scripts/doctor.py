@@ -20,7 +20,8 @@ from datetime import UTC, datetime
 
 from _azure import GROUP, ROOT, SITE_URL, STUDIO_APP, az, az_json, studio_url
 
-EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
+# What must never reach the published proof: anything like an account, an email or an ID.
+SUSPICIOUS = re.compile(r"@|#ext#|onmicrosoft|[0-9a-f]{8}-[0-9a-f]{4}|[0-9a-f]{16,}", re.I)
 
 results: list[tuple[str, str, str]] = []  # (mark, check, detail)
 
@@ -199,14 +200,12 @@ def main() -> int:
 
     if publish:
         checks = [
-            {
-                "ok": mark != "✘",
-                "warn": mark == "!",
-                "check": name,
-                "detail": EMAIL.sub("the project's account", detail),
-            }
+            {"ok": mark != "✘", "warn": mark == "!", "check": name, "detail": detail}
             for mark, name, detail in results
         ]
+        checks[0]["detail"] = "the project's own account, on Azure for Students"  # never the name
+        if leaks := [c["detail"] for c in checks if SUSPICIOUS.search(c["detail"])]:
+            raise SystemExit(f"refusing to publish: details look like accounts or IDs: {leaks}")
         record = {"checked": datetime.now(UTC).isoformat(timespec="minutes"), "checks": checks}
         out = ROOT / "site" / "data" / "doctor.js"
         header = (

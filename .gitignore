@@ -37,3 +37,4 @@ site/review/
 
 # Azure screenshots before redaction: they never leave this machine (scripts/redact.py)
 proof/raw/
+proof/review/

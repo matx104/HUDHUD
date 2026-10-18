@@ -77,6 +77,8 @@
 - [ ] **Fabric mirror** of the audit container: the owner starts the trial (Central India) → workspace → mirrored Azure Cosmos DB database → a SQL query and a Power BI page for the video
 - [x] **Showcase site: build log and credits pages** (2026-10-18): `#/log` (live vs next, with a receipt for the seed-21 Foundry match) and `#/credits` (data, the Reactor session, libraries and licenses, fonts, tools, the name's source)
 
+- **Before the repo goes public:** purge from git history the scouting notes (open decision) and a fragment of the owner's directory name that one commit (b7175cc, `scripts/redact.py`) carried; the next commit removed it from the source.
+
 ## Scope law (cut order, first to go)
 
 0. "Ref's call" cue (roadmap bridge) → 1. Showcase site (repo README carries launch) → 2. Extra languages beyond UR/AR → 3. What-if simulation → 4. Recap export formats (one format ships) → 5. NEVER cut: Critic loop, recovery demo, video, submission buffer.
