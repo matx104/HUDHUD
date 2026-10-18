@@ -608,6 +608,19 @@ pre {
 .credits dt { margin-top: 1rem; font-weight: 600; }
 .credits dd { margin: 0.2rem 0 0; color: var(--chalk-dim); font-size: 0.9375rem; }
 
+/* ---------- control room (local only) ---------- */
+.control { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 1.5rem; }
+.control-group h2 { font-size: 1.5rem; padding-bottom: 0.5rem; margin-bottom: 0.75rem; border-bottom: 2px solid var(--lime); }
+.control-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.control-link {
+  display: grid; gap: 0.15rem; padding: 0.85rem 1rem; text-decoration: none;
+  border: 1px solid var(--chalk-faint); border-radius: 6px; background: var(--navy-raised);
+  transition: border-color 0.15s, transform 0.15s;
+}
+.control-link:hover { border-color: var(--lime); transform: translateY(-1px); }
+.control-link strong { font: 800 1.25rem / 1.1 var(--display); }
+.control-link span { font-size: 0.875rem; color: var(--chalk-dim); }
+
 /* ---------- layout breakpoints ---------- */
 @media (max-width: 72rem) {
   .nav { display: none; }
@@ -628,6 +641,7 @@ pre {
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .north-star { grid-template-columns: minmax(0, 1fr); }
   .log-grid, .credits { grid-template-columns: minmax(0, 1fr); }
+  .control { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .receipt { position: relative; top: auto; max-width: 26rem; }
 }
 @media (max-width: 48rem) {
@@ -642,4 +656,5 @@ pre {
   .brand-name { font-size: 1.5rem; }
   .pager strong { font-size: 1.375rem; }
   .log li { grid-template-columns: minmax(0, 1fr); }
+  .control { grid-template-columns: minmax(0, 1fr); }
 }

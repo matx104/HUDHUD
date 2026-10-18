@@ -48,9 +48,53 @@
   drawSignal();
   if (calm.matches) $$("[data-diagram], [data-signal]").forEach((s) => s.pauseAnimations?.());
   startCountdown();
-  startMenu();
-  startReveals();
-  startRouter();
+  // The control room exists only on the owner's machine: a page built from a git-ignored file of
+  // portal links (scripts/control_room.py). The public site never asks for that file.
+  controlRoom().then(() => {
+    startMenu();
+    startReveals();
+    startRouter();
+  });
+
+  function controlRoom() {
+    if (!["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)) return Promise.resolve();
+    return new Promise((done) => {
+      const script = Object.assign(document.createElement("script"), { src: "data/ops.local.js" });
+      script.onload = () => {
+        if (window.OPS) buildControlRoom(window.OPS);
+        done();
+      };
+      script.onerror = () => done();
+      document.head.append(script);
+    });
+  }
+
+  function buildControlRoom(ops) {
+    const page = el("section", "page wrap");
+    Object.assign(page.dataset, { page: "control", title: "Control room", summary: "Azure, one click away", local: "" });
+    page.setAttribute("aria-labelledby", "control-title");
+    const head = el("header", "page-head");
+    const title = Object.assign(el("h1", "", "Control room"), { id: "control-title", tabIndex: -1 });
+    const when = new Date(ops.generated).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+    head.append(title, el("p", "lede", `On this machine only: the public site never shows this page. Each button opens the Azure portal in a new tab, signed in as you. Links made ${when}.`));
+    const grid = el("div", "control");
+    for (const group of ops.groups) {
+      const box = el("section", "control-group");
+      const list = el("ul");
+      for (const link of group.links) {
+        const a = Object.assign(el("a", "control-link"), { href: link.href, target: "_blank", rel: "noopener" });
+        a.append(el("strong", "", link.label), el("span", "", link.detail));
+        const item = el("li");
+        item.append(a);
+        list.append(item);
+      }
+      box.append(el("h2", "", group.title), list);
+      grid.append(box);
+    }
+    page.append(head, grid);
+    $('[data-page="missing"]').before(page);
+    $(".nav").append(Object.assign(el("a", "", "Control room"), { href: "#/control" }));
+  }
 
   // The hackathon clock: counts to the submission deadline in config.js, then says so.
   function startCountdown() {
@@ -345,9 +389,10 @@
 
   function startRouter() {
     const sections = $$("[data-page]");
-    const story = sections.filter((s) => s.dataset.page !== "missing");
     const missing = $('[data-page="missing"]');
-    const keys = story.map((s) => s.dataset.page).filter(Boolean);
+    // Local pages (the control room) can be visited but stay out of the chapters and the pager.
+    const story = sections.filter((s) => s !== missing && !("local" in s.dataset));
+    const keys = sections.filter((s) => s !== missing).map((s) => s.dataset.page).filter(Boolean);
     const pager = $("[data-pager]");
     const sting = $(".sting");
     let current = null;
@@ -398,7 +443,7 @@
     function show(first) {
       const route = resolveRoute(location.hash, keys);
       if (route.redirect) history.replaceState(null, "", route.redirect);
-      const target = route.page === null ? missing : story.find((s) => s.dataset.page === route.page);
+      const target = route.page === null ? missing : sections.find((s) => s.dataset.page === route.page);
       if (route.page === null) $("[data-missing-path]").textContent = `#/${route.path}`;
       if (target === current) return;
       clearTimeout(pending);

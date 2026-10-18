@@ -56,3 +56,14 @@ test("the countdown ends at the official close: Oct 27, 11:59 PM Pacific", () =>
   });
   assert.equal(pacific, "10/27/2026, 23:59");
 });
+
+test("the control room's links never reach the public site", () => {
+  // The links carry the subscription's IDs: git ignores their file, the page names nothing of
+  // it, and site.js asks for it only when served from this machine.
+  assert.doesNotMatch(html, /ops\.local|data-page="control"/);
+  const ignore = fs.readFileSync(path.join(SITE, "..", ".gitignore"), "utf8");
+  assert.match(ignore, /^site\/data\/\*\.local\.js$/m);
+  const js = read("assets/site.js");
+  const guard = js.indexOf('["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)');
+  assert.ok(guard > 0 && guard < js.indexOf("data/ops.local.js"), "load only behind the localhost check");
+});
