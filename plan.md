@@ -70,8 +70,9 @@
 ## Decisions from the official rules (settled 2026-10-18)
 
 - **GitHub Copilot agent mode:** the Monarch builds with it. Done: `.github/copilot-instructions.md` (the laws, the commands, Azure guardrails) and `.vscode/mcp.json` → `scripts/azure-mcp` (Azure MCP Server 2.0.5, pinned, signed in as the project CLI; verified it sees the student subscription, not the Windows account). Next: our own MCP server (the Critic as a tool) in the same file, so Copilot can have a claim checked
-- **Microsoft Fabric:** the audit trail, on Cosmos DB in Fabric (ADR 0004)
-- [ ] **Audit trail** (ADR 0004): owner creates the Entra member user and starts the Fabric trial → workspace, Cosmos DB database, container by match → `AuditSink` off the hot path (a failed write is a `Degradation`, never a dropped cue) → every claim, verdict, cue and degradation kept → a SQL-endpoint query or Power BI page for the video. Exit at trial end: Azure Cosmos DB free tier, same code
+- **Microsoft Fabric:** analytics over the audit trail, by mirroring the free-tier Cosmos DB account into OneLake (ADR 0004, revised: the store is Azure Cosmos DB's free tier)
+- [x] **Audit trail** (2026-10-18, ADR 0004): `court/audit.py` tees the sink, writes off the hot path, a failing store costs the trail not the broadcast (4 tests); `--audit cosmos` → `hudhud-audit` (free tier, Central India, keys off, capped at 1,000 RU/s). First live run: 11 records, read back by query
+- [ ] **Fabric mirror** of the audit container: the owner starts the trial (Central India) → workspace → mirrored Azure Cosmos DB database → a SQL query and a Power BI page for the video
 - [x] **Showcase site: build log and credits pages** (2026-10-18): `#/log` (live vs next, with a receipt for the seed-21 Foundry match) and `#/credits` (data, the Reactor session, libraries and licenses, fonts, tools, the name's source)
 
 ## Scope law (cut order, first to go)
