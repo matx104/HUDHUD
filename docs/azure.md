@@ -55,6 +55,23 @@ there. It's also the closest region to Karachi.
 
 Cosmos DB is in Central India because UAE North refused new accounts for high demand on 2026-10-18.
 
+| `hudhud-logs` | Log Analytics workspace, UAE North | 30-day retention; **daily cap 0.1 GB**, which keeps it inside the free 5 GB a month |
+| `hudhud-insights` | Application Insights (workspace-based) | **local auth disabled**: the exporter signs in with Entra; the Monarch holds Monitoring Metrics Publisher on it |
+| HUDHUD control room | Azure Monitor workbook | deployed by `make control-room` from `infra/monitor/hudhud-workbook.json` (no IDs in the repo); a fixed GUID name, so a rerun updates it |
+
+### The control room
+
+`make control-room` deploys the workbook and writes `site/data/ops.local.js` (git-ignored: the links
+carry the subscription's IDs). `make site`, then open http://localhost:8000/#/control: twenty buttons
+into the portal, grouped as the dashboard, money, AI at work, app health, data and everything. The
+page exists only when the site is served from this machine; the public site never requests the file
+(`tests/site/site.test.cjs` checks it). The deep links follow the portal's URL patterns and were not
+clicked through by the agent, which never signs in to the portal; check each before recording.
+
+`scripts/live` sends traces to Application Insights: a `match` request per run with its stats and
+cost, a span per alert with its outcome and the Critic's rejection codes, and Agent Framework's
+`chat <model>` spans with token counts (no prompts or model output).
+
 The Monarch's account holds **Cognitive Services User** on `hudhud-foundry`: the Foundry project
 endpoint needs `Microsoft.CognitiveServices/*` data actions. (Azure AI Developer, tried first, covers
 only OpenAI, Speech, Content Safety and model-catalog actions, so the project returned 403; "Azure AI
