@@ -130,6 +130,8 @@
     $$("[data-product-name]").forEach((n) => { n.textContent = name; });
     $$("[data-product-mark]").forEach((n) => { n.textContent = site.productMark ?? name; });
     $$("[data-repo-link]").forEach((n) => { n.href = site.repoUrl ?? "#"; });
+    const share = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(site.siteUrl ?? location.origin)}`;
+    $$("[data-share-linkedin]").forEach((n) => { n.href = share; });
     $$("[data-when-repo]").forEach((n) => { n.hidden = (n.dataset.whenRepo === "public") !== Boolean(site.repoPublic); });
     // The live studio leads: a match a visitor can watch, with the Critic at work.
     if (site.studioUrl) {

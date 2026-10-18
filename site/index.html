@@ -92,6 +92,7 @@
         <span class="countdown-clock" data-countdown-clock>--</span>
       </div>
       <nav class="nav" aria-label="Main">
+        <a href="#/about">About</a>
         <a href="#/problem">Problem</a>
         <a href="#/goal">Goal</a>
         <a href="#/how">How it works</a>
@@ -171,10 +172,53 @@
       </div>
     </section>
 
-    <!-- ============ 01 THE PROBLEM ============ -->
-    <section class="page wrap" data-page="problem" data-title="The problem" data-summary="Fluent AI commentary that can't prove what it says" aria-labelledby="problem-title">
+    <!-- ============ 01 IN PLAIN WORDS ============ -->
+    <section class="page wrap" data-page="about" data-title="In plain words" data-summary="What this is, why, and the hackathon behind it" aria-labelledby="about-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">01</span>
+        <h1 id="about-title" tabindex="-1">AI football commentary that shows its working</h1>
+        <p class="lede"><span data-product-name></span> watches a football match and commentates on it, like a broadcaster would. The difference: before any line goes on air, a second AI checks every fact in it against what actually happened on the pitch. If a claim can't be proven, it doesn't air.</p>
+      </header>
+
+      <div class="plain">
+        <section data-reveal>
+          <h2>What it does</h2>
+          <p>As a match plays, one AI spots the moments that matter: a goal, a big chance, a team taking control. Another writes the line a commentator would say. A third, the Critic, checks the line against the match's raw events. It recounts the passes, re-measures the distances, checks that every event cited had actually happened yet. Only then does the line reach the screen, with its evidence attached and a receipt showing what it cost.</p>
+        </section>
+        <section data-reveal>
+          <h2>Why I built it</h2>
+          <p>AI writes fluent sentences, and fluent isn't the same as true. In sport, a wrong number on air costs the broadcaster the viewer's trust. I wanted commentary you can audit: every claim traceable to the moment it describes, and a system honest enough to say "I can't prove that" instead of making it up. If a model fails mid-match, the broadcast keeps going and says so.</p>
+        </section>
+        <section data-reveal>
+          <h2>The hackathon</h2>
+          <p><span data-product-name></span> is my entry to <strong>Inside the Game: Developer Hackathon</strong>, run by Microsoft with the Premier League from October 6 to 27, 2026. Developers around the world build AI that turns football-realistic, synthetic match data into insight, commentary and recaps, using Microsoft's AI and cloud tools. Judging runs to November 10, and winners are announced on November 20.</p>
+          <p>Every club, player and match here is invented, as the rules require. <span data-product-name></span> is an independent entry: it isn't affiliated with or endorsed by Microsoft or the Premier League.</p>
+        </section>
+        <section data-reveal>
+          <h2>Try it</h2>
+          <p>Watch a synthetic match in the studio. The Critic's refusals appear on screen as they happen, and one button takes the commentator off air so you can watch the broadcast recover.</p>
+          <div class="actions">
+            <a class="button" data-studio-link hidden href="#">Watch a live match</a>
+            <a class="button button-quiet" href="#/how">How it works</a>
+            <a class="button button-quiet" data-share-linkedin href="#">Share on LinkedIn</a>
+          </div>
+        </section>
+      </div>
+
+      <h2 class="section-title" data-reveal>Official links</h2>
+      <ul class="official" data-reveal>
+        <li><a href="https://innovationstudio.microsoft.com/hackathons/insidethegamedeveloperhackathon/home"><strong>The hackathon</strong><span>Microsoft Innovation Studio: the challenge, the dates and the entries</span></a></li>
+        <li><a href="https://github.com/microsoft/insidethegamehackathon/blob/main/OFFICIAL%20RULES.md"><strong>Official rules</strong><span>Microsoft's rules for the hackathon, on GitHub</span></a></li>
+        <li><a href="https://github.com/microsoft/insidethegamehackathon"><strong>Hackathon repository</strong><span>Guides, resource playlists, the code of conduct</span></a></li>
+        <li><a href="https://developer.microsoft.com/en-us/reactor/series/S-1709/"><strong>Microsoft Reactor series</strong><span>The hackathon's live sessions for builders</span></a></li>
+        <li><a href="https://www.youtube.com/watch?v=EQ187ohgCbo"><strong>The builders' session</strong><span>"Build AI-powered soccer insights apps with AKS and ACA", October 14</span></a></li>
+      </ul>
+    </section>
+
+    <!-- ============ 02 THE PROBLEM ============ -->
+    <section class="page wrap" data-page="problem" data-title="The problem" data-summary="Fluent AI commentary that can't prove what it says" aria-labelledby="problem-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">02</span>
         <h1 id="problem-title" tabindex="-1">AI can talk about football. It can't prove what it says.</h1>
         <p class="lede">Language models write fluent commentary in seconds. They also invent numbers, mix up minutes and cite moments that haven't happened yet. On a live broadcast, a wrong line reaches every viewer before anyone can check it.</p>
       </header>
@@ -211,12 +255,12 @@
       </div>
     </section>
 
-    <!-- ============ 02 THE GOAL ============ -->
-    <section class="page wrap" data-page="goal" data-title="The goal" data-summary="Built for every category, honest about the odds" aria-labelledby="goal-title">
+    <!-- ============ 03 THE GOAL ============ -->
+    <section class="page wrap" data-page="goal" data-title="The goal" data-summary="Built to win everything; aiming where the rules allow" aria-labelledby="goal-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">02</span>
-        <h1 id="goal-title" tabindex="-1">We built for every category. Judge us against it.</h1>
-        <p class="lede"><span data-product-name></span> is built for all six categories of the Inside the Game hackathon. The rules let one project win one grand prize and one category prize, so that's the aim. Building for all six forces the discipline of six.</p>
+        <span class="chapter-no" aria-hidden="true">03</span>
+        <h1 id="goal-title" tabindex="-1">We set out to win every category. The rules allow two.</h1>
+        <p class="lede">The original plan was to win all six awards of the Inside the Game hackathon together. The official rules let one project take at most one grand prize and one category prize, so this is the goal we hold ourselves to: <strong>first place overall</strong>, and <strong>Best Use of Microsoft Foundry</strong>. Every other category is still built to its full standard, because that is what first place takes.</p>
       </header>
 
       <div class="countdown countdown-big" data-countdown role="timer" aria-labelledby="goal-clock-label" data-reveal>
@@ -227,29 +271,29 @@
 
       <ol class="lanes">
         <li data-reveal>
-          <h2>Grand prize</h2>
-          <p>Every lane below, in one match, end to end, without seams.</p>
-          <span class="chip" data-status="progress">In progress</span>
-        </li>
-        <li data-reveal>
-          <h2>Best multi-agent orchestration</h2>
-          <p>Five agents with typed handoffs and shared match state. Knock one out mid-match and the broadcast keeps going.</p>
-          <span class="chip" data-status="done">Running offline</span>
-        </li>
-        <li data-reveal>
-          <h2>Best enterprise solution</h2>
-          <p>An audit trail for every claim, from claim to events to verdict, reviewable after the match. Costs governed under a $100 ceiling.</p>
-          <span class="chip" data-status="progress">Audit trail built</span>
+          <h2>Grand prize: first place</h2>
+          <p>Every lane below, in one match, end to end, live in the studio for anyone to try.</p>
+          <span class="chip" data-status="star">Our target</span>
         </li>
         <li data-reveal>
           <h2>Best use of Microsoft Foundry</h2>
-          <p>Agents built, hosted and orchestrated in Foundry, with a cheaper model for detection and a stronger one for narrative.</p>
-          <span class="chip" data-status="next">Next</span>
+          <p>Models on Foundry write the commentary from facts code computed, and the Critic checks every number. Evaluation chose which model serves, by a rule fixed before the run. Keys are off; Entra ID only.</p>
+          <span class="chip" data-status="star">Our target</span>
+        </li>
+        <li data-reveal>
+          <h2>Best multi-agent orchestration</h2>
+          <p>Five agents with typed handoffs and shared match state. Take the narrator off air mid-match and the broadcast keeps going, and says so.</p>
+          <span class="chip" data-status="done">Live</span>
+        </li>
+        <li data-reveal>
+          <h2>Best enterprise solution</h2>
+          <p>An audit trail on Azure Cosmos DB for every claim, refusal and cue, a receipt on every line, traces in Application Insights, and costs held under a $100 ceiling.</p>
+          <span class="chip" data-status="done">Live</span>
         </li>
         <li data-reveal>
           <h2>Best Azure cloud-native integration</h2>
-          <p>Event-driven from end to end: an event stream into an agent pipeline on Container Apps, out to an overlay cue stream. One command deploys it.</p>
-          <span class="chip" data-status="planned">Planned</span>
+          <p>The studio runs on Azure Container Apps from one image, signing in with its own managed identity and no keys, with every agent step traced.</p>
+          <span class="chip" data-status="done">Live</span>
         </li>
       </ol>
       <p class="aside">The sixth award, second place overall, is the same build.</p>
@@ -258,14 +302,14 @@
       <ol class="timeline">
         <li data-status="done" data-reveal><time>Oct 17–19</time><strong>Groundwork</strong><span>The field studied, the name chosen, a synthetic match generator calibrated over 100 seeds.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–20</time><strong>Skeleton</strong><span>All five agents run a match end to end with offline backends, tested on every push.</span></li>
-        <li data-status="progress" data-reveal><time>Oct 18–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
-        <li data-status="planned" data-reveal><time>Oct 24–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, Urdu and Arabic, automated recaps, the cost meter.</span></li>
+        <li data-status="done" data-reveal><time>Oct 18–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
+        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo and the cost meter are live; Urdu and Arabic, and automated recaps, come next.</span></li>
         <li data-status="planned" data-reveal><time>Oct 26</time><strong>Ship kit</strong><span>The 110-second video, the README, the repo made public.</span></li>
         <li data-status="planned" data-reveal><time>Oct 27</time><strong>Submit</strong><span>A day early, never on deadline day.</span></li>
       </ol>
 
       <blockquote class="pledge" data-reveal>
-        <p>If the core loop can't be demonstrated end to end by October 24, we'll narrow this declaration in public, to the two lanes we can defend. A narrower claim we can hold beats a sweep we can't.</p>
+        <p>We promised to show the core loop end to end by October 24, or narrow this declaration in public. It ran end to end, live on Azure, on October 18.</p>
       </blockquote>
 
       <a class="beyond" href="#/roadmap" data-reveal>
@@ -274,10 +318,10 @@
       </a>
     </section>
 
-    <!-- ============ 03 HOW IT WORKS ============ -->
+    <!-- ============ 04 HOW IT WORKS ============ -->
     <section class="page wrap" data-page="how" data-title="How it works" data-summary="Five agents, a hot path and a warm path" aria-labelledby="how-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">03</span>
+        <span class="chapter-no" aria-hidden="true">04</span>
         <h1 id="how-title" tabindex="-1">How a claim gets on air</h1>
         <p class="lede">Every event takes the hot path: fast, deterministic, no language model. Each alert then takes the warm path, where one agent writes, another checks, and nothing airs until it passes.</p>
       </header>
@@ -358,10 +402,10 @@
       </ol>
     </section>
 
-    <!-- ============ 04 RECOVERY ============ -->
+    <!-- ============ 05 RECOVERY ============ -->
     <section class="page wrap" data-page="recovery" data-title="When an agent fails" data-summary="The broadcast never goes dark" aria-labelledby="recovery-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">04</span>
+        <span class="chapter-no" aria-hidden="true">05</span>
         <h1 id="recovery-title" tabindex="-1">When an agent fails, the broadcast keeps going</h1>
         <p class="lede">The Orchestrator supervises the line. If the Narrator or Critic stops responding, it retries once. If the agent is still down, viewers get detection-only cues, marked as unverified, and the broadcast says when full service is back.</p>
       </header>
@@ -379,10 +423,10 @@
       <p class="aside" data-reveal>A test knocks the Narrator out four times in a row mid-match and checks that the cues never stop.</p>
     </section>
 
-    <!-- ============ 05 DATA ============ -->
+    <!-- ============ 06 DATA ============ -->
     <section class="page wrap" data-page="data" data-title="Synthetic by design" data-summary="Invented clubs, real volumes, every match reproducible" aria-labelledby="data-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">05</span>
+        <span class="chapter-no" aria-hidden="true">06</span>
         <h1 id="data-title" tabindex="-1">Synthetic by design</h1>
         <p class="lede">Every match is generated from a seed: invented clubs, invented players and realistic volumes, about a thousand passes, 29 shots and three goals a match on average. The same seed always replays the same match, so every claim on this site can be reproduced.</p>
       </header>
@@ -401,10 +445,10 @@
       </div>
     </section>
 
-    <!-- ============ 06 WHY ============ -->
+    <!-- ============ 07 WHY ============ -->
     <section class="page wrap" data-page="why" data-title="Why it matters" data-summary="Trust is the product" aria-labelledby="why-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">06</span>
+        <span class="chapter-no" aria-hidden="true">07</span>
         <h1 id="why-title" tabindex="-1">Trust is the product</h1>
         <p class="lede">A model can already write commentary. The open question is whether anyone can rely on it, live, with millions watching. <span data-product-name></span> is built around that question.</p>
       </header>
@@ -423,10 +467,10 @@
       </ol>
     </section>
 
-    <!-- ============ 07 BUILD LOG ============ -->
+    <!-- ============ 08 BUILD LOG ============ -->
     <section class="page wrap" data-page="log" data-title="Build log" data-summary="What runs today, and what's next" aria-labelledby="log-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">07</span>
+        <span class="chapter-no" aria-hidden="true">08</span>
         <h1 id="log-title" tabindex="-1">What runs today, and what's next</h1>
         <p class="lede">Built in the open, one tested commit at a time. Everything under “Live” runs today, on synthetic matches.</p>
       </header>
@@ -473,10 +517,10 @@
       </div>
     </section>
 
-    <!-- ============ 08 ROADMAP ============ -->
+    <!-- ============ 09 ROADMAP ============ -->
     <section class="page wrap" data-page="roadmap" data-title="Onwards & upwards" data-summary="From checking claims to an AI fourth official" aria-labelledby="roadmap-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">08</span>
+        <span class="chapter-no" aria-hidden="true">09</span>
         <h1 id="roadmap-title" tabindex="-1">Onwards &amp; upwards</h1>
         <p class="lede">The hackathon is stage one. <span data-product-name></span> keeps going after it, toward an AI fourth official that sits beside the referee team.</p>
       </header>
@@ -539,7 +583,7 @@
       </ul>
     </section>
 
-    <!-- ============ 09 THE NAME ============ -->
+    <!-- ============ 10 THE NAME ============ -->
     <!-- Non-English strings (lang="ur", lang="ar") are marked data-owner-review: the owner signs them off. -->
     <section class="page name wrap" data-page="name" data-title="The name" data-summary="The messenger who came back with proof" aria-labelledby="name-title">
       <div class="name-head">
@@ -608,10 +652,10 @@
       <p class="kin" data-reveal>Every culture has a messenger that brings back the truth. Odin's ravens, Huginn and Muninn, fly over the world each day and report what they saw. Noah's dove returns with an olive leaf, proof in its beak that the flood is going down. Hermes carries the Greek gods' messages on winged sandals. In Urdu, Persian and Arabic, the messenger is the hudhud.</p>
     </section>
 
-    <!-- ============ 10 WHO ============ -->
+    <!-- ============ 11 WHO ============ -->
     <section class="page wrap" data-page="who" data-title="Who's building it" data-summary="One engineer, from Karachi" aria-labelledby="who-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">10</span>
+        <span class="chapter-no" aria-hidden="true">11</span>
         <h1 id="who-title" tabindex="-1">Built by one engineer, from Karachi</h1>
       </header>
 
@@ -663,10 +707,10 @@
       </div>
     </section>
 
-    <!-- ============ 11 CREDITS ============ -->
+    <!-- ============ 12 CREDITS ============ -->
     <section class="page wrap" data-page="credits" data-title="Credits" data-summary="The data, people and tools this stands on" aria-labelledby="credits-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">11</span>
+        <span class="chapter-no" aria-hidden="true">12</span>
         <h1 id="credits-title" tabindex="-1">Credits</h1>
         <p class="lede"><span data-product-name></span> stands on other people's data, teaching and tools. Each is named here with its author and license.</p>
       </header>
@@ -694,11 +738,17 @@
           <h2>Built on</h2>
           <dl>
             <dt>Microsoft Foundry</dt>
-            <dd>Hosts the models that write the commentary: gpt-5-mini and gpt-4.1-mini, from OpenAI.</dd>
+            <dd>Hosts the models that write the commentary: gpt-4.1-mini, with gpt-5-mini as the backup, both from OpenAI.</dd>
             <dt><a href="https://github.com/microsoft/agent-framework">Microsoft Agent Framework</a></dt>
             <dd>The agents and their workflow. MIT license.</dd>
             <dt><a href="https://github.com/pydantic/pydantic">Pydantic</a></dt>
             <dd>The typed contracts every agent hands to the next. MIT license.</dd>
+            <dt>Azure Container Apps and Container Registry</dt>
+            <dd>Run the live studio from one private image, signed in with a managed identity.</dd>
+            <dt><a href="https://github.com/fastapi/fastapi">FastAPI</a> and <a href="https://github.com/encode/uvicorn">Uvicorn</a></dt>
+            <dd>The studio's web server and its live stream. MIT and BSD licenses.</dd>
+            <dt><a href="https://opentelemetry.io/">OpenTelemetry</a> and Azure Monitor</dt>
+            <dd>Traces of every agent step, in Application Insights. Apache 2.0 and MIT licenses.</dd>
             <dt>Azure Cosmos DB</dt>
             <dd>Keeps the audit trail, on its free tier. The Python SDK is MIT licensed.</dd>
             <dt>Azure Identity, pytest, Ruff</dt>

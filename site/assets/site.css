@@ -73,8 +73,8 @@ code { font-family: var(--mono); }
 .brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; }
 .brand-crest { width: 2.25rem; height: 2.25rem; }
 .brand-name { font: 800 1.75rem / 1 var(--display); letter-spacing: 0.02em; }
-.nav { display: flex; gap: 1.25rem; margin-left: auto; font-size: 0.9375rem; }
-.nav a { color: var(--chalk-dim); text-decoration: none; padding-block: 0.35rem; border-bottom: 2px solid transparent; }
+.nav { display: flex; gap: 1.1rem; margin-left: auto; font-size: 0.9375rem; }
+.nav a { color: var(--chalk-dim); text-decoration: none; padding-block: 0.35rem; border-bottom: 2px solid transparent; white-space: nowrap; }
 .nav a:hover { color: var(--chalk); }
 .nav a[aria-current="page"] { color: var(--chalk); border-bottom-color: var(--lime); }
 .menu-button {
@@ -608,6 +608,19 @@ pre {
 .credits dt { margin-top: 1rem; font-weight: 600; }
 .credits dd { margin: 0.2rem 0 0; color: var(--chalk-dim); font-size: 0.9375rem; }
 
+/* ---------- in plain words ---------- */
+.plain { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(2rem, 4vw, 3rem) clamp(2rem, 5vw, 4rem); }
+.plain h2 { font-size: 1.75rem; margin-bottom: 0.6rem; }
+.plain p { color: var(--chalk-dim); max-width: 60ch; }
+.plain p + p { margin-top: 0.75rem; }
+.plain strong { color: var(--chalk); }
+.plain .actions { margin-top: 1.25rem; }
+.official { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.5rem; }
+.official a { display: grid; gap: 0.2rem; padding: 1rem 0; border-top: 1px solid var(--chalk-faint); text-decoration: none; }
+.official strong { font: 800 1.375rem / 1.1 var(--display); transition: color 0.2s; }
+.official span { font-size: 0.9375rem; color: var(--chalk-dim); }
+.official a:hover strong { color: var(--lime); }
+
 /* ---------- control room (local only) ---------- */
 .control { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 1.5rem; }
 .control-group h2 { font-size: 1.5rem; padding-bottom: 0.5rem; margin-bottom: 0.75rem; border-bottom: 2px solid var(--lime); }
@@ -622,8 +635,10 @@ pre {
 .control-link span { font-size: 0.875rem; color: var(--chalk-dim); }
 
 /* ---------- layout breakpoints ---------- */
-@media (max-width: 72rem) {
+@media (max-width: 82rem) {
   .nav { display: none; }
+}
+@media (max-width: 72rem) {
   .menu-button { margin-left: 1rem; }
   .timeline { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 2rem; }
 }
@@ -640,7 +655,7 @@ pre {
   .states { grid-template-columns: minmax(0, 1fr); }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .north-star { grid-template-columns: minmax(0, 1fr); }
-  .log-grid, .credits { grid-template-columns: minmax(0, 1fr); }
+  .log-grid, .credits, .plain { grid-template-columns: minmax(0, 1fr); }
   .control { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .receipt { position: relative; top: auto; max-width: 26rem; }
 }
@@ -649,7 +664,7 @@ pre {
   .menu-button { margin-left: auto; }
 }
 @media (max-width: 34rem) {
-  .chapter-index, .projects, .principles, .stairs, .timeline { grid-template-columns: minmax(0, 1fr); }
+  .chapter-index, .projects, .principles, .stairs, .timeline, .official { grid-template-columns: minmax(0, 1fr); }
   .timeline li::before { right: 0; }
   .node { grid-template-columns: auto 1fr; }
   .etext { grid-column: 1 / -1; }
