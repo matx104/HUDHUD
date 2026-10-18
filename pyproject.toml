@@ -6,6 +6,8 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+# Urdu and Arabic text is meant: the full stop, Eastern digit zero and decimal separator.
+allowed-confusables = ["\u06d4", "\u0660", "\u066b"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["match_events", "court"]

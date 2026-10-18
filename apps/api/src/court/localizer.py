@@ -1,14 +1,22 @@
 """Localizer: the last mile. Language and audience depth are applied here.
 
-Phase 1 renders English only. Urdu and Arabic arrive in Phase 3 and ship only after
-owner review of every non-English string: never on the model's own instincts.
+Urdu and Arabic (ADR 0009): the Localizer translates the line the Critic has already verified,
+with a model, under the same law as the Narrator. A translation may state no number the verified
+line doesn't (critic.invented_numbers); one that does goes back once with the reason, and if it
+still does, the English line airs and the receipt says the translation was refused. Names stay as
+the verified line spells them, in Latin letters, so each can still be checked against the match.
+Without a model, the line stays in English under its translated
+headline. The headline words below are the only fixed non-English strings, and they wait for the
+owner's review (docs/review/ur-ar.md) before they're called final.
 """
 
+from collections.abc import Awaitable, Callable
 from typing import Literal
 
-from match_events import minute_label
+from match_events import MatchMeta, minute_label
 
 from .contracts import Alert, AlertKind, Cue, Receipt, Verdict
+from .critic import invented_numbers
 from .state import MatchState
 
 Mode = Literal["casual", "analyst"]
@@ -20,17 +28,88 @@ TTL_S = {
 }
 
 
-class Localizer:
-    SUPPORTED_LANGS = ("en",)
+# The headline's label in each language, replacing the English one before " · ". Owner review:
+# these are drafts until the owner signs them off (docs/review/ur-ar.md).
+LABELS = {
+    "ur": {
+        "GOAL": "گول",
+        "BIG CHANCE": "سنہری موقع",
+        "MOMENTUM": "میچ پر گرفت",
+        "GREAT PASS": "شاندار پاس",
+    },
+    "ar": {
+        "GOAL": "هدف",
+        "BIG CHANCE": "فرصة خطيرة",
+        "MOMENTUM": "السيطرة",
+        "GREAT PASS": "تمريرة رائعة",
+    },
+}
+ON_TOP = {"ur": "حاوی", "ar": "يسيطر"}
 
-    def __init__(self, *, lang: str = "en", mode: Mode = "casual") -> None:
+# A translator takes (alert id, the verified line, the language, reasons from a refused try) and
+# returns (the translation, the model that wrote it).
+Translator = Callable[[str, str, str, list[str]], Awaitable[tuple[str, str]]]
+
+
+def local_headline(headline: str, lang: str) -> str:
+    """'MOMENTUM · SAL on top' -> 'میچ پر گرفت · SAL حاوی'. Codes and scores stay as they are."""
+    if lang == "en":
+        return headline
+    label, _, rest = headline.partition(" · ")
+    rest = rest.replace(" on top", f" {ON_TOP[lang]}")
+    return f"{LABELS[lang].get(label, label)} · {rest}" if rest else LABELS[lang].get(label, label)
+
+
+class Localizer:
+    SUPPORTED_LANGS = ("en", "ur", "ar")
+
+    def __init__(
+        self, *, lang: str = "en", mode: Mode = "casual", translator: Translator | None = None
+    ) -> None:
         if lang not in self.SUPPORTED_LANGS:
             raise ValueError(f"language {lang!r} not supported yet: {self.SUPPORTED_LANGS}")
         self.lang = lang
         self.mode: Mode = mode
+        self.translator = translator
+        self.names: frozenset[str] = frozenset()
 
-    def render(self, verdict: Verdict) -> Cue:
-        """Approved claim -> broadcast cue."""
+    def bind(self, meta: MatchMeta) -> None:
+        """The match's player and team names: a translation must keep each one the line uses."""
+        self.names = frozenset({p.name for p in meta.players} | {meta.home.name, meta.away.name})
+
+    async def render(self, verdict: Verdict) -> Cue:
+        """Approved claim -> broadcast cue, in the chosen language when it can be checked."""
+        cue = self._english(verdict)
+        if self.lang == "en":
+            return cue
+        update: dict = {"headline": local_headline(cue.headline, self.lang)}
+        if self.translator is not None:
+            translated = await self._translate(cue)
+            if translated is None:
+                update["receipt"] = cue.receipt.model_copy(update={"translation_refused": True})
+            else:
+                text, model = translated
+                update |= {"text": text, "lang": self.lang, "original": cue.text}
+                update["receipt"] = cue.receipt.model_copy(update={"translated_by": model})
+        return cue.model_copy(update=update)
+
+    async def _translate(self, cue: Cue) -> tuple[str, str] | None:
+        """The translation, or None if it states a number the verified line doesn't, twice."""
+        reasons: list[str] = []
+        for _ in range(2):
+            try:
+                text, model = await self.translator(cue.alert_id, cue.text, self.lang, reasons)
+            except Exception:  # a translator outage costs the language, never the cue
+                return None
+            invented = invented_numbers(cue.text, text)
+            renamed = [n for n in self.names if n in cue.text and n not in text]
+            if not invented and not renamed:
+                return text, model
+            reasons = [f"the translation states {n}, which the line doesn't" for n in invented]
+            reasons += [f"keep the name {n} exactly as written, in Latin letters" for n in renamed]
+        return None
+
+    def _english(self, verdict: Verdict) -> Cue:
         claim = verdict.claim
         text = claim.text if self.mode == "analyst" else _first_sentence(claim.text)
         return Cue(
@@ -43,7 +122,7 @@ class Localizer:
             minute=minute_label(claim.t, claim.period),
             headline=claim.headline,
             text=text,
-            lang=self.lang,
+            lang="en",
             mode=self.mode,
             evidence=claim.citations,
             status="verified",
@@ -86,9 +165,9 @@ class Localizer:
             period=alert.period,
             t=alert.t,
             minute=minute_label(alert.t, alert.period),
-            headline=headline,
+            headline=local_headline(headline, self.lang),
             text=text,
-            lang=self.lang,
+            lang="en",
             mode=self.mode,
             evidence=alert.evidence,
             status="detection_only",

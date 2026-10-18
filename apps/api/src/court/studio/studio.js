@@ -84,6 +84,7 @@
       start: form.start.value,
       speed: form.speed.value,
       mode: $("[data-casual]").checked ? "casual" : "analyst",
+      lang: form.lang.value,
       stress: $("[data-stress]").checked ? "0.25" : "0",
     });
     source = new EventSource(`/api/stream?${params}`);
@@ -155,12 +156,20 @@
   function cue(c) {
     const item = el("li", `cue${c.status === "verified" ? "" : " detection"}`);
     const head = el("header");
-    head.append(el("span", "minute", c.minute), el("span", "headline", c.headline));
+    const headline = Object.assign(el("span", "headline", c.headline), { dir: "auto" });
+    head.append(el("span", "minute", c.minute), headline);
     if (c.status !== "verified") head.append(el("span", "tag", "Detection only"));
     else if (c.attempts > 1) head.append(el("span", "tag", `Aired on attempt ${c.attempts}`));
     const evidence = el("div", "evidence");
     for (const id of c.evidence) evidence.append(el("code", "", id));
-    item.append(head, el("p", "", c.text));
+    // Urdu and Arabic read right to left; each line keeps its verified English a tap away.
+    const line = Object.assign(el("p", "", c.text), { lang: c.lang, dir: c.lang === "en" ? "ltr" : "rtl" });
+    item.append(head, line);
+    if (c.original) {
+      const english = el("details", "original");
+      english.append(el("summary", "", "In English, as the Critic checked it"), el("p", "", c.original));
+      item.append(english);
+    }
     if (c.players?.length) item.append(tags(c.players));
     item.append(evidence);
     if (c.receipt) item.append(receipt(c.receipt));
@@ -199,6 +208,8 @@
     rows.push(["Alert to air", `${(r.latency_ms / 1000).toFixed(1)} s`]);
     if (r.model_calls) rows.push(["Tokens", `${r.tokens_in} in, ${r.tokens_out} out`], ["Cost", `$${r.cost_usd.toFixed(5)}`]);
     if (r.handovers) rows.push(["Backup model took over", r.handovers]);
+    if (r.translated_by) rows.push(["Translated by", `${r.translated_by}, numbers and names checked`]);
+    if (r.translation_refused) rows.push(["Translation", "refused: English aired"]);
     const list = el("dl");
     for (const [label, value] of rows) list.append(el("dt", "", label), el("dd", "", String(value)));
     box.append(list);

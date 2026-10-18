@@ -66,6 +66,11 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .cue .headline { font: 800 1.25rem / 1.1 var(--display); }
 .cue .tag { font-size: 0.75rem; color: var(--gold); }
 .cue p { margin: 0.4rem 0 0.5rem; font-size: 1.0625rem; }
+.cue p:lang(ur) { font: 400 1.125rem / 2.2 "Noto Nastaliq Urdu", serif; }
+.cue p:lang(ar) { font: 400 1.1875rem / 1.8 "Noto Naskh Arabic", serif; }
+.original { margin: 0 0 0.5rem; font-size: 0.8125rem; }
+.original summary { cursor: pointer; color: var(--chalk-dim); }
+.original p { margin: 0.35rem 0 0; font-size: 0.9375rem; color: var(--chalk-dim); }
 .tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 0.55rem; padding: 0; }
 .tag-player { display: flex; align-items: baseline; gap: 0.4rem; padding: 0.2rem 0.55rem 0.2rem 0.45rem; border-left: 3px solid var(--team); background: var(--navy-raised); border-radius: 0 4px 4px 0; font-size: 0.8125rem; }
 .tag-player b { font-weight: 600; }

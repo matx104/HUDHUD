@@ -34,6 +34,8 @@ from .state import MatchState
 # so its standard list price is used. Cost Management is the source of truth for the bill.
 PRICES = {"gpt-5-mini": (0.25, 2.00), "gpt-4.1-mini": (0.40, 1.60)}
 
+LANGUAGES = {"ur": "Urdu", "ar": "Modern Standard Arabic"}
+
 KIND = {
     AlertKind.GOAL: "goal",
     AlertKind.BIG_CHANCE: "big chance",
@@ -169,6 +171,26 @@ class FoundryNarrator:
         )
 
     # --- calling the models -------------------------------------------------------------
+
+    async def translate(
+        self, alert_id: str, line: str, lang: str, reasons: list[str]
+    ) -> tuple[str, str]:
+        """The Localizer's translator: the verified line in Urdu or Arabic. Its tokens and cost go
+        on the same cue's receipt; the Localizer checks its numbers."""
+        prompt = (
+            f"Translate this verified football commentary line into {LANGUAGES[lang]}, in the "
+            "natural register of a live broadcast. Translate faithfully: say what the line says, "
+            "and add nothing to it, no praise, no judgment, no fact it doesn't state. Keep every "
+            "number exactly as written, and add no number. Keep every player and team name "
+            "exactly as written, in Latin letters. Keep xG, km/h and m as they are. Return only "
+            "the translated line.\n"
+        )
+        if reasons:
+            prompt += (
+                f"Your last translation was refused: {'; '.join(reasons)}. Fix exactly that.\n"
+            )
+        text = await self._write(prompt + f'Line: "{line}"', alert_id)
+        return text, self._spend[alert_id]["writer"]
 
     def spend(self, alert_id: str) -> dict[str, Any]:
         """The receipt's writer line for one alert: the model, its calls, tokens and cost."""

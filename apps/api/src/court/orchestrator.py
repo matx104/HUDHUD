@@ -46,6 +46,7 @@ class Orchestrator:
         self.state = MatchState(meta)
         self.scout = scout or Scout()
         self.localizer = localizer or Localizer()
+        self.localizer.bind(meta)
         self.narrator = narrator or TemplateNarrator()
         self.workflow = build_narrative_workflow(
             narrator=self.narrator,
@@ -169,6 +170,8 @@ def _receipt_attributes(cue: Cue) -> dict[str, str | int | float]:
         return {}
     return {
         "hudhud.writer": r.writer,
+        "hudhud.lang": cue.lang,
+        "hudhud.translation_refused": r.translation_refused,
         "hudhud.numbers_checked": r.numbers_checked,
         "hudhud.facts_recomputed": r.facts_recomputed,
         "hudhud.cost_usd": r.cost_usd,

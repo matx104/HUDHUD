@@ -126,10 +126,11 @@ class Session:
         mode: Literal["casual", "analyst"],
         stress: float,
         budget: ModelBudget,
+        lang: Literal["en", "ur", "ar"] = "en",
     ) -> None:
         self.id = uuid.uuid4().hex[:12]
         self.match = generate(seed)
-        self.speed, self.start_t, self.mode = speed, start * 60.0, mode
+        self.speed, self.start_t, self.mode, self.lang = speed, start * 60.0, mode, lang
         self.queue: asyncio.Queue[tuple[str, dict[str, Any]] | None] = asyncio.Queue()
         self.notices: list[str] = []
         inner, self.narration = self._narrator(narration, seed, stress, budget)
@@ -147,6 +148,8 @@ class Session:
         if wanted == "foundry":
             why = "today's model budget is spent" if endpoint else "no models are connected here"
             self.notices.append(f"{why}: the offline narrator calls this match")
+        if self.lang != "en":
+            self.notices.append("Urdu and Arabic need the models: lines stay in English")
         return TemplateNarrator(overreach_rate=stress, seed=seed), "template"
 
     def send(self, kind: str, data: dict[str, Any]) -> None:
@@ -169,7 +172,11 @@ class Session:
                     self._paced(),
                     sink=sink,
                     narrator=self.narrator,
-                    localizer=Localizer(mode=self.mode),
+                    localizer=Localizer(
+                        mode=self.mode,
+                        lang=self.lang,
+                        translator=getattr(self.narrator.inner, "translate", None),
+                    ),
                     quiet_until_t=self.start_t,
                 )
                 meter = getattr(self.narrator.inner, "meter", None)
@@ -296,6 +303,7 @@ def create_app() -> FastAPI:
         start: int = 0,
         mode: Literal["casual", "analyst"] = "analyst",
         stress: float = 0.25,
+        lang: Literal["en", "ur", "ar"] = "en",
     ) -> StreamingResponse:
         if seed not in DEMO_SEEDS:
             raise HTTPException(404, f"no demo match with seed {seed}")
@@ -307,6 +315,7 @@ def create_app() -> FastAPI:
             "start": max(0, min(start, 90)),
             "mode": mode,
             "stress": max(0.0, min(stress, 0.5)),
+            "lang": lang,
         }
 
         async def events() -> AsyncIterator[str]:

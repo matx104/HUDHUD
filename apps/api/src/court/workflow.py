@@ -67,7 +67,7 @@ class LocalizerExecutor(Executor):
 
     @handler
     async def on_approved(self, verdict: Verdict, ctx: WorkflowContext[None, Cue]) -> None:
-        await ctx.yield_output(self._localizer.render(verdict))
+        await ctx.yield_output(await self._localizer.render(verdict))
 
 
 class SpikeExecutor(Executor):

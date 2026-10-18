@@ -158,6 +158,10 @@ class Receipt(_Frozen):
     cost_usd: float = 0.0
     handovers: int = Field(default=0, description="Times a backup model took over for this cue")
     latency_ms: float = Field(default=0.0, description="From the alert to the cue")
+    translated_by: str = Field(default="", description="The model that translated the line, if any")
+    translation_refused: bool = Field(
+        default=False, description="The translation stated a number the line doesn't: English aired"
+    )
 
 
 class PlayerTag(_Frozen):
@@ -196,6 +200,9 @@ class Cue(_Frozen):
     ttl_s: float
     receipt: Receipt | None = None
     players: tuple[PlayerTag, ...] = ()
+    original: str | None = Field(
+        default=None, description="The verified English line, when the text is its translation"
+    )
 
 
 class RejectionNotice(_Frozen):

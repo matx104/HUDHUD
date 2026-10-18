@@ -102,7 +102,9 @@ async def _run(args: argparse.Namespace) -> int:
             sink=sink,
             speed=args.speed,
             narrator=narrator,
-            localizer=Localizer(mode=args.mode),
+            localizer=Localizer(
+                mode=args.mode, lang=args.lang, translator=getattr(narrator, "translate", None)
+            ),
         )
         meter, handovers = getattr(narrator, "meter", None), getattr(narrator, "handovers", 0)
         summary = {"stats": dict(orch.stats), "handovers": handovers}
@@ -195,6 +197,12 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--seed", type=int, default=7, help="synthetic match seed")
     run.add_argument("--input", type=Path, help="JSONL match stream instead of --seed")
     run.add_argument("--mode", choices=("casual", "analyst"), default="analyst")
+    run.add_argument(
+        "--lang",
+        choices=Localizer.SUPPORTED_LANGS,
+        default="en",
+        help="the cues' language; Urdu and Arabic are translated by the Foundry models",
+    )
     run.add_argument("--speed", type=float, default=0.0, help="match-seconds per second")
     run.add_argument(
         "--overreach",
