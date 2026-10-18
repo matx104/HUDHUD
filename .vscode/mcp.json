@@ -3,6 +3,15 @@
     "azure": {
       "type": "stdio",
       "command": "${workspaceFolder}/scripts/azure-mcp"
+    },
+    "hudhud-critic": {
+      "type": "stdio",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": ["-m", "court.mcp_server"]
+    },
+    "hudhud-critic-live": {
+      "type": "http",
+      "url": "https://hudhud-studio.politesand-62c3c2c4.uaenorth.azurecontainerapps.io/mcp/"
     }
   }
 }

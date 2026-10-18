@@ -495,6 +495,7 @@
         <div class="log-lists">
           <h2 class="log-heading">Live</h2>
           <ol class="log">
+            <li data-reveal><time>Oct 18</time><div><strong>The Critic, for any assistant</strong><p>The Critic is an MCP server: GitHub Copilot, or any assistant that speaks the Model Context Protocol, can read a match and put a claim to the same Critic that guards the broadcast. An assistant can't vouch for its own numbers: each must be recomputed from the match or carried by an event it cites.</p></div></li>
             <li data-reveal><time>Oct 18</time><div><strong>The studio, live on Azure</strong><p>Watch a synthetic match narrated live, with every cue's receipt and the Critic's refusals on screen. Take the narrator off air and watch the broadcast keep going. It runs on Azure Container Apps with its own identity and no keys, open through the judging period. <a data-studio-link hidden href="#">Open the studio</a>.</p></div></li>
             <li data-reveal><time>Oct 18</time><div><strong>The models competed for the job</strong><p>gpt-5-mini and gpt-4.1-mini narrated the same 50 alerts from five unseen matches, judged by a rule fixed before the run. Both were grounded every time, with no invented numbers. gpt-4.1-mini put a cue on air in 1.3 seconds against 3.7, at a third of the cost, so it writes the commentary now.</p></div></li>
             <li data-reveal><time>Oct 18</time><div><strong>A receipt on every cue</strong><p>Every line on air carries its receipt: who wrote it, how many numbers the Critic checked, how many facts it recomputed from the match, the events cited, the time from alert to air, and the tokens and cost.</p></div></li>
@@ -751,6 +752,8 @@
             <dd>Traces of every agent step, in Application Insights. Apache 2.0 and MIT licenses.</dd>
             <dt>Azure Cosmos DB</dt>
             <dd>Keeps the audit trail, on its free tier. The Python SDK is MIT licensed.</dd>
+            <dt><a href="https://github.com/modelcontextprotocol/python-sdk">MCP Python SDK</a></dt>
+            <dd>Serves the Critic as tools for any assistant. MIT license.</dd>
             <dt>Azure Identity, pytest, Ruff</dt>
             <dd>Sign-in without keys, the tests, and the linter. MIT licenses.</dd>
             <dt>GitHub Actions and GitHub Pages</dt>

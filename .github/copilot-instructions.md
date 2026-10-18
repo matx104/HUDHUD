@@ -43,6 +43,9 @@ broadcast going when an agent fails. Read `goals.md`, `plan.md` and `docs/adr/` 
   It costs under a cent; don't loop it.
 - The Azure MCP Server (`.vscode/mcp.json`, via `scripts/azure-mcp`) signs in as the same CLI.
   Ask before any call that creates, changes or deletes a resource.
+- The Critic is an MCP server too (`hudhud-critic` in `.vscode/mcp.json`, ADR 0007): before stating a
+  fact about a demo match, put the claim to `verify_claim` and back every number with an assertion
+  from `match_stats`.
 
 ## The site
 
