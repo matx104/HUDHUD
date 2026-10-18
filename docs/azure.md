@@ -59,6 +59,19 @@ Cosmos DB is in Central India because UAE North refused new accounts for high de
 | `hudhud-insights` | Application Insights (workspace-based) | **local auth disabled**: the exporter signs in with Entra; the Monarch holds Monitoring Metrics Publisher on it |
 | HUDHUD control room | Azure Monitor workbook | deployed by `make control-room` from `infra/monitor/hudhud-workbook.json` (no IDs in the repo); a fixed GUID name, so a rerun updates it |
 
+| `hudhudstudio` | Container Registry, Basic, UAE North | the studio's images; admin user off; pulled by the app's identity. $0.1666 a day |
+| `hudhud-studio-id` | user-assigned managed identity | the studio's only identity: AcrPull on the registry, Cognitive Services User on Foundry, Monitoring Metrics Publisher on Application Insights, built-in Data Contributor on the Cosmos DB account |
+| `hudhud-env` | Container Apps environment (express), UAE North | platform logs off: the app sends its own traces to Application Insights |
+| `hudhud-studio` | Container App, 0.25 vCPU, 0.5 GiB, one replica | **the live demo** at https://hudhud-studio.politesand-62c3c2c4.uaenorth.azurecontainerapps.io/ ; signs in as `hudhud-studio-id` (`AZURE_CLIENT_ID`), no keys or secrets; caps of 200 model-narrated matches a day and 8 streams at once. One replica on purpose: a match's off-air switch lives in that replica's memory |
+
+### The studio
+
+`make studio` runs it locally (the project's CLI signs in); `scripts/deploy-studio` builds the image,
+pushes it and rolls the app onto it, tagged with the commit. Cost while it runs: the registry about
+$5 a month, the app about $5 a month after the free grant, models at most $0.40 a day under the cap.
+Container Apps creates express environments now; they don't take Azure Monitor as a log destination,
+so platform logs are off and the app's own telemetry carries the story.
+
 ### The control room
 
 `make control-room` deploys the workbook and writes `site/data/ops.local.js` (git-ignored: the links

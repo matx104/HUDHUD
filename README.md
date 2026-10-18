@@ -3,7 +3,7 @@
 > Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
 > AI match intelligence on synthetic football-realistic data. **Solo build.**
 
-**Status:** 🐣 Phase 1 skeleton: one synthetic match flows end to end through all five agents (offline backends), 56 tests green, CI on every push. Showcase site live at https://matx104.github.io/HUDHUD/ (only `site/` is published). Pending: domain, Azure activation, Foundry-hosted LLM backends.
+**Status:** live. **Watch a match in the studio:** https://hudhud-studio.politesand-62c3c2c4.uaenorth.azurecontainerapps.io/ (Azure Container Apps; commentary written by gpt-4.1-mini on Microsoft Foundry, every number checked by the Critic before it airs). Showcase site: https://matx104.github.io/HUDHUD/ . Audit trail on Azure Cosmos DB, traces in Application Insights, 98 tests on every push.
 
 ## Quickstart
 
@@ -16,7 +16,10 @@ make eval    # the Scout's momentum calls scored against hidden ground truth (un
 .venv/bin/pip install -e "apps/api[foundry]"
 scripts/live run --seed 21 --narrator foundry   # prints the cues and what the match cost
 make demo    # one synthetic match, all five agents, in the console
+make studio  # the studio at http://localhost:8080: a live match, the Critic's desk, the off-air switch
 make site    # the showcase site at http://localhost:8000
+scripts/live narrator-eval --seeds 5   # the models compete for the job (ADR 0005)
+scripts/deploy-studio                  # ship the studio to Azure Container Apps
 ```
 
 `python -m court run --help` lists the options (`--mode casual|analyst`, `--speed`, `--json` for the machine-readable cue stream, `--overreach` to make the offline narrator deliberately overreach so the Critic has something to reject).

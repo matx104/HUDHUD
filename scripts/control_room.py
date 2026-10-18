@@ -103,6 +103,11 @@ def main() -> None:
     logs = resource_id("monitor", "log-analytics", "workspace", "show", "-n", "hudhud-logs")
     foundry = resource_id("cognitiveservices", "account", "show", "-n", "hudhud-foundry")
     cosmos = resource_id("cosmosdb", "show", "-n", "hudhud-audit")
+    studio = resource_id("containerapp", "show", "-n", "hudhud-studio")
+    fqdn = "properties.configuration.ingress.fqdn"
+    studio_url = "https://" + az(
+        "containerapp", "show", "-n", "hudhud-studio", "-g", GROUP, "--query", fqdn, "-o", "tsv"
+    )
     location = az(
         "monitor",
         "app-insights",
@@ -136,6 +141,14 @@ def main() -> None:
         )
 
     groups = [
+        (
+            "The live studio",
+            [
+                ("Open the studio", "The live match the judges see", studio_url),
+                ("Container app", "hudhud-studio: revision, replica, identity", res(studio)),
+                ("App metrics", "Requests, CPU and memory of the studio", res(studio, "metrics")),
+            ],
+        ),
         (
             "The dashboard",
             [
