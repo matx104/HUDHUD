@@ -14,6 +14,7 @@ sign-in through `_azure.py`. "Read-only" means a script changes nothing in Azure
 | `make links` (`scripts/check_links.py`) | Checks every link on the showcase site and in the README | none | free |
 | `.venv/bin/python scripts/doctor.py --publish` | Runs the doctor and writes its checklist to `site/data/doctor.js`, the public proof on the site's Control room page (email addresses replaced) | read-only | free |
 | `.venv/bin/python scripts/redact.py` | Covers every identifier in the Azure screenshots saved to `proof/raw/` (git-ignored) with solid boxes, by OCR plus optional manual boxes, and publishes them to the Control room page. **Look at every output before committing** | none | free |
+| `.venv/bin/python scripts/drive_kit.py` | Builds the public media kit (the Read me and brand sheet PDFs from `kit/`, the crest and icons, the approved screenshots) and syncs it to the Google Drive folder with rclone, shared as "anyone with the link can view". `--build` builds only; `--video demo.mp4` uploads the recording. Copies, never deletes. Needs Playwright (`pip install playwright`) and Chromium | none | free |
 | `.venv/bin/python scripts/audit.py runs` / `show RUN` | Browses the audit trail: recent runs with what aired and was refused, or one run's every record (`--out run.json` exports it) | read-only | free |
 
 ## Running and shipping
@@ -22,7 +23,7 @@ sign-in through `_azure.py`. "Read-only" means a script changes nothing in Azure
 |---|---|---|---|
 | `scripts/live run --seed 21 --narrator foundry --audit cosmos` | One match in the console, narrated on Foundry, kept in the audit trail, traced | calls models | about $0.002 a match |
 | `scripts/live narrator-eval --seeds 5` | The models compete for the job under ADR 0005's rule | calls models | a few cents |
-| `make studio` (`scripts/studio`) | The studio on this machine, at http://localhost:8080 | calls models | per match, as above |
+| `make studio` (`scripts/studio`) | The studio on this machine, at http://localhost:8091 | calls models | per match, as above |
 | `scripts/deploy-studio` | Builds the studio image, pushes it, rolls the container app onto it, tagged with the commit (refuses a dirty tree) | **changes the app** | registry storage |
 | `scripts/studio-power on\|off\|status` | Keeps the live studio warm (one replica), lets it sleep when idle, or shows which. Keep it **on** from Oct 26 through Nov 10 | **changes the app** | on: about $5 a month |
 | `make control-room` (`scripts/control_room.py`) | Deploys the HUDHUD workbook and writes the portal links to `site/data/ops.js`, the owner's shortcuts on the site's Control room page (IDs only; the email-based directory name is never used) | **updates the workbook** | free |

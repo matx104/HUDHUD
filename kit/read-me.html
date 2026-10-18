@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{name}}: read me</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="kit.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <path id="f78" d="M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z"/>
+      <path id="f96" d="M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z"/>
+      <path id="f112" d="M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z"/>
+      <g id="crest" transform="translate(120 150)" fill="#B8F53D">
+        <use href="#f78" transform="rotate(-52)"/>
+        <use href="#f96" transform="rotate(-26)"/>
+        <use href="#f112" fill="#C9A227"/>
+        <use href="#f96" transform="rotate(26)"/>
+        <use href="#f78" transform="rotate(52)"/>
+      </g>
+    </defs>
+  </svg>
+
+  <section class="sheet">
+    <header class="mast">
+      <svg viewBox="36 30 168 130" role="img" aria-label="The crest: five feathers, the Critic's in gold"><use href="#crest"/></svg>
+      <div>
+        <div class="word">{{name}}</div>
+        <div class="promise">Every call comes with its evidence.</div>
+      </div>
+      <div class="when">Inside the Game: Developer Hackathon<br>October 2026</div>
+    </header>
+
+    <div>
+      <h1>AI football commentary that shows its working</h1>
+      <p class="lede" style="margin-top:3mm">{{name}} watches a football match and commentates on it, like a broadcaster would. The difference: before any line goes on air, a second AI checks every fact in it against what actually happened on the pitch. If a claim can't be proven, it doesn't air.</p>
+    </div>
+
+    <div>
+      <h2>Five agents, one line to air</h2>
+      <div class="chain">
+        <div class="node"><div class="dot"></div><h3>Scout</h3><p>Reads every event and flags the goals, big chances, great passes and momentum swings. No model, under a millisecond.</p></div>
+        <div class="node"><div class="dot"></div><h3>Narrator</h3><p>Drafts the line from facts the code computed, citing the event behind each one. A model on Microsoft Foundry.</p></div>
+        <div class="node critic"><div class="dot"></div><h3>Critic</h3><p>Recomputes every number from the raw events. A wrong figure, a missing citation or an event from the future sends it back.</p></div>
+        <div class="node"><div class="dot"></div><h3>Localizer</h3><p>Turns the checked claim into an on-screen cue in English, Urdu or Arabic, with its player tags.</p></div>
+        <div class="node air"><div class="dot"></div><h3>On air</h3><p>With its evidence attached and a receipt: who wrote it, what was checked, what it cost.</p></div>
+      </div>
+      <div class="orchestrator"><strong>Orchestrator</strong>supervises the whole line. If a model fails mid-match, the broadcast carries on with the Scout's own facts, says so on screen, and recovers.</div>
+    </div>
+
+    <div class="cols">
+      <div>
+        <h2>Why I built it</h2>
+        <p class="dim">AI writes fluent sentences, and fluent isn't the same as true. In sport, a wrong number on air costs the broadcaster the viewer's trust. I wanted commentary you can audit: every claim traceable to the moment it describes, and a system honest enough to say "I can't prove that" instead of making it up.</p>
+      </div>
+      <div>
+        <h2>The hackathon</h2>
+        <p class="dim">{{name}} is my entry to <strong>Inside the Game: Developer Hackathon</strong>, run by Microsoft with the Premier League from October 6 to 27, 2026: AI that turns football-realistic, synthetic match data into insight, commentary and recaps. Judging runs to November 10; winners are announced on November 20.</p>
+      </div>
+    </div>
+
+    <div>
+      <h2>Built on</h2>
+      <dl class="stack">
+        <div><dt>Microsoft Foundry</dt><dd>The models that write the lines: gpt-4.1-mini, with gpt-5-mini as backup, chosen by evaluation.</dd></div>
+        <div><dt>Microsoft Agent Framework</dt><dd>The agents and their workflow: draft, check, rewrite or refuse.</dd></div>
+        <div><dt>Azure Container Apps</dt><dd>The live studio, signed in with a managed identity. No keys anywhere.</dd></div>
+        <div><dt>Azure Cosmos DB</dt><dd>The audit trail: every claim, verdict and receipt, on the free tier.</dd></div>
+        <div><dt>Application Insights</dt><dd>A trace of every agent step, model call and token.</dd></div>
+        <div><dt>Model Context Protocol</dt><dd>The Critic as a tool any AI assistant can call to check its own numbers.</dd></div>
+      </dl>
+    </div>
+
+    <dl class="links">
+      <dt>The showcase site</dt><dd><a href="{{site}}">{{site}}</a></dd>
+      <dt>The live studio</dt><dd><a href="{{studio}}">{{studio}}</a></dd>
+      <dt>This folder</dt><dd><a href="{{folder}}">{{folder}}</a></dd>
+      <dt>The code</dt><dd><a href="{{repo_url}}">{{repo}}</a></dd>
+    </dl>
+
+    <p class="foot"><span>Synthetic data only: every club, player and match is invented, as the rules require. {{name}} is an independent entry, not affiliated with or endorsed by Microsoft or the Premier League.</span><span>1 of 2</span></p>
+  </section>
+
+  <section class="sheet">
+    <header class="mast">
+      <svg viewBox="36 30 168 130" aria-hidden="true"><use href="#crest"/></svg>
+      <div>
+        <div class="word">{{name}}</div>
+        <div class="promise">What's in this folder</div>
+      </div>
+    </header>
+
+    <ul class="folder">
+      <li><b>1 Demo video</b><span>The 110-second demo: the live studio on Azure, the Critic refusing a claim it can't prove, the broadcast recovering when the narrator goes off air, and the same match in Urdu and Arabic.</span></li>
+      <li class="evidence"><b>2 Azure screenshots</b><span>The Azure side as it looks in the portal: the resources, the control-room dashboard, the application map, the models, the cost and an audit record. Account names, email addresses and identifiers are covered with solid boxes.</span></li>
+      <li><b>3 Brand kit</b><span>The crest as SVG and PNG, the app icons, the social card and the brand sheet: palette, type and the story of the name.</span></li>
+      <li><b>Read me</b><span>This document.</span></li>
+    </ul>
+
+    <div class="profile">
+      <div class="mono-mark">MAT</div>
+      <div>
+        <h2>Who built it</h2>
+        <p><strong>Muhammad Abdullah Tariq</strong>, Principal Software Engineer (DevOps), CISSP. Karachi, Pakistan.</p>
+        <p class="dim">One engineer, five agents, ten days. I grew up in Kuwait and speak Arabic, which is why {{name}} speaks Urdu and Arabic as well as English. linkedin.com/in/matx104 and github.com/matx104.</p>
+      </div>
+    </div>
+
+    <div>
+      <h2>Credits</h2>
+      <dl class="credits">
+        <div><dt>The data</dt><dd>Synthetic, made by {{name}}'s own generator. No real club, player or match data is used.</dd></div>
+        <div><dt>Learned from</dt><dd>"Build AI-powered soccer insights apps with AKS and ACA", a Microsoft Reactor session by Brian Benz, October 14, 2026.</dd></div>
+        <div><dt>Type</dt><dd>Big Shoulders Display by Patric King, Hanken Grotesk by Alfredo Marco Pradil, JetBrains Mono by JetBrains. All under the SIL Open Font License.</dd></div>
+        <div><dt>The name</dt><dd>The hoopoe of Surah An-Naml, 27:20–28: the messenger whose news was checked before anyone acted on it.</dd></div>
+        <div><dt>Built with</dt><dd>Claude Code, by Anthropic, and GitHub Copilot agent mode.</dd></div>
+        <div><dt>Every library</dt><dd>Named with its author and license on the showcase site's Credits page.</dd></div>
+      </dl>
+    </div>
+
+    <p class="foot"><span>Updated {{date}}. Everything here is also on the showcase site: {{site}}</span><span>2 of 2</span></p>
+  </section>
+</body>
+</html>

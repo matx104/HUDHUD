@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{name}}: brand sheet</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@700&text=%DB%81%D8%AF&display=swap">
+  <link rel="stylesheet" href="kit.css">
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    .sheet { width: 297mm; height: 210mm; padding: 14mm 16mm 12mm; display: grid; grid-template-columns: 96mm 1fr; gap: 0 14mm; }
+    .mark { display: flex; flex-direction: column; gap: 5mm; }
+    .mark svg { width: 96mm; height: 82mm; }
+    .mark .word { font: 900 46pt/0.9 var(--display); }
+    .mark .promise { font: 700 15pt/1.1 var(--display); color: var(--gold); }
+    .mark .short { display: flex; align-items: baseline; gap: 6mm; margin-top: 2mm; }
+    .mark .hud2 { font: 900 30pt/1 var(--display); color: var(--lime); }
+    .mark .ur { font: 700 36pt/1.6 "Noto Nastaliq Urdu", serif; color: var(--chalk); }
+    .mark .short small { font-size: 8.2pt; color: var(--chalk-dim); }
+    .right { display: flex; flex-direction: column; gap: 6mm; }
+    .palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3mm; }
+    .swatch { border-radius: 2.5mm; overflow: hidden; border: 1px solid var(--chalk-faint); }
+    .swatch i { display: block; height: 19mm; }
+    .swatch div { padding: 2mm 2.4mm 2.4mm; font-size: 8pt; line-height: 1.35; background: var(--navy-deep); }
+    .swatch b { display: block; font-weight: 600; }
+    .swatch code { font: 400 7.8pt var(--mono); color: var(--lime); }
+    .swatch span { color: var(--chalk-dim); }
+    .type { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; }
+    .type div { border-top: 1px solid var(--chalk-faint); padding-top: 2.4mm; font-size: 8.2pt; color: var(--chalk-dim); }
+    .type .sample { display: block; color: var(--chalk); margin-bottom: 1.4mm; line-height: 1.1; }
+    .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm 9mm; font-size: 8.8pt; }
+    .rules p { color: var(--chalk-dim); }
+    .foot { grid-column: 1 / -1; }
+  </style>
+</head>
+<body>
+  <section class="sheet">
+    <div class="mark">
+      <svg viewBox="36 22 168 146" role="img" aria-label="The crest: five feathers, the Critic's in gold">
+        <defs>
+          <path id="f78" d="M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z"/>
+          <path id="f96" d="M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z"/>
+          <path id="f112" d="M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z"/>
+        </defs>
+        <g transform="translate(120 150)" fill="#B8F53D">
+          <use href="#f78" transform="rotate(-52)"/>
+          <use href="#f96" transform="rotate(-26)"/>
+          <use href="#f112" fill="#C9A227"/>
+          <use href="#f96" transform="rotate(26)"/>
+          <use href="#f78" transform="rotate(52)"/>
+        </g>
+      </svg>
+      <div>
+        <div class="word">{{name}}</div>
+        <div class="promise">Every call comes with its evidence.</div>
+      </div>
+      <div class="short">
+        <span class="hud2">{{mark}}</span>
+        <span class="ur" lang="ur" dir="rtl">ہدہد</span>
+        <small>The short form, for the icon and the monogram; and the name in Urdu, Persian and Arabic: <i>hudhud</i>, the hoopoe.</small>
+      </div>
+    </div>
+
+    <div class="right">
+      <div>
+        <h2>The crest</h2>
+        <p class="dim">A hoopoe's crest of five feathers, one for each agent: Scout, Narrator, Critic, Localizer and Orchestrator. The Critic's feather stands at the centre, in gold, because nothing airs until it has checked it.</p>
+      </div>
+
+      <div>
+        <h2>Colour</h2>
+        <div class="palette">
+          <div class="swatch"><i style="background:#0A1F2E"></i><div><b>Deep navy</b><code>#0A1F2E</code><br><span>The surface: a night match under lights</span></div></div>
+          <div class="swatch"><i style="background:#F4F1E8"></i><div><b>Chalk</b><code>#F4F1E8</code><br><span>Text on dark</span></div></div>
+          <div class="swatch"><i style="background:#B8F53D"></i><div><b>Electric lime</b><code>#B8F53D</code><br><span>Live: the agents, the signal</span></div></div>
+          <div class="swatch"><i style="background:#C9A227"></i><div><b>Evidence gold</b><code>#C9A227</code><br><span>The Critic, citations, verdicts</span></div></div>
+          <div class="swatch"><i style="background:#1E7B45"></i><div><b>Pitch green</b><code>#1E7B45</code><br><span>Second surfaces, sparingly</span></div></div>
+        </div>
+      </div>
+
+      <div>
+        <h2>Type</h2>
+        <div class="type">
+          <div><span class="sample" style="font: 800 21pt var(--display)">73' Big chance</span>Big Shoulders Display, for headlines and numbers: the scoreboard. By Patric King.</div>
+          <div><span class="sample" style="font: 400 12pt var(--body)">Every claim is checked before it airs.</span>Hanken Grotesk, for reading. By Alfredo Marco Pradil.</div>
+          <div><span class="sample" style="font: 400 10.5pt var(--mono)">e00054 xG 0.31</span>JetBrains Mono, for event IDs and addresses: evidence is machine-stamped. By JetBrains.</div>
+        </div>
+      </div>
+
+      <div class="rules">
+        <div><h3>The name</h3><p>In Surah An-Naml, 27:20–28, the hoopoe returns to Solomon "with sure news", and Solomon checks it before acting on it. That check is the Critic.</p></div>
+        <div><h3>Using it</h3><p>On deep navy, the Critic's feather always gold. Never beside a league, club or broadcaster mark: every club and player in {{name}} is invented. The type is under the SIL Open Font License.</p></div>
+      </div>
+    </div>
+
+    <p class="foot"><span>{{name}} brand sheet. Updated {{date}}. {{site}}</span><span>{{mark}}</span></p>
+  </section>
+</body>
+</html>
