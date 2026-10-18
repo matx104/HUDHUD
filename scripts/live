@@ -10,4 +10,7 @@ export AZURE_TENANT_ID="${AZURE_TENANT_ID:-$("$here/scripts/az" account show --q
 export FOUNDRY_PROJECT_ENDPOINT="${FOUNDRY_PROJECT_ENDPOINT:-https://hudhud-foundry.services.ai.azure.com/api/projects/hudhud}"
 export FOUNDRY_MODELS="${FOUNDRY_MODELS:-gpt-5-mini,gpt-4.1-mini}"
 export COSMOS_ENDPOINT="${COSMOS_ENDPOINT:-https://hudhud-audit.documents.azure.com:443/}"
+# Traces go to Application Insights (keys off: the exporter signs in as the CLI). The connection
+# string is read at run time, never stored in the repo.
+export APPLICATIONINSIGHTS_CONNECTION_STRING="${APPLICATIONINSIGHTS_CONNECTION_STRING:-$("$here/scripts/az" monitor app-insights component show --app hudhud-insights -g rg-hudhud --query connectionString -o tsv 2>/dev/null)}"
 exec "$here/.venv/bin/python" -m court "$@"

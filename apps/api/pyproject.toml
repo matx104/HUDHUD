@@ -20,6 +20,7 @@ dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.6"]
 # which run the offline template narrator.
 foundry = ["agent-framework-foundry>=1.15,<2", "azure-identity>=1.19"]
 audit = ["azure-cosmos>=4.9,<5", "azure-identity>=1.19", "aiohttp>=3.10"]
+telemetry = ["azure-monitor-opentelemetry>=1.8,<2", "azure-identity>=1.19"]
 
 [project.scripts]
 court = "court.cli:main"

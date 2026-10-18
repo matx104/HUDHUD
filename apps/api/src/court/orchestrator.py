@@ -21,6 +21,7 @@ from .localizer import Localizer
 from .narrator import Narrator, TemplateNarrator
 from .scout import Scout
 from .state import MatchState
+from .telemetry import tracer
 from .workflow import build_narrative_workflow
 
 Sink = Callable[[Output], None]
@@ -53,6 +54,7 @@ class Orchestrator:
         self.level: str = "full"
         self.stats: Counter[str] = Counter()
         self._sink = sink
+        self._outputs: list[Output] = []  # what the alert being narrated has produced so far
 
     async def ingest(self, event: MatchEvent) -> None:
         self.state.apply(event)
@@ -62,6 +64,12 @@ class Orchestrator:
             await self._narrate(alert)
 
     async def _narrate(self, alert: Alert) -> None:
+        with tracer.start_as_current_span(f"alert {alert.kind}") as span:
+            self._outputs = []
+            await self._warm_path(alert)
+            span.set_attributes(_outcome(alert, self._outputs, self.level))
+
+    async def _warm_path(self, alert: Alert) -> None:
         failure: Exception | None = None
         for _ in range(self.retries + 1):
             try:
@@ -104,7 +112,26 @@ class Orchestrator:
                 self.stats["spiked"] += 1
             case Degradation():
                 self.stats["level_changes"] += 1
+        self._outputs.append(output)
         self._sink(output)
+
+
+def _outcome(alert: Alert, outputs: list[Output], level: str) -> dict[str, str | int]:
+    """Span attributes for one alert: what aired, after how many tries, and what was refused."""
+    cue = next((o for o in outputs if isinstance(o, Cue)), None)
+    refused = [o for o in outputs if isinstance(o, RejectionNotice | Spiked)]
+    spiked = any(isinstance(o, Spiked) for o in outputs)
+    return {
+        "hudhud.alert.id": alert.id,
+        "hudhud.alert.kind": alert.kind.value,
+        "hudhud.team": alert.team.value,
+        "hudhud.minute": minute_label(alert.t, alert.period),
+        "hudhud.outcome": "spiked" if spiked else cue.status if cue else "none",
+        "hudhud.attempts": cue.attempts if cue else len(refused),
+        "hudhud.rejections": len(refused),
+        "hudhud.rejection_codes": ",".join(sorted({r.code for o in refused for r in o.reasons})),
+        "hudhud.service_level": level,
+    }
 
 
 async def _iterate(messages: Iterable[StreamMessage] | AsyncIterable[StreamMessage]):

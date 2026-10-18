@@ -56,7 +56,9 @@ class CosmosStore:
         self._container = self._client.get_database_client(database).get_container_client(container)
 
     async def write(self, record: dict[str, Any]) -> None:
-        await self._container.create_item(record)
+        # An upsert, not a create: records never change, and the SDK retries a write whose reply
+        # was lost, which a create would turn into a conflict with the copy that already landed.
+        await self._container.upsert_item(record)
 
     async def close(self) -> None:
         await self._client.close()

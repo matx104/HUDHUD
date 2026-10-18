@@ -16,8 +16,11 @@ import os
 import sys
 from pathlib import Path
 
+from opentelemetry.trace import SpanKind
+
 from match_events import Side, generate, read_jsonl
 
+from . import telemetry
 from .audit import AuditTrail, CosmosStore
 from .config import ARCHITECTURE_NAME, product_name
 from .contracts import OUTPUT_ADAPTER, Cue, Degradation, Output, RejectionNotice, Spiked
@@ -57,22 +60,32 @@ async def _run(args: argparse.Namespace) -> int:
     narrator = _narrator(args, meta.seed)
     sink = _jsonl if args.json else _console
     trail = _audit(args, meta)
-    if trail:
-        trail.start()
-        sink = trail.tee(sink)
-    orch = await run_match(
-        messages,
-        sink=sink,
-        speed=args.speed,
-        narrator=narrator,
-        localizer=Localizer(mode=args.mode),
-    )
-    meter, handovers = getattr(narrator, "meter", None), getattr(narrator, "handovers", 0)
-    if trail:
+    attributes = {"hudhud.match_id": meta.match_id, "hudhud.seed": meta.seed}
+    attributes["hudhud.narrator"] = args.narrator
+    with telemetry.tracer.start_as_current_span(
+        "match", kind=SpanKind.CONSUMER, attributes=attributes
+    ) as span:
+        if trail:
+            trail.start()
+            sink = trail.tee(sink)
+        orch = await run_match(
+            messages,
+            sink=sink,
+            speed=args.speed,
+            narrator=narrator,
+            localizer=Localizer(mode=args.mode),
+        )
+        meter, handovers = getattr(narrator, "meter", None), getattr(narrator, "handovers", 0)
         summary = {"stats": dict(orch.stats), "handovers": handovers}
         if meter:
             summary |= {"cost_usd": round(meter.cost_usd(), 6), "models": meter.summary()}
-        await trail.close(summary)
+        if trail:
+            await trail.close(summary)
+        span.set_attributes({f"hudhud.{k}": v for k, v in orch.stats.items()})
+        span.set_attributes({"hudhud.handovers": handovers, "hudhud.level": orch.level})
+        if meter:
+            span.set_attribute("hudhud.cost_usd", summary["cost_usd"])
+    telemetry.flush()
     if not args.json:
         s, st = orch.state.score, orch.stats
         print(f"\n     FT  {meta.home.name} {s[Side.HOME]}-{s[Side.AWAY]} {meta.away.name}")
@@ -147,4 +160,5 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.cmd == "eval":
         return _eval(args)
+    telemetry.configure()
     return asyncio.run(_run(args))
