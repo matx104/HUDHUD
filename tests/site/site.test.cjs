@@ -66,3 +66,10 @@ test("the control room says who its buttons are for, and its links name no accou
   assert.doesNotMatch(read("data/doctor.js"), /@[\w-]+\.(com|net|org)/);
   assert.match(html, /data-page="control" data-aside/, "an aside: out of the chapters");
 });
+
+test("the media kit is a public Drive folder, and the site points at it", () => {
+  // scripts/drive_kit.py shares the folder; the site links it from the About and Control room pages.
+  assert.match(config.kitUrl, /^https:\/\/drive\.google\.com\/drive\/folders\/[\w-]+$/);
+  assert.ok((html.match(/data-kit-link/g) ?? []).length >= 2);
+  assert.doesNotMatch(html, /youtube\.com\/@/, "no channel to link: the video lives in the kit");
+});

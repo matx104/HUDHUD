@@ -142,6 +142,7 @@
       $(".page-home .actions .button[href='#/problem']")?.classList.add("button-quiet");
       $$("[data-studio-link]").forEach((n) => { n.href = site.studioUrl; n.hidden = false; });
     }
+    $$("[data-kit-link]").forEach((n) => { n.href = site.kitUrl ?? "#"; n.hidden = !site.kitUrl; });
     const note = $("[data-video-link]");
     if (site.videoUrl && note) {
       $(".page-home .actions").append(Object.assign(el("a", "button button-quiet", "Watch the 110-second demo"), { href: site.videoUrl }));
