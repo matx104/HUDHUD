@@ -2,6 +2,7 @@
 
 - **Status:** accepted, 2026-10-18
 - **Context:** Phase 2, the first narrator on models deployed in Microsoft Foundry (`court/foundry.py`)
+- **Superseded in part:** ADR 0005 made `gpt-4.1-mini` the primary, by evaluation.
 
 ## Context
 

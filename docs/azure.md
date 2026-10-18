@@ -49,8 +49,8 @@ there. It's also the closest region to Karachi.
 | `rg-hudhud` | resource group, UAE North | tags `project=hudhud`, `owner=monarch`; delete it to remove everything |
 | `hudhud-foundry` | Foundry resource (AIServices, S0) | **key auth disabled**: Entra ID only, nothing to leak; system-assigned identity |
 | `hudhud` | Foundry project | endpoint `https://hudhud-foundry.services.ai.azure.com/api/projects/hudhud` |
-| `gpt-5-mini` | deployment, model version 2025-08-07, GlobalStandard, 50K TPM | primary Narrator and Localizer |
-| `gpt-4.1-mini` | deployment, model version 2025-04-14, GlobalStandard, 50K TPM | backup: the Orchestrator reassigns to it when the primary fails |
+| `gpt-5-mini` | deployment, model version 2025-08-07, GlobalStandard, 50K TPM | backup Narrator since ADR 0005 (primary before: as good, but 3x slower and dearer) |
+| `gpt-4.1-mini` | deployment, model version 2025-04-14, GlobalStandard, 50K TPM | **primary Narrator** since ADR 0005: as grounded as gpt-5-mini, a 1.3 s median cue against 3.7 s, a third of the cost |
 | `hudhud-audit` | Azure Cosmos DB for NoSQL, **free tier**, Central India | the audit trail (ADR 0004); keys disabled; total throughput capped at 1,000 RU/s so it can't leave the free tier; continuous 7-day backup (free, and required for Fabric mirroring); database `hudhud` (1,000 RU/s shared), container `audit` (`/matchId`). The Monarch's sign-in holds the built-in Data Contributor role |
 
 Cosmos DB is in Central India because UAE North refused new accounts for high demand on 2026-10-18.
