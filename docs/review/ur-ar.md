@@ -1,6 +1,7 @@
 # Urdu and Arabic: for the owner's review
 
-> Status: **awaiting the Monarch's review** (2026-10-18). Nothing here is final until signed off.
+> Status: **signed off by the Monarch for production, 2026-10-18.** The headline words and the
+> translator's instructions are final; change them only with the Monarch.
 > How to review: mark each line ✅ (good), or write the better wording beside it. The fixed
 > headline words go into `court/localizer.py` (`LABELS`, `ON_TOP`); the translated lines are
 > written live by the model each match, so a note on them becomes an instruction to the translator.

@@ -5,9 +5,9 @@ with a model, under the same law as the Narrator. A translation may state no num
 line doesn't (critic.invented_numbers); one that does goes back once with the reason, and if it
 still does, the English line airs and the receipt says the translation was refused. Names stay as
 the verified line spells them, in Latin letters, so each can still be checked against the match.
-Without a model, the line stays in English under its translated
-headline. The headline words below are the only fixed non-English strings, and they wait for the
-owner's review (docs/review/ur-ar.md) before they're called final.
+Without a model, the line stays in English under its translated headline. The headline words
+below are the only fixed non-English strings; the owner reviewed them and the live translations
+and signed both off for production on 2026-10-18 (docs/review/ur-ar.md).
 """
 
 from collections.abc import Awaitable, Callable
@@ -28,8 +28,8 @@ TTL_S = {
 }
 
 
-# The headline's label in each language, replacing the English one before " · ". Owner review:
-# these are drafts until the owner signs them off (docs/review/ur-ar.md).
+# The headline's label in each language, replacing the English one before " · ". Signed off by the
+# owner for production, 2026-10-18 (docs/review/ur-ar.md): change them only with the owner.
 LABELS = {
     "ur": {
         "GOAL": "گول",
