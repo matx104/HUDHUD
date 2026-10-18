@@ -138,6 +138,24 @@ def main() -> None:
             "The live studio",
             [
                 ("Open the studio", "The live match the judges see", studio_url),
+                (
+                    "Take: English",
+                    "Seed 21 from 54', 30x, models, stress test on, starts at once",
+                    studio_url
+                    + "?seed=21&narration=foundry&start=54&speed=30&stress=1&autostart=1&lang=en",
+                ),
+                (
+                    "Take: Urdu",
+                    "The same match, narrated in Urdu",
+                    studio_url
+                    + "?seed=21&narration=foundry&start=54&speed=30&stress=1&autostart=1&lang=ur",
+                ),
+                (
+                    "Take: Arabic",
+                    "The same match, narrated in Arabic",
+                    studio_url
+                    + "?seed=21&narration=foundry&start=54&speed=30&stress=1&autostart=1&lang=ar",
+                ),
                 ("Container app", "hudhud-studio: revision, replica, identity", res(studio)),
                 ("App metrics", "Requests, CPU and memory of the studio", res(studio, "metrics")),
             ],

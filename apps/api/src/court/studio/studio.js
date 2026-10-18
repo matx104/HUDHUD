@@ -44,7 +44,20 @@
         $("[data-matches]").append(option);
       }
       if (!config.models) form.narration.value = "template";
+      preset(new URLSearchParams(location.search));
     });
+
+  // Settings can ride in the address, so a recording starts the same way every take:
+  // ?seed=21&narration=foundry&lang=ur&start=54&speed=30&stress=1&casual=0&autostart=1
+  function preset(params) {
+    for (const name of ["seed", "narration", "lang", "start", "speed"]) {
+      const value = params.get(name);
+      if (value !== null && [...form[name].options].some((o) => o.value === value)) form[name].value = value;
+    }
+    if (params.has("stress")) $("[data-stress]").checked = params.get("stress") === "1";
+    if (params.has("casual")) $("[data-casual]").checked = params.get("casual") === "1";
+    if (params.get("autostart") === "1") start();
+  }
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
