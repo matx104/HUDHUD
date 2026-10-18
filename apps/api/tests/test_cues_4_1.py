@@ -92,3 +92,20 @@ async def test_cues_tag_their_players_with_threshold_badges():
             for badge in p.badges:
                 if badge.endswith("km/h shot"):
                     assert int(badge.split()[0]) >= FAST_SHOT_KMH
+
+
+def test_a_number_about_an_event_the_claim_doesnt_cite_proves_nothing():
+    critic, narrator = Critic(), TemplateNarrator()
+    alert, state = next(_alerts(7, AlertKind.GREAT_PASS))
+    claim = narrator.draft(alert, state)
+    other = next(e for e in state.events if isinstance(e, Pass) and e.id not in claim.citations)
+    true_elsewhere = Assertion(
+        metric="pass_difficulty",
+        team=other.team,
+        value=event_metric("pass_difficulty", other),
+        event_id=other.id,
+    )
+    claim = claim.model_copy(update={"assertions": (*claim.assertions, true_elsewhere)})
+    reasons = critic.review(claim, state).reasons
+    assert [r.code for r in reasons] == [RejectionCode.ASSERTION_MISMATCH]
+    assert "must be about an event the claim cites" in reasons[0].detail

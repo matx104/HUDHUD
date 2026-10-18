@@ -5,7 +5,8 @@ Checks, in order (all failures are collected so the UI can show every reason):
 2. every citation is a real event that had happened by the claim's moment
 3. cited events are fresh: same period and recent
 4. the claim kind's evidence rule is satisfied (unregistered kind -> refuse)
-5. every numeric assertion survives independent recomputation from raw events
+5. every numeric assertion survives independent recomputation from raw events; one about a
+   single event must be about an event the claim cites, of the side it names
 6. every number the text states is one the claim accounts for (its figures or assertions):
    a model that invents a statistic is caught here, whatever else it got right
 """
@@ -158,6 +159,20 @@ class Critic:
             refuse(RejectionCode.INSUFFICIENT_EVIDENCE, problem)
 
         for assertion in claim.assertions:
+            # A number about one event must be about an event the claim cites, of the side the
+            # assertion names: a true number about some other moment proves nothing about this one.
+            if assertion.event_id is not None:
+                event = state.get(assertion.event_id)
+                if (
+                    assertion.event_id not in claim.citations
+                    or getattr(event, "team", None) != assertion.team
+                ):
+                    refuse(
+                        RejectionCode.ASSERTION_MISMATCH,
+                        f"{assertion.metric} on {assertion.event_id} must be about an event the "
+                        f"claim cites, by {assertion.team}",
+                    )
+                    continue
             actual = measure(assertion, state, claim.as_of_seq)
             tolerance = TOLERANCE.get(assertion.metric, 0.0)
             if actual is None or abs(actual - assertion.value) > tolerance:
@@ -186,6 +201,28 @@ def _ungrounded(claim: Claim) -> list[str]:
     known = [*claim.figures.values(), *(a.value for a in claim.assertions)]
     stated = dict.fromkeys(NUMBER.findall(claim.text))
     return [n for n in stated if not any(abs(float(n) - k) < 0.005 for k in known)]
+
+
+# Eastern Arabic (U+0660) and Persian (U+06F0) digits, and the Arabic decimal separator, read as
+# the ASCII they mean.
+_DIGITS = {0x0660 + d: str(d) for d in range(10)} | {0x06F0 + d: str(d) for d in range(10)}
+_DIGITS[0x066B] = "."
+
+
+def invented_numbers(line: str, translation: str) -> list[str]:
+    """Numbers a translation states that the verified line it translates doesn't.
+
+    The Critic checked every number in the line; a translation must carry those numbers and no
+    other, in any digits. A number it adds is unverified, so the translation can't air.
+    """
+    known = [float(n) for n in NUMBER.findall(line.translate(_DIGITS))]
+    stated = dict.fromkeys(_numbers(translation.translate(_DIGITS)))
+    return [n for n in stated if not any(abs(float(n) - k) < 0.005 for k in known)]
+
+
+def _numbers(text: str) -> list[str]:
+    # In Urdu and Arabic a digit can sit against a letter, so letters don't fence a number here.
+    return re.findall(r"(?<![\d.])\d+(?:\.\d+)?", text)
 
 
 def _seq_of(event_id: str) -> int:
