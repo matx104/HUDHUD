@@ -279,7 +279,7 @@ def create_app() -> FastAPI:
     ) -> StreamingResponse:
         if seed not in DEMO_SEEDS:
             raise HTTPException(404, f"no demo match with seed {seed}")
-        if len(sessions) >= MAX_STREAMS:
+        if len(sessions) >= MAX_STREAMS:  # the quick answer; events() holds the line
             raise HTTPException(503, "the studio is full: try again in a minute")
         options = {
             "narration": narration,
@@ -291,7 +291,11 @@ def create_app() -> FastAPI:
 
         async def events() -> AsyncIterator[str]:
             # The session exists only once streaming starts, and leaves with its task: a client
-            # that disconnects early can't strand one and slip past the stream cap.
+            # that disconnects early can't strand one. The cap is checked again here, with no
+            # await between the check and the registration, so a burst can't slip past it.
+            if len(sessions) >= MAX_STREAMS:
+                yield _sse("error", {"detail": "the studio is full: try again in a minute"})
+                return
             session = Session(seed, budget=budget, **options)
             sessions[session.id] = session
             task = asyncio.create_task(session.run())

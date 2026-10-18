@@ -104,3 +104,8 @@ def test_a_server_error_reaches_the_page_without_its_details(client, monkeypatch
     assert kind == "error" and data["detail"] == "the match stopped on a server error"
     assert "internal detail" not in json.dumps(data) and len(data["ref"]) == 8
     assert client.app.state.sessions == {}
+
+
+def test_a_full_studio_turns_new_streams_away(client, monkeypatch):
+    monkeypatch.setattr("court.server.MAX_STREAMS", 0)
+    assert client.get("/api/stream?seed=21&speed=0").status_code == 503
