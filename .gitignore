@@ -33,3 +33,6 @@ site/review/
 
 # Azure identifiers and other machine-local notes: never committed (the repo goes public)
 *.local.md
+
+# control-room links: they carry the subscription IDs (scripts/control_room.py)
+site/data/*.local.js

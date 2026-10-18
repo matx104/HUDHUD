@@ -31,6 +31,9 @@ def configure(service: str = "court") -> bool:
     from azure.monitor.opentelemetry import configure_azure_monitor
     from opentelemetry.sdk.resources import Resource
 
+    # Off Azure, the Azure VM detector's metadata probe only fails and shows up as an error.
+    os.environ.setdefault("OTEL_EXPERIMENTAL_RESOURCE_DETECTORS", "otel")
+
     configure_azure_monitor(
         connection_string=connection,
         credential=AzureCliCredential(tenant_id=os.environ.get("AZURE_TENANT_ID") or None),

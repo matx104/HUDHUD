@@ -1,7 +1,7 @@
 PY ?= python3.13
 BIN := .venv/bin
 
-.PHONY: setup test lint fmt schema demo eval site-data site
+.PHONY: setup test lint fmt schema demo eval site-data control-room site
 
 setup:  ## create .venv and install both workspace packages (editable)
 	$(PY) -m venv .venv
@@ -29,6 +29,9 @@ eval:  ## score the Scout's momentum calls against hidden ground truth (unseen s
 
 site-data:  ## regenerate the showcase data: the hero claim (chain.js) and the match (match.js)
 	$(BIN)/python scripts/site_sample.py
+
+control-room:  ## deploy the HUDHUD workbook and write the local control-room links (Azure)
+	$(BIN)/python scripts/control_room.py
 
 site:  ## serve the showcase site at http://localhost:8000
 	$(PY) -m http.server 8000 -d site
