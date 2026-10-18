@@ -1,6 +1,6 @@
 # GOALS — The Grand Slam Doctrine
 
-> **Declaration:** We build for ALL SIX categories. Solo entry, one build, six lanes. *(Official rules §4.2: one project can win at most **one Grand Prize and one Category Prize**, so the target is one of each; building for all six is the discipline.)* This file maps every award to the features that win it — if a feature doesn't serve a lane, it's cut; if a lane lacks a feature, the gap closes before build ends. The intention goes **public on the showcase site**: stated plainly, backed by the artifact.
+> **Declaration (revised 2026-10-18 by the Monarch):** The original plan was to win **all six awards together**. The official rules (§4.2, §8) let one project win at most **one Grand Prize and one Category Prize**, so the fallback goal is: **Grand Prize: First Place** and **Best Use of Microsoft Foundry** (the AI category). Every lane is still built to its full standard: that is what first place takes. This file maps every award to the features that win it; if a feature doesn't serve a lane, it's cut. The intention is **public on the showcase site** (#/goal), stated plainly, backed by the artifact.
 
 ## The doctrine in one line
 
@@ -39,7 +39,7 @@ Every lane below, integrated without seams — one match, end-to-end, polished. 
 
 ## The public intention (showcase-site language, draft)
 
-> *"We declared for all six categories before the deadline — not because the sweep is likely, but because building to win six forces the discipline of six. Every feature on this site maps to a lane in goals.md in our repo. Judge us against our declaration."*
+> *"We set out to win every category. The rules allow two: first place overall, and Best Use of Microsoft Foundry. Every other category is still built to its full standard, because that is what first place takes."* (live on the Goal page)
 
 Honest-bravado tone: state the sweep, show the mapping, invite audit. (final copy at showcase build — brand.md voice)
 
@@ -52,4 +52,4 @@ Honest-bravado tone: state the sweep, show the mapping, invite audit. (final cop
 
 ## Kill criteria (honesty clause)
 
-If by Oct 24 the core loop isn't demoable end-to-end, we narrow the declaration publicly to the two lanes we can defend (Multi-Agent + one other) — **a narrowed claim we hold beats a sweep we can't.** Declaring six is ambition; holding what we declare is the brand.
+If by Oct 24 the core loop isn't demoable end-to-end, we narrow the declaration publicly. **Met 2026-10-18:** the core loop ran end to end, live on Azure Container Apps, six days early.
