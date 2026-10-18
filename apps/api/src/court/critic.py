@@ -13,7 +13,7 @@ Checks, in order (all failures are collected so the UI can show every reason):
 import re
 from collections.abc import Callable, Mapping, Sequence
 
-from match_events import MatchEvent, Shot, ShotOutcome
+from match_events import MatchEvent, Pass, PassOutcome, Shot, ShotOutcome
 
 from .contracts import AlertKind, Claim, Reason, RejectionCode, Verdict
 from .metrics import is_final_third_pass, measure
@@ -84,10 +84,26 @@ def _attacking(event: MatchEvent) -> bool:
     return isinstance(event, Shot) or is_final_third_pass(event)
 
 
+def great_pass_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
+    """A pass is called great for what it made: the claim cites the completed pass and the
+    shot it set up, both the side's own."""
+    passes = {
+        e.id
+        for e in cited
+        if isinstance(e, Pass) and e.team == claim.team and e.outcome is PassOutcome.COMPLETE
+    }
+    if any(
+        isinstance(e, Shot) and e.team == claim.team and e.assist_event_id in passes for e in cited
+    ):
+        return None
+    return "a great-pass claim must cite the completed pass and the shot it set up"
+
+
 EVIDENCE_RULES: Mapping[AlertKind, EvidenceRule] = {
     AlertKind.GOAL: goal_rule,
     AlertKind.BIG_CHANCE: big_chance_rule,
     AlertKind.MOMENTUM_SWING: momentum_rule,
+    AlertKind.GREAT_PASS: great_pass_rule,
 }
 
 TOLERANCE = {"xg": 0.011, "shot_xg": 0.011}  # rounding slack; counts must match exactly

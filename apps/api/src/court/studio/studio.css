@@ -66,6 +66,11 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .cue .headline { font: 800 1.25rem / 1.1 var(--display); }
 .cue .tag { font-size: 0.75rem; color: var(--gold); }
 .cue p { margin: 0.4rem 0 0.5rem; font-size: 1.0625rem; }
+.tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 0.55rem; padding: 0; }
+.tag-player { display: flex; align-items: baseline; gap: 0.4rem; padding: 0.2rem 0.55rem 0.2rem 0.45rem; border-left: 3px solid var(--team); background: var(--navy-raised); border-radius: 0 4px 4px 0; font-size: 0.8125rem; }
+.tag-player b { font-weight: 600; }
+.tag-player span { color: var(--chalk-dim); }
+.tag-player em { font-style: normal; font: 500 0.75rem / 1 var(--mono); color: var(--lime); }
 .evidence { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .evidence code { font: 400 0.75rem / 1 var(--mono); padding: 0.2rem 0.35rem; border-radius: 3px; background: rgba(184, 245, 61, 0.1); color: var(--lime); }
 .receipt { margin-top: 0.5rem; font-size: 0.8125rem; }

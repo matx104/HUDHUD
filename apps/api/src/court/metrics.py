@@ -75,13 +75,33 @@ def compute(metric: str, team: Side, events: Iterable[MatchEvent]) -> float:
     raise ValueError(f"unknown metric {metric!r}")
 
 
+# Metrics of one event, as a broadcast states them. The Scout, the Narrator and the Critic all
+# read them here, so a claim's number and its recomputation can't drift apart.
+EVENT_METRICS = {
+    "shot_xg": (Shot, lambda e: round(shot_xg(e), 2)),
+    "shot_speed": (Shot, lambda e: round(e.shot_speed_kmh)),
+    "pass_distance": (Pass, lambda e: round(e.distance_m)),
+    "pass_difficulty": (Pass, lambda e: round(100 * e.difficulty)),
+    "pass_accuracy": (Pass, lambda e: round(100 * e.accuracy)),
+    "ball_speed": (Pass, lambda e: round(e.ball_speed_kmh)),
+}
+
+
+def event_metric(metric: str, event: MatchEvent) -> float:
+    kind, value = EVENT_METRICS[metric]
+    if not isinstance(event, kind):
+        raise ValueError(f"{metric} is measured on a {kind.__name__.lower()}")
+    return value(event)
+
+
 def measure(assertion: Assertion, state: MatchState, as_of_seq: int) -> float | None:
     """Recompute an assertion from raw events. None means it can't be measured."""
-    if assertion.metric == "shot_xg":
-        shot = state.get(assertion.event_id or "")
-        if not isinstance(shot, Shot) or shot.seq > as_of_seq:
+    if assertion.metric in EVENT_METRICS:
+        event = state.get(assertion.event_id or "")
+        kind, value = EVENT_METRICS[assertion.metric]
+        if not isinstance(event, kind) or event.seq > as_of_seq:
             return None
-        return round(shot_xg(shot), 2)
+        return value(event)
     if assertion.window is None:
         events: Iterable[MatchEvent] = state.until(as_of_seq)
     else:

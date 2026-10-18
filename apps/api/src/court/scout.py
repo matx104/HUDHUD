@@ -19,11 +19,15 @@ hidden ground truth.
 from match_events import MatchEvent, Pass, PassOutcome, PeriodStart, Shot, ShotOutcome, Side
 
 from .contracts import Alert, AlertKind, Window
-from .metrics import compute, is_final_third_pass, shot_xg
+from .metrics import compute, event_metric, in_box, is_final_third_pass, shot_xg
 from .state import MatchState
 
 # Typical spread of each side-versus-side figure over seeds 0-59 (the eval reports on the
 # unseen seeds 60-99). Dividing by them puts completion and territory on one scale.
+# A great pass: completed into the box, not a cross, of a difficulty (40 of 100: completed less than
+# six times in ten) that only the hardest twentieth of passes behind a shot reach, and it made the
+# chance. 0.8 a match on seeds 0-59; a goal or a big chance carries its pass in its own cue instead.
+GREAT_PASS_DIFFICULTY = 40
 COMPLETION_SPREAD = 0.088
 FINAL_THIRD_SPREAD = 2.2  # final-third passes per minute
 # What a side's completion is assumed to be before it has much of a baseline.
@@ -78,7 +82,7 @@ class Scout:
         xg = round(shot_xg(shot), 2)
         goal = shot.outcome is ShotOutcome.GOAL
         if not goal and xg < self.big_chance_xg:
-            return []
+            return self._great_pass(shot, state, xg)
         evidence = (shot.assist_event_id, shot.id) if shot.assist_event_id else (shot.id,)
         metrics = {"xg": xg}
         if goal:
@@ -92,6 +96,32 @@ class Scout:
                 as_of_seq=shot.seq,
                 severity=1.0 if goal else min(1.0, round(0.4 + xg, 2)),
                 evidence=evidence,
+                metrics=metrics,
+            )
+        ]
+
+    def _great_pass(self, shot: Shot, state: MatchState, xg: float) -> list[Alert]:
+        """A pass that opened the defence, judged once the shot shows it made a chance."""
+        pass_ = state.get(shot.assist_event_id or "")
+        if not (
+            isinstance(pass_, Pass)
+            and pass_.outcome is PassOutcome.COMPLETE
+            and not pass_.cross
+            and in_box(pass_.end_x, pass_.end_y)
+            and event_metric("pass_difficulty", pass_) >= GREAT_PASS_DIFFICULTY
+        ):
+            return []
+        metrics = {m: event_metric(m, pass_) for m in ("pass_distance", "pass_difficulty")}
+        metrics |= {"pass_accuracy": event_metric("pass_accuracy", pass_), "xg": xg}
+        return [
+            self._alert(
+                kind=AlertKind.GREAT_PASS,
+                team=shot.team,
+                period=shot.period,
+                t=shot.t,
+                as_of_seq=shot.seq,
+                severity=0.5,
+                evidence=(pass_.id, shot.id),
                 metrics=metrics,
             )
         ]

@@ -7,6 +7,7 @@ from match_events import (
     MatchEvent,
     MatchMeta,
     PeriodStart,
+    Player,
     PossessionChange,
     Shot,
     ShotOutcome,
@@ -57,6 +58,9 @@ class MatchState:
         hi = bisect_right(self._keys, (window.period, window.end_t))
         limit = self.last_seq if as_of_seq is None else as_of_seq
         return (e for e in self.events[lo:hi] if e.seq <= limit)
+
+    def player(self, player_id: str) -> Player | None:
+        return self._players.get(player_id)
 
     def player_name(self, player_id: str) -> str:
         player = self._players.get(player_id)

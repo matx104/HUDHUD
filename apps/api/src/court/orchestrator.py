@@ -22,6 +22,7 @@ from .localizer import Localizer
 from .narrator import Narrator, TemplateNarrator
 from .scout import Scout
 from .state import MatchState
+from .tags import player_tags
 from .telemetry import tracer
 from .workflow import build_narrative_workflow
 
@@ -100,7 +101,7 @@ class Orchestrator:
         self._emit(self._receipted(cue, alert, started))
 
     def _receipted(self, output: Output, alert: Alert, started: float) -> Output:
-        """Completes a cue's receipt: the writer and its spend (the narrator's ledger), the time."""
+        """Completes a cue: its receipt (the writer, its spend, the time) and its player tags."""
         if not isinstance(output, Cue) or output.receipt is None:
             return output
         update: dict[str, object] = {"latency_ms": round((time.perf_counter() - started) * 1000, 1)}
@@ -110,7 +111,10 @@ class Orchestrator:
             if output.status != "verified":
                 ledger.pop("writer", None)  # a detection-only cue had no writer, whoever tried
             update |= ledger
-        return output.model_copy(update={"receipt": output.receipt.model_copy(update=update)})
+        receipt = output.receipt.model_copy(update=update)
+        return output.model_copy(
+            update={"receipt": receipt, "players": player_tags(output, self.state)}
+        )
 
     def _set_level(self, level: str, alert: Alert, detail: str) -> None:
         self.level = level

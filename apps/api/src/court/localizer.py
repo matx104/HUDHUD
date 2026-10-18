@@ -12,7 +12,12 @@ from .contracts import Alert, AlertKind, Cue, Receipt, Verdict
 from .state import MatchState
 
 Mode = Literal["casual", "analyst"]
-TTL_S = {AlertKind.GOAL: 12.0, AlertKind.BIG_CHANCE: 8.0, AlertKind.MOMENTUM_SWING: 10.0}
+TTL_S = {
+    AlertKind.GOAL: 12.0,
+    AlertKind.BIG_CHANCE: 8.0,
+    AlertKind.MOMENTUM_SWING: 10.0,
+    AlertKind.GREAT_PASS: 8.0,
+}
 
 
 class Localizer:
@@ -66,6 +71,9 @@ class Localizer:
         elif alert.kind is AlertKind.BIG_CHANCE:
             headline = f"BIG CHANCE · {team.short_name}"
             text = f"Big chance for {team.name} (xG {m['xg']:.2f})."
+        elif alert.kind is AlertKind.GREAT_PASS:
+            headline = f"GREAT PASS · {team.short_name}"
+            text = f"Great pass from {team.name}: difficulty {m['pass_difficulty']:.0f} of 100."
         else:
             headline = f"MOMENTUM · {team.short_name} on top"
             mins = max(1, round(m["window_s"] / 60))

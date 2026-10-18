@@ -31,7 +31,7 @@ from .telemetry import tracer
 
 DEMO_SEEDS = (21, 7, 33)
 READ_ONLY = ToolAnnotations(readOnlyHint=True, idempotentHint=True, openWorldHint=False)
-Kind = Literal["goal", "big_chance", "momentum_swing"]
+Kind = Literal["goal", "big_chance", "momentum_swing", "great_pass"]
 Team = Literal["home", "away"]
 METRICS = ("goals", "shots", "xg", "passes", "passes_completed", "final_third_passes")
 
@@ -232,7 +232,9 @@ def verify_claim(
 
     citations: the event ids the claim rests on (match_events lists them). assertions: the
     numbers the claim relies on, as {metric, team, value, from_minute, to_minute}; metrics are
-    goals, shots, xg, passes, passes_completed, final_third_passes, or shot_xg with an event_id.
+    goals, shots, xg, passes, passes_completed, final_third_passes, or one event's own with an
+    event_id: shot_xg, shot_speed (km/h), pass_distance (m), pass_difficulty (0-100),
+    pass_accuracy (%), ball_speed (km/h).
     Returns approved, and every reason if not, in the Critic's own words.
     """
     with _traced("verify_claim", seed, **{"hudhud.claim.kind": kind}) as span:

@@ -20,6 +20,7 @@ class AlertKind(StrEnum):
     GOAL = "goal"
     BIG_CHANCE = "big_chance"
     MOMENTUM_SWING = "momentum_swing"
+    GREAT_PASS = "great_pass"
 
 
 class Window(_Frozen):
@@ -54,6 +55,12 @@ Metric = Literal[
     "passes",
     "passes_completed",
     "final_third_passes",
+    # Per-event metrics (the assertion names its event_id), all as broadcast integers:
+    "shot_speed",  # km/h
+    "pass_distance",  # metres
+    "pass_difficulty",  # 0-100: 100 x (1 - the chance the pass is completed)
+    "pass_accuracy",  # percent: how close the ball arrived to its target
+    "ball_speed",  # km/h
 ]
 
 
@@ -153,6 +160,20 @@ class Receipt(_Frozen):
     latency_ms: float = Field(default=0.0, description="From the alert to the cue")
 
 
+class PlayerTag(_Frozen):
+    """A player the cue is about, for on-screen identification, with threshold badges (§4.1)."""
+
+    id: str
+    name: str
+    number: int
+    position: str
+    team: Side
+    role: Literal["scorer", "shooter", "assister", "passer", "involved"]
+    badges: tuple[str, ...] = Field(
+        default=(), description="Speed and distance tags, shown when a threshold is reached"
+    )
+
+
 class Cue(_Frozen):
     """Broadcast overlay cue: timed, machine-readable, evidence attached."""
 
@@ -174,6 +195,7 @@ class Cue(_Frozen):
     priority: float
     ttl_s: float
     receipt: Receipt | None = None
+    players: tuple[PlayerTag, ...] = ()
 
 
 class RejectionNotice(_Frozen):

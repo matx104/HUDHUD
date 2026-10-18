@@ -13,48 +13,48 @@ window.CHAIN = {
       "color": "#C53030"
     }
   ],
-  "minute": "35'",
-  "headline": "GOAL · DUN 2-0 HAR",
-  "as_of": "e00599",
+  "minute": "5'",
+  "headline": "GREAT PASS · HAR",
+  "as_of": "e00051",
   "draft": {
-    "text": "Niko Eskley scores for Duneholt from 17 m, a speculative chance (xG 0.09). Set up by Dario Eskby.",
+    "text": "Sami Pellvik picks out Cian Falsen in the box with a 40 m pass, difficulty 48 of 100 and 99% accurate. The shot is kept out by the keeper.",
     "citations": [
-      "e00598",
-      "e00599",
-      "e00602"
+      "e00050",
+      "e00051",
+      "e00054"
     ],
     "reasons": [
       {
         "code": "future_event",
-        "detail": "e00602 had not happened when the claim was made (as of e00599)"
+        "detail": "e00054 had not happened when the claim was made (as of e00051)"
       }
     ]
   },
   "aired": {
-    "text": "Niko Eskley scores for Duneholt from 17 m, a speculative chance (xG 0.09). Set up by Dario Eskby.",
+    "text": "Sami Pellvik picks out Cian Falsen in the box with a 40 m pass, difficulty 48 of 100 and 99% accurate. The shot is kept out by the keeper.",
     "evidence": [
-      "e00598",
-      "e00599"
+      "e00050",
+      "e00051"
     ],
     "attempts": 2
   },
   "events": [
     {
-      "id": "e00598",
-      "minute": "35'",
-      "text": "Pass from Dario Eskby to Niko Eskley, 15 m",
+      "id": "e00050",
+      "minute": "5'",
+      "text": "Pass from Sami Pellvik to Cian Falsen, 40 m",
       "after_claim": false
     },
     {
-      "id": "e00599",
-      "minute": "35'",
-      "text": "Shot by Niko Eskley, 17 m, goal, xG 0.09",
+      "id": "e00051",
+      "minute": "5'",
+      "text": "Shot by Cian Falsen, 14 m, saved, xG 0.07",
       "after_claim": false
     },
     {
-      "id": "e00602",
-      "minute": "36'",
-      "text": "Pass from Sami Pellvik to Goran Belton, 19 m",
+      "id": "e00054",
+      "minute": "5'",
+      "text": "Pass from Hugo Stenwick to Teo Ulvvik, 10 m",
       "after_claim": true
     }
   ]

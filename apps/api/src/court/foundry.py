@@ -38,6 +38,7 @@ KIND = {
     AlertKind.GOAL: "goal",
     AlertKind.BIG_CHANCE: "big chance",
     AlertKind.MOMENTUM_SWING: "momentum swing",
+    AlertKind.GREAT_PASS: "great pass",
 }
 
 

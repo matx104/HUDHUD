@@ -160,12 +160,28 @@
     else if (c.attempts > 1) head.append(el("span", "tag", `Aired on attempt ${c.attempts}`));
     const evidence = el("div", "evidence");
     for (const id of c.evidence) evidence.append(el("code", "", id));
-    item.append(head, el("p", "", c.text), evidence);
+    item.append(head, el("p", "", c.text));
+    if (c.players?.length) item.append(tags(c.players));
+    item.append(evidence);
     if (c.receipt) item.append(receipt(c.receipt));
     cues.prepend(item);
     tally.checked += c.receipt?.numbers_checked ?? 0;
     tally.cost += c.receipt?.cost_usd ?? 0;
     drawTally();
+  }
+
+  // Who the cue is about (§4.1): number, name, role, and the speed or distance badges a
+  // threshold earned. Computed from the cue's own events, never written by a model.
+  function tags(players) {
+    const row = el("ul", "tags");
+    for (const p of players) {
+      const tag = el("li", "tag-player");
+      tag.style.setProperty("--team", teams?.[p.team]?.color ?? "var(--chalk-dim)");
+      tag.append(el("b", "", `${p.number} ${p.name}`), el("span", "", p.role));
+      for (const badge of p.badges) tag.append(el("em", "", badge));
+      row.append(tag);
+    }
+    return row;
   }
 
   function receipt(r) {
