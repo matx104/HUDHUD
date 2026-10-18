@@ -40,6 +40,7 @@ class Orchestrator:
         localizer: Localizer | None = None,
         max_attempts: int = 3,
         retries: int = 1,
+        quiet_until_t: float = 0.0,
     ) -> None:
         self.state = MatchState(meta)
         self.scout = scout or Scout()
@@ -53,6 +54,9 @@ class Orchestrator:
             max_attempts=max_attempts,
         )
         self.retries = retries
+        # Alerts before this match time are detected (the Scout keeps its history) but not
+        # narrated: a broadcast joined at 54' doesn't pay for the moments before it.
+        self.quiet_until_t = quiet_until_t
         self.level: str = "full"
         self.stats: Counter[str] = Counter()
         self._sink = sink
@@ -62,6 +66,9 @@ class Orchestrator:
         self.state.apply(event)
         self.stats["events"] += 1
         for alert in self.scout.observe(event, self.state):
+            if alert.t < self.quiet_until_t:
+                self.stats["alerts_before_joining"] += 1
+                continue
             self.stats["alerts"] += 1
             await self._narrate(alert)
 

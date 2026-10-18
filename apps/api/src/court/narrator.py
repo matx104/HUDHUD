@@ -73,7 +73,7 @@ class TemplateNarrator:
         self._alerts[alert.id] = alert
         claim = self.compose(alert, state, attempt=1)
         if self._rng.random() < self.overreach_rate:
-            return self._overreach(claim, alert, state)
+            return self.overreach(claim, alert, state)
         return claim
 
     def rewrite(self, verdict: Verdict, state: MatchState) -> Claim:
@@ -200,7 +200,9 @@ class TemplateNarrator:
 
     # --- deliberate overreach (demo + tests) ----------------------------------------
 
-    def _overreach(self, claim: Claim, alert: Alert, state: MatchState) -> Claim:
+    def overreach(self, claim: Claim, alert: Alert, state: MatchState) -> Claim:
+        """A faithful claim, corrupted in one of three ways the Critic must catch: no citations,
+        an inflated number, or a citation of an event that hasn't happened yet."""
         style = self._rng.choice(self.OVERREACH_STYLES)
         if style == "uncited":
             return claim.model_copy(update={"citations": ()})
