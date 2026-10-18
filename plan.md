@@ -79,7 +79,7 @@
 - [ ] **Azure screenshots** for #/control and the kit: the Monarch captures seven into `proof/raw/`; `scripts/redact.py`, a look at each, `--approve`, then `scripts/drive_kit.py`
 - [x] **Showcase site: build log and credits pages** (2026-10-18): `#/log` (live vs next, with a receipt for the seed-21 Foundry match) and `#/credits` (data, the Reactor session, libraries and licenses, fonts, tools, the name's source)
 
-- **Before the repo goes public:** purge from git history the scouting notes (open decision) and a fragment of the owner's directory name that one commit (b7175cc, `scripts/redact.py`) carried; the next commit removed it from the source.
+- [x] **History cleaned before going public** (2026-10-18): the scouting notes (`inspiration.md`, `inspiration-projects.json`) and a fragment of the owner's directory name (once in `scripts/redact.py`) are gone from every commit, by git-filter-repo. The final tree is unchanged; every commit hash changed, and ADR 0005's citation follows its commit. A bundle of the old history is kept off the repo, on the owner's machine
 
 ## Scope law (cut order, first to go)
 

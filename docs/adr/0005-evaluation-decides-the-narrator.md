@@ -1,6 +1,6 @@
 # ADR 0005: Evaluation decides which model writes the commentary
 
-- **Status:** accepted, 2026-10-18. The rule was committed (7519434) before the first run; the
+- **Status:** accepted, 2026-10-18. The rule was committed (e3452d7) before the first run; the
   result and the decision follow below it.
 - **Context:** Phase 2. Two models are deployed in the Foundry project: `gpt-5-mini` (primary
   since ADR 0003, a reasoning model) and `gpt-4.1-mini` (backup).
