@@ -107,7 +107,7 @@ class FoundryNarrator:
         self,
         *,
         project_endpoint: str,
-        models: Sequence[str] = ("gpt-5-mini", "gpt-4.1-mini"),
+        models: Sequence[str] = ("gpt-4.1-mini", "gpt-5-mini"),  # primary first: ADR 0005
         timeout_s: float = 30.0,
         meter: TokenMeter | None = None,
         agent_factory: Callable[[str], Any] | None = None,

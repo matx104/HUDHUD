@@ -144,7 +144,7 @@ def _narrator(args: argparse.Namespace, seed: int):
     if not endpoint:
         raise SystemExit("set FOUNDRY_PROJECT_ENDPOINT (scripts/live does), or use the template")
     models = [
-        m.strip() for m in os.environ.get("FOUNDRY_MODELS", "gpt-5-mini,gpt-4.1-mini").split(",")
+        m.strip() for m in os.environ.get("FOUNDRY_MODELS", "gpt-4.1-mini,gpt-5-mini").split(",")
     ]
     return FoundryNarrator(project_endpoint=endpoint, models=[m for m in models if m])
 
