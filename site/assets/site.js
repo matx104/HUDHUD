@@ -131,6 +131,12 @@
     $$("[data-product-mark]").forEach((n) => { n.textContent = site.productMark ?? name; });
     $$("[data-repo-link]").forEach((n) => { n.href = site.repoUrl ?? "#"; });
     $$("[data-when-repo]").forEach((n) => { n.hidden = (n.dataset.whenRepo === "public") !== Boolean(site.repoPublic); });
+    // The live studio leads: a match a visitor can watch, with the Critic at work.
+    if (site.studioUrl) {
+      $(".page-home .actions").prepend(Object.assign(el("a", "button", "Watch a live match"), { href: site.studioUrl }));
+      $(".page-home .actions .button[href='#/problem']")?.classList.add("button-quiet");
+      $$("[data-studio-link]").forEach((n) => { n.href = site.studioUrl; n.hidden = false; });
+    }
     const note = $("[data-video-link]");
     if (site.videoUrl && note) {
       $(".page-home .actions").append(Object.assign(el("a", "button button-quiet", "Watch the 110-second demo"), { href: site.videoUrl }));
