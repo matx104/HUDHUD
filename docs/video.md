@@ -11,8 +11,15 @@ description. The Monarch records and narrates; everything on screen is live, not
   voiceover's visuals. Every club and player in HUDHUD is invented, so the studio is safe as it is.
   Keep browser tabs, bookmarks and the taskbar out of frame.
 - **No copyrighted music.** Voice only, or royalty-free audio you have the licence for.
-- **A public URL** (YouTube unlisted works) that shows the project working. Put it in
-  `site/config.js` (`videoUrl`) and the site shows it on the home page.
+- **A public URL on YouTube, Vimeo, Facebook Video or Youku** (official rules §4, Submission
+  Requirements). Those four are the only hosts the rules name: a Google Drive link does not count
+  for the submission. An unlisted YouTube video works (it never shows on the channel YouTube makes
+  for the upload), and so does a free Vimeo account.
+- **The master copy lives on Google Drive**, in the public media kit:
+  `.venv/bin/python scripts/drive_kit.py --video demo.mp4` uploads it to "1 Demo video" and prints
+  its link. Put the link in `site/config.js` (`videoUrl`) and the site shows it on the home page.
+  Drive throttles a file that many people stream at once, so for LinkedIn upload the video to the
+  post itself as well: native video plays inline there and reaches more people than a link.
 
 ## Before recording (10 minutes)
 
@@ -44,7 +51,7 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 250 words.
 | 1:32–1:48 | Control room: the HUDHUD workbook, then the showcase site's How it works | Scroll the workbook's headline tiles | "Five agents on Microsoft Agent Framework. Models chosen by evaluation, on Foundry. Every claim in an audit trail on Cosmos DB, every step traced in Application Insights, and the Critic itself an MCP tool any assistant can use." |
 | 1:48–1:52 | Showcase home, the hero line | Hold | "HUDHUD. Every call comes with its evidence." |
 
-## The description (YouTube, and the submission)
+## The description (the video's page, and the submission)
 
 > HUDHUD: AI football commentary that shows its working. Five agents on Microsoft Agent Framework
 > commentate a synthetic match; a Critic agent recomputes every number from the raw events before a
@@ -55,4 +62,5 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 250 words.
 >
 > Try it: https://hudhud-studio.politesand-62c3c2c4.uaenorth.azurecontainerapps.io/
 > About it: https://matx104.github.io/HUDHUD/
+> Video, screenshots and brand kit: https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y
 > Built for Inside the Game: Developer Hackathon (October 2026). An independent entry.
