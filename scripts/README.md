@@ -12,6 +12,8 @@ sign-in through `_azure.py`. "Read-only" means a script changes nothing in Azure
 | `make costs` (`scripts/costs.py`) | Month-to-date cost of `rg-hudhud` by service, and the $100 budget. Cost Management runs up to a day behind | read-only | free |
 | `make smoke` (`scripts/smoke.py`) | Streams one short match from the live studio and checks every part: health, config, clock, cues with receipts, full time. `--models` narrates with Foundry | read-only (writes audit records) | free; `--models` under a cent |
 | `make links` (`scripts/check_links.py`) | Checks every link on the showcase site and in the README | none | free |
+| `.venv/bin/python scripts/doctor.py --publish` | Runs the doctor and writes its checklist to `site/data/doctor.js`, the public proof on the site's Control room page (email addresses replaced) | read-only | free |
+| `.venv/bin/python scripts/redact.py` | Covers every identifier in the Azure screenshots saved to `proof/raw/` (git-ignored) with solid boxes, by OCR plus optional manual boxes, and publishes them to the Control room page. **Look at every output before committing** | none | free |
 | `.venv/bin/python scripts/audit.py runs` / `show RUN` | Browses the audit trail: recent runs with what aired and was refused, or one run's every record (`--out run.json` exports it) | read-only | free |
 
 ## Running and shipping
@@ -23,7 +25,7 @@ sign-in through `_azure.py`. "Read-only" means a script changes nothing in Azure
 | `make studio` (`scripts/studio`) | The studio on this machine, at http://localhost:8080 | calls models | per match, as above |
 | `scripts/deploy-studio` | Builds the studio image, pushes it, rolls the container app onto it, tagged with the commit (refuses a dirty tree) | **changes the app** | registry storage |
 | `scripts/studio-power on\|off\|status` | Keeps the live studio warm (one replica), lets it sleep when idle, or shows which. Keep it **on** from Oct 26 through Nov 10 | **changes the app** | on: about $5 a month |
-| `make control-room` (`scripts/control_room.py`) | Deploys the HUDHUD workbook and writes the local control room's portal links (git-ignored) | **updates the workbook** | free |
+| `make control-room` (`scripts/control_room.py`) | Deploys the HUDHUD workbook and writes the portal links to `site/data/ops.js`, the owner's shortcuts on the site's Control room page (IDs only; the email-based directory name is never used) | **updates the workbook** | free |
 | `make site-data` (`scripts/site_sample.py`) | Regenerates the showcase site's sample claim and match from a real offline run | none | free |
 
 ## Plumbing
