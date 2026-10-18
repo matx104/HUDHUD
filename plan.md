@@ -31,7 +31,7 @@
 - [x] **Foundry Narrator (2026-10-18, ADR 0003):** `gpt-5-mini` writes the line from a fact sheet, `gpt-4.1-mini` takes over on failure; the Critic's new grounded-numbers check rejects any number code didn't compute; token meter. First live match: 7 verified cues, $0.0066
 - [ ] **The rules' feature list (§4.1 ii):** pass-quality cues (distance, accuracy, difficulty), speed cues (ball and shot speed), player tags. The generator already emits every field
 - [ ] **Personal modes (§4.1 i e):** favourite club, favourite player, player-focus, single-metric
-- [ ] **Receipts on every cue** (Reactor 27536): verified or detection-only, numbers checked, model, latency, tokens, estimated cost, evidence IDs
+- [x] **Receipts on every cue** (2026-10-18; Reactor 27536): `Cue.receipt`: the writer and its spend from the narrator's per-alert ledger, numbers checked from the Critic's verdict, facts recomputed and events cited from the claim, alert-to-air time from the Orchestrator. In the console, the audit trail, the alert spans and two workbook tiles. Live: median 3.6 s alert to air, ~$0.0007 a cue
 - [ ] **Narrator eval, "evaluation decides which model serves"** (Reactor 27536): `gpt-5-mini` vs `gpt-4.1-mini` on the same alerts; first-attempt Critic pass rate, grounding failures, latency, cost
 - [ ] **"What this data can't tell you"** on the site and in the UI: momentum precision, synthetic clubs and players, no video
 - [ ] **Counterattack and high-press alerts** (overview themes): transitions after a won tackle or interception, press efficiency from pressure events
