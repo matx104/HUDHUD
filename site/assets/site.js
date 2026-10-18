@@ -48,36 +48,16 @@
   drawSignal();
   if (calm.matches) $$("[data-diagram], [data-signal]").forEach((s) => s.pauseAnimations?.());
   startCountdown();
-  // The control room exists only on the owner's machine: a page built from a git-ignored file of
-  // portal links (scripts/control_room.py). The public site never asks for that file.
-  controlRoom().then(() => {
-    startMenu();
-    startReveals();
-    startRouter();
-  });
+  // The control room (#/control): the owner's shortcuts into Azure, and the proof for everyone.
+  if (window.OPS) drawControlRoom(window.OPS);
+  if (window.DOCTOR) drawDoctor(window.DOCTOR);
+  if (window.PROOF?.length) drawProof(window.PROOF);
+  startMenu();
+  startReveals();
+  startRouter();
 
-  function controlRoom() {
-    if (!["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)) return Promise.resolve();
-    return new Promise((done) => {
-      const script = Object.assign(document.createElement("script"), { src: "data/ops.local.js" });
-      script.onload = () => {
-        if (window.OPS) buildControlRoom(window.OPS);
-        done();
-      };
-      script.onerror = () => done();
-      document.head.append(script);
-    });
-  }
-
-  function buildControlRoom(ops) {
-    const page = el("section", "page wrap");
-    Object.assign(page.dataset, { page: "control", title: "Control room", summary: "Azure, one click away", local: "" });
-    page.setAttribute("aria-labelledby", "control-title");
-    const head = el("header", "page-head");
-    const title = Object.assign(el("h1", "", "Control room"), { id: "control-title", tabIndex: -1 });
-    const when = new Date(ops.generated).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
-    head.append(title, el("p", "lede", `On this machine only: the public site never shows this page. Each button opens the Azure portal in a new tab, signed in as you. Links made ${when}.`));
-    const grid = el("div", "control");
+  function drawControlRoom(ops) {
+    const grid = $("[data-ops]");
     for (const group of ops.groups) {
       const box = el("section", "control-group");
       const list = el("ul");
@@ -91,9 +71,32 @@
       box.append(el("h2", "", group.title), list);
       grid.append(box);
     }
-    page.append(head, grid);
-    $('[data-page="missing"]').before(page);
-    $(".nav").append(Object.assign(el("a", "", "Control room"), { href: "#/control" }));
+    const when = new Date(ops.generated).toLocaleDateString([], { dateStyle: "medium" });
+    $("[data-ops-when]").textContent = `Links generated ${when}.`;
+  }
+
+  function drawDoctor(doctor) {
+    const passed = doctor.checks.filter((c) => c.ok).length;
+    const when = new Date(doctor.checked).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+    const head = el("p", "doctor-head", `${passed} of ${doctor.checks.length} checks pass, ${when}`);
+    const list = el("ul", "doctor-list");
+    for (const c of doctor.checks) {
+      const item = el("li", c.ok ? (c.warn ? "warn" : "pass") : "fail");
+      item.append(el("span", "mark", c.ok ? (c.warn ? "!" : "✔") : "✘"), el("span", "", c.check));
+      if (c.detail) item.append(el("small", "", c.detail));
+      list.append(item);
+    }
+    $("[data-doctor]").append(head, list);
+  }
+
+  function drawProof(shots) {
+    for (const shot of shots) {
+      const figure = el("figure", "shot");
+      const img = Object.assign(document.createElement("img"), { src: shot.src, alt: shot.alt, loading: "lazy" });
+      figure.append(img, el("figcaption", "", shot.caption));
+      $("[data-proof-grid]").append(figure);
+    }
+    $("[data-proof-shots]").hidden = false;
   }
 
   // The hackathon clock: counts to the submission deadline in config.js, then says so.
@@ -398,8 +401,8 @@
   function startRouter() {
     const sections = $$("[data-page]");
     const missing = $('[data-page="missing"]');
-    // Local pages (the control room) can be visited but stay out of the chapters and the pager.
-    const story = sections.filter((s) => s !== missing && !("local" in s.dataset));
+    // Aside pages (the control room) can be visited but stay out of the chapters and the pager.
+    const story = sections.filter((s) => s !== missing && !("aside" in s.dataset));
     const keys = sections.filter((s) => s !== missing).map((s) => s.dataset.page).filter(Boolean);
     const pager = $("[data-pager]");
     const sting = $(".sting");

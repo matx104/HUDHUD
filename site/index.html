@@ -100,6 +100,7 @@
         <a href="#/log">Build log</a>
         <a href="#/roadmap">Roadmap</a>
         <a href="#/who">Who</a>
+        <a href="#/control">Control room</a>
         <a data-repo-link data-when-repo="public" href="#">Code</a>
       </nav>
       <button class="menu-button" type="button" aria-expanded="false" aria-controls="chapters">
@@ -792,6 +793,32 @@
       </div>
     </section>
 
+    <!-- ============ CONTROL ROOM (the owner's shortcuts; not a chapter) ============ -->
+    <section class="page wrap" data-page="control" data-aside data-title="Control room" data-summary="The owner's shortcuts into Azure, and the proof for everyone" aria-labelledby="control-title">
+      <header class="page-head">
+        <h1 id="control-title" tabindex="-1">Control room</h1>
+        <p class="lede">Shortcuts into the Azure environment that runs <span data-product-name></span>: what it costs, the budget, the app's health, the AI models at work and their logs. I use them while I build and while I record the demo.</p>
+      </header>
+
+      <aside class="caveat" role="note">
+        <h2>These buttons work only for me</h2>
+        <p>Each one opens the Azure portal at a resource in my own subscription. To follow them you'd have to be signed in to Azure as a member of my environment, with access granted to you. Anyone else gets Azure's sign-in page or a "no access" message. They're on this page to make my own work easier, not for visitors to browse.</p>
+        <p>The links contain my subscription's and resources' identifiers, which grant nothing without access. There are no keys or secrets anywhere in this project: every service signs in with Microsoft Entra ID. For everyone else, the proof is further down this page.</p>
+      </aside>
+
+      <div class="control" data-ops></div>
+      <p class="fine" data-ops-when></p>
+
+      <h2 class="section-title" data-reveal>The proof, for everyone</h2>
+      <p class="lede proof-lede" data-reveal>A read-only check of the whole environment, run from the project's own command line (<code>make doctor</code>). Identifying details are left out.</p>
+      <div class="doctor" data-doctor></div>
+      <div class="shots" data-proof-shots hidden>
+        <h2 class="section-title">The Azure side, as it looks</h2>
+        <p class="lede proof-lede">Screenshots from the Azure portal. Identifiers, account names and email addresses are covered.</p>
+        <div class="shot-grid" data-proof-grid></div>
+      </div>
+    </section>
+
     <!-- ============ NOT FOUND ============ -->
     <section class="page page-missing wrap" data-page="missing" data-title="Page not found" aria-labelledby="missing-title">
       <header class="page-head">
@@ -818,6 +845,9 @@
   <script src="config.js"></script>
   <script src="data/chain.js"></script>
   <script src="data/match.js"></script>
+  <script src="data/ops.js"></script>
+  <script src="data/doctor.js"></script>
+  <script src="data/proof.js"></script>
   <script src="assets/router.js"></script>
   <script src="assets/site.js"></script>
   <script src="assets/field.js"></script>

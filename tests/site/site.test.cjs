@@ -57,13 +57,12 @@ test("the countdown ends at the official close: Oct 27, 11:59 PM Pacific", () =>
   assert.equal(pacific, "10/27/2026, 23:59");
 });
 
-test("the control room's links never reach the public site", () => {
-  // The links carry the subscription's IDs: git ignores their file, the page names nothing of
-  // it, and site.js asks for it only when served from this machine.
-  assert.doesNotMatch(html, /ops\.local|data-page="control"/);
-  const ignore = fs.readFileSync(path.join(SITE, "..", ".gitignore"), "utf8");
-  assert.match(ignore, /^site\/data\/\*\.local\.js$/m);
-  const js = read("assets/site.js");
-  const guard = js.indexOf('["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)');
-  assert.ok(guard > 0 && guard < js.indexOf("data/ops.local.js"), "load only behind the localhost check");
+test("the control room says who its buttons are for, and its links name no account", () => {
+  // The buttons are the owner's shortcuts, published by choice: the page says they need the
+  // owner's Azure environment, and the links carry IDs only, never the email-based domain.
+  assert.match(html, /These buttons work only for me/);
+  const ops = read("data/ops.js");
+  assert.doesNotMatch(ops, /onmicrosoft\.com|@[\w-]+\.(com|net|org)/);
+  assert.doesNotMatch(read("data/doctor.js"), /@[\w-]+\.(com|net|org)/);
+  assert.match(html, /data-page="control" data-aside/, "an aside: out of the chapters");
 });
