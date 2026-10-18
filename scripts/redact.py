@@ -1,6 +1,6 @@
 """Redact Azure screenshots for the showcase site: cover every identifier, review, then publish.
 
-Save screenshots of the Azure portal to proof/raw/ (git-ignored: originals never leave this machine).
+Save screenshots of the Azure portal to proof/raw/ (git-ignored: originals stay on this machine).
 
     .venv/bin/python scripts/redact.py                  # redact everything into proof/review/
     .venv/bin/python scripts/redact.py --approve NAME   # after looking at proof/review/NAME.webp
