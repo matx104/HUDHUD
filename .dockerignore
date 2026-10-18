@@ -1,0 +1,8 @@
+# Only the two packages go into the image: nothing private, nothing local.
+*
+!packages/event-schema/
+!apps/api/
+apps/api/tests/
+**/__pycache__/
+**/*.pyc
+**/*.egg-info/

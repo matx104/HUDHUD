@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# Ship the studio: build the image, push it to the registry, roll the container app onto it.
+#   scripts/deploy-studio
+# The image is tagged with the commit, so the tree must be clean: a tag names exactly its code.
+set -eu
+here="$(cd "$(dirname "$0")/.." && pwd)"
+if ! git -C "$here" diff --quiet HEAD -- apps packages Dockerfile .dockerignore; then
+  echo "commit the studio's changes first: the image tag must name its code" >&2
+  exit 1
+fi
+image="hudhudstudio.azurecr.io/studio:$(git -C "$here" rev-parse --short HEAD)"
+"$here/scripts/az" acr login -n hudhudstudio >/dev/null
+docker build -q -t "$image" "$here"
+docker push -q "$image"
+"$here/scripts/az" containerapp update -n hudhud-studio -g rg-hudhud --image "$image" \
+  --query "properties.latestRevisionName" -o tsv
+echo "live at https://$("$here/scripts/az" containerapp show -n hudhud-studio -g rg-hudhud --query properties.configuration.ingress.fqdn -o tsv)/"
