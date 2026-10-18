@@ -45,7 +45,7 @@ smoke:  ## stream one match from the live studio and check every part (free)
 links:  ## check every link on the showcase site and in the README
 	$(BIN)/python scripts/check_links.py
 
-studio:  ## the live studio at http://localhost:8080 (Foundry models, audit and traces on)
+studio:  ## the live studio at http://localhost:8091 (Foundry models, audit and traces on)
 	scripts/studio
 
 site:  ## serve the showcase site at http://localhost:8000

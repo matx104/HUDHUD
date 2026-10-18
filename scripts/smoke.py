@@ -5,7 +5,7 @@ receipts, the end. The offline narrator by default, so it costs nothing; --model
 models narrate it instead (well under a cent). Exits 1 on any failure: run it before a recording.
 
     make smoke                         # the deployed studio
-    .venv/bin/python scripts/smoke.py --url http://localhost:8080/ --models
+    .venv/bin/python scripts/smoke.py --url http://localhost:8091/ --models
 """
 
 import argparse

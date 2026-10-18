@@ -10,7 +10,7 @@ catch every one.
 An open demo must not run up the bill: model-narrated matches are capped per day (then the offline
 narrator takes over, and the studio says so), and so are concurrent streams.
 
-    make studio        # http://localhost:8080
+    make studio        # http://localhost:8091
 """
 
 import asyncio

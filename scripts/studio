@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # The studio on this machine, narrated by the Foundry models, with audit and traces on.
-#   scripts/studio            # then open http://localhost:8080
+#   scripts/studio            # then open http://localhost:8091 (8080 is the container's port)
 here="$(cd "$(dirname "$0")/.." && pwd)"
 . "$here/scripts/live-env"
-exec "$here/.venv/bin/uvicorn" court.server:app --host 127.0.0.1 --port "${PORT:-8080}"
+exec "$here/.venv/bin/uvicorn" court.server:app --host 127.0.0.1 --port "${PORT:-8091}"

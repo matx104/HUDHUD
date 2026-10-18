@@ -16,7 +16,7 @@ make eval    # the Scout's momentum calls scored against hidden ground truth (un
 .venv/bin/pip install -e "apps/api[foundry]"
 scripts/live run --seed 21 --narrator foundry   # prints the cues and what the match cost
 make demo    # one synthetic match, all five agents, in the console
-make studio  # the studio at http://localhost:8080: a live match, the Critic's desk, the off-air switch
+make studio  # the studio at http://localhost:8091: a live match, the Critic's desk, the off-air switch
 make site    # the showcase site at http://localhost:8000
 scripts/live narrator-eval --seeds 5   # the models compete for the job (ADR 0005)
 scripts/deploy-studio                  # ship the studio to Azure Container Apps
