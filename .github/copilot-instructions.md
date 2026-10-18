@@ -35,7 +35,8 @@ broadcast going when an agent fails. Read `goals.md`, `plan.md` and `docs/adr/` 
 - Use `scripts/az`, never the machine's default `az`: it is the project's own CLI and sign-in.
   The subscription is **Azure for Students**, with a $100 credit and its spending limit on. Never
   create anything in "Azure subscription 1": it is pay-as-you-go with no spending limit.
-- Resources live in `rg-hudhud` in UAE North, the only allowed region with model deployments.
+- Resources live in `rg-hudhud`: the Foundry models in UAE North (the only allowed region with
+  model deployments), the Cosmos DB audit trail in Central India (UAE North refused new accounts).
 - No keys. Microsoft Entra ID only; key-based auth stays disabled.
 - `scripts/live run --seed 21 --narrator foundry --audit cosmos` narrates a match on the Foundry
   models and keeps every output in the audit trail (Cosmos DB, free tier, capped at 1,000 RU/s).
