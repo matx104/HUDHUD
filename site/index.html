@@ -360,7 +360,7 @@
               <g><rect x="210" y="40" width="150" height="64" rx="10"/><text x="285" y="68">Scout</text><text x="285" y="88" class="d-sub">detects, no LLM</text></g>
               <g><rect x="420" y="40" width="150" height="64" rx="10"/><text x="495" y="68">Narrator</text><text x="495" y="88" class="d-sub">drafts and cites</text></g>
               <g class="d-critic"><rect x="630" y="40" width="150" height="64" rx="10"/><text x="705" y="68">Critic</text><text x="705" y="88" class="d-sub">recomputes, rules</text></g>
-              <g><rect x="840" y="40" width="150" height="64" rx="10"/><text x="915" y="68">Localizer</text><text x="915" y="88" class="d-sub">casual or analyst</text></g>
+              <g><rect x="840" y="40" width="150" height="64" rx="10"/><text x="915" y="68">Localizer</text><text x="915" y="88" class="d-sub">EN, UR or AR</text></g>
               <g class="d-out"><rect x="840" y="230" width="150" height="64" rx="10"/><text x="915" y="258">Overlay cues</text><text x="915" y="278" class="d-sub">to the broadcast</text></g>
               <g class="d-orch"><rect x="10" y="230" width="780" height="64" rx="10"/><text x="400" y="258">Orchestrator</text><text x="400" y="278" class="d-sub">supervises the line: retries once, falls back to detection-only cues, announces recovery</text></g>
             </g>
@@ -375,14 +375,14 @@
         <li class="step" data-reveal>
           <div class="step-copy">
             <h3>Spot</h3>
-            <p>The Scout reads every event as it arrives and flags goals, big chances and swings in momentum.</p>
+            <p>The Scout reads every event as it arrives and flags goals, big chances, great passes and swings in momentum.</p>
           </div>
           <div class="example" data-example="spot"></div>
         </li>
         <li class="step" data-reveal>
           <div class="step-copy">
             <h3>Write</h3>
-            <p>The Narrator drafts the line for air and cites the event behind every fact in it.</p>
+            <p>The Narrator drafts the line for air from a sheet of facts code computed, and cites the event behind every one. On Azure, a model in Microsoft Foundry writes it: gpt-4.1-mini, chosen by evaluation.</p>
           </div>
           <div class="example" data-example="write"></div>
         </li>
@@ -396,7 +396,7 @@
         <li class="step" data-reveal>
           <div class="step-copy">
             <h3>Air</h3>
-            <p>The Localizer turns the verified claim into an on-screen cue for casual fans or analysts. A claim that never passes never airs.</p>
+            <p>The Localizer turns the verified claim into an on-screen cue for casual fans or analysts, in English, Urdu or Arabic, with its player tags and a receipt of what was checked and what it cost. A claim that never passes never airs. <a data-studio-link hidden href="#">Watch it happen in the studio</a>.</p>
           </div>
           <div class="example" data-example="air"></div>
         </li>
@@ -421,7 +421,7 @@
         <li data-state="degraded" data-reveal><strong>Detection only</strong><span>Cues keep airing, marked unverified</span></li>
         <li data-state="full" data-reveal><strong>Recovered</strong><span>Announced on air, verification resumes</span></li>
       </ol>
-      <p class="aside" data-reveal>A test knocks the Narrator out four times in a row mid-match and checks that the cues never stop.</p>
+      <p class="aside" data-reveal>A test knocks the Narrator out four times in a row mid-match and checks that the cues never stop. In the studio you can do it yourself: <a data-studio-link hidden href="#">take the narrator off air</a> mid-match, and put it back.</p>
     </section>
 
     <!-- ============ 06 DATA ============ -->
@@ -462,7 +462,7 @@
       <ol class="reasons">
         <li data-reveal><h2>Nothing unverified goes to air</h2><p>Broadcasters answer for every word on screen. Each claim carries its own audit trail: the events behind it, the check it passed and the attempt it took.</p></li>
         <li data-reveal><h2>The model writes, the evidence decides</h2><p>We don't ask the model to be careful. We check its work with the same formulas the Scout uses, and refuse anything that doesn't add up.</p></li>
-        <li data-reveal><h2>Commentary in the fan's own language</h2><p>Urdu and Arabic are part of the plan from the start, at native register, and every string is reviewed by a native speaker before it ships.</p></li>
+        <li data-reveal><h2>Commentary in the fan's own language</h2><p>Urdu and Arabic are live beside English. The verified line is translated under the same law: no number it doesn't state, no name changed. Every fixed word was reviewed and signed off before it shipped.</p></li>
         <li data-reveal><h2>Failure is designed in</h2><p>Models will be slow, rate-limited or down mid-match. The system degrades, says so on air and recovers, instead of falling silent.</p></li>
         <li data-reveal><h2>Built in the open</h2><p>The goals are declared on this site before the deadline, and the code goes public with the entry. Judge the work against the promise.</p></li>
       </ol>
