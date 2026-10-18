@@ -15,8 +15,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.6", "fastapi>=0.115,<1", "httpx>=0.27"]
-server = ["fastapi>=0.115,<1", "uvicorn[standard]>=0.30"]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.6", "fastapi>=0.115,<1", "httpx>=0.27", "mcp>=2.3,<3"]
+server = ["fastapi>=0.115,<1", "uvicorn[standard]>=0.30", "mcp>=2.3,<3"]
+mcp = ["mcp>=2.3,<3"]
 # Live narration on models deployed in the Foundry project. Not needed for tests or CI,
 # which run the offline template narrator.
 foundry = ["agent-framework-foundry>=1.15,<2", "azure-identity>=1.19"]

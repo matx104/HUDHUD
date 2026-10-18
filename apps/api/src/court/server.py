@@ -14,6 +14,7 @@ narrator takes over, and the studio says so), and so are concurrent streams.
 """
 
 import asyncio
+import contextlib
 import inspect
 import json
 import logging
@@ -28,6 +29,7 @@ from typing import Any, Literal
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
+from mcp.server.transport_security import TransportSecuritySettings
 from opentelemetry import trace
 from opentelemetry.trace import SpanKind
 
@@ -38,6 +40,7 @@ from .audit import AuditTrail, CosmosStore
 from .config import product_name
 from .contracts import OUTPUT_ADAPTER, Output
 from .localizer import Localizer
+from .mcp_server import server as critic_mcp
 from .metrics import shot_xg
 from .narrator import TemplateNarrator
 from .orchestrator import run_match
@@ -241,7 +244,24 @@ def _sse(kind: str, data: dict[str, Any]) -> str:
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title=f"{product_name()} studio", docs_url=None, redoc_url=None)
+    # The Critic as a remote MCP server at /mcp/ (ADR 0007). It is public, read-only and holds
+    # nothing private, so DNS-rebinding protection (which guards local servers from web pages)
+    # adds nothing: anyone may call it directly anyway.
+    critic = critic_mcp.streamable_http_app(
+        streamable_http_path="/",
+        stateless_http=True,
+        json_response=True,
+        transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False),
+    )
+
+    @contextlib.asynccontextmanager
+    async def lifespan(_: FastAPI):
+        async with critic_mcp.session_manager.run():
+            yield
+
+    app = FastAPI(
+        title=f"{product_name()} studio", docs_url=None, redoc_url=None, lifespan=lifespan
+    )
     sessions: dict[str, Session] = {}
     budget = ModelBudget(DAILY_MODEL_MATCHES)
     app.state.sessions = sessions  # read by the tests: every stream must leave none behind
@@ -334,6 +354,7 @@ def create_app() -> FastAPI:
         session.narrator.on_air = on
         return {"on_air": on}
 
+    app.mount("/mcp", critic)
     app.mount("/static", StaticFiles(directory=STUDIO), name="static")
     return app
 
