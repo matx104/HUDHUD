@@ -1,0 +1,118 @@
+/* The studio: a broadcast production gallery. Lime is evidence and live air, gold is a verdict,
+   red appears only where the Critic refuses a claim (the red card). Same tokens as the showcase. */
+:root {
+  --navy: #0A1F2E;
+  --navy-deep: #06141F;
+  --navy-raised: #0F2A3D;
+  --chalk: #F4F1E8;
+  --chalk-dim: rgba(244, 241, 232, 0.72);
+  --chalk-faint: rgba(244, 241, 232, 0.16);
+  --lime: #B8F53D;
+  --gold: #C9A227;
+  --card: #F25C54;
+  --display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --body: "Hanken Grotesk", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: var(--navy-deep); color: var(--chalk); font: 400 1rem / 1.5 var(--body); display: grid; grid-template-rows: auto 1fr auto; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
+.hint { margin: 0.35rem 0 1rem; color: var(--chalk-dim); font-size: 0.875rem; }
+
+/* ---------- top bar ---------- */
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; padding: 0.75rem 1.25rem; background: var(--navy); border-bottom: 1px solid var(--chalk-faint); }
+.brand { display: flex; align-items: center; gap: 0.5rem; font: 800 1.5rem / 1 var(--display); }
+.dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 4px rgba(184, 245, 61, 0.18); }
+.setup { display: flex; flex-wrap: wrap; align-items: end; gap: 0.6rem 1rem; margin-left: auto; }
+.setup label { display: grid; gap: 0.15rem; font-size: 0.75rem; color: var(--chalk-dim); }
+.setup select { padding: 0.4rem 0.5rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: var(--navy-raised); font-size: 0.9375rem; }
+.go, .pull { padding: 0.55rem 1.1rem; border: 0; border-radius: 4px; font-weight: 600; cursor: pointer; }
+.go { background: var(--lime); color: var(--navy-deep); }
+.go:disabled { opacity: 0.5; cursor: progress; }
+
+/* ---------- layout ---------- */
+.studio { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "board board" "feed desk"; gap: 1rem; padding: 1rem 1.25rem; align-items: start; }
+.board { grid-area: board; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 15rem); align-items: center; gap: 1rem 2rem; padding: 1rem 1.25rem; background: var(--navy); border: 1px solid var(--chalk-faint); border-radius: 6px; }
+.feed { grid-area: feed; }
+.desk { grid-area: desk; padding: 1rem 1.1rem; background: rgba(242, 92, 84, 0.06); border: 1px solid rgba(242, 92, 84, 0.3); border-radius: 6px; }
+
+/* ---------- scoreboard ---------- */
+.score { display: flex; align-items: center; gap: 1rem; font: 800 clamp(1.5rem, 3vw, 2.25rem) / 1 var(--display); }
+.team { display: flex; align-items: center; gap: 0.6rem; }
+.team i { width: 0.9rem; height: 1.6rem; border-radius: 2px; background: var(--team, var(--chalk-dim)); }
+.goals { font-size: clamp(2.25rem, 5vw, 3.5rem); color: var(--chalk); font-variant-numeric: tabular-nums; }
+.meta { display: grid; justify-items: center; gap: 0.4rem; }
+.clock { font: 500 1.5rem / 1 var(--mono); color: var(--lime); }
+.level { padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.8125rem; border: 1px solid var(--chalk-faint); color: var(--chalk-dim); }
+.level[data-level="full"] { color: var(--lime); border-color: rgba(184, 245, 61, 0.5); }
+.level[data-level="detection_only"] { color: var(--gold); border-color: var(--gold); }
+.pitch { width: 100%; max-width: 15rem; justify-self: end; }
+.pitch rect, .pitch line, .pitch circle { fill: none; stroke: var(--chalk-faint); stroke-width: 0.5; }
+.pitch > rect:first-child { fill: rgba(30, 123, 69, 0.18); }
+.pitch .shot { stroke: var(--navy-deep); stroke-width: 0.4; }
+.pitch .shot.miss { fill-opacity: 0.35; }
+
+/* ---------- the feed ---------- */
+.cues, .cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.cue { padding: 0.9rem 1rem 0.8rem; background: var(--navy); border-left: 4px solid var(--lime); border-radius: 0 6px 6px 0; }
+.cue.detection { border-left-color: var(--gold); }
+.cue header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.75rem; }
+.cue .minute { font: 500 0.875rem / 1 var(--mono); color: var(--lime); }
+.cue.detection .minute { color: var(--gold); }
+.cue .headline { font: 800 1.25rem / 1.1 var(--display); }
+.cue .tag { font-size: 0.75rem; color: var(--gold); }
+.cue p { margin: 0.4rem 0 0.5rem; font-size: 1.0625rem; }
+.evidence { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.evidence code { font: 400 0.75rem / 1 var(--mono); padding: 0.2rem 0.35rem; border-radius: 3px; background: rgba(184, 245, 61, 0.1); color: var(--lime); }
+.receipt { margin-top: 0.5rem; font-size: 0.8125rem; }
+.receipt summary { cursor: pointer; color: var(--chalk-dim); }
+.receipt dl { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 1rem; margin: 0.5rem 0 0; padding: 0.6rem 0.75rem; font-family: var(--mono); background: var(--navy-deep); border-radius: 4px; }
+.receipt dt { color: var(--chalk-dim); }
+.receipt dd { margin: 0; text-align: right; }
+.notice { padding: 0.6rem 0.9rem; border: 1px dashed var(--gold); border-radius: 6px; color: var(--gold); font-size: 0.9375rem; }
+.notice.good { border-color: var(--lime); color: var(--lime); }
+
+/* ---------- the Critic's desk ---------- */
+.tally { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin: 0 0 1rem; }
+.tally div { padding: 0.5rem 0.6rem; background: var(--navy); border-radius: 4px; }
+.tally dt { font-size: 0.75rem; color: var(--chalk-dim); }
+.tally dd { margin: 0; font: 800 1.5rem / 1.1 var(--display); }
+.card { position: relative; padding: 0.85rem 1rem 0.85rem 3.1rem; background: var(--navy); border-radius: 6px; }
+.card::before { content: ""; position: absolute; left: 1rem; top: 0.95rem; width: 1.3rem; height: 1.8rem; border-radius: 2px; background: var(--card); transform: rotate(-8deg); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); }
+.card .minute { font: 500 0.8125rem / 1 var(--mono); color: var(--chalk-dim); }
+.card s { display: block; margin: 0.35rem 0; color: var(--chalk-dim); text-decoration-color: var(--card); }
+.card ul { margin: 0; padding-left: 1.1rem; font-size: 0.9375rem; }
+.card li::marker { color: var(--card); }
+.card small { display: block; font: 400 0.75rem / 1.4 var(--mono); color: var(--chalk-dim); }
+.card .spiked { margin-top: 0.35rem; font-size: 0.8125rem; color: var(--card); }
+
+/* ---------- controls ---------- */
+/* Sticky: the off-air switch must stay in reach while the feed grows. */
+.controls { position: sticky; bottom: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; padding: 0.85rem 1.25rem; background: var(--navy); border-top: 1px solid var(--chalk-faint); }
+.pull { background: var(--card); color: var(--navy-deep); }
+.pull[aria-pressed="true"] { background: var(--lime); }
+.pull:disabled { opacity: 0.4; cursor: not-allowed; }
+.check { display: flex; align-items: center; gap: 0.45rem; font-size: 0.875rem; color: var(--chalk-dim); }
+.check input { accent-color: var(--lime); width: 1rem; height: 1rem; }
+.fine { margin: 0 0 0 auto; font-size: 0.75rem; color: var(--chalk-dim); }
+
+/* ---------- motion: one entrance, for what just aired or was just refused ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .cue, .card, .notice { animation: arrive 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .card::before { animation: red-card 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+}
+@keyframes arrive { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes red-card { from { opacity: 0; transform: translateY(-14px) rotate(-28deg) scale(1.3); } }
+
+@media (max-width: 60rem) {
+  .studio { grid-template-columns: minmax(0, 1fr); grid-template-areas: "board" "desk" "feed"; padding: 1rem; }
+  .board { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .pitch { justify-self: center; }
+  .setup { margin-left: 0; }
+  .fine { margin-left: 0; }
+  .controls { position: static; } /* a phone needs the screen for the match */
+}
