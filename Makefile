@@ -1,7 +1,7 @@
 PY ?= python3.13
 BIN := .venv/bin
 
-.PHONY: setup test lint fmt schema demo eval site-data control-room site
+.PHONY: setup test lint fmt schema demo eval site-data control-room studio site
 
 setup:  ## create .venv and install both workspace packages (editable)
 	$(PY) -m venv .venv
@@ -32,6 +32,9 @@ site-data:  ## regenerate the showcase data: the hero claim (chain.js) and the m
 
 control-room:  ## deploy the HUDHUD workbook and write the local control-room links (Azure)
 	$(BIN)/python scripts/control_room.py
+
+studio:  ## the live studio at http://localhost:8080 (Foundry models, audit and traces on)
+	scripts/studio
 
 site:  ## serve the showcase site at http://localhost:8000
 	$(PY) -m http.server 8000 -d site

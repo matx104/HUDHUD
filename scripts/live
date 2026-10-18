@@ -4,13 +4,5 @@
 # The Azure credential shells out to `az`: the project's Linux CLI goes first on PATH (the Windows
 # az is signed in to another account) and the tenant is pinned, so a wrong login fails loudly.
 here="$(cd "$(dirname "$0")/.." && pwd)"
-export AZURE_CONFIG_DIR="${AZURE_CONFIG_DIR:-$HOME/.azure-hudhud}"
-export PATH="$HOME/.local/bin:$PATH"
-export AZURE_TENANT_ID="${AZURE_TENANT_ID:-$("$here/scripts/az" account show --query tenantId -o tsv)}"
-export FOUNDRY_PROJECT_ENDPOINT="${FOUNDRY_PROJECT_ENDPOINT:-https://hudhud-foundry.services.ai.azure.com/api/projects/hudhud}"
-export FOUNDRY_MODELS="${FOUNDRY_MODELS:-gpt-4.1-mini,gpt-5-mini}"  # primary first (ADR 0005)
-export COSMOS_ENDPOINT="${COSMOS_ENDPOINT:-https://hudhud-audit.documents.azure.com:443/}"
-# Traces go to Application Insights (keys off: the exporter signs in as the CLI). The connection
-# string is read at run time, never stored in the repo.
-export APPLICATIONINSIGHTS_CONNECTION_STRING="${APPLICATIONINSIGHTS_CONNECTION_STRING:-$("$here/scripts/az" monitor app-insights component show --app hudhud-insights -g rg-hudhud --query connectionString -o tsv 2>/dev/null)}"
+. "$here/scripts/live-env"
 exec "$here/.venv/bin/python" -m court "$@"
