@@ -11,6 +11,8 @@ blur: blurred text can be read back): GUIDs and their fragments, hex runs, email
 anything with "@", guest-account markers, directory domains, IP addresses, the signed-in account's
 own names (read from the project's Azure CLI at run time, never written in this file), any extra
 terms in proof/raw/sensitive.txt, and any boxes in proof/raw/<name>.boxes.json as [[x, y, w, h]].
+A proof/raw/<name>.crop.json, [x, y, w, h], keeps only that part, before anything else: it cuts away
+the browser's tabs and address bar and the portal's top bar, where the account and directory sit.
 
 It fails closed. Redacted images wait in proof/review/ (git-ignored); only an image approved after
 a look by eye is copied to site/assets/proof/ and listed in site/data/proof.js. OCR can miss text,
@@ -93,6 +95,10 @@ def sensitive_words(words, matchers) -> set[int]:
 
 def redact(path, matchers) -> tuple[Image.Image, int]:
     image = Image.open(path).convert("RGB")
+    crop = path.with_suffix(".crop.json")
+    if crop.exists():  # boxes.json and OCR both work on the cropped image
+        x, y, w, h = json.loads(crop.read_text())
+        image = image.crop((x, y, x + w, y + h))
     big = REVIEW / f".{path.stem}.2x.png"  # OCR reads small portal text better at twice the size
     image.resize((image.width * 2, image.height * 2), Image.LANCZOS).save(big)
     boxes = []
