@@ -58,7 +58,7 @@
 ## Phase 4 — Ship kit (Oct 26)
 
 - [ ] README: pitch (what/stack/problem), architecture diagram, quickstart, evidence philosophy
-- [ ] **Video: 110 seconds, hard law** — 15s problem → 45s live demo → 30s Critic rejection (money shot) → 20s architecture + multilingual. No third-party trademarks/logos, no unlicensed music. Public URL (YouTube unlisted is fine — link must be public)
+- [ ] **Video: 110 seconds, hard law** — the kit is ready (2026-10-18): `docs/video.md` (rules, checklist, a 1:52 shot list with voiceover, the description) and one-click takes on #/control (English, Urdu, Arabic presets). The Monarch records. — 15s problem → 45s live demo → 30s Critic rejection (money shot) → 20s architecture + multilingual. No third-party trademarks/logos, no unlicensed music. Public URL (YouTube unlisted is fine — link must be public)
 - [ ] Repo goes **public**; showcase site if time allows (domain from Phase 0) — **scaffold started 2026-10-17:** `site/` with an evidence-chain hero from a real seed-7 run (CI drift-checked). **Live 2026-10-17** at matx104.github.io/HUDHUD: Pages source = GitHub Actions, `pages.yml` deploys only `site/` on every push touching it (repo stays private until submission). **2026-10-18:** rebuilt as a hash-routed SPA (problem, goal, how, recovery, data, why, roadmap, name, who) with SEO tags, OG card, icons. At submission: flip `repoPublic` in `site/config.js` (shows the Code links); on domain purchase: change `siteUrl` + the `<head>` copies (tests/site fails until they agree)
 - **Done when:** submission package complete per task.md checklist.
 
