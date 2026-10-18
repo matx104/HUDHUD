@@ -1,7 +1,7 @@
 PY ?= python3.13
 BIN := .venv/bin
 
-.PHONY: setup test lint fmt schema demo eval site-data control-room studio site
+.PHONY: setup test lint fmt schema demo eval site-data control-room doctor costs smoke links studio site
 
 setup:  ## create .venv and install both workspace packages (editable)
 	$(PY) -m venv .venv
@@ -32,6 +32,18 @@ site-data:  ## regenerate the showcase data: the hero claim (chain.js) and the m
 
 control-room:  ## deploy the HUDHUD workbook and write the local control-room links (Azure)
 	$(BIN)/python scripts/control_room.py
+
+doctor:  ## check the whole setup: Azure guardrails, the studio, the site, CI (read-only)
+	$(BIN)/python scripts/doctor.py
+
+costs:  ## month-to-date cost by service and the $100 budget (read-only)
+	$(BIN)/python scripts/costs.py
+
+smoke:  ## stream one match from the live studio and check every part (free)
+	$(BIN)/python scripts/smoke.py
+
+links:  ## check every link on the showcase site and in the README
+	$(BIN)/python scripts/check_links.py
 
 studio:  ## the live studio at http://localhost:8080 (Foundry models, audit and traces on)
 	scripts/studio

@@ -12,15 +12,14 @@ only when served from this machine and that file exists.
 import base64
 import gzip
 import json
-import subprocess
 import tempfile
 import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import quote
 
-ROOT = Path(__file__).resolve().parents[1]
-GROUP = "rg-hudhud"
+from _azure import GROUP, ROOT, az
+
 WORKBOOK = ROOT / "infra" / "monitor" / "hudhud-workbook.json"
 OUT = ROOT / "site" / "data" / "ops.local.js"
 # A fixed name: Azure wants a GUID, and the same one each run updates the workbook in place.
@@ -56,13 +55,6 @@ MATCHES = """requests
     cost_usd = todouble(customDimensions["hudhud.cost_usd"]),
     seconds = round(duration / 1000, 1), operation_Id
 | order by timestamp desc"""
-
-
-def az(*args: str) -> str:
-    done = subprocess.run(
-        [str(ROOT / "scripts" / "az"), *args], capture_output=True, text=True, check=True
-    )
-    return done.stdout.strip()
 
 
 def resource_id(*args: str) -> str:

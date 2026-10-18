@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# The live studio's power switch: keep it warm, let it sleep when idle, or see which it is.
+#   scripts/studio-power status
+#   scripts/studio-power on     # one replica always running: no wait for the first visitor
+#   scripts/studio-power off    # scales to zero when idle: cheaper, the first visit waits a cold start
+# Keep it "on" from Oct 26 (the video) through Nov 10 (judging ends): rules §4.8.
+set -eu
+here="$(cd "$(dirname "$0")/.." && pwd)"
+az() { "$here/scripts/az" "$@"; }
+case "${1:-status}" in
+  on)  az containerapp update -n hudhud-studio -g rg-hudhud --min-replicas 1 --max-replicas 1 -o none ;;
+  off) az containerapp update -n hudhud-studio -g rg-hudhud --min-replicas 0 --max-replicas 1 -o none ;;
+  status) ;;
+  *) echo "usage: scripts/studio-power on|off|status" >&2; exit 2 ;;
+esac
+az containerapp show -n hudhud-studio -g rg-hudhud \
+  --query "{minReplicas: properties.template.scale.minReplicas, maxReplicas: properties.template.scale.maxReplicas, running: properties.runningStatus, image: properties.template.containers[0].image}" -o table
