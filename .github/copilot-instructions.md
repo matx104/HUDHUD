@@ -37,8 +37,9 @@ broadcast going when an agent fails. Read `goals.md`, `plan.md` and `docs/adr/` 
   create anything in "Azure subscription 1": it is pay-as-you-go with no spending limit.
 - Resources live in `rg-hudhud` in UAE North, the only allowed region with model deployments.
 - No keys. Microsoft Entra ID only; key-based auth stays disabled.
-- `scripts/live run --seed 21 --narrator foundry` narrates a match on the Foundry models. It costs
-  under a cent; don't loop it.
+- `scripts/live run --seed 21 --narrator foundry --audit cosmos` narrates a match on the Foundry
+  models and keeps every output in the audit trail (Cosmos DB, free tier, capped at 1,000 RU/s).
+  It costs under a cent; don't loop it.
 - The Azure MCP Server (`.vscode/mcp.json`, via `scripts/azure-mcp`) signs in as the same CLI.
   Ask before any call that creates, changes or deletes a resource.
 

@@ -2,10 +2,12 @@
 
     python -m court run --seed 7                        # one synthetic match, end to end
     python -m court run --seed 21 --narrator foundry    # the same, narrated by Foundry models
+    python -m court run --seed 21 --audit cosmos        # and keep every output in Cosmos DB
     python -m court eval                                # momentum calls vs hidden ground truth
 
 The Foundry narrator reads FOUNDRY_PROJECT_ENDPOINT and FOUNDRY_MODELS (comma-separated,
-primary first). scripts/live sets them and puts the project's Azure CLI first on PATH.
+primary first); the Cosmos DB audit trail reads COSMOS_ENDPOINT. scripts/live sets them and
+puts the project's Azure CLI first on PATH.
 """
 
 import argparse
@@ -16,6 +18,7 @@ from pathlib import Path
 
 from match_events import Side, generate, read_jsonl
 
+from .audit import AuditTrail, CosmosStore
 from .config import ARCHITECTURE_NAME, product_name
 from .contracts import OUTPUT_ADAPTER, Cue, Degradation, Output, RejectionNotice, Spiked
 from .evals import evaluate, report
@@ -52,21 +55,42 @@ async def _run(args: argparse.Namespace) -> int:
         print(f"{product_name()} · {ARCHITECTURE_NAME} · synthetic data only")
         print(f"{meta.match_id}  {meta.home.name} vs {meta.away.name}  (seed {meta.seed})\n")
     narrator = _narrator(args, meta.seed)
+    sink = _jsonl if args.json else _console
+    trail = _audit(args, meta)
+    if trail:
+        trail.start()
+        sink = trail.tee(sink)
     orch = await run_match(
         messages,
-        sink=_jsonl if args.json else _console,
+        sink=sink,
         speed=args.speed,
         narrator=narrator,
         localizer=Localizer(mode=args.mode),
     )
+    meter, handovers = getattr(narrator, "meter", None), getattr(narrator, "handovers", 0)
+    if trail:
+        summary = {"stats": dict(orch.stats), "handovers": handovers}
+        if meter:
+            summary |= {"cost_usd": round(meter.cost_usd(), 6), "models": meter.summary()}
+        await trail.close(summary)
     if not args.json:
         s, st = orch.state.score, orch.stats
         print(f"\n     FT  {meta.home.name} {s[Side.HOME]}-{s[Side.AWAY]} {meta.away.name}")
         print("         " + " · ".join(f"{k} {v}" for k, v in sorted(st.items())))
-        if meter := getattr(narrator, "meter", None):
-            handovers = getattr(narrator, "handovers", 0)
+        if meter:
             print(f"   cost  {meter.summary()}  ·  handovers {handovers}")
+        if trail:
+            print(f"  audit  {trail.report()}")
     return 0
+
+
+def _audit(args: argparse.Namespace, meta) -> AuditTrail | None:
+    if args.audit == "none":
+        return None
+    endpoint = os.environ.get("COSMOS_ENDPOINT")
+    if not endpoint:
+        raise SystemExit("set COSMOS_ENDPOINT (scripts/live does), or run with --audit none")
+    return AuditTrail(CosmosStore(endpoint), meta, narrator=args.narrator)
 
 
 def _narrator(args: argparse.Namespace, seed: int):
@@ -110,6 +134,12 @@ def main(argv: list[str] | None = None) -> int:
         choices=("template", "foundry"),
         default="template",
         help="offline template (default) or models deployed in the Foundry project",
+    )
+    run.add_argument(
+        "--audit",
+        choices=("none", "cosmos"),
+        default="none",
+        help="keep every output in the Cosmos DB audit trail (default: none)",
     )
     ev = sub.add_parser("eval", help="score the Scout's momentum calls against ground truth")
     ev.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
