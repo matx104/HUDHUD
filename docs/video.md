@@ -40,7 +40,7 @@ player, xG as your one number, the referee at standard. Tick **Hear the commenta
 starts. In about 50 seconds it gives: big chances (48', 53', 73'), the ref's call on the penalty
 (54'), two goals (55', 56'), momentum swings (62', 78'), the high press (66', 77', 86') and a
 second ref's call (90'); the stress test corrupts about one draft in four, so the Critic's desk
-gets red cards. At full time the recap is offered.
+gets red cards. At full time the recap is offered, and Ask the match stays open.
 
 ## The shots
 
@@ -53,7 +53,7 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 255 words.
 | 0:34–0:50 | The ref's call at 54', then the Critic's desk as a red card lands | Point at the yellow card; open a red card's reason | "A foul in the box: the likely call, a penalty and a yellow, read from the Law at the strictness I chose, and recomputed by the Critic. Here it refused a draft that cited an event that hadn't happened yet, said why, and the rewrite aired." |
 | 0:50–1:04 | "Take the narrator off air", then back | Press at about 70'; again after the 73' cue | "Now I take the narrator off air. The Orchestrator keeps the broadcast going on the Scout's own facts, says so, and brings commentary back when the narrator returns." |
 | 1:04–1:14 | **Take: Urdu**, voice on; then **Take: Arabic** | Let one line be spoken in each | "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not add a number or change a name." |
-| 1:14–1:24 | Full time: "Read the recap" | Open it; scroll | "At full time the match writes its own recap, and every line it writes passes the Critic first." |
+| 1:14–1:24 | Full time: "Read the recap", then Ask the match: "Who has been the better side, by the numbers?" | Open the recap; then tap the question and open "What the tools counted" | "At full time the match writes its recap and answers my questions, every number checked by the Critic first." |
 | 1:24–1:46 | Control room: the workbook; Foundry's tracing and its evaluation run; the studio's sign-in | Scroll the tiles; open the evaluation | "Five agents on Microsoft Agent Framework. Models chosen by evaluation and judged again by Foundry's own evaluators. Every call traced in Foundry and Application Insights, every claim in an audit trail on Cosmos DB, and the studio private behind its own wall. The Critic is an MCP tool any assistant can use." |
 | 1:46–1:52 | Showcase home, the crest | Hold | "HUDHUD. Built by one engineer. Every call comes with its evidence." |
 

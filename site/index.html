@@ -307,7 +307,7 @@
       <ol class="lanes">
         <li data-reveal>
           <h2>Grand prize: first place</h2>
-          <p>Explainable match intelligence, every line with its evidence. Engaging narratives: live commentary, the recap and the ref's call. Context: momentum, breaks, the press, a card for any player. Accessible and personal: English, Urdu or Arabic, read aloud for fans who can't watch the screen, casual or analyst, your club, your player, one number. All in one match, end to end.</p>
+          <p>Explainable match intelligence, every line with its evidence. Engaging narratives: live commentary, the recap and the ref's call. Ask the match anything, and get a checked answer. Context: momentum, breaks, the press, a card for any player. Accessible and personal: English, Urdu or Arabic, read aloud for fans who can't watch the screen, casual or analyst, your club, your player, one number. All in one match, end to end.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
@@ -317,12 +317,12 @@
         </li>
         <li data-reveal>
           <h2>Best use of Microsoft Foundry</h2>
-          <p>Models on Foundry write the commentary from facts code computed, and translate it into Urdu and Arabic under the same law. Azure AI Speech, on the same Foundry resource, reads every verified line aloud in English, Urdu or Arabic. A backup model takes over when the first fails. Evaluation chose which model serves, by a rule fixed before the run, and Foundry's own evaluators judge the lines that aired: groundedness 4.84 of 5. Every model call is traced with its tokens and its cost, in Application Insights and in Foundry's own tracing view. Keys are off: Entra ID only.</p>
+          <p>Models on Foundry write the commentary from facts code computed, and translate it into Urdu and Arabic under the same law. Asked a question, the model calls tools for every number it states, and the Critic checks each one. Azure AI Speech, on the same Foundry resource, reads every verified line aloud in English, Urdu or Arabic. A backup model takes over when the first fails. Evaluation chose which model serves, by a rule fixed before the run, and Foundry's own evaluators judge the lines that aired: groundedness 4.84 of 5. Every model call is traced with its tokens and its cost, in Application Insights and in Foundry's own tracing view. Keys are off: Entra ID only.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
           <h2>Best multi-agent orchestration</h2>
-          <p>Five agents on Microsoft Agent Framework with typed handoffs and shared match state. The Critic sends a line back with its reasons; take the narrator off air mid-match and the broadcast keeps going, and says so. The Critic is also an MCP server any assistant can call.</p>
+          <p>Five agents on Microsoft Agent Framework with typed handoffs and shared match state. The Critic sends a line back with its reasons; take the narrator off air mid-match and the broadcast keeps going, and says so. Asked a question, the Narrator answers with the Scout's counting tools and the Critic checks the answer: three agents on one question. The Critic is also an MCP server any assistant can call.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
@@ -342,7 +342,7 @@
         <li data-status="done" data-reveal><time>Oct 17–19</time><strong>Groundwork</strong><span>The field studied, the name chosen, a synthetic match generator calibrated over 100 seeds.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–20</time><strong>Skeleton</strong><span>All five agents run a match end to end with offline backends, tested on every push.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
-        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, Urdu and Arabic, personal modes, the recap, breaks, the high press, the ref's call and a realism check are live.</span></li>
+        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, Urdu and Arabic, personal modes, the recap, breaks, the high press, the ref's call, ask the match and a realism check are live.</span></li>
         <li data-status="planned" data-reveal><time>Oct 26</time><strong>Ship kit</strong><span>The 110-second video, the README, the repo made public.</span></li>
         <li data-status="planned" data-reveal><time>Oct 27</time><strong>Submit</strong><span>A day early, never on deadline day.</span></li>
       </ol>
@@ -462,6 +462,17 @@
             <p><a class="button button-quiet" href="recap/seed-21.html">Read the whole recap</a></p>
           </div>
         </li>
+        <li class="step" data-reveal>
+          <div class="step-copy">
+            <h3>Ask the match</h3>
+            <p>A viewer can ask the match anything, live or after full time. The Narrator answers, but it learns a number only by calling the Scout's tools: code that counts the events so far. Each count comes back as a fact with an id, the answer names the facts it uses, and code builds the claim from them. The Critic then checks it like any line: every count recomputed, every number and every player it names backed by those facts. What the events can't answer, like an injury or the final score, gets plain fixed words, not a guess.</p>
+          </div>
+          <div class="example">
+            <div class="ex-head">70' · You asked: Which team has pressed higher in the second half?</div>
+            <blockquote>Saltmarsh Rovers have pressed higher in the second half with 18 high presses compared to Brackenfield's 5.</blockquote>
+            <p class="ex-note">Answered by gpt-4.1-mini on Microsoft Foundry from two counts, both recomputed by the Critic before it showed. Synthetic match seed 21.</p>
+          </div>
+        </li>
       </ol>
 
       <h2 class="section-title" data-reveal>Plug it into a broadcast</h2>
@@ -545,6 +556,7 @@
         <li data-reveal><h2>Standouts are counted, not rated</h2><p>The recap's players who made it happen are counted from their own events. There's no rating behind them and no per-player rule for the Critic yet, so the recap marks those lines as counted, not checked.</p></li>
         <li data-reveal><h2>The ref's call is a reading, not a referee</h2><p>It sees where a foul happened and what it stopped, never the force or the speed of the challenge. It states a likely decision at a stated strictness. The restart has ground truth (the generator awards penalties the same way); the card has none yet.</p></li>
         <li data-reveal><h2>The voice reads names as best it can</h2><p>Names stay in Latin letters in every language, so the Critic can check them; an Urdu or Arabic voice may say an invented name oddly. The words it speaks are exactly the line that aired.</p></li>
+        <li data-reveal><h2>An answer's judgment words are the model's</h2><p>When you ask the match, every number, name and citation in the answer is checked. Words like "dominated" or "the better side" are the model's reading of those checked counts, not a verdict the Critic can prove. Ask for the numbers and judge for yourself.</p></li>
         <li data-reveal><h2>Making it yours changes emphasis only</h2><p>A favourite club or player changes what comes first and what's marked as yours. The facts are the same for every viewer.</p></li>
       </ul>
     </section>
@@ -599,6 +611,7 @@
         <div class="log-lists">
           <h2 class="log-heading">Live</h2>
           <ol class="log">
+            <li data-reveal><time>Oct 19</time><div><strong>Ask the match</strong><p>Ask the match a question, live or after full time, and the answer comes back checked. The model calls the Scout's tools for every number (function calling on Microsoft Foundry), and the Critic recomputes each count, checks each number and refuses any player the facts aren't about. On its first live run the model cited facts that were never counted; the Critic refused that draft, and the next one was right. Questions the events can't answer get fixed words. Offline, a rule-based answerer handles the common questions through the same Critic.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>Foundry's judges, a second opinion</strong><p>The Critic checks numbers and citations by code. Microsoft Foundry's evaluators now read every line that aired against the fact sheet it came from, judged by a different model from the one that wrote it. They caught what code can't: colour the facts don't give, and a true number told as the wrong thing. The Narrator's instructions changed, and groundedness rose.</p><div class="eval" data-foundry-eval></div></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>Hear the commentary</strong><p>Every verified line can be read aloud by Azure AI Speech, in English, Urdu or Arabic, for fans who can't watch the screen. The voice reads only what aired: the studio asks for a line by its id, never with free text, so it says exactly what the Critic passed. Same Foundry resource, signed in with Entra ID, with a daily budget.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>The ref's call</strong><p>The first step on the road to an AI fourth official. When a foul carries a card or a penalty, the line states the referee's likely decision, read from Law 12 at the strictness the competition chose, and the Critic recomputes it from the foul before it airs. A harsher card than the Law gives is refused.</p></div></li>
