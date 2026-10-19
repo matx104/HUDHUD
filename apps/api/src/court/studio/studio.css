@@ -153,6 +153,9 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .receipt dd { margin: 0; text-align: right; }
 .notice { padding: 0.6rem 0.9rem; border: 1px dashed var(--gold); border-radius: 6px; color: var(--gold); font-size: 0.9375rem; }
 .notice.good { border-color: var(--lime); color: var(--lime); }
+.recap-ready { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; border-style: solid; }
+.button-link { padding: 0.4rem 0.8rem; border-radius: 4px; background: var(--lime); color: var(--navy-deep); font-weight: 600; text-decoration: none; }
+.button-link.quiet { background: transparent; color: var(--lime); border: 1px solid var(--lime); }
 
 /* ---------- the Critic's desk ---------- */
 .tally { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin: 0 0 1rem; }

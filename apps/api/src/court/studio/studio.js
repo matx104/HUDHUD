@@ -151,6 +151,7 @@
     source.addEventListener("shot", (e) => shot(JSON.parse(e.data)));
     source.addEventListener("output", (e) => output(JSON.parse(e.data)));
     source.addEventListener("personal", (e) => personal(JSON.parse(e.data)));
+    source.addEventListener("recap", (e) => recap(JSON.parse(e.data)));
     source.addEventListener("end", (e) => finish(JSON.parse(e.data)));
     // An EventSource reconnects by itself, which would start a new match: close on any error.
     source.addEventListener("error", (e) => {
@@ -360,6 +361,19 @@
     cards.prepend(item);
     tally.refused += 1;
     drawTally();
+  }
+
+  // The recap: a page built on the server after full time, every written line checked by the Critic.
+  function recap(data) {
+    const url = URL.createObjectURL(new Blob([data.html], { type: "text/html" }));
+    const box = el("li", "notice good recap-ready");
+    const name = `${document.title.split(" ")[0].toLowerCase()}-recap-${form.seed.value}.html`;
+    box.append(
+      el("span", "", "The recap is ready: the result, the goals, the numbers and how it turned, every line checked by the Critic. "),
+      Object.assign(el("a", "button-link", "Read the recap"), { href: url, target: "_blank", rel: "noopener" }),
+      Object.assign(el("a", "button-link quiet", "Download it"), { href: url, download: name }),
+    );
+    cues.prepend(box);
   }
 
   function finish(summary) {

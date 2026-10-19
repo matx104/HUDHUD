@@ -17,7 +17,6 @@ One export ships: a standalone HTML page in the studio's colours, printable to P
 """
 
 import html
-import re
 from collections import Counter
 from collections.abc import Sequence
 from datetime import UTC, datetime
@@ -142,17 +141,12 @@ def _total(metric: str, side: Side, value: float) -> Assertion:
     return Assertion(metric=metric, team=side, value=value)
 
 
-def _minute_figures(label: str) -> dict[str, float]:
-    numbers = [int(x) for x in re.findall(r"\d+", label)]
-    return dict(zip(("minute", "added_time"), numbers, strict=False))
-
-
 def _goal(shot: Shot, state: MatchState, checked) -> Line | None:
     """One goal: the minute, the scorer, where from and how good a chance, and who set it up."""
     team = state.meta.team(shot.team)
     minute = minute_label(shot.t, shot.period)
     xg = round(shot_xg(shot), 2)
-    figures = {**_minute_figures(minute), "xg": xg}
+    figures = {"xg": xg}
     evidence = [shot.id]
     if shot.situation == "penalty":
         how = "from the penalty spot"
@@ -160,7 +154,8 @@ def _goal(shot: Shot, state: MatchState, checked) -> Line | None:
         distance = round(shot_distance(shot))
         figures["distance_m"] = distance
         how = f"from {distance} m (xG {xg:.2f})"
-    text = f"{minute} {state.player_name(shot.player_id)} for {team.name}, {how}"
+    # The minute shows beside the line, read from the cited shot itself.
+    text = f"{state.player_name(shot.player_id)} for {team.name}, {how}"
     assist = state.get(shot.assist_event_id or "")
     if assist is not None:
         evidence.insert(0, assist.id)

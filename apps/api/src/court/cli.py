@@ -3,6 +3,7 @@
     python -m court run --seed 7                        # one synthetic match, end to end
     python -m court run --seed 21 --narrator foundry    # the same, narrated by Foundry models
     python -m court run --seed 21 --audit cosmos        # and keep every output in Cosmos DB
+    python -m court recap --seed 21 --out recap.html    # the match, then its recap as a page
     python -m court eval                                # momentum calls vs hidden ground truth
     python -m court narrator-eval --seeds 5             # which model writes the commentary
 
@@ -128,6 +129,25 @@ async def _run(args: argparse.Namespace) -> int:
     return 0
 
 
+async def _recap(args: argparse.Namespace) -> int:
+    """Runs the match quietly, then writes its recap: every line checked by the Critic."""
+    from .recap import build, render_html
+
+    outputs: list[Output] = []
+    narrator = _narrator(args, args.seed)
+    orch = await run_match(
+        generate(args.seed).stream(),
+        sink=outputs.append,
+        narrator=narrator,
+        localizer=Localizer(mode="analyst"),
+    )
+    recap = build(orch.state, outputs)
+    args.out.write_text(render_html(recap))
+    kept = len(recap.goals) + len(recap.numbers) + 1
+    print(f"wrote {args.out}: {kept} lines checked, {len(recap.refused)} refused")
+    return 1 if recap.refused else 0
+
+
 def _audit(args: argparse.Namespace, meta) -> AuditTrail | None:
     if args.audit == "none":
         return None
@@ -223,6 +243,13 @@ def main(argv: list[str] | None = None) -> int:
         default="none",
         help="keep every output in the Cosmos DB audit trail (default: none)",
     )
+    rc = sub.add_parser("recap", help="run one match, then write its recap as an HTML page")
+    rc.add_argument("--seed", type=int, default=21, help="synthetic match seed")
+    rc.add_argument("--out", type=Path, default=Path("recap.html"), help="where to write it")
+    rc.add_argument("--narrator", choices=("template", "foundry"), default="template")
+    rc.add_argument(
+        "--overreach", type=float, default=0.25, help="the offline narrator's deliberate overreach"
+    )
     ev = sub.add_parser("eval", help="score the Scout's momentum calls against ground truth")
     ev.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
     ev.add_argument("--seeds", type=int, default=40, help="how many seeds to score")
@@ -240,4 +267,6 @@ def main(argv: list[str] | None = None) -> int:
         finally:
             telemetry.flush()
     telemetry.configure()
+    if args.cmd == "recap":
+        return asyncio.run(_recap(args))
     return asyncio.run(_run(args))

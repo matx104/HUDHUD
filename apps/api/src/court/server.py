@@ -13,7 +13,7 @@ narrator takes over, and the studio says so), and so are concurrent streams.
 Personal modes (court.personal) ride in the address too: a favourite club and player mark the cues
 that are the viewer's own, player focus follows one player with a live card, and single-metric mode
 follows one number for both sides. The models tell the line from the favourite club's side; the
-Critic checks it as it checks every line.
+Critic checks it as it checks every line. At full time the page gets the recap (court.recap).
 
 On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner in at
 studio.hudhud.com.pk, and a Worker (edge/) carries each request on to Azure. With `ACCESS_TEAM` and
@@ -61,6 +61,8 @@ from .narrator import TemplateNarrator
 from .orchestrator import run_match
 from .personal import Personal, PreferenceError, metric_line, player_card
 from .personal import check as check_preferences
+from .recap import build as build_recap
+from .recap import render_html as recap_page
 
 STUDIO = Path(__file__).parent / "studio"
 # The demo matches: 21 has two goals each way and two momentum swings; 7 has six goals; 33 a
@@ -229,6 +231,7 @@ class Session:
         self.speed, self.start_t, self.mode, self.lang = speed, start * 60.0, mode, lang
         self.prefs = prefs or Preferences()
         self.personal = Personal(self.prefs, self.match.meta)
+        self.record: list[Output] = []  # everything the court put out, for the recap
         self.queue: asyncio.Queue[tuple[str, dict[str, Any]] | None] = asyncio.Queue()
         self.notices: list[str] = []
         inner, self.narration = self._narrator(narration, seed, stress, budget)
@@ -289,6 +292,8 @@ class Session:
                     summary["audit"] = trail.report()
                 span.set_attributes({f"hudhud.{k}": v for k, v in orch.stats.items()})
                 span.set_attribute("hudhud.cost_usd", cost)
+                recap = build_recap(orch.state, self.record)
+                self.send("recap", {"html": recap_page(recap), "refused": len(recap.refused)})
                 self.send("end", summary)
         except Exception as error:  # tell the page, never leave it waiting; details stay here
             ref = uuid.uuid4().hex[:8]
@@ -300,6 +305,7 @@ class Session:
 
     def _output(self, output: Output) -> None:
         """What the court produced, as this viewer sees it (the audit trail keeps it unchanged)."""
+        self.record.append(output)
         if (seen := self.personal.view(output)) is not None:
             self.send("output", OUTPUT_ADAPTER.dump_python(seen, mode="json"))
 

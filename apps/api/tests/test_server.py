@@ -199,3 +199,12 @@ def test_personal_modes_ride_in_the_address(client):
 def test_preferences_that_dont_fit_the_match_are_refused(client):
     assert client.get("/api/stream?seed=21&player=nobody").status_code == 422
     assert client.get("/api/stream?seed=21&focus=player").status_code == 422
+
+
+def test_full_time_brings_the_recap(client):
+    events = _events(client, "seed=21&speed=0&stress=0.25")
+    kinds = [k for k, _ in events]
+    assert kinds[-2:] == ["recap", "end"], "the recap arrives before the stream closes"
+    recap = events[-2][1]
+    assert recap["html"].startswith("<!doctype html>") and recap["refused"] == 0
+    assert "Checked by the Critic" in recap["html"]
