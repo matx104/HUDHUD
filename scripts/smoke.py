@@ -3,8 +3,9 @@
 Health, config, then a match from the 80th minute: the hello, the clock, the cues with their
 receipts, the end. The offline narrator by default, so it costs nothing; --models has the Foundry
 models narrate it instead (well under a cent). Exits 1 on any failure: run it before a recording.
+The deployed studio is behind the wall, so it goes through with the Access service token.
 
-    make smoke                         # the deployed studio
+    make smoke                         # the deployed studio, at its own address
     .venv/bin/python scripts/smoke.py --url http://localhost:8091/ --models
 """
 
@@ -14,12 +15,16 @@ import sys
 import time
 import urllib.request
 
-from _azure import studio_url
+from _azure import STUDIO_URL, through_the_wall
 
 
-def stream(url: str) -> list[tuple[str, dict]]:
+def get(url: str, headers: dict[str, str], timeout: float = 30):
+    return urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=timeout)
+
+
+def stream(url: str, headers: dict[str, str]) -> list[tuple[str, dict]]:
     events, kind = [], None
-    with urllib.request.urlopen(url, timeout=180) as response:
+    with get(url, headers, timeout=180) as response:
         for raw in response:
             line = raw.decode().rstrip("\n")
             if line.startswith("event: "):
@@ -34,7 +39,8 @@ def main() -> int:
     parser.add_argument("--url", help="the studio's address (default: the deployed one)")
     parser.add_argument("--models", action="store_true", help="narrate with the Foundry models")
     args = parser.parse_args()
-    base = (args.url or studio_url()).rstrip("/") + "/"
+    base = (args.url or STUDIO_URL).rstrip("/") + "/"
+    headers = {} if args.url else through_the_wall()
     failures = []
 
     def check(ok: bool, what: str) -> None:
@@ -42,9 +48,9 @@ def main() -> int:
         if not ok:
             failures.append(what)
 
-    with urllib.request.urlopen(base + "healthz", timeout=30) as response:
+    with get(base + "healthz", headers) as response:
         check(json.load(response) == {"status": "ok"}, f"healthy: {base}")
-    with urllib.request.urlopen(base + "api/config", timeout=30) as response:
+    with get(base + "api/config", headers) as response:
         config = json.load(response)
     check(len(config["matches"]) >= 1, f"{len(config['matches'])} demo matches")
     if args.models:
@@ -52,7 +58,8 @@ def main() -> int:
 
     narration = "foundry" if args.models else "template"
     started = time.perf_counter()
-    events = stream(f"{base}api/stream?seed=21&narration={narration}&speed=0&start=70&stress=0.25")
+    query = f"seed=21&narration={narration}&speed=0&start=70&stress=0.25"
+    events = stream(f"{base}api/stream?{query}", headers)
     seconds = time.perf_counter() - started
     kinds = [kind for kind, _ in events]
     check(

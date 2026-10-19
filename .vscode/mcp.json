@@ -1,4 +1,17 @@
 {
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "access-client-id",
+      "description": "HUDHUD live Critic: Cloudflare Access service token, client ID (~/.config/hudhud/access-token.json)"
+    },
+    {
+      "type": "promptString",
+      "id": "access-client-secret",
+      "password": true,
+      "description": "HUDHUD live Critic: Cloudflare Access service token, client secret"
+    }
+  ],
   "servers": {
     "azure": {
       "type": "stdio",
@@ -7,11 +20,18 @@
     "hudhud-critic": {
       "type": "stdio",
       "command": "${workspaceFolder}/.venv/bin/python",
-      "args": ["-m", "court.mcp_server"]
+      "args": [
+        "-m",
+        "court.mcp_server"
+      ]
     },
     "hudhud-critic-live": {
       "type": "http",
-      "url": "https://hudhud-studio.politesand-62c3c2c4.uaenorth.azurecontainerapps.io/mcp/"
+      "url": "https://mcp.hudhud.com.pk/",
+      "headers": {
+        "CF-Access-Client-Id": "${input:access-client-id}",
+        "CF-Access-Client-Secret": "${input:access-client-secret}"
+      }
     }
   }
 }

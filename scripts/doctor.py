@@ -1,7 +1,8 @@
 """Is everything as it should be? A read-only check of the whole setup, top to bottom.
 
 The sign-in and subscription, every Azure resource and its guardrails (keys off, free tier, caps),
-the studio's identity and health, the showcase site and CI. Prints a checklist; exits 1 if any
+the studio's identity and health, the wall in front of it, the showcase site and CI. Prints a
+checklist; exits 1 if any
 check fails, so it can gate a recording session or the submission. --publish also writes the
 checklist to site/data/doctor.js, the public proof on the showcase site's Control room page, with
 any email address replaced.
@@ -15,10 +16,21 @@ import json
 import re
 import subprocess
 import sys
+import urllib.error
 import urllib.request
 from datetime import UTC, datetime
 
-from _azure import GROUP, ROOT, SITE_URL, STUDIO_APP, az, az_json, studio_url
+from _azure import (
+    GROUP,
+    ROOT,
+    SITE_URL,
+    STUDIO_APP,
+    STUDIO_URL,
+    az,
+    az_json,
+    studio_url,
+    through_the_wall,
+)
 
 # What must never reach the published proof: anything like an account, an email or an ID.
 SUSPICIOUS = re.compile(r"@|#ext#|onmicrosoft|[0-9a-f]{8}-[0-9a-f]{4}|[0-9a-f]{16,}", re.I)
@@ -30,10 +42,22 @@ def check(name: str, ok: bool, detail: str = "", *, warn: bool = False) -> None:
     results.append(("✔" if ok else "!" if warn else "✘", name, detail))
 
 
-def fetch(url: str) -> tuple[int, str]:
+class _Stay(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args):  # report a redirect instead of following it
+        return None
+
+
+def fetch(url: str, headers: dict[str, str] | None = None, *, follow=True) -> tuple[int, str]:
+    """The status and body, or for a redirect not followed, its status and where it points."""
+    opener = urllib.request.build_opener() if follow else urllib.request.build_opener(_Stay)
+    request = urllib.request.Request(
+        url, headers={"User-Agent": "hudhud-doctor", **(headers or {})}
+    )
     try:
-        with urllib.request.urlopen(url, timeout=20) as response:
+        with opener.open(request, timeout=20) as response:
             return response.status, response.read().decode()
+    except urllib.error.HTTPError as error:
+        return error.code, error.headers.get("Location") or ""
     except Exception as error:  # a failed check, not a crash
         return 0, str(error)
 
@@ -165,7 +189,25 @@ def main() -> int:
     url = studio_url()
     status, _ = fetch(url + "healthz")
     check("Studio: healthy", status == 200, url)
-    status, body = fetch(url + "api/config")
+    # The wall (docs/azure.md): strangers are sent to sign in, the Azure address turns away what
+    # Access didn't sign, and the owner's service token gets through.
+    status, where = fetch(STUDIO_URL, follow=False)
+    check(
+        "Wall: the studio asks visitors to sign in",
+        status == 302 and ".cloudflareaccess.com/" in where,
+        STUDIO_URL,
+    )
+    status, _ = fetch(url + "api/config")
+    check("Wall: the Azure address turns away what Access didn't sign", status == 403, f"{status}")
+    try:
+        status, body = fetch(STUDIO_URL + "api/config", through_the_wall())
+    except FileNotFoundError:
+        status, body = 0, "no Access service token on this machine"
+    check(
+        "Wall: the owner's service token gets through",
+        status == 200,
+        body[:60] if status != 200 else "",
+    )
     config = json.loads(body) if status == 200 else {}
     check(
         "Studio: models connected",
@@ -182,12 +224,10 @@ def main() -> int:
 
     status, body = fetch(SITE_URL + "config.js")
     check("Showcase site: up", status == 200, SITE_URL)
-    # The site may link the studio by a short address that redirects: follow it to the studio.
     linked = re.search(r'studioUrl: "([^"]+)"', body)
-    reached, _ = fetch(linked[1].rstrip("/") + "/healthz") if linked else (0, "")
     check(
-        "Showcase site: links the live studio",
-        reached == 200,
+        "Showcase site: the deployed config names the studio's address",
+        bool(linked) and linked[1] == STUDIO_URL,
         linked[1] if linked else "no studioUrl in config.js",
     )
 

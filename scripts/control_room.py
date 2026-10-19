@@ -6,6 +6,9 @@ The links go to site/data/ops.js, published on the showcase site's Control room 
 for the owner's convenience. They carry the subscription's and resources' IDs, which grant nothing
 without access; the directory is named by its ID, never by its domain, which is built from the
 owner's email address. Only someone signed in to the owner's Azure environment can follow them.
+The project's own addresses come first: the site, the studio and the Critic behind the wall, the
+media kit. The Cloudflare links name the account as ":account", which the dashboard fills in for
+whoever is signed in, so no account ID is published.
 
     make control-room       # then commit site/data/ops.js
 """
@@ -13,14 +16,19 @@ owner's email address. Only someone signed in to the owner's Azure environment c
 import base64
 import gzip
 import json
+import re
 import tempfile
 import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import quote
 
-from _azure import GROUP, ROOT, az
-from _azure import studio_url as studio_address
+from _azure import CONFIG, GROUP, ROOT, SITE_URL, STUDIO_URL, az, studio_url
+
+KIT = "https://kit.hudhud.com.pk/"  # a Cloudflare redirect to the media kit (kitUrl)
+MCP = "https://mcp.hudhud.com.pk/"
+ZONE = "hudhud.com.pk"
+REPO = re.search(r'repoUrl: "([^"]+)"', CONFIG)[1]
 
 WORKBOOK = ROOT / "infra" / "monitor" / "hudhud-workbook.json"
 OUT = ROOT / "site" / "data" / "ops.js"
@@ -98,7 +106,7 @@ def main() -> None:
     foundry = resource_id("cognitiveservices", "account", "show", "-n", "hudhud-foundry")
     cosmos = resource_id("cosmosdb", "show", "-n", "hudhud-audit")
     studio = resource_id("containerapp", "show", "-n", "hudhud-studio")
-    studio_url = studio_address()  # its own domain once bound
+    azure_address = studio_url()  # refuses whatever Cloudflare Access didn't sign
     location = az(
         "monitor",
         "app-insights",
@@ -131,29 +139,47 @@ def main() -> None:
             f"/q/{quote(packed, safe='')}/timespan/P1D"
         )
 
+    dash = "https://dash.cloudflare.com/?to=/:account"
+    take = STUDIO_URL + "?seed=21&narration=foundry&start=54&speed=30&stress=1&autostart=1&lang="
     groups = [
+        (
+            "Addresses",
+            [
+                (
+                    ZONE,
+                    "The showcase site, public (www. comes here too)",
+                    SITE_URL,
+                ),
+                (
+                    "studio.hudhud.com.pk",
+                    "The live studio: sign in with a code sent to your email",
+                    STUDIO_URL,
+                ),
+                (
+                    "mcp.hudhud.com.pk",
+                    "The Critic over MCP, for assistants that hold the service token",
+                    MCP,
+                ),
+                ("kit.hudhud.com.pk", "The media kit on Google Drive, public", KIT),
+                (
+                    "The studio's Azure address",
+                    "Turns away anything Cloudflare Access didn't sign: 403",
+                    azure_address,
+                ),
+                ("Code", "The repository on GitHub", REPO),
+            ],
+        ),
         (
             "The live studio",
             [
-                ("Open the studio", "The live match the judges see", studio_url),
+                ("Open the studio", "The live match, behind the wall", STUDIO_URL),
                 (
                     "Take: English",
                     "Seed 21 from 54', 30x, models, stress test on, starts at once",
-                    studio_url
-                    + "?seed=21&narration=foundry&start=54&speed=30&stress=1&autostart=1&lang=en",
+                    take + "en",
                 ),
-                (
-                    "Take: Urdu",
-                    "The same match, narrated in Urdu",
-                    studio_url
-                    + "?seed=21&narration=foundry&start=54&speed=30&stress=1&autostart=1&lang=ur",
-                ),
-                (
-                    "Take: Arabic",
-                    "The same match, narrated in Arabic",
-                    studio_url
-                    + "?seed=21&narration=foundry&start=54&speed=30&stress=1&autostart=1&lang=ar",
-                ),
+                ("Take: Urdu", "The same match, narrated in Urdu", take + "ur"),
+                ("Take: Arabic", "The same match, narrated in Arabic", take + "ar"),
                 ("Container app", "hudhud-studio: revision, replica, identity", res(studio)),
                 ("App metrics", "Requests, CPU and memory of the studio", res(studio, "metrics")),
             ],
@@ -245,14 +271,42 @@ def main() -> None:
             ],
         ),
         (
+            "Cloudflare",
+            [
+                ("Zone", f"{ZONE}: traffic, security, Free plan", f"{dash}/{ZONE}"),
+                (
+                    "DNS records",
+                    "The site on GitHub Pages, the studio, mcp and kit",
+                    f"{dash}/{ZONE}/dns/records",
+                ),
+                (
+                    "The edge Worker",
+                    "hudhud-edge: carries the studio and mcp hosts to Azure",
+                    f"{dash}/workers/services/view/hudhud-edge/production",
+                ),
+                (
+                    "Access application",
+                    "HUDHUD studio: who may sign in, the service token",
+                    "https://one.dash.cloudflare.com/?to=/:account/access/apps",
+                ),
+                (
+                    "Sign-ins",
+                    "Every Access login and refusal",
+                    "https://one.dash.cloudflare.com/?to=/:account/logs/access",
+                ),
+                (
+                    "Redirect rules",
+                    "kit.hudhud.com.pk to the media kit",
+                    f"{dash}/{ZONE}/rules/redirect-rules",
+                ),
+            ],
+        ),
+        (
             "Everything",
             [
                 ("Resource group", "rg-hudhud: every resource in one list", f"{group}/overview"),
-                (
-                    "Code and CI",
-                    "The repository's tests and deploys",
-                    "https://github.com/matx104/HUDHUD/actions",
-                ),
+                ("Code and CI", "The repository's tests and deploys", f"{REPO}/actions"),
+                ("GitHub Pages", "The site's custom domain and HTTPS", f"{REPO}/settings/pages"),
             ],
         ),
     ]

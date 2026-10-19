@@ -14,8 +14,14 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 GROUP = "rg-hudhud"
 STUDIO_APP = "hudhud-studio"
+CONFIG = (ROOT / "site" / "config.js").read_text()
 # The showcase site's address, from the one place it's set (site/config.js, siteUrl).
-SITE_URL = re.search(r'siteUrl: "([^"]+)"', (ROOT / "site" / "config.js").read_text())[1]
+SITE_URL = re.search(r'siteUrl: "([^"]+)"', CONFIG)[1]
+# The studio's address for people, behind the wall (studioUrl). Its Azure address refuses them.
+STUDIO_URL = re.search(r'studioUrl: "([^"]+)"', CONFIG)[1]
+# The Access service token that lets scripts and MCP clients through the wall, kept on the owner's
+# machine only (docs/azure.md, "The wall").
+ACCESS_TOKEN = Path.home() / ".config" / "hudhud" / "access-token.json"
 
 
 class AzureError(RuntimeError):
@@ -55,3 +61,14 @@ def studio_url() -> str:
         d["name"] for d in ingress.get("customDomains") or [] if d.get("bindingType") != "Disabled"
     ]
     return f"https://{bound[0] if bound else ingress['fqdn']}/"
+
+
+def through_the_wall() -> dict[str, str]:
+    """Request headers that get a script past Cloudflare Access: the service token, and a name,
+    since Cloudflare turns away Python's default User-Agent."""
+    token = json.loads(ACCESS_TOKEN.read_text())
+    return {
+        "CF-Access-Client-Id": token["client_id"],
+        "CF-Access-Client-Secret": token["client_secret"],
+        "User-Agent": "hudhud-scripts",
+    }

@@ -1,7 +1,7 @@
 PY ?= python3.13
 BIN := .venv/bin
 
-.PHONY: setup test lint fmt schema demo eval site-data control-room doctor costs smoke links studio site
+.PHONY: setup test lint fmt schema demo eval site-data control-room doctor costs smoke links studio studio-offline edge site
 
 setup:  ## create .venv and install both workspace packages (editable)
 	$(PY) -m venv .venv
@@ -47,6 +47,12 @@ links:  ## check every link on the showcase site and in the README
 
 studio:  ## the live studio at http://localhost:8091 (Foundry models, audit and traces on)
 	scripts/studio
+
+studio-offline:  ## the same studio with no Azure at all: the offline narrator, English (http://localhost:8091)
+	$(BIN)/uvicorn court.server:app --host 127.0.0.1 --port 8091
+
+edge:  ## deploy the Cloudflare Worker in front of the deployed studio (edge/, cf CLI)
+	scripts/edge
 
 site:  ## serve the showcase site at http://localhost:8000
 	$(PY) -m http.server 8000 -d site
