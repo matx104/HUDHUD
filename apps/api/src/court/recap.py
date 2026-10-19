@@ -75,8 +75,12 @@ class Recap(BaseModel):
     generated: str
 
 
-def build(state: MatchState, outputs: Sequence[Output]) -> Recap:
-    """The recap of a finished match, from its events and what the broadcast put out."""
+def build(state: MatchState, outputs: Sequence[Output], *, generated: str | None = None) -> Recap:
+    """The recap of a finished match, from its events and what the broadcast put out.
+
+    `generated` stamps the page (default: now); "" leaves it unstamped, so the same match always
+    makes the same page.
+    """
     meta, events = state.meta, state.events
     whistle = next(e for e in reversed(events) if isinstance(e, PeriodEnd))
     critic = Critic(hindsight=True)
@@ -133,7 +137,9 @@ def build(state: MatchState, outputs: Sequence[Output]) -> Recap:
         standouts=_standouts(meta, events),
         receipts=_receipts(outputs),
         refused=refused,
-        generated=datetime.now(UTC).isoformat(timespec="seconds"),
+        generated=datetime.now(UTC).isoformat(timespec="seconds")
+        if generated is None
+        else generated,
     )
 
 
@@ -335,6 +341,7 @@ def render_html(recap: Recap) -> str:
         for x in recap.refused
     )
     when = recap.generated.replace("T", " ").replace("+00:00", " UTC")
+    stamp = f" Generated {e(when)}." if when else ""
     return RECAP_PAGE.format(
         product=e(recap.product),
         home=e(home["name"]),
@@ -361,7 +368,7 @@ def render_html(recap: Recap) -> str:
             if refused
             else ""
         ),
-        generated=e(when),
+        generated=stamp,
     )
 
 

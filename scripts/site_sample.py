@@ -1,9 +1,11 @@
 """Data for the showcase site, from one synthetic match.
 
 chain.js holds one real claim: the draft the Critic rejected and the rewrite that aired, with
-every cited event resolved. match.js holds the match itself: totals and every shot.
+every cited event resolved. match.js holds the match itself: totals and every shot. recap/ holds
+the sample recap the site links: the studio's demo match (seed 21) through the offline narrator,
+stress test on, as the page court.recap writes after full time.
 
-    make site-data      # writes site/data/chain.js and site/data/match.js
+    make site-data      # writes site/data/chain.js, site/data/match.js, site/recap/seed-21.html
 """
 
 import argparse
@@ -17,10 +19,14 @@ from court.localizer import Localizer
 from court.metrics import shot_xg
 from court.narrator import TemplateNarrator
 from court.orchestrator import run_match
+from court.recap import build as build_recap
+from court.recap import render_html
 from court.state import MatchState
 from match_events import Pass, Shot, generate, minute_label
 
 DATA = Path(__file__).resolve().parents[1] / "site" / "data"
+RECAPS = DATA.parent / "recap"
+RECAP_SEED = 21  # the studio's demo match: two goals each way, two momentum swings
 
 
 async def build(seed: int, overreach: float) -> dict:
@@ -137,6 +143,24 @@ def main() -> None:
     home, away = match["home"], match["away"]
     score = f"{home['short']} {home['goals']}-{away['goals']} {away['short']}"
     print(f"wrote {out.relative_to(Path.cwd())}: {score}, {len(match['shots'])} shots")
+    out, recap = asyncio.run(sample_recap(RECAP_SEED, args.overreach))
+    print(f"wrote {out.relative_to(Path.cwd())}: {recap.result.text} {len(recap.refused)} refused")
+
+
+async def sample_recap(seed: int, overreach: float):
+    """The recap page for one match, unstamped so the same match always makes the same page."""
+    outputs: list[Output] = []
+    orchestrator = await run_match(
+        list(generate(seed).stream()),
+        sink=outputs.append,
+        narrator=TemplateNarrator(overreach_rate=overreach, seed=seed),
+        localizer=Localizer(mode="analyst"),
+    )
+    recap = build_recap(orchestrator.state, outputs, generated="")
+    RECAPS.mkdir(exist_ok=True)
+    out = RECAPS / f"seed-{seed}.html"
+    out.write_text(render_html(recap))
+    return out, recap
 
 
 if __name__ == "__main__":
