@@ -3,7 +3,9 @@
 > Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
 > AI match intelligence on synthetic football-realistic data. **Solo build.**
 
-**Status:** live. **The studio** runs on Azure Container Apps (commentary written by gpt-4.1-mini on Microsoft Foundry, every number checked by the Critic before it airs) at https://studio.hudhud.com.pk/, private behind Cloudflare Access; the demo video shows it, and `make studio-offline` runs the same studio on any machine, no Azure needed. Showcase site: https://hudhud.com.pk/ . Media kit (the video, screenshots and brand): https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y . Audit trail on Azure Cosmos DB, traces in Application Insights, 120 tests on every push (109 Python, 11 for the site).
+**Status:** live. **The studio** runs on Azure Container Apps (commentary written by gpt-4.1-mini on Microsoft Foundry, every number checked by the Critic before it airs) at https://studio.hudhud.com.pk/, private behind Cloudflare Access; the demo video shows it, and `make studio-offline` runs the same studio on any machine, no Azure needed. Showcase site: https://hudhud.com.pk/ . Media kit (the video, screenshots and brand): https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y . Audit trail on Azure Cosmos DB, traces in Application Insights, 12 tests on every push (0 Python, 12 for the site).
+
+**What it does:** the Scout flags goals, big chances, great passes, counterattacks, a high press paying off and swings in momentum; the Narrator writes the line; the Critic recomputes every number from the raw events and refuses what it can't prove; the Localizer airs it in English, Urdu or Arabic. Viewers make it theirs (a club, a player, one number to follow), and at full time the match writes its own recap, every line checked by the Critic ([a sample](https://hudhud.com.pk/recap/seed-21.html)). What it can't tell you is stated plainly on the site, and the generator's scorelines are checked against real results (`docs/realism.md`).
 
 ## Quickstart
 
@@ -54,7 +56,7 @@ My scouting notes stay off this repo out of respect for the other entrants. What
 
 ## Credits
 
-Every match is synthetic, made by our own generator. The ideas, tools and type we build on are
+Every match is synthetic, made by our own generator. The realism check compares its scorelines with Mart Jürisoo's *International football results from 1872* (public domain, CC0 1.0, https://github.com/martj42/international_results), used only as a benchmark and never committed. The ideas, tools and type we build on are
 credited on the site's Credits page (`site/index.html`, `#/credits`): the Microsoft Reactor session
 "Build AI-powered soccer insights apps with AKS and ACA" (Brian Benz, Oct 14, 2026), Microsoft
 Foundry, Microsoft Agent Framework (MIT), Pydantic (MIT), Azure Identity, pytest and Ruff (MIT),
