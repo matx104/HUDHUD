@@ -82,5 +82,7 @@ test("the media kit is a public Drive folder, and the site points at it", () => 
   // scripts/drive_kit.py shares the folder; the site links it from the About and Control room pages.
   assert.match(config.kitUrl, /^https:\/\/drive\.google\.com\/drive\/folders\/[\w-]+$/);
   assert.ok((html.match(/data-kit-link/g) ?? []).length >= 2);
-  assert.doesNotMatch(html, /youtube\.com\/@/, "no channel to link: the video lives in the kit");
+  // The one channel the site may link is the owner's, where the video goes (docs/video.md).
+  const channels = new Set(html.match(/youtube\.com\/@[\w.-]+/g) ?? []);
+  assert.deepEqual([...channels], ["youtube.com/@monarch-_-mat"]);
 });
