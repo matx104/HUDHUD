@@ -3,7 +3,7 @@
 > Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
 > AI match intelligence on synthetic football-realistic data. **Solo build.**
 
-**Status:** live. **Watch a match in the studio:** https://studio.hudhud.com.pk/ (Azure Container Apps; commentary written by gpt-4.1-mini on Microsoft Foundry, every number checked by the Critic before it airs). Showcase site: https://hudhud.com.pk/ . Media kit (the video, screenshots and brand): https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y . Audit trail on Azure Cosmos DB, traces in Application Insights, 120 tests on every push (109 Python, 11 for the site).
+**Status:** live. **The studio** runs on Azure Container Apps (commentary written by gpt-4.1-mini on Microsoft Foundry, every number checked by the Critic before it airs) at https://studio.hudhud.com.pk/, private behind Cloudflare Access; the demo video shows it, and `make studio-offline` runs the same studio on any machine, no Azure needed. Showcase site: https://hudhud.com.pk/ . Media kit (the video, screenshots and brand): https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y . Audit trail on Azure Cosmos DB, traces in Application Insights, 120 tests on every push (109 Python, 11 for the site).
 
 ## Quickstart
 
@@ -16,10 +16,12 @@ make eval    # the Scout's momentum calls scored against hidden ground truth (un
 .venv/bin/pip install -e "apps/api[foundry]"
 scripts/live run --seed 21 --narrator foundry   # prints the cues and what the match cost
 make demo    # one synthetic match, all five agents, in the console
-make studio  # the studio at http://localhost:8091: a live match, the Critic's desk, the off-air switch
+make studio-offline  # the studio at http://localhost:8091, no Azure: a live match, the Critic's desk, the off-air switch
+make studio  # the same, narrated by the Foundry models (Azure sign-in)
 make site    # the showcase site at http://localhost:8000
 scripts/live narrator-eval --seeds 5   # the models compete for the job (ADR 0005)
 scripts/deploy-studio                  # ship the studio to Azure Container Apps
+scripts/edge                           # the Cloudflare Worker in front of it (docs/azure.md, "The wall")
 ```
 
 `python -m court run --help` lists the options (`--mode casual|analyst`, `--speed`, `--json` for the machine-readable cue stream, `--overreach` to make the offline narrator deliberately overreach so the Critic has something to reject).

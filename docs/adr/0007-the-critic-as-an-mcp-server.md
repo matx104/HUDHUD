@@ -22,7 +22,11 @@
   `/mcp/` (stateless, JSON responses), so any MCP client can use the Critic remotely
   (`hudhud-critic-live`).
 - **No DNS-rebinding protection on `/mcp/`.** It guards local servers from web pages; this one is
-  public, read-only and holds nothing private, so anyone may call it directly anyway.
+  read-only and holds nothing private, so the protection adds nothing.
+- **Revised 2026-10-19: behind the wall.** The studio went owner-only (docs/azure.md, "The wall"), and
+  the live endpoint with it: `https://mcp.hudhud.com.pk/` is the studio's `/mcp/` through Cloudflare
+  Access, and an MCP client sends the Access service token's two headers (`.vscode/mcp.json` asks for
+  them once). The stdio server is unchanged and needs nothing.
 - **Traced:** each tool call is a span (`mcp <tool>`) with the verdict and the rejection codes, in
   Application Insights beside the matches.
 

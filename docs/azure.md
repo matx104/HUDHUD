@@ -126,15 +126,46 @@ with the `cf` CLI. Records:
 |---|---|---|---|
 | `hudhud.com.pk` | GitHub Pages: A 185.199.108-111.153, AAAA 2606:50c0:8000-8003::153 | DNS only | the showcase site; GitHub issues its certificate, which needs the name to reach GitHub directly |
 | `www` | CNAME matx104.github.io | DNS only | GitHub redirects it to the apex |
-| `studio` | CNAME to the container app's address | **proxied** | a Cloudflare redirect rule (307, path and query kept) sends it to the studio |
+| `studio` | CNAME to the container app's address | **proxied** | the edge Worker carries it to the studio, behind Cloudflare Access |
+| `mcp` | AAAA `100::` (no origin: the Worker answers) | **proxied** | the Critic's MCP endpoint, the studio's `/mcp/`, behind the same Access app |
+| `kit` | AAAA `100::` | **proxied** | a redirect rule (302) to the media kit on Google Drive |
 | `@` TXT, `_dmarc` TXT | SPF `-all`, DMARC `p=reject` | | the domain sends no mail, so nothing may claim to |
 
 The studio can't take the domain itself: Azure refuses custom domains on an **express** Container
-Apps environment (`ExpressEnvironmentFeatureNotSupported`). So `studio.hudhud.com.pk` is a redirect
-to the studio's Azure address, kept temporary (307) so browsers don't cache it. The short address is
-for people (the site, the README, the video); machines use the Azure address, which is what MCP
-clients need since they may not follow a redirect (`.vscode/mcp.json`, the Control room, the doctor).
-Moving the studio to a full environment would let Azure serve the name with its own certificate.
+Apps environment (`ExpressEnvironmentFeatureNotSupported`), and a proxied record alone can't reach
+it either, since Container Apps routes by the Host header and only Enterprise plans can rewrite it.
+So a Worker (`edge/`, deployed by `scripts/edge`) forwards each request to the studio's Azure address
+and points Azure's redirects back at the address the viewer used. Moving the studio to a full
+environment would let Azure serve the name with its own certificate.
+
+## The wall: the studio is owner-only (Cloudflare Access)
+
+Decided 2026-10-19 by the owner: the studio stays private, through the judging period too. The
+rules let judges judge on the text, images and video alone (§4.8); the video shows the studio at
+work, and the code, public at submission, runs the same studio on any machine
+(`make studio-offline`, no Azure).
+
+- **Access application** `HUDHUD studio` on the account's Zero Trust organisation (Free plan),
+  covering `studio.hudhud.com.pk` and `mcp.hudhud.com.pk`. Two policies: `HUDHUD owner` lets in the
+  owner's email address, signed in by a one-time code sent to it (24-hour sessions); `HUDHUD
+  machines` (Service Auth) lets in one service token, for the smoke test, the doctor and MCP
+  clients. Machines get a 401, not a sign-in page. The sign-in page shows the account's team name.
+- **The service token** lives only on the owner's machine, in `~/.config/hudhud/access-token.json`
+  (mode 600), read by `scripts/_azure.py`; it expires 2027-10-19. A script sends its two headers
+  (`CF-Access-Client-Id`, `CF-Access-Client-Secret`) and a User-Agent of its own: Cloudflare turns
+  away Python's default one. Rotate it in the Zero Trust dashboard, or by the cf CLI's
+  `zero-trust access service-tokens rotate`.
+- **No way around it.** With `ACCESS_TEAM` and `ACCESS_AUD` set on the container app, the studio
+  checks the token Access signs for every request (`Cf-Access-Jwt-Assertion`) against the team's
+  published keys, the app's audience tag and the issuer (`court/server.py`, `AccessOnly`), and
+  answers 403 to anything else, so its Azure address is closed to direct visits. Nothing secret is
+  stored: the keys are public, and an unknown key id refreshes them at most once every five minutes.
+  `/healthz` stays open for Container Apps' probes; it says only "ok".
+- **Checked** by `make doctor`: strangers are sent to sign in, the Azure address answers 403, the
+  service token gets through. `make smoke` streams a match through the wall.
+- **The Worker** builds with the cf CLI, which loads `edge/cloudflare.config.ts` with Node's own
+  TypeScript support. Some distro builds of Node leave it out (this machine's did): `scripts/edge`
+  then uses an official Node 24 build unpacked under `~/.local/share/hudhud/`, or `EDGE_NODE`.
 
 GitHub Pages serves the site at the apex with HTTPS enforced; matx104.github.io/HUDHUD/ redirects
 there. Set a Pages custom domain only once the name resolves to GitHub: the redirect starts at once.
