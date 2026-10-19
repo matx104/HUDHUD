@@ -26,11 +26,15 @@ TTL_S = {
     AlertKind.BIG_CHANCE: 8.0,
     AlertKind.MOMENTUM_SWING: 10.0,
     AlertKind.GREAT_PASS: 8.0,
+    AlertKind.COUNTER: 9.0,
+    AlertKind.HIGH_PRESS: 9.0,
 }
 
 
 # The headline's label in each language, replacing the English one before " · ". Signed off by the
 # owner for production, 2026-10-18 (docs/review/ur-ar.md): change them only with the owner.
+# COUNTER and HIGH PRESS (2026-10-19) await that review, so their headlines stay in English.
+AWAITING_REVIEW = ("COUNTER", "HIGH PRESS")
 LABELS = {
     "ur": {
         "GOAL": "گول",
@@ -154,6 +158,12 @@ class Localizer:
         elif alert.kind is AlertKind.GREAT_PASS:
             headline = f"GREAT PASS · {team.short_name}"
             text = f"Great pass from {team.name}: difficulty {m['pass_difficulty']:.0f} of 100."
+        elif alert.kind is AlertKind.COUNTER:
+            headline = f"COUNTER · {team.short_name}"
+            text = f"{team.name} break: a shot {m['seconds']:.0f} s after winning the ball."
+        elif alert.kind is AlertKind.HIGH_PRESS:
+            headline = f"HIGH PRESS · {team.short_name}"
+            text = f"{team.name}: {m['wins']:.0f} ball wins in the attacking third."
         else:
             headline = f"MOMENTUM · {team.short_name} on top"
             mins = max(1, round(m["window_s"] / 60))

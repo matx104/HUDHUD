@@ -14,12 +14,34 @@ The two go on one scale by dividing by their typical spread, and a swing is call
 once the combined score has held for `hold_checks` checks in a row: real spells last
 minutes, noise flickers. `python -m court eval` scores the calls against the generator's
 hidden ground truth.
+
+Two moments from how the ball is won back. A counterattack: a side wins the ball in its own half
+and has a shot away within COUNTER_MAX_S, in the same possession (about 0.65 a match on seeds
+0-59). The high press: a side wins the ball in the attacking third PRESS_WINS times inside
+PRESS_WINDOW_S (about 1.9 a match), told against how often it pressed there.
 """
 
-from match_events import MatchEvent, Pass, PassOutcome, PeriodStart, Shot, ShotOutcome, Side
+from match_events import (
+    MatchEvent,
+    Pass,
+    PassOutcome,
+    PeriodStart,
+    PossessionChange,
+    Shot,
+    ShotOutcome,
+    Side,
+)
 
 from .contracts import Alert, AlertKind, Window
-from .metrics import compute, event_metric, in_box, is_final_third_pass, shot_xg
+from .metrics import (
+    compute,
+    event_metric,
+    in_box,
+    is_ball_win,
+    is_final_third_pass,
+    is_high_ball_win,
+    shot_xg,
+)
 from .state import MatchState
 
 # Typical spread of each side-versus-side figure over seeds 0-59 (the eval reports on the
@@ -33,6 +55,10 @@ FINAL_THIRD_SPREAD = 2.2  # final-third passes per minute
 # What a side's completion is assumed to be before it has much of a baseline.
 LEAGUE_COMPLETION = 0.78
 NEUTRAL_FINAL_THIRD_RATE = 2.0
+HALFWAY_X = 52.5
+COUNTER_MAX_S = 15.0  # from winning the ball to the shot
+PRESS_WINS = 4  # wins in the attacking third...
+PRESS_WINDOW_S = 600.0  # ...inside ten minutes of one half; then ten minutes' quiet for that side
 
 
 class Scout:
@@ -58,14 +84,22 @@ class Scout:
         self._next_check_t = 0.0
         self._last_swing: tuple[Side, float] | None = None
         self._held = dict.fromkeys(Side, 0)
+        self._won: PossessionChange | None = None  # the ball win the current possession began with
+        self._high_wins: dict[Side, list[PossessionChange]] = {side: [] for side in Side}
+        self._last_press = dict.fromkeys(Side, float("-inf"))
 
     def observe(self, event: MatchEvent, state: MatchState) -> list[Alert]:
         if isinstance(event, PeriodStart):
             self._last_swing = None
             self._held = dict.fromkeys(Side, 0)
+            self._high_wins = {side: [] for side in Side}
             self._next_check_t = event.t + self.window_s / 2
             return []
         alerts = []
+        if isinstance(event, PossessionChange):
+            self._won = event if is_ball_win(event) else None
+            if is_high_ball_win(event) and (press := self._press(event, state)):
+                alerts.append(press)
         if isinstance(event, Shot):
             alerts.extend(self._shot(event, state))
         if isinstance(event, Pass | Shot) and event.t >= self._next_check_t:
@@ -81,6 +115,8 @@ class Scout:
     def _shot(self, shot: Shot, state: MatchState) -> list[Alert]:
         xg = round(shot_xg(shot), 2)
         goal = shot.outcome is ShotOutcome.GOAL
+        if not goal and (counter := self._counter(shot, state, xg)):
+            return [counter]
         if not goal and xg < self.big_chance_xg:
             return self._great_pass(shot, state, xg)
         evidence = (shot.assist_event_id, shot.id) if shot.assist_event_id else (shot.id,)
@@ -99,6 +135,68 @@ class Scout:
                 metrics=metrics,
             )
         ]
+
+    def _counter(self, shot: Shot, state: MatchState, xg: float) -> Alert | None:
+        """A break: the ball won in the side's own half, and a shot away within seconds."""
+        won = self._won
+        if not (
+            won is not None
+            and won.team == shot.team
+            and won.possession == shot.possession
+            and won.period == shot.period
+            and won.x < HALFWAY_X
+            and shot.t - won.t <= COUNTER_MAX_S
+        ):
+            return None
+        window = Window(period=shot.period, start_t=won.t, end_t=shot.t)
+        moves = [
+            e
+            for e in state.in_window(window)
+            if isinstance(e, Pass) and e.team == shot.team and e.possession == shot.possession
+        ]
+        return self._alert(
+            kind=AlertKind.COUNTER,
+            team=shot.team,
+            period=shot.period,
+            t=shot.t,
+            as_of_seq=shot.seq,
+            severity=round(min(1.0, 0.45 + xg), 2),
+            evidence=(won.id, *(e.id for e in moves), shot.id),
+            window=window,
+            metrics={
+                "seconds": round(shot.t - won.t),
+                "metres": round(shot.x - won.x),
+                "passes": compute("passes", shot.team, state.in_window(window)),
+                "xg": xg,
+            },
+        )
+
+    def _press(self, win: PossessionChange, state: MatchState) -> Alert | None:
+        """The press paying off: the PRESS_WINS-th ball won in the attacking third in a window."""
+        wins = self._high_wins[win.team]
+        wins.append(win)
+        recent = [w for w in wins if win.t - w.t <= PRESS_WINDOW_S]
+        if len(recent) < PRESS_WINS or win.t - self._last_press[win.team] < PRESS_WINDOW_S:
+            return None
+        self._last_press[win.team] = win.t
+        start = max(state.period_start_t, win.t - PRESS_WINDOW_S)
+        window = Window(period=win.period, start_t=start, end_t=win.t)
+        events = list(state.in_window(window))
+        return self._alert(
+            kind=AlertKind.HIGH_PRESS,
+            team=win.team,
+            period=win.period,
+            t=win.t,
+            as_of_seq=win.seq,
+            severity=round(min(1.0, 0.4 + 0.05 * len(recent)), 2),
+            evidence=tuple(w.id for w in recent),
+            window=window,
+            metrics={
+                "wins": compute("high_ball_wins", win.team, events),
+                "pressures": compute("high_pressures", win.team, events),
+                "window_s": round(window.end_t - window.start_t),
+            },
+        )
 
     def _great_pass(self, shot: Shot, state: MatchState, xg: float) -> list[Alert]:
         """A pass that opened the defence, judged once the shot shows it made a chance."""

@@ -7,7 +7,7 @@ model writes them, so there is nothing for the Critic to doubt.
 
 from collections import Counter
 
-from match_events import Pass, PassOutcome, Shot, ShotOutcome
+from match_events import Pass, PassOutcome, PossessionChange, Shot, ShotOutcome, Tackle
 
 from .contracts import AlertKind, Cue, PlayerTag
 from .metrics import event_metric
@@ -20,9 +20,9 @@ HARD_PASS = 40  # pass difficulty out of 100, as for the Scout's great pass
 
 def player_tags(cue: Cue, state: MatchState) -> tuple[PlayerTag, ...]:
     cited = [e for e in (state.get(i) for i in cue.evidence) if e is not None]
-    if cue.kind is AlertKind.MOMENTUM_SWING:
+    if cue.kind in (AlertKind.MOMENTUM_SWING, AlertKind.HIGH_PRESS):
         # A spell has many hands: tag the two players behind most of the cited actions.
-        counts = Counter(getattr(e, "player_id", None) for e in cited)
+        counts = Counter(_actor(e, state) for e in cited)
         return tuple(_tag(state, pid, "involved", ()) for pid, _ in counts.most_common(2) if pid)
     shots = [e for e in cited if isinstance(e, Shot)]
     assists = {s.assist_event_id for s in shots}
@@ -35,6 +35,14 @@ def player_tags(cue: Cue, state: MatchState) -> tuple[PlayerTag, ...]:
             role = "assister" if event.id in assists else "passer"
             tags.append(_tag(state, event.player_id, role, _pass_badges(event)))
     return tuple(t for t in tags if t is not None)
+
+
+def _actor(event, state: MatchState) -> str | None:
+    """Who did it. A ball won by a tackle is the tackler's; an interception names no one."""
+    if isinstance(event, PossessionChange):
+        cause = state.get(event.cause_event_id or "")
+        return cause.player_id if isinstance(cause, Tackle) and cause.team == event.team else None
+    return getattr(event, "player_id", None)
 
 
 def _shot_badges(shot: Shot) -> tuple[str, ...]:

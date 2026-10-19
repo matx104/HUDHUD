@@ -4,7 +4,17 @@ Critic uses the same functions to recompute every number a claim asserts."""
 import math
 from collections.abc import Iterable
 
-from match_events import PITCH_LENGTH, MatchEvent, Pass, PassOutcome, Shot, ShotOutcome, Side
+from match_events import (
+    PITCH_LENGTH,
+    MatchEvent,
+    Pass,
+    PassOutcome,
+    PossessionChange,
+    Pressure,
+    Shot,
+    ShotOutcome,
+    Side,
+)
 
 from .contracts import Assertion
 from .state import MatchState
@@ -56,6 +66,21 @@ def is_final_third_pass(event: MatchEvent) -> bool:
     )
 
 
+def is_ball_win(event: MatchEvent) -> bool:
+    """A possession won off the opponent: a tackle or an interception, not a restart."""
+    return isinstance(event, PossessionChange) and event.reason in ("interception", "tackle")
+
+
+def is_high_ball_win(event: MatchEvent) -> bool:
+    """The ball won in the attacking third (the winning side's frame): the press paying off."""
+    return is_ball_win(event) and event.x >= FINAL_THIRD_X
+
+
+def is_high_pressure(event: MatchEvent) -> bool:
+    """A press on the ball in the attacking third (the pressing side's frame)."""
+    return isinstance(event, Pressure) and event.x >= FINAL_THIRD_X
+
+
 def compute(metric: str, team: Side, events: Iterable[MatchEvent]) -> float:
     mine = [e for e in events if getattr(e, "team", None) == team]
     if metric == "goals":
@@ -72,6 +97,10 @@ def compute(metric: str, team: Side, events: Iterable[MatchEvent]) -> float:
         return sum(isinstance(e, Pass) and e.outcome is PassOutcome.COMPLETE for e in mine)
     if metric == "final_third_passes":
         return sum(is_final_third_pass(e) for e in mine)
+    if metric == "high_ball_wins":
+        return sum(is_high_ball_win(e) for e in mine)
+    if metric == "high_pressures":
+        return sum(is_high_pressure(e) for e in mine)
     raise ValueError(f"unknown metric {metric!r}")
 
 

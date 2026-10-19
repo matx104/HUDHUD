@@ -16,6 +16,17 @@
 | GREAT PASS | شاندار پاس | تمريرة رائعة | |
 | on top (after a team code) | حاوی | يسيطر | |
 
+## Awaiting review: two new headline words (proposed by Claude, 2026-10-19)
+
+Counterattacks and the high press are new kinds of moment. Until these are signed off, their
+headlines stay in English in the Urdu and Arabic studio (`court/localizer.py` leaves them out of
+`LABELS`; a test allows exactly these two). Mark each ✅ or write the better wording.
+
+| English | Urdu (proposed) | Arabic (proposed) | Your call |
+|---|---|---|---|
+| COUNTER | جوابی حملہ | هجمة مرتدة | |
+| HIGH PRESS | اونچا دباؤ | ضغط عالٍ | |
+
 ## Live lines from one match (seed 21, translated by gpt-4.1-mini on Foundry)
 
 Every number in each translation was checked against the verified English line, and every name

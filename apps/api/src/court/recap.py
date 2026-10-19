@@ -217,7 +217,13 @@ def _numbers(meta: MatchMeta, events: Sequence[MatchEvent], whistle: PeriodEnd, 
 
 
 # The moments the recap retells, as they aired: how the match turned first, then the chances.
-MOMENT_ORDER = {AlertKind.MOMENTUM_SWING: 0, AlertKind.GREAT_PASS: 1, AlertKind.BIG_CHANCE: 2}
+MOMENT_ORDER = {
+    AlertKind.MOMENTUM_SWING: 0,
+    AlertKind.HIGH_PRESS: 1,
+    AlertKind.COUNTER: 2,
+    AlertKind.GREAT_PASS: 3,
+    AlertKind.BIG_CHANCE: 4,
+}
 MOST_MOMENTS = 8
 
 

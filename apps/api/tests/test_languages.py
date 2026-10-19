@@ -1,7 +1,7 @@
 """Urdu and Arabic: the verified line, translated under the same number law (ADR 0009)."""
 
 from court.contracts import AlertKind, Claim, Cue, Side, Verdict
-from court.localizer import Localizer, local_headline
+from court.localizer import AWAITING_REVIEW, LABELS, Localizer, local_headline
 from court.narrator import TemplateNarrator
 from court.orchestrator import run_match
 
@@ -87,8 +87,11 @@ async def test_without_a_model_the_lines_stay_english_under_local_headlines(swin
     )
     cues = [o for o in outputs if isinstance(o, Cue)]
     assert cues and all(c.lang == "en" for c in cues)
-    assert all(
-        c.headline.split(" · ")[0] in {"هدف", "فرصة خطيرة", "السيطرة", "تمريرة رائعة"} for c in cues
+    reviewed = {"هدف", "فرصة خطيرة", "السيطرة", "تمريرة رائعة"}
+    # New kinds wait for the owner's review in English (docs/review/ur-ar.md), and only those.
+    assert all(c.headline.split(" · ")[0] in reviewed | set(AWAITING_REVIEW) for c in cues)
+    assert not set(AWAITING_REVIEW) & set(LABELS["ar"]) and not set(AWAITING_REVIEW) & set(
+        LABELS["ur"]
     )
 
 

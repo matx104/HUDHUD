@@ -41,6 +41,8 @@ KIND = {
     AlertKind.BIG_CHANCE: "big chance",
     AlertKind.MOMENTUM_SWING: "momentum swing",
     AlertKind.GREAT_PASS: "great pass",
+    AlertKind.COUNTER: "counterattack",
+    AlertKind.HIGH_PRESS: "high press winning the ball back",
 }
 
 

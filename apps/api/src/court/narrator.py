@@ -102,6 +102,8 @@ class TemplateNarrator:
             AlertKind.BIG_CHANCE: self._chance,
             AlertKind.MOMENTUM_SWING: self._momentum,
             AlertKind.GREAT_PASS: self._great_pass,
+            AlertKind.COUNTER: self._counter,
+            AlertKind.HIGH_PRESS: self._high_press,
         }[alert.kind]
         headline, text, assertions, figures = compose(alert, state, metrics)
         return Claim(
@@ -192,6 +194,38 @@ class TemplateNarrator:
         )
         return f"GREAT PASS · {team.short_name}", text, assertions, figures
 
+    def _counter(self, alert: Alert, state: MatchState, m: dict[str, float]):
+        shot = state.get(alert.evidence[-1])
+        assert isinstance(shot, Shot)
+        team = state.meta.team(alert.team)
+        text = (
+            f"{team.name} break: the ball won in their own half, and "
+            f"{state.player_name(shot.player_id)}'s shot is away {m['seconds']:.0f} seconds later, "
+            f"{m['metres']:.0f} m up the pitch after {_count(m['passes'], 'pass', 'passes')}. "
+            f"xG {m['xg']:.2f}, {OUTCOME_PHRASE[shot.outcome.value]}."
+        )
+        figures = {"seconds": m["seconds"], "metres": m["metres"], "xg": m["xg"]}
+        assertions = (
+            Assertion(metric="passes", team=alert.team, value=m["passes"], window=alert.window),
+            Assertion(metric="shot_xg", team=alert.team, value=m["xg"], event_id=shot.id),
+        )
+        return f"COUNTER · {team.short_name}", text, assertions, figures
+
+    def _high_press(self, alert: Alert, state: MatchState, m: dict[str, float]):
+        team = state.meta.team(alert.team)
+        minutes = max(1, round(m["window_s"] / 60))
+        span = "minute" if minutes == 1 else f"{minutes} minutes"
+        text = (
+            f"{team.name} keep winning the ball high: {_count(m['wins'], 'time')} in the attacking "
+            f"third in the last {span}, pressing the ball there {_count(m['pressures'], 'time')}."
+        )
+        w = alert.window
+        assertions = (
+            Assertion(metric="high_ball_wins", team=alert.team, value=m["wins"], window=w),
+            Assertion(metric="high_pressures", team=alert.team, value=m["pressures"], window=w),
+        )
+        return f"HIGH PRESS · {team.short_name}", text, assertions, {"minutes": minutes}
+
     def _momentum(self, alert: Alert, state: MatchState, m: dict[str, float]):
         team, opp = state.meta.team(alert.team), state.meta.team(alert.team.other())
         minutes = max(1, round(m["window_s"] / 60))
@@ -248,6 +282,8 @@ class TemplateNarrator:
             metrics["final_third"] += 3
         elif alert.kind is AlertKind.GREAT_PASS:
             metrics["pass_difficulty"] += 15
+        elif alert.kind is AlertKind.HIGH_PRESS:
+            metrics["wins"] += 2
         else:
             metrics["xg"] += 0.25
         return self.compose(alert, state, attempt=claim.attempt, metrics=metrics)

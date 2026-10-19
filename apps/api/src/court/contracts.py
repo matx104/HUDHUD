@@ -21,6 +21,8 @@ class AlertKind(StrEnum):
     BIG_CHANCE = "big_chance"
     MOMENTUM_SWING = "momentum_swing"
     GREAT_PASS = "great_pass"
+    COUNTER = "counter"  # the ball won in a side's own half, a shot within seconds
+    HIGH_PRESS = "high_press"  # the ball won back in the attacking third, again and again
     RECAP = "recap"  # a line of the post-match recap (court.recap), never a live alert
 
 
@@ -56,6 +58,8 @@ Metric = Literal[
     "passes",
     "passes_completed",
     "final_third_passes",
+    "high_ball_wins",  # the ball won (tackle or interception) in the attacking third
+    "high_pressures",  # pressures on the ball in the attacking third
     # Per-event metrics (the assertion names its event_id), all as broadcast integers:
     "shot_speed",  # km/h
     "pass_distance",  # metres

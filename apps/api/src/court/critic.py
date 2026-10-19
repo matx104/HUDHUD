@@ -14,10 +14,18 @@ Checks, in order (all failures are collected so the UI can show every reason):
 import re
 from collections.abc import Callable, Mapping, Sequence
 
-from match_events import MatchEvent, Pass, PassOutcome, PeriodEnd, Shot, ShotOutcome
+from match_events import (
+    MatchEvent,
+    Pass,
+    PassOutcome,
+    PeriodEnd,
+    PossessionChange,
+    Shot,
+    ShotOutcome,
+)
 
 from .contracts import AlertKind, Claim, Reason, RejectionCode, Verdict
-from .metrics import is_final_third_pass, measure
+from .metrics import is_ball_win, is_final_third_pass, is_high_ball_win, measure
 from .state import MatchState
 
 # An evidence rule inspects the (valid) cited events and returns a failure detail,
@@ -85,6 +93,53 @@ def _attacking(event: MatchEvent) -> bool:
     return isinstance(event, Shot) or is_final_third_pass(event)
 
 
+COUNTER_MAX_S = 15.0  # the Scout's: from winning the ball to the shot
+HALFWAY_X = 52.5
+
+
+def counter_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
+    """A break is the ball won in the side's own half and a shot away soon after, in the same
+    possession: the claim cites both."""
+    wins = [
+        e
+        for e in cited
+        if isinstance(e, PossessionChange)
+        and is_ball_win(e)
+        and e.team == claim.team
+        and e.x < HALFWAY_X
+    ]
+    shots = [e for e in cited if isinstance(e, Shot) and e.team == claim.team]
+    for win in wins:
+        for shot in shots:
+            quick = 0 <= shot.t - win.t <= COUNTER_MAX_S and shot.period == win.period
+            if quick and shot.possession == win.possession:
+                return None
+    return (
+        "a counterattack claim must cite the ball won in the side's own half and the shot from "
+        f"the same possession, within {COUNTER_MAX_S:.0f} seconds"
+    )
+
+
+PRESS_MIN_WINS = 4  # the Scout's PRESS_WINS
+
+
+def press_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
+    """The press stands on the ball won back high: every cited event is one of the side's wins in
+    the attacking third, inside the stretch the claim describes, and there are enough of them."""
+    windows = [a.window for a in claim.assertions if a.window is not None]
+    if not windows:
+        return "a high-press claim must say which stretch of play it covers"
+    spell = max(windows, key=lambda w: w.end_t)
+    for event in cited:
+        if not is_high_ball_win(event) or event.team != claim.team:
+            return f"{event.id} is not {claim.team} winning the ball in the attacking third"
+        if not spell.start_t <= event.t <= spell.end_t:
+            return f"{event.id} came before the stretch the claim describes"
+    if len(cited) < PRESS_MIN_WINS:
+        return f"the press needs {PRESS_MIN_WINS} high ball wins; the claim cites {len(cited)}"
+    return None
+
+
 def recap_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
     """A recap line states the match as it ended: a number about the whole match must be counted
     to the final whistle, so the line cites it, and a line about moments cites those moments."""
@@ -114,6 +169,8 @@ EVIDENCE_RULES: Mapping[AlertKind, EvidenceRule] = {
     AlertKind.BIG_CHANCE: big_chance_rule,
     AlertKind.MOMENTUM_SWING: momentum_rule,
     AlertKind.GREAT_PASS: great_pass_rule,
+    AlertKind.COUNTER: counter_rule,
+    AlertKind.HIGH_PRESS: press_rule,
     AlertKind.RECAP: recap_rule,
 }
 
