@@ -245,8 +245,13 @@ def main() -> None:
                 ),
                 (
                     "Foundry portal",
-                    "The project, its models and traces",
+                    "The project, its models, its traces and its evaluations",
                     f"https://ai.azure.com/?tid={tenant}",
+                ),
+                (
+                    "Speech",
+                    "Azure AI Speech on the Foundry resource: the voices' usage",
+                    res(foundry, "metrics"),
                 ),
             ],
         ),

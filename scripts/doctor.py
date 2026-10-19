@@ -222,6 +222,18 @@ def main() -> int:
     )
     config = json.loads(body) if status == 200 else {}
     check("Studio: voice connected (Azure AI Speech)", config.get("voice") is True)
+    foundry_id = resources["hudhud-foundry"]["id"]
+    connections = az_json(
+        "rest", "--method", "get",
+        "--url", f"https://management.azure.com{foundry_id}/projects/hudhud/connections"
+        "?api-version=2025-04-01-preview",
+    )  # fmt: skip
+    traced = [
+        c for c in (connections or {}).get("value", [])
+        if c["properties"].get("category") == "AppInsights"
+        and c["properties"].get("target", "").lower().endswith("/hudhud-insights")
+    ]  # fmt: skip
+    check("Foundry: the project's traces go to hudhud-insights", bool(traced))
     check(
         "Studio: models connected",
         config.get("models") is True,

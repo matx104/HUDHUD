@@ -138,6 +138,14 @@ So a Worker (`edge/`, deployed by `scripts/edge`) forwards each request to the s
 and points Azure's redirects back at the address the viewer used. Moving the studio to a full
 environment would let Azure serve the name with its own certificate.
 
+## Foundry tracing (2026-10-19)
+
+The Foundry project `hudhud` has a connection to `hudhud-insights` (category AppInsights, made with
+`az rest` against `.../projects/hudhud/connections/hudhud-insights`), so the model calls the court
+traces (Agent Framework's gen_ai spans, with tokens) also show in the Foundry portal's tracing
+view, next to the deployments. Viewing them needs read access to the Application Insights
+resource. The doctor checks the connection.
+
 ## The voice: Azure AI Speech (2026-10-19)
 
 Every verified line can be read aloud (`court/speech.py`): neural voices en-GB-RyanNeural,
