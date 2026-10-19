@@ -10,7 +10,7 @@ setup:  ## create .venv and install both workspace packages (editable)
 
 test:
 	$(BIN)/pytest
-	node --test tests/site/*.test.cjs
+	node --test tests/site/*.test.cjs tests/studio/*.test.cjs
 
 lint:
 	$(BIN)/ruff check . && $(BIN)/ruff format --check .

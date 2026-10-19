@@ -38,3 +38,5 @@ jobs:
         run: python scripts/site_sample.py && git diff --exit-code site/data
       - name: Showcase site tests (routes, crawler tags, assets)
         run: node --test tests/site/*.test.cjs
+      - name: HUD² tests (lenses, layers, the camera, where a line is pinned)
+        run: node --test tests/studio/*.test.cjs
