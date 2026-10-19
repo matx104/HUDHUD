@@ -197,6 +197,10 @@ work, and the code, public at submission, runs the same studio on any machine
   `/healthz` stays open for Container Apps' probes; it says only "ok".
 - **Checked** by `make doctor`: strangers are sent to sign in, the Azure address answers 403, the
   service token gets through. `make smoke` streams a match through the wall.
+- **Prompt Shields on every question.** `CONTENT_SAFETY_ENDPOINT` (the Foundry resource's own
+  endpoint) turns on Azure AI Content Safety's Prompt Shields for the question box: the studio's
+  identity calls it with Entra ID (its Cognitive Services User role covers it), before any model
+  reads a question (`court/shield.py`).
 - **Behind it too: the Critic for other agents.** The MCP server (`/mcp/`, also at
   mcp.hudhud.com.pk) and the A2A agent (`/a2a/`, ADR 0011) are on the studio, so a client needs the
   service token as a script does. `STUDIO_PUBLIC_URL` (https://studio.hudhud.com.pk/) is the address

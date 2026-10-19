@@ -35,3 +35,11 @@
   in one call fixed it (one call, one attempt, ten counts recomputed).
 - The Critic proves an answer's numbers, names and citations, not its judgment words ("dominated",
   "the better side"); the site's limits say so.
+- Measured (`court ask-eval`, docs/ask-eval.md): on two unseen matches the first run got 39 of 39
+  answerable questions right but twice inferred "no signs of injury" from pass counts. Code now
+  holds back what event data can't see before any model is asked (`ask.beyond_the_data`), and a
+  ranking (the biggest chance) is a fact of its own: 18 of 18 held back after, groundedness 5.0.
+- **Prompt Shields first** (`court/shield.py`, 2026-10-19). A question is free text for a model, so
+  Azure AI Content Safety's Prompt Shields reads it first: flagged, it gets fixed words and no model
+  reads it; with the shield down the offline answerer takes it, so a model only reads what the
+  shield passed.
