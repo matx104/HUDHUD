@@ -23,6 +23,9 @@ model-narrated match answers with the models; otherwise, or when they fail, the 
 does. Questions are capped per match. With the voice connected, a question can be asked out loud:
 the page records it and the studio turns it into words in the match's language, keeping no audio.
 
+The Critic is also an A2A agent at /a2a/ (court.a2a_server): another agent can read its card and
+put claims or questions to it.
+
 On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner in at
 studio.hudhud.com.pk, and a Worker (edge/) carries each request on to Azure. With `ACCESS_TEAM` and
 `ACCESS_AUD` set, the studio refuses any request that doesn't carry a token Access signed for it, so
@@ -727,6 +730,14 @@ def create_app() -> FastAPI:
         return Response(audio, media_type="audio/mpeg", headers={"Cache-Control": "no-store"})
 
     app.mount("/mcp", critic)
+    # The Critic as an A2A agent (court.a2a_server), for other agents, behind the same wall.
+    try:
+        from .a2a_server import app as a2a_app
+
+        public = os.environ.get("STUDIO_PUBLIC_URL", "http://127.0.0.1:8091/").rstrip("/")
+        app.mount("/a2a", a2a_app(f"{public}/a2a/"))
+    except ImportError:  # the a2a extra isn't installed: the studio runs without it
+        log.info("agent-framework-a2a isn't installed: no A2A endpoint")
     app.mount("/static", StaticFiles(directory=STUDIO), name="static")
     if (team := os.environ.get("ACCESS_TEAM")) and (aud := os.environ.get("ACCESS_AUD")):
         app.add_middleware(AccessOnly, team=team, audience=aud)

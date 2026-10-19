@@ -288,26 +288,43 @@ citation an answer states, not that the answer is the one asked for.
     (ROOT / "site" / "data" / "ask_eval.js").write_text(data)
 
 
-def main(first: int, seeds: int, judge_model: str) -> int:
+def main(first: int, seeds: int, judge_model: str, *, rejudge: bool = False) -> int:
+    """Ask, grade and judge. With rejudge, only judge again the answers the last run saved: the
+    judging is the step a dropped connection can stall."""
     from .foundry import FoundryNarrator
-    from .foundry_eval import judge
-    from .foundry_eval import summarize as summarize_judged
 
     endpoint = os.environ.get("FOUNDRY_PROJECT_ENDPOINT")
     if not endpoint:
         raise SystemExit("set FOUNDRY_PROJECT_ENDPOINT (scripts/live does)")
     writer = os.environ.get("FOUNDRY_MODELS", "gpt-4.1-mini").split(",")[0]
-    narrator = FoundryNarrator(project_endpoint=endpoint, models=(writer,))
-    rows = asyncio.run(run(range(first, first + seeds), narrator, spend=narrator.spend))
-    summary = summarize(rows, writer)
     out = ROOT / "dist" / "ask-eval"
     out.mkdir(parents=True, exist_ok=True)
-    (out / "answers.json").write_text(json.dumps(rows, indent=2, ensure_ascii=False))
+    if rejudge:
+        rows = json.loads((out / "answers.json").read_text())
+    else:
+        narrator = FoundryNarrator(project_endpoint=endpoint, models=(writer,))
+        rows = asyncio.run(run(range(first, first + seeds), narrator, spend=narrator.spend))
+        (out / "answers.json").write_text(json.dumps(rows, indent=2, ensure_ascii=False))
+    summary = summarize(rows, writer)
     print(
         f"{summary['right']}/{summary['answerable']} right, "
         f"{summary['declined_right']}/{summary['unanswerable']} held back, "
         f"{summary['drafts_refused']} drafts refused, ${summary['cost_usd']}; judging"
     )
+    summary |= judged_by(rows, endpoint=endpoint, judge_model=judge_model, writer=writer, out=out)
+    write(summary)
+    for m in JUDGED:
+        s = summary["judged"][m]
+        print(f"  {m:<13} mean {s['mean']}  passed {s['pass_pct']}%")
+    print("wrote docs/ask-eval.md and site/data/ask_eval.js")
+    return 0
+
+
+def judged_by(rows, *, endpoint: str, judge_model: str, writer: str, out: Path) -> dict:
+    """Foundry's evaluators over the verified answers, against the brief and facts each had."""
+    from .foundry_eval import judge
+    from .foundry_eval import summarize as summarize_judged
+
     verified = [
         {"query": r["question"], "response": r["answer"], "context": "\n".join(r["facts"])}
         for r in rows
@@ -322,13 +339,11 @@ def main(first: int, seeds: int, judge_model: str) -> int:
         name="HUDHUD answers to viewers' questions",
     )
     judged = summarize_judged(result, verified, judge_model, writer, metrics=JUDGED)
-    summary |= {"judge": judge_model, "judged": {m: judged[m] for m in JUDGED}}
-    summary["portal"] = judged.get("portal")
-    write(summary)
-    for m in JUDGED:
-        print(f"  {m:<13} mean {judged[m]['mean']}  passed {judged[m]['pass_pct']}%")
-    print("wrote docs/ask-eval.md and site/data/ask_eval.js")
-    return 0
+    return {
+        "judge": judge_model,
+        "judged": {m: judged[m] for m in JUDGED},
+        "portal": judged.get("portal"),
+    }
 
 
 def _n(value: float) -> str:

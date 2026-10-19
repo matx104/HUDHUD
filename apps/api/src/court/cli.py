@@ -279,6 +279,9 @@ def main(argv: list[str] | None = None) -> int:
     ae.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
     ae.add_argument("--seeds", type=int, default=2, help="how many matches")
     ae.add_argument("--judge", default="gpt-5-mini", help="the judging model (not the writer)")
+    ae.add_argument(
+        "--rejudge", action="store_true", help="only judge again the answers the last run saved"
+    )
     args = parser.parse_args(argv)
     if args.cmd == "schema":
         from .schema import write
@@ -298,7 +301,7 @@ def main(argv: list[str] | None = None) -> int:
 
         telemetry.configure()
         try:
-            return ask_eval(args.first, args.seeds, args.judge)
+            return ask_eval(args.first, args.seeds, args.judge, rejudge=args.rejudge)
         finally:
             telemetry.flush()
     if args.cmd == "eval":
