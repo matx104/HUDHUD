@@ -178,6 +178,25 @@ class PlayerTag(_Frozen):
     )
 
 
+# One number a viewer can follow all match in single-metric mode (court.personal).
+TickerMetric = Literal[
+    "xg", "shots", "box_entries", "final_third_passes", "passes_completed", "pass_completion"
+]
+
+
+class Preferences(_Frozen):
+    """One viewer's way into the match (§4.1 i e: personal modes). It changes what airs first,
+    what is marked as theirs and from whose side a line is told, never what is true: every line
+    still passed the Critic, and every number on screen is computed from events."""
+
+    club: Side | None = Field(default=None, description="Favourite club")
+    player: str | None = Field(default=None, description="Favourite player, by id")
+    focus: Literal["match", "player"] = Field(
+        default="match", description="'player': only the favourite player's moments, and a card"
+    )
+    metric: TickerMetric | None = Field(default=None, description="Single-metric mode")
+
+
 class Cue(_Frozen):
     """Broadcast overlay cue: timed, machine-readable, evidence attached."""
 
@@ -202,6 +221,9 @@ class Cue(_Frozen):
     players: tuple[PlayerTag, ...] = ()
     original: str | None = Field(
         default=None, description="The verified English line, when the text is its translation"
+    )
+    for_you: tuple[Literal["club", "rival", "player"], ...] = Field(
+        default=(), description="Why this cue is the viewer's own (court.personal)"
     )
 
 

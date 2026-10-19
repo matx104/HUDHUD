@@ -10,6 +10,11 @@ catch every one.
 An open demo must not run up the bill: model-narrated matches are capped per day (then the offline
 narrator takes over, and the studio says so), and so are concurrent streams.
 
+Personal modes (court.personal) ride in the address too: a favourite club and player mark the cues
+that are the viewer's own, player focus follows one player with a live card, and single-metric mode
+follows one number for both sides. The models tell the line from the favourite club's side; the
+Critic checks it as it checks every line.
+
 On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner in at
 studio.hudhud.com.pk, and a Worker (edge/) carries each request on to Azure. With `ACCESS_TEAM` and
 `ACCESS_AUD` set, the studio refuses any request that doesn't carry a token Access signed for it, so
@@ -20,6 +25,7 @@ its own Azure address is no way around the wall.
 
 import asyncio
 import contextlib
+import functools
 import inspect
 import json
 import logging
@@ -47,12 +53,14 @@ from match_events import MatchMeta, Shot, ShotOutcome, Side, generate, minute_la
 from . import telemetry
 from .audit import AuditTrail, CosmosStore
 from .config import product_name
-from .contracts import OUTPUT_ADAPTER, Output
+from .contracts import OUTPUT_ADAPTER, Output, Preferences, TickerMetric
 from .localizer import Localizer
 from .mcp_server import server as critic_mcp
 from .metrics import shot_xg
 from .narrator import TemplateNarrator
 from .orchestrator import run_match
+from .personal import Personal, PreferenceError, metric_line, player_card
+from .personal import check as check_preferences
 
 STUDIO = Path(__file__).parent / "studio"
 # The demo matches: 21 has two goals each way and two momentum swings; 7 has six goals; 33 a
@@ -214,10 +222,13 @@ class Session:
         stress: float,
         budget: ModelBudget,
         lang: Literal["en", "ur", "ar"] = "en",
+        prefs: Preferences | None = None,
     ) -> None:
         self.id = uuid.uuid4().hex[:12]
         self.match = generate(seed)
         self.speed, self.start_t, self.mode, self.lang = speed, start * 60.0, mode, lang
+        self.prefs = prefs or Preferences()
+        self.personal = Personal(self.prefs, self.match.meta)
         self.queue: asyncio.Queue[tuple[str, dict[str, Any]] | None] = asyncio.Queue()
         self.notices: list[str] = []
         inner, self.narration = self._narrator(narration, seed, stress, budget)
@@ -231,7 +242,9 @@ class Session:
             from .foundry import FoundryNarrator
 
             models = os.environ.get("FOUNDRY_MODELS", "gpt-4.1-mini,gpt-5-mini").split(",")
-            return FoundryNarrator(project_endpoint=endpoint, models=models), "foundry"
+            club = self.prefs.club and self.match.meta.team(self.prefs.club).name
+            narrator = FoundryNarrator(project_endpoint=endpoint, models=models, viewer_club=club)
+            return narrator, "foundry"
         if wanted == "foundry":
             why = "today's model budget is spent" if endpoint else "no models are connected here"
             self.notices.append(f"{why}: the offline narrator calls this match")
@@ -269,6 +282,8 @@ class Session:
                 meter = getattr(self.narrator.inner, "meter", None)
                 cost = round(meter.cost_usd(), 6) if meter else 0.0
                 summary = {"stats": dict(orch.stats), "cost_usd": cost}
+                if self.prefs.focus == "player":
+                    summary["hidden_by_focus"] = self.personal.hidden
                 if trail:
                     await trail.close(summary)
                     summary["audit"] = trail.report()
@@ -284,7 +299,19 @@ class Session:
             self.queue.put_nowait(None)
 
     def _output(self, output: Output) -> None:
-        self.send("output", OUTPUT_ADAPTER.dump_python(output, mode="json"))
+        """What the court produced, as this viewer sees it (the audit trail keeps it unchanged)."""
+        if (seen := self.personal.view(output)) is not None:
+            self.send("output", OUTPUT_ADAPTER.dump_python(seen, mode="json"))
+
+    def _personal(self, events: list[Any]) -> None:
+        """The player card and the single metric, recounted from the events so far."""
+        update: dict[str, Any] = {}
+        if self.prefs.player:
+            update["card"] = player_card(self.prefs.player, self.match.meta, events)
+        if self.prefs.metric:
+            update["metric"] = metric_line(self.prefs.metric, events)
+        if update:
+            self.send("personal", update)
 
     async def _paced(self) -> AsyncIterator[Any]:
         """The match stream, paced from the chosen minute, with the clock and shots for the page."""
@@ -293,17 +320,20 @@ class Session:
         yield meta
         names = {p.id: p.name for p in meta.players}
         score = {Side.HOME: 0, Side.AWAY: 0}
-        minute, previous = None, None
+        minute, previous, seen = None, None, []
         for event in messages[1:]:
             live = self.speed > 0 and event.t >= self.start_t
             if live and previous is not None and previous.period == event.period:
                 await asyncio.sleep(max(0.0, event.t - previous.t) / self.speed)
             previous = event
+            seen.append(event)
             label = minute_label(event.t, event.period)
             if isinstance(event, Shot):
                 score[event.team] += event.outcome is ShotOutcome.GOAL
                 self.send("shot", _shot(event, label, names))
             if label != minute or isinstance(event, Shot):
+                if label != minute:
+                    self._personal(seen)
                 minute = label
                 self.send(
                     "clock",
@@ -331,6 +361,17 @@ def _shot(shot: Shot, minute: str, names: dict[str, str]) -> dict[str, Any]:
 
 def _team(team) -> dict[str, str]:
     return {"name": team.name, "short": team.short_name, "color": team.color}
+
+
+@functools.cache
+def _meta(seed: int) -> MatchMeta:
+    return generate(seed).meta
+
+
+def _players(meta: MatchMeta) -> list[dict[str, Any]]:
+    """For the personal modes' pickers: every player, as the cues tag them."""
+    fields = ("id", "name", "number", "position")
+    return [{**{f: getattr(p, f) for f in fields}, "team": p.team.value} for p in meta.players]
 
 
 def _sse(kind: str, data: dict[str, Any]) -> str:
@@ -372,8 +413,15 @@ def create_app() -> FastAPI:
     def config() -> dict[str, Any]:
         matches = []
         for seed in DEMO_SEEDS:
-            meta = generate(seed).meta
-            matches.append({"seed": seed, "home": _team(meta.home), "away": _team(meta.away)})
+            meta = _meta(seed)
+            matches.append(
+                {
+                    "seed": seed,
+                    "home": _team(meta.home),
+                    "away": _team(meta.away),
+                    "players": _players(meta),
+                }
+            )
         return {
             "product": product_name(),
             "matches": matches,
@@ -391,9 +439,23 @@ def create_app() -> FastAPI:
         mode: Literal["casual", "analyst"] = "analyst",
         stress: float = 0.25,
         lang: Literal["en", "ur", "ar"] = "en",
+        club: Literal["", "home", "away"] = "",
+        player: str = "",
+        focus: Literal["match", "player"] = "match",
+        metric: Literal["", TickerMetric] = "",
     ) -> StreamingResponse:
         if seed not in DEMO_SEEDS:
             raise HTTPException(404, f"no demo match with seed {seed}")
+        prefs = Preferences(
+            club=Side(club) if club else None,
+            player=player or None,
+            focus=focus,
+            metric=metric or None,
+        )
+        try:
+            check_preferences(prefs, _meta(seed))
+        except PreferenceError as error:
+            raise HTTPException(422, str(error)) from None
         if len(sessions) >= MAX_STREAMS:  # the quick answer; events() holds the line
             raise HTTPException(503, "the studio is full: try again in a minute")
         options = {
@@ -403,6 +465,7 @@ def create_app() -> FastAPI:
             "mode": mode,
             "stress": max(0.0, min(stress, 0.5)),
             "lang": lang,
+            "prefs": prefs,
         }
 
         async def events() -> AsyncIterator[str]:
@@ -421,6 +484,7 @@ def create_app() -> FastAPI:
             hello = {"session": session.id, "seed": seed, "narration": session.narration}
             hello |= {"home": _team(meta.home), "away": _team(meta.away)}
             hello |= {"notices": session.notices, "competition": meta.competition}
+            hello["prefs"] = prefs.model_dump(mode="json")
             try:
                 yield _sse("hello", hello)
                 while True:

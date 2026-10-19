@@ -88,3 +88,17 @@ async def test_when_every_deployment_fails_the_orchestrator_is_told(goal):
     narrator = _narrator({"only": FakeAgent([ConnectionError("down")])})
     with pytest.raises(NarrationUnavailable):
         await narrator.draft(alert, state)
+
+
+async def test_a_favourite_club_changes_the_telling_not_the_facts(goal):
+    state, alert = goal
+    agent = FakeAgent(["Heartbreak: they score."])
+    narrator = _narrator({"primary": agent}, viewer_club="Brackenfield")
+    claim = await narrator.draft(alert, state)
+    assert agent.prompts[0].startswith("The viewer supports Brackenfield: tell it from their side")
+    plain = await _narrator({"primary": FakeAgent(["x"])}).draft(alert, state)
+    assert (claim.citations, claim.assertions, claim.figures) == (
+        plain.citations,
+        plain.assertions,
+        plain.figures,
+    ), "the sheet's facts, and so the Critic's checks, don't move"

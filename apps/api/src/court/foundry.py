@@ -113,8 +113,12 @@ class FoundryNarrator:
         timeout_s: float = 30.0,
         meter: TokenMeter | None = None,
         agent_factory: Callable[[str], Any] | None = None,
+        viewer_club: str | None = None,
     ) -> None:
         self.project_endpoint = project_endpoint
+        # Personal modes: the viewer's club, whose side the line is told from. Tone only: the
+        # facts and the numbers come from the same sheet, and the Critic checks them the same way.
+        self.viewer_club = viewer_club
         self.models = tuple(models)
         self.timeout_s = timeout_s
         self.meter = meter or TokenMeter()
@@ -162,8 +166,14 @@ class FoundryNarrator:
             earlier = a.window is not None and a.window.start_t < window_start
             when = " earlier in the half" if earlier else ""
             numbers.append(f"{a.metric} for {meta.team(a.team).name}{when}={_number(a.value)}")
+        viewer = ""
+        if self.viewer_club:
+            viewer = (
+                f"The viewer supports {self.viewer_club}: tell it from their side, with hope at "
+                "their moments and worry at the other side's. Change no fact for it.\n"
+            )
         return (
-            f"Moment: {KIND[alert.kind]} for {side.name} against {other.name}.\n"
+            viewer + f"Moment: {KIND[alert.kind]} for {side.name} against {other.name}.\n"
             f"Headline on screen: {facts.headline}\n"
             "Cited events:\n" + "\n".join(events) + "\n"
             f"Numbers you may state: {', '.join(numbers)}\n"

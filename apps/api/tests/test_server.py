@@ -172,3 +172,30 @@ def test_the_wall_goes_up_only_when_configured(monkeypatch):
     assert TestClient(create_app()).get("/api/config").status_code == 403
     monkeypatch.delenv("ACCESS_AUD")
     assert TestClient(create_app()).get("/api/config").status_code == 200
+
+
+def test_personal_modes_ride_in_the_address(client):
+    config = client.get("/api/config").json()
+    players = config["matches"][0]["players"]
+    assert len(players) == 22 and {"id", "name", "number", "position", "team"} <= set(players[0])
+    forward = next(p for p in players if p["position"] == "FW" and p["team"] == "home")
+    query = f"seed=21&speed=0&stress=0&club=home&player={forward['id']}&focus=player&metric=xg"
+    events = _events(client, query)
+    hello = events[0][1]
+    assert hello["prefs"] == {
+        "club": "home",
+        "player": forward["id"],
+        "focus": "player",
+        "metric": "xg",
+    }
+    personal = [d for k, d in events if k == "personal"]
+    assert personal and personal[-1]["card"]["player"]["id"] == forward["id"]
+    assert personal[-1]["metric"]["label"] == "Expected goals (xG)"
+    cues = [d for k, d in events if k == "output" and d["type"] == "cue"]
+    assert all("player" in c["for_you"] and "club" in c["for_you"] for c in cues)
+    assert events[-1][1]["hidden_by_focus"] > 0
+
+
+def test_preferences_that_dont_fit_the_match_are_refused(client):
+    assert client.get("/api/stream?seed=21&player=nobody").status_code == 422
+    assert client.get("/api/stream?seed=21&focus=player").status_code == 422
