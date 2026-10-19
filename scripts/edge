@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+# Deploy the edge: the Cloudflare Worker (edge/) that carries studio.hudhud.com.pk and
+# mcp.hudhud.com.pk, behind Cloudflare Access, to the studio on Azure (docs/azure.md, "The wall").
+#   scripts/edge              # build and deploy
+#   scripts/edge --dry-run    # build and check only
+# The cf CLI loads edge/cloudflare.config.ts with Node's own TypeScript support, which some distro
+# builds of Node leave out. Then set EDGE_NODE to the bin/ of an official Node 24 build (nodejs.org);
+# one unpacked under ~/.local/share/hudhud/ is found by itself.
+set -eu
+here="$(cd "$(dirname "$0")/.." && pwd)"
+for bin in "${EDGE_NODE:-}" "$HOME"/.local/share/hudhud/node-v24*/bin; do
+  [ -n "$bin" ] && [ -x "$bin/node" ] && PATH="$bin:$PATH" && break
+done
+if [ "$(node -p 'Boolean(process.features.typescript)')" != "true" ]; then
+  echo "$(command -v node) can't load TypeScript: set EDGE_NODE to an official Node 24 build's bin/" >&2
+  exit 1
+fi
+cd "$here/edge"
+[ -d node_modules ] || npm ci --no-audit --no-fund
+npx cf deploy "$@"
