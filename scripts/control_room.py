@@ -243,11 +243,6 @@ def main() -> None:
                     "Browse the audit records, match by match",
                     res(cosmos, "dataExplorer"),
                 ),
-                (
-                    "Microsoft Fabric",
-                    "The workspace that mirrors the audit trail",
-                    "https://app.fabric.microsoft.com/home",
-                ),
                 ("Log Analytics", "hudhud-logs: retention and the daily cap", res(logs)),
             ],
         ),

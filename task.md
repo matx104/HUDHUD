@@ -122,7 +122,7 @@ They should create AI-powered applications and agents that:
 - **Decided by the Monarch (2026-10-18):**
   - **Registered** for the hackathon (the deadline was Oct 20, 12:00 PM PT).
   - **GitHub Copilot agent mode** is in the build: the Monarch uses it (GitHub Student plan). The repo carries `.github/copilot-instructions.md` so it follows the evidence law, and `.vscode/mcp.json` gives it the Azure MCP Server, signed in as the project's CLI.
-  - **The audit trail** is on Azure Cosmos DB's free tier, and **Microsoft Fabric** mirrors it into OneLake for analytics during the 60-day trial (ADR 0004).
+  - **The audit trail** is on Azure Cosmos DB's free tier (ADR 0004). **Microsoft Fabric** was considered for analytics over it, mirrored into OneLake, and left out of scope on 2026-10-19: open for later, as the project grows.
   - Recaps (2) are planned for Phase 3.
 
 ## Constraints we've set ourselves

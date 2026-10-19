@@ -117,21 +117,23 @@ prices with the pricing calculator before creating anything.
    length, responses are cached, and token cost is metered from the first call.
 4. **No resource without a named reason** tied to the rubric (super-prompt.md).
 
-## Fabric (analytics over the audit trail, ADR 0004)
+## Fabric: considered, out of scope (ADR 0004)
 
-The audit trail itself is the free-tier Cosmos DB account above; Fabric mirrors it into OneLake for
-SQL and Power BI while the 60-day trial runs. Fabric doesn't accept a personal Microsoft account, so
-the workspace belongs to a member user of the project's tenant (Microsoft's documented route for a
-personal-email trial). The owner does these steps; nobody else ever handles that user's password.
+Fabric was considered for analytics over the audit trail: mirroring the free-tier Cosmos DB account
+into OneLake, for SQL and Power BI over every match. On 2026-10-19 it was left out of the
+hackathon's scope; it's the route the analytics would take as the project grows. Nothing in the
+build depends on it.
 
-1. Done 2026-10-18: the member user `hudhud@…` exists, with the **Fabric Administrator** role.
-2. Sign in at app.fabric.microsoft.com as that user, with two-step sign-in set up.
-3. Profile icon → **Free trial** → capacity region **Central India** (where the Cosmos DB account is:
-   mirroring across regions pays egress) → **Activate**. The trial lasts 60 days.
-4. Then the mirror: a workspace on the trial capacity, a mirrored Azure Cosmos DB database signing in
-   as that user, and a data-reader role for it on `hudhud-audit`.
+What exists from the first look: the member user `hudhud@…` with the **Fabric Administrator** role
+(Fabric doesn't accept a personal Microsoft account, so a trial needs a member user of the tenant),
+and a 60-day Fabric trial started 2026-10-18, which lapses by itself at no cost. The user has no
+role on any Azure resource.
 
-If the trial ends, the mirror stops and nothing else changes. A paid F2 capacity (UAE North: $0.44 an
+If the route is taken: sign in at app.fabric.microsoft.com as that user (two-step sign-in on), a
+capacity in **Central India** (where the Cosmos DB account is: mirroring across regions pays
+egress), a workspace, a mirrored Azure Cosmos DB database signing in as that user, and a
+data-reader role for it on `hudhud-audit`. The owner does these steps; nobody else ever handles
+that user's password. A paid F2 capacity (UAE North: $0.44 an
 hour, about $321 a month running) is out of reach on the credit.
 
 ## The CLI: `scripts/az`, never the bare `az`
