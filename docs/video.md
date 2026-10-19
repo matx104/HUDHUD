@@ -54,7 +54,7 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 255 words.
 | 0:50–1:04 | "Take the narrator off air", then back | Press at about 70'; again after the 73' cue | "Now I take the narrator off air. The Orchestrator keeps the broadcast going on the Scout's own facts, says so, and brings commentary back when the narrator returns." |
 | 1:04–1:14 | **Take: Urdu**, voice on; then **Take: Arabic** | Let one line be spoken in each | "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not add a number or change a name." |
 | 1:14–1:24 | Full time: "Read the recap", then Ask the match: "Who has been the better side, by the numbers?" | Open the recap; then tap the question and open "What the tools counted" | "At full time the match writes its recap and answers my questions, every number checked by the Critic first." |
-| 1:24–1:46 | Control room: the workbook; Foundry's tracing and its evaluation run; the studio's sign-in | Scroll the tiles; open the evaluation | "Five agents on Microsoft Agent Framework. Models chosen by evaluation and judged again by Foundry's own evaluators. Every call traced in Foundry and Application Insights, every claim in an audit trail on Cosmos DB, and the studio private behind its own wall. The Critic is an MCP tool any assistant can use." |
+| 1:24–1:46 | Control room: the workbook; Foundry's tracing and its evaluation run; the studio's sign-in | Scroll the tiles; open the evaluation | "Five agents on Microsoft Agent Framework. Models chosen by evaluation and judged again by Foundry's own evaluators. Every call traced in Foundry and Application Insights, every claim in an audit trail on Cosmos DB, and the studio private behind its own wall. The Critic is an MCP tool for any assistant and an A2A agent for any agent." |
 | 1:46–1:52 | Showcase home, the crest | Hold | "HUDHUD. Built by one engineer. Every call comes with its evidence." |
 
 ## The description (the video's page, and the submission)
@@ -63,7 +63,9 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 255 words.
 > commentate a synthetic match; a Critic agent recomputes every number from the raw events before a
 > line airs, refuses what it can't prove, and sends it back for a rewrite. Models on Microsoft
 > Foundry (chosen by evaluation), the studio on Azure Container Apps, an audit trail on Azure Cosmos
-> DB, traces in Application Insights, and the Critic as an MCP server. English, Urdu and Arabic.
+> DB, traces in Application Insights, and the Critic as an MCP server and an A2A agent. Viewers ask
+> the match questions, typed or out loud, and every answer is checked the same way. English, Urdu
+> and Arabic.
 > Every club, player and match is invented; synthetic data only.
 >
 > About it: https://hudhud.com.pk/
