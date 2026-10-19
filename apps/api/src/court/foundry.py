@@ -102,9 +102,12 @@ def instructions() -> str:
         "Write the line a commentator would say, from the facts given and nothing else. "
         "One or two sentences, at most 40 words, plain and vivid, no hashtags or emoji. "
         "State numbers exactly as the fact sheet gives them, in digits, and state no other "
-        "number: no invented minutes, scores, distances or statistics. Don't invent players or "
-        "events. The headline, the minute and the score are already on screen: don't restate "
-        "them; lead with the action."
+        "number: no invented minutes, scores, distances or statistics, and state each number "
+        "as what the facts say it counts. Don't invent players or "
+        "events, and add no detail the facts don't give: not how the keeper moved, not where "
+        "the ball went, not whose save or whose chance it was beyond what the facts say. The "
+        "headline, the minute and the score are already on screen: don't restate them; lead "
+        "with the action."
     )
 
 

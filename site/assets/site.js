@@ -53,6 +53,7 @@
   if (window.DOCTOR) drawDoctor(window.DOCTOR);
   if (window.PROOF?.length) drawProof(window.PROOF);
   if (window.REALISM) drawRealism(window.REALISM);
+  if (window.FOUNDRY_EVAL) drawFoundryEval(window.FOUNDRY_EVAL);
   placeEmblems();
   startProgress();
   startMenu();
@@ -99,6 +100,21 @@
     }
     const when = new Date(ops.generated).toLocaleDateString([], { dateStyle: "medium" });
     $("[data-ops-when]").textContent = `Links generated ${when}.`;
+  }
+
+  // Foundry's judges, before and after the Narrator's instructions changed: a small table.
+  function drawFoundryEval(r) {
+    const table = el("table");
+    const head = el("tr");
+    for (const h of ["Judged for", "Before", "After"]) head.append(el("th", "", h));
+    table.append(head);
+    for (const metric of Object.keys(r.after)) {
+      const row = el("tr");
+      row.append(el("td", "", metric[0].toUpperCase() + metric.slice(1)), el("td", "", String(r.before[metric].mean)), el("td", "", String(r.after[metric].mean)));
+      table.append(row);
+    }
+    const note = el("p", "eval-note", `Means out of 5. ${r.writer} wrote, ${r.judge} judged; unseen matches.`);
+    $("[data-foundry-eval]").append(table, note);
   }
 
   // How real is the synthetic football: the verdict in words, then goals a match as paired bars.

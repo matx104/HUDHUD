@@ -368,6 +368,13 @@ code { font-family: var(--mono); }
 .bar.synthetic { background: var(--lime); }
 .bar b { position: absolute; left: calc(100% + 0.4rem); top: 50%; transform: translateY(-50%); font: 500 0.75rem / 1 var(--mono); color: var(--chalk-dim); white-space: nowrap; }
 
+/* ---------- Foundry's judges: a compact before-and-after table ---------- */
+.eval table { margin-top: 0.75rem; border-collapse: collapse; font: 500 0.875rem / 1.4 var(--mono); }
+.eval th, .eval td { padding: 0.25rem 1rem 0.25rem 0; text-align: left; }
+.eval th { color: var(--chalk-dim); font-weight: 500; border-bottom: 1px solid var(--chalk-faint); }
+.eval td:last-child { color: var(--lime); }
+.eval-note { margin-top: 0.4rem; font-size: 0.8125rem; color: var(--chalk-dim); }
+
 /* ---------- plug it into a broadcast: six ways in, ruled like a spec sheet ---------- */
 .adopt { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 0 clamp(1.5rem, 4vw, 3rem); }
 .adopt li { padding-block: 1.25rem; border-top: 1px solid var(--chalk-faint); }

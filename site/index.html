@@ -317,7 +317,7 @@
         </li>
         <li data-reveal>
           <h2>Best use of Microsoft Foundry</h2>
-          <p>Models on Foundry write the commentary from facts code computed, and translate it into Urdu and Arabic under the same law. Azure AI Speech, on the same Foundry resource, reads every verified line aloud in English, Urdu or Arabic. A backup model takes over when the first fails. Evaluation chose which model serves, by a rule fixed before the run. Every model call is traced with its tokens and its cost, in Application Insights and in Foundry's own tracing view. Keys are off: Entra ID only.</p>
+          <p>Models on Foundry write the commentary from facts code computed, and translate it into Urdu and Arabic under the same law. Azure AI Speech, on the same Foundry resource, reads every verified line aloud in English, Urdu or Arabic. A backup model takes over when the first fails. Evaluation chose which model serves, by a rule fixed before the run, and Foundry's own evaluators judge the lines that aired: groundedness 4.84 of 5. Every model call is traced with its tokens and its cost, in Application Insights and in Foundry's own tracing view. Keys are off: Entra ID only.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
@@ -599,6 +599,7 @@
         <div class="log-lists">
           <h2 class="log-heading">Live</h2>
           <ol class="log">
+            <li data-reveal><time>Oct 19</time><div><strong>Foundry's judges, a second opinion</strong><p>The Critic checks numbers and citations by code. Microsoft Foundry's evaluators now read every line that aired against the fact sheet it came from, judged by a different model from the one that wrote it. They caught what code can't: colour the facts don't give, and a true number told as the wrong thing. The Narrator's instructions changed, and groundedness rose.</p><div class="eval" data-foundry-eval></div></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>Hear the commentary</strong><p>Every verified line can be read aloud by Azure AI Speech, in English, Urdu or Arabic, for fans who can't watch the screen. The voice reads only what aired: the studio asks for a line by its id, never with free text, so it says exactly what the Critic passed. Same Foundry resource, signed in with Entra ID, with a daily budget.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>The ref's call</strong><p>The first step on the road to an AI fourth official. When a foul carries a card or a penalty, the line states the referee's likely decision, read from Law 12 at the strictness the competition chose, and the Critic recomputes it from the foul before it airs. A harsher card than the Law gives is refused.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>How real is the synthetic football?</strong><p>The generator's scorelines set against 7,559 real internationals: close on goals a match and on draws, a smaller home edge than real football, and too few goalless draws. Said plainly, and kept as a target for the generator. <a href="#/data">See the comparison</a>.</p></div></li>
@@ -987,6 +988,7 @@
   <script src="data/doctor.js"></script>
   <script src="data/proof.js"></script>
   <script src="data/realism.js"></script>
+  <script src="data/foundry_eval.js"></script>
   <script src="assets/router.js"></script>
   <script src="assets/site.js"></script>
   <script src="assets/field.js"></script>
