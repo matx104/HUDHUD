@@ -144,9 +144,11 @@ def build(info: dict, folder_url: str) -> None:
         ("og.png", "social-card-1200x630.png"),
     ]:
         shutil.copy(ASSETS / source, OUT / BRAND / target)
-    for i, (src, caption) in enumerate(approved_shots(), 1):
-        # The site serves WebP; PNG is what people can paste into a post or a slide.
-        Image.open(ROOT / "site" / src).save(OUT / SHOTS / f"{i} {caption}.png")
+    for i, (src, _caption) in enumerate(approved_shots(), 1):
+        # Named from the image ("2-control-room-workbook" -> "2 Control room workbook.png"); the
+        # captions stay on the site. The site serves WebP; PNG pastes into a post or a slide.
+        label = Path(src).stem.split("-", 1)[-1].replace("-", " ").capitalize()
+        Image.open(ROOT / "site" / src).save(OUT / SHOTS / f"{i} {label}.png")
     repo = info["repoUrl"] if info["repoPublic"] else f"{info['repoUrl']} (public from October 27)"
     fields = {
         "name": name,
