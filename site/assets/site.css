@@ -368,6 +368,12 @@ code { font-family: var(--mono); }
 .bar.synthetic { background: var(--lime); }
 .bar b { position: absolute; left: calc(100% + 0.4rem); top: 50%; transform: translateY(-50%); font: 500 0.75rem / 1 var(--mono); color: var(--chalk-dim); white-space: nowrap; }
 
+/* ---------- plug it into a broadcast: six ways in, ruled like a spec sheet ---------- */
+.adopt { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 0 clamp(1.5rem, 4vw, 3rem); }
+.adopt li { padding-block: 1.25rem; border-top: 1px solid var(--chalk-faint); }
+.adopt h3 { font-size: 1.5rem; color: var(--lime); }
+.adopt p { margin-top: 0.5rem; color: var(--chalk-dim); }
+
 /* ---------- what this data can't tell you: a ruled list, the limit on the left, the why on the right ---------- */
 .limits { list-style: none; margin: 0; padding: 0; }
 .limits li {

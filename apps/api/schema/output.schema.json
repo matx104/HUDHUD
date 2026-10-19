@@ -1,0 +1,734 @@
+{
+  "$defs": {
+    "AlertKind": {
+      "enum": [
+        "goal",
+        "big_chance",
+        "momentum_swing",
+        "great_pass",
+        "counter",
+        "high_press",
+        "ref_call",
+        "recap"
+      ],
+      "title": "AlertKind",
+      "type": "string"
+    },
+    "Assertion": {
+      "additionalProperties": false,
+      "description": "A numeric fact a claim relies on. The Critic recomputes it from raw events.",
+      "properties": {
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For per-event metrics (shot_xg)",
+          "title": "Event Id"
+        },
+        "metric": {
+          "enum": [
+            "goals",
+            "shots",
+            "xg",
+            "box_entries",
+            "shot_xg",
+            "passes",
+            "passes_completed",
+            "final_third_passes",
+            "high_ball_wins",
+            "high_pressures",
+            "shot_speed",
+            "pass_distance",
+            "pass_difficulty",
+            "pass_accuracy",
+            "ball_speed"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        },
+        "window": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Window"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "None = whole match so far"
+        }
+      },
+      "required": [
+        "metric",
+        "team",
+        "value"
+      ],
+      "title": "Assertion",
+      "type": "object"
+    },
+    "Claim": {
+      "additionalProperties": false,
+      "description": "Narrator -> Critic. Prose plus the machine-checkable chain behind it.",
+      "properties": {
+        "alert_id": {
+          "title": "Alert Id",
+          "type": "string"
+        },
+        "as_of_seq": {
+          "title": "As Of Seq",
+          "type": "integer"
+        },
+        "assertions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Assertion"
+          },
+          "title": "Assertions",
+          "type": "array"
+        },
+        "attempt": {
+          "minimum": 1,
+          "title": "Attempt",
+          "type": "integer"
+        },
+        "call": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RefCall"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For a ref's call: the decision the line states"
+        },
+        "citations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Citations",
+          "type": "array"
+        },
+        "figures": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Numbers the text may state, computed by code from events; the Critic rejects any number in the text that is neither here nor in an assertion",
+          "title": "Figures",
+          "type": "object"
+        },
+        "headline": {
+          "title": "Headline",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/AlertKind"
+        },
+        "period": {
+          "title": "Period",
+          "type": "integer"
+        },
+        "severity": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Severity",
+          "type": "number"
+        },
+        "t": {
+          "title": "T",
+          "type": "number"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "alert_id",
+        "attempt",
+        "kind",
+        "team",
+        "period",
+        "t",
+        "as_of_seq",
+        "severity",
+        "headline",
+        "text",
+        "citations"
+      ],
+      "title": "Claim",
+      "type": "object"
+    },
+    "Cue": {
+      "additionalProperties": false,
+      "description": "Broadcast overlay cue: timed, machine-readable, evidence attached.",
+      "properties": {
+        "alert_id": {
+          "title": "Alert Id",
+          "type": "string"
+        },
+        "attempts": {
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "call": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RefCall"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For a ref's call: the likely decision, for the overlay to draw"
+        },
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "for_you": {
+          "default": [],
+          "description": "Why this cue is the viewer's own (court.personal)",
+          "items": {
+            "enum": [
+              "club",
+              "rival",
+              "player"
+            ],
+            "type": "string"
+          },
+          "title": "For You",
+          "type": "array"
+        },
+        "headline": {
+          "title": "Headline",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/AlertKind"
+        },
+        "lang": {
+          "title": "Lang",
+          "type": "string"
+        },
+        "minute": {
+          "title": "Minute",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "casual",
+            "analyst"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "original": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The verified English line, when the text is its translation",
+          "title": "Original"
+        },
+        "period": {
+          "title": "Period",
+          "type": "integer"
+        },
+        "players": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/PlayerTag"
+          },
+          "title": "Players",
+          "type": "array"
+        },
+        "priority": {
+          "title": "Priority",
+          "type": "number"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Receipt"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "detection_only"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "t": {
+          "title": "T",
+          "type": "number"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "ttl_s": {
+          "title": "Ttl S",
+          "type": "number"
+        },
+        "type": {
+          "const": "cue",
+          "default": "cue",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "alert_id",
+        "kind",
+        "team",
+        "period",
+        "t",
+        "minute",
+        "headline",
+        "text",
+        "lang",
+        "mode",
+        "evidence",
+        "status",
+        "attempts",
+        "priority",
+        "ttl_s"
+      ],
+      "title": "Cue",
+      "type": "object"
+    },
+    "Degradation": {
+      "additionalProperties": false,
+      "description": "The broadcast changed service level, and says so.",
+      "properties": {
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "level": {
+          "enum": [
+            "full",
+            "detection_only"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "minute": {
+          "title": "Minute",
+          "type": "string"
+        },
+        "period": {
+          "title": "Period",
+          "type": "integer"
+        },
+        "t": {
+          "title": "T",
+          "type": "number"
+        },
+        "type": {
+          "const": "degradation",
+          "default": "degradation",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "period",
+        "t",
+        "minute",
+        "detail"
+      ],
+      "title": "Degradation",
+      "type": "object"
+    },
+    "PlayerTag": {
+      "additionalProperties": false,
+      "description": "A player the cue is about, for on-screen identification, with threshold badges (\u00a74.1).",
+      "properties": {
+        "badges": {
+          "default": [],
+          "description": "Speed and distance tags, shown when a threshold is reached",
+          "items": {
+            "type": "string"
+          },
+          "title": "Badges",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "number": {
+          "title": "Number",
+          "type": "integer"
+        },
+        "position": {
+          "title": "Position",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "scorer",
+            "shooter",
+            "assister",
+            "passer",
+            "involved",
+            "fouled",
+            "offender"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "team": {
+          "$ref": "#/$defs/Side"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "number",
+        "position",
+        "team",
+        "role"
+      ],
+      "title": "PlayerTag",
+      "type": "object"
+    },
+    "Reason": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/RejectionCode"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "detail"
+      ],
+      "title": "Reason",
+      "type": "object"
+    },
+    "Receipt": {
+      "additionalProperties": false,
+      "description": "How a cue got on air: who wrote it, what was checked, and what it cost.\n\nEach part comes from the agent that knows it: the checks from the Critic's verdict, the\nwriter and its spend from the narrator, the time from the Orchestrator. Nothing is estimated\nfrom the outside except cost, which is tokens at list prices.",
+      "properties": {
+        "attempts": {
+          "default": 0,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "cost_usd": {
+          "default": 0.0,
+          "title": "Cost Usd",
+          "type": "number"
+        },
+        "evidence": {
+          "default": 0,
+          "description": "Events cited",
+          "title": "Evidence",
+          "type": "integer"
+        },
+        "facts_recomputed": {
+          "default": 0,
+          "description": "Assertions recomputed from raw events",
+          "title": "Facts Recomputed",
+          "type": "integer"
+        },
+        "handovers": {
+          "default": 0,
+          "description": "Times a backup model took over for this cue",
+          "title": "Handovers",
+          "type": "integer"
+        },
+        "latency_ms": {
+          "default": 0.0,
+          "description": "From the alert to the cue",
+          "title": "Latency Ms",
+          "type": "number"
+        },
+        "model_calls": {
+          "default": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "numbers_checked": {
+          "default": 0,
+          "description": "Numbers in the line the Critic matched",
+          "title": "Numbers Checked",
+          "type": "integer"
+        },
+        "tokens_in": {
+          "default": 0,
+          "title": "Tokens In",
+          "type": "integer"
+        },
+        "tokens_out": {
+          "default": 0,
+          "title": "Tokens Out",
+          "type": "integer"
+        },
+        "translated_by": {
+          "default": "",
+          "description": "The model that translated the line, if any",
+          "title": "Translated By",
+          "type": "string"
+        },
+        "translation_refused": {
+          "default": false,
+          "description": "The translation stated a number the line doesn't: English aired",
+          "title": "Translation Refused",
+          "type": "boolean"
+        },
+        "writer": {
+          "default": "unknown",
+          "description": "The model that wrote the line, 'template', or 'none' for detection-only cues",
+          "title": "Writer",
+          "type": "string"
+        }
+      },
+      "title": "Receipt",
+      "type": "object"
+    },
+    "RefCall": {
+      "additionalProperties": false,
+      "description": "The referee's likely decision on a foul (court.referee), under a strictness profile.",
+      "properties": {
+        "card": {
+          "enum": [
+            "none",
+            "yellow",
+            "red"
+          ],
+          "title": "Card",
+          "type": "string"
+        },
+        "profile": {
+          "enum": [
+            "lenient",
+            "standard",
+            "strict"
+          ],
+          "title": "Profile",
+          "type": "string"
+        },
+        "reason": {
+          "default": "",
+          "description": "Why the card: a goal chance, a promising attack",
+          "title": "Reason",
+          "type": "string"
+        },
+        "restart": {
+          "enum": [
+            "free_kick",
+            "penalty"
+          ],
+          "title": "Restart",
+          "type": "string"
+        }
+      },
+      "required": [
+        "restart",
+        "card",
+        "profile"
+      ],
+      "title": "RefCall",
+      "type": "object"
+    },
+    "RejectionCode": {
+      "enum": [
+        "no_evidence",
+        "unknown_event",
+        "future_event",
+        "stale_event",
+        "assertion_mismatch",
+        "insufficient_evidence",
+        "ungrounded_number",
+        "no_rule"
+      ],
+      "title": "RejectionCode",
+      "type": "string"
+    },
+    "RejectionNotice": {
+      "additionalProperties": false,
+      "description": "A claim the Critic refused. A first-class output the studio UI shows.",
+      "properties": {
+        "claim": {
+          "$ref": "#/$defs/Claim"
+        },
+        "minute": {
+          "title": "Minute",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "$ref": "#/$defs/Reason"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "type": {
+          "const": "rejection",
+          "default": "rejection",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "minute",
+        "claim",
+        "reasons"
+      ],
+      "title": "RejectionNotice",
+      "type": "object"
+    },
+    "Side": {
+      "enum": [
+        "home",
+        "away"
+      ],
+      "title": "Side",
+      "type": "string"
+    },
+    "Spiked": {
+      "additionalProperties": false,
+      "description": "A story killed after the rewrite budget ran out, or with an unfixable reason.",
+      "properties": {
+        "claim": {
+          "$ref": "#/$defs/Claim"
+        },
+        "minute": {
+          "title": "Minute",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "$ref": "#/$defs/Reason"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "type": {
+          "const": "spiked",
+          "default": "spiked",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "minute",
+        "claim",
+        "reasons"
+      ],
+      "title": "Spiked",
+      "type": "object"
+    },
+    "Window": {
+      "additionalProperties": false,
+      "description": "A stretch of match clock inside one period.",
+      "properties": {
+        "end_t": {
+          "title": "End T",
+          "type": "number"
+        },
+        "period": {
+          "title": "Period",
+          "type": "integer"
+        },
+        "start_t": {
+          "title": "Start T",
+          "type": "number"
+        }
+      },
+      "required": [
+        "period",
+        "start_t",
+        "end_t"
+      ],
+      "title": "Window",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "One message of the court's output stream, told apart by `type`: a cue for the overlay (timed, prioritised, with its evidence and receipt), a claim the Critic refused and why, a story spiked, or a change of service level.",
+  "discriminator": {
+    "mapping": {
+      "cue": "#/$defs/Cue",
+      "degradation": "#/$defs/Degradation",
+      "rejection": "#/$defs/RejectionNotice",
+      "spiked": "#/$defs/Spiked"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Cue"
+    },
+    {
+      "$ref": "#/$defs/RejectionNotice"
+    },
+    {
+      "$ref": "#/$defs/Spiked"
+    },
+    {
+      "$ref": "#/$defs/Degradation"
+    }
+  ],
+  "title": "Output"
+}

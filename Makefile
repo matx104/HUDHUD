@@ -18,8 +18,9 @@ lint:
 fmt:
 	$(BIN)/ruff format . && $(BIN)/ruff check --fix .
 
-schema:  ## regenerate the committed JSON Schema after editing models.py
+schema:  ## regenerate the committed JSON Schemas: the event stream in, the court's output out
 	$(BIN)/python -m match_events schema
+	$(BIN)/python -m court schema
 
 demo:  ## one synthetic match, end to end, in the console
 	$(BIN)/python -m court run --seed 7

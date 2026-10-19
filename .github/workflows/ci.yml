@@ -30,6 +30,8 @@ jobs:
         run: pytest
       - name: JSON Schema is current
         run: python -m match_events schema && git diff --exit-code packages/event-schema/schema
+      - name: The output stream's JSON Schema is current
+        run: python -m court schema && git diff --exit-code apps/api/schema
       - name: Smoke-run one match through all five agents
         run: python -m court run --seed 7 --overreach 0.25
       - name: Showcase data matches the pipeline

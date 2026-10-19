@@ -6,6 +6,8 @@
     python -m court recap --seed 21 --out recap.html    # the match, then its recap as a page
     python -m court eval                                # momentum calls vs hidden ground truth
     python -m court narrator-eval --seeds 5             # which model writes the commentary
+    python -m court foundry-eval --seeds 2              # Foundry's evaluators judge the lines
+    python -m court schema                              # the output stream's JSON Schema
 
 The Foundry narrator reads FOUNDRY_PROJECT_ENDPOINT and FOUNDRY_MODELS (comma-separated,
 primary first); the Cosmos DB audit trail reads COSMOS_ENDPOINT. scripts/live sets them and
@@ -267,7 +269,25 @@ def main(argv: list[str] | None = None) -> int:
     ne.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
     ne.add_argument("--seeds", type=int, default=5, help="how many matches")
     ne.add_argument("--out", type=Path, help="write the summaries and every trial as JSON")
+    sub.add_parser("schema", help="write the output stream's JSON Schema (apps/api/schema/)")
+    fe = sub.add_parser("foundry-eval", help="Foundry's evaluators judge the lines that aired")
+    fe.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
+    fe.add_argument("--seeds", type=int, default=2, help="how many matches")
+    fe.add_argument("--judge", default="gpt-5-mini", help="the judging model (not the writer)")
     args = parser.parse_args(argv)
+    if args.cmd == "schema":
+        from .schema import write
+
+        print(f"wrote {write()}")
+        return 0
+    if args.cmd == "foundry-eval":
+        from .foundry_eval import main as foundry_eval
+
+        telemetry.configure()
+        try:
+            return foundry_eval(args.first, args.seeds, args.judge)
+        finally:
+            telemetry.flush()
     if args.cmd == "eval":
         return _eval(args)
     if args.cmd == "narrator-eval":
