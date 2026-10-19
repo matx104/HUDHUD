@@ -208,3 +208,27 @@ def test_full_time_brings_the_recap(client):
     recap = events[-2][1]
     assert recap["html"].startswith("<!doctype html>") and recap["refused"] == 0
     assert "Checked by the Critic" in recap["html"]
+
+
+def test_after_full_time_the_match_answers_questions_checked_by_the_critic(client):
+    events = _events(client, "seed=21&speed=0&stress=0")
+    session = events[0][1]["session"]
+    assert client.app.state.sessions == {}, "the stream left, its questions stay"
+    reply = client.post(f"/api/sessions/{session}/ask", json={"question": "What's the score?"})
+    assert reply.status_code == 200
+    answer = reply.json()
+    assert answer["status"] == "verified" and answer["text"].startswith("Saltmarsh Rovers 2")
+    assert answer["receipt"]["writer"] == "template" and answer["evidence"]
+    assert answer["left"] == client.get("/api/config").json()["questions"] - 1
+    cannot = client.post(f"/api/sessions/{session}/ask", json={"question": "Who will win?"})
+    assert cannot.json()["status"] == "cannot"
+
+
+def test_questions_are_capped_and_checked_for_size(client, monkeypatch):
+    monkeypatch.setattr("court.server.MAX_QUESTIONS", 1)
+    session = _events(client, "seed=7&speed=0&stress=0")[0][1]["session"]
+    ask = f"/api/sessions/{session}/ask"
+    assert client.post(ask, json={"question": "x" * 201}).status_code == 422
+    assert client.post(ask, json={"question": "Shots?"}).status_code == 200
+    assert client.post(ask, json={"question": "Shots?"}).status_code == 429
+    assert client.post("/api/sessions/nope/ask", json={"question": "Shots?"}).status_code == 404

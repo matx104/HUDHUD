@@ -1,8 +1,9 @@
 // The studio page: opens one match as Server-Sent Events and renders what the court does with it.
 // The server sends hello (teams, session, the viewer's preferences), clock (minute, score), shot,
 // output (cue, rejection, spiked, degradation), personal (the player card and the single metric)
-// and end. Nothing here computes a fact: every number on screen came from the server, and every
-// line came through the Critic.
+// and end. Questions go to the match by POST (Ask the match) and come back as answers. Nothing here
+// computes a fact: every number on screen came from the server, and every line and answer came
+// through the Critic.
 (() => {
   const $ = (sel) => document.querySelector(sel);
   const el = (tag, cls, text) => Object.assign(document.createElement(tag), { className: cls ?? "", textContent: text ?? "" });
@@ -21,6 +22,7 @@
     assertion_mismatch: "A number in it doesn't match the events",
     insufficient_evidence: "Not enough evidence for the claim",
     ungrounded_number: "States a number nothing in the evidence supports",
+    ungrounded_name: "Names a player its evidence isn't about",
     no_rule: "No rule yet for checking this kind of claim",
   };
 
@@ -42,6 +44,10 @@
   let queue = [];
   let speaking = false;
   let tally = { refused: 0, checked: 0, cost: 0 };
+  // Ask the match: kept after full time, so the whole match can be asked about.
+  const askForm = $("[data-ask-form]");
+  let askSession = null;
+  const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
   fetch("/api/config")
     .then((r) => r.json())
@@ -127,6 +133,8 @@
     source?.close();
     cues.replaceChildren();
     cards.replaceChildren();
+    $("[data-answers]").replaceChildren();
+    $("[data-ask-left]").textContent = "";
     $("[data-shots]").replaceChildren();
     $("[data-feed-hint]").hidden = true;
     $("[data-slate]").hidden = true;
@@ -187,6 +195,9 @@
   function hello(data) {
     session = data.session;
     voiceSession = data.session; // kept after full time, so the last line can still be heard
+    askSession = data.session;
+    $("[data-ask]").hidden = false;
+    suggest(data);
     queue = [];
     said.clear();
     teams = { home: data.home, away: data.away };
@@ -204,6 +215,113 @@
     if (prefs.club) parts.push(`your club is ${data[prefs.club].name}: its moments are marked and come first, and the other side's still air`);
     if (prefs.player) parts.push(prefs.focus === "player" ? "only your player's moments air here; the rest are counted, not lost" : "your player's moments are marked");
     if (parts.length) notice(`Made yours: ${parts.join("; ")}. Every line still passed the Critic.`, true);
+  }
+
+  // ---------- Ask the match ----------
+  // Questions to try: the common ones, the viewer's player if they chose one, and one the events
+  // can't answer, to show the fixed words it gets.
+  function suggest(data) {
+    const match = matches.find((m) => String(m.seed) === String(data.seed));
+    const player = match?.players.find((p) => p.id === data.prefs?.player);
+    const questions = ["What's the score?", "Who scored?", "Who has had more shots?", "What was the biggest chance?"];
+    if (player) questions.splice(1, 0, `How is ${player.name} doing?`);
+    const whose = data.home.name.endsWith("s") ? `${data.home.name}'` : `${data.home.name}'s`;
+    questions.push(`What's ${whose} pass completion?`, "Who will win?");
+    $("[data-ask-try]").replaceChildren(...questions.map((q) => {
+      const chip = Object.assign(el("button", "", q), { type: "button" });
+      chip.addEventListener("click", () => { askForm.question.value = q; askNow(); });
+      return chip;
+    }));
+  }
+
+  askForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    askNow();
+  });
+
+  async function askNow() {
+    const question = askForm.question.value.trim();
+    if (!question || !askSession) return;
+    const go = $("[data-ask-go]");
+    const left = $("[data-ask-left]");
+    go.disabled = true;
+    go.textContent = "Checking";
+    try {
+      const response = await fetch(`/api/sessions/${askSession}/ask`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        left.textContent = response.status === 422 ? "Ask in 200 characters or fewer." : `${body.detail ?? "That question couldn't be asked"}.`;
+        return;
+      }
+      answer(body);
+      askForm.question.value = "";
+      left.textContent = `${plural(body.left, "question")} left for this match.`;
+    } catch {
+      left.textContent = "The studio didn't answer. Try again.";
+    } finally {
+      go.disabled = false;
+      go.textContent = "Ask";
+    }
+  }
+
+  const VERDICT = {
+    verified: (a) => `Checked by the Critic: ${plural(a.receipt.numbers_checked, "number")} matched, ${plural(a.receipt.facts_recomputed, "count")} recomputed from the events${a.receipt.attempts > 1 ? `, on attempt ${a.receipt.attempts}` : ""}`,
+    cannot: () => "The events can't answer this, so it gets fixed words, not a model's",
+    refused: (a) => `No answer could be proven: the Critic refused ${plural(a.refused.length, "draft")}`,
+  };
+
+  function answer(a) {
+    const item = el("li", `answer ${a.status}`);
+    const asked = el("p", "asked");
+    asked.append(el("b", "", a.minute), document.createTextNode(` You asked: ${a.question}`));
+    const line = Object.assign(el("p", "said", a.text), { lang: a.lang, dir: a.lang === "en" ? "ltr" : "rtl" });
+    item.append(asked, line, el("p", "verdict", VERDICT[a.status](a)));
+    if (a.original) {
+      const english = el("details", "original");
+      english.append(el("summary", "", "In English, as the Critic checked it"), el("p", "", a.original));
+      item.append(english);
+    }
+    // What the Scout's tools counted: the facts the answer stands on, each with its events.
+    if (a.facts.length) {
+      const facts = el("details", "facts");
+      facts.append(el("summary", "", `What the tools counted (${a.facts.length})`));
+      const list = el("ol");
+      for (const f of a.facts) {
+        const row = el("li", "", f.says);
+        const evidence = el("div", "evidence");
+        for (const id of f.evidence.slice(-8)) evidence.append(el("code", "", id));
+        if (f.evidence.length > 8) evidence.append(el("code", "", `+${f.evidence.length - 8}`));
+        row.append(evidence);
+        list.append(row);
+      }
+      facts.append(list);
+      item.append(facts);
+    }
+    if (a.refused.length) {
+      const struck = el("ul", "struck");
+      for (const r of a.refused) {
+        const row = el("li");
+        row.append(el("s", "", r.text));
+        for (const reason of r.reasons) row.append(el("small", "", `${REASONS[reason.code] ?? reason.code}: ${reason.detail}`));
+        struck.append(row);
+      }
+      item.append(struck);
+    }
+    if (a.status !== "cannot") item.append(receipt(a.receipt, "Question to answer"));
+    $("[data-answers]").prepend(item);
+    // The desk keeps every refusal, the answers' as well as the lines'.
+    a.refused.forEach((r, i) => card({ type: "rejection", minute: `${a.minute} · your question`, claim: { attempt: i + 1, text: r.text }, reasons: r.reasons }));
+    tally.checked += a.receipt?.numbers_checked ?? 0;
+    tally.cost += a.receipt?.cost_usd ?? 0;
+    drawTally();
+    if (a.status === "verified") {
+      said.set(a.id, item);
+      say(a);
+    }
   }
 
   // The player card and the single metric: counted on the server from the match's own events.
@@ -375,7 +493,7 @@
     return row;
   }
 
-  function receipt(r) {
+  function receipt(r, timed = "Alert to air") {
     const box = el("details", "receipt");
     box.append(el("summary", "", "Receipt"));
     const rows = r.writer === "none"
@@ -387,7 +505,7 @@
           ["Facts recomputed", r.facts_recomputed],
           ["Events cited", r.evidence],
         ];
-    rows.push(["Alert to air", `${(r.latency_ms / 1000).toFixed(1)} s`]);
+    rows.push([timed, `${(r.latency_ms / 1000).toFixed(1)} s`]);
     if (r.model_calls) rows.push(["Tokens", `${r.tokens_in} in, ${r.tokens_out} out`], ["Cost", `$${r.cost_usd.toFixed(5)}`]);
     if (r.handovers) rows.push(["Backup model took over", r.handovers]);
     if (r.translated_by) rows.push(["Translated by", `${r.translated_by}, numbers and names checked`]);

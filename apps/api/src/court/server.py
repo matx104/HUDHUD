@@ -17,6 +17,11 @@ Critic checks it as it checks every line. At full time the page gets the recap (
 With SPEECH_RESOURCE_ID and SPEECH_REGION set, the page can ask for any line that aired to be
 spoken aloud (court.speech): by its cue's id, never as free text.
 
+A viewer can ask the match a question, during it or after full time (court.ask): the narrator
+answers from the Scout's tools, and the Critic checks the answer before the page shows it. A
+model-narrated match answers with the models; otherwise, or when they fail, the offline answerer
+does. Questions are capped per match.
+
 On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner in at
 studio.hudhud.com.pk, and a Worker (edge/) carries each request on to Azure. With `ACCESS_TEAM` and
 `ACCESS_AUD` set, the studio refuses any request that doesn't carry a token Access signed for it, so
@@ -44,7 +49,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import jwt
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Body, FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, PlainTextResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from mcp.server.transport_security import TransportSecuritySettings
@@ -54,9 +59,11 @@ from opentelemetry.trace import SpanKind
 from match_events import MatchMeta, Shot, ShotOutcome, Side, generate, minute_label
 
 from . import telemetry
+from .ask import MAX_QUESTION, MatchTools, RuleAnswerer
+from .ask import ask as ask_match
 from .audit import AuditTrail, CosmosStore
 from .config import product_name
-from .contracts import OUTPUT_ADAPTER, Cue, Output, Preferences, TickerMetric
+from .contracts import OUTPUT_ADAPTER, Answer, Cue, Output, Preferences, TickerMetric
 from .critic import Critic
 from .localizer import Localizer
 from .mcp_server import server as critic_mcp
@@ -70,6 +77,7 @@ from .recap import render_html as recap_page
 from .referee import Profile
 from .scout import Scout
 from .speech import SpeechBudgetSpent, SpeechUnavailable, Voice
+from .state import MatchState
 
 STUDIO = Path(__file__).parent / "studio"
 # The demo matches: 21 has two goals each way and two momentum swings; 7 has six goals; 33 a
@@ -79,6 +87,8 @@ MAX_STREAMS = int(os.environ.get("STUDIO_MAX_STREAMS", "8"))
 MAX_SESSION_S = 15 * 60  # a backstop: no stream outlives this, whatever the client does
 log = logging.getLogger("court.studio")
 DAILY_MODEL_MATCHES = int(os.environ.get("STUDIO_DAILY_MODEL_MATCHES", "200"))
+MAX_QUESTIONS = int(os.environ.get("STUDIO_MAX_QUESTIONS", "12"))  # per match
+BOARDS = 16  # matches a viewer can still ask about, the latest, after their stream has ended
 
 
 class AccessKeys:
@@ -253,12 +263,18 @@ class Session:
     ) -> None:
         self.spoken = spoken
         self.strictness = strictness  # how strictly the referee's likely calls are read
+        self.stress = stress
         self.id = uuid.uuid4().hex[:12]
         self.match = generate(seed)
         self.speed, self.start_t, self.mode, self.lang = speed, start * 60.0, mode, lang
         self.prefs = prefs or Preferences()
         self.personal = Personal(self.prefs, self.match.meta)
         self.record: list[Output] = []  # everything the court put out, for the recap
+        # The events so far, for the viewer's questions (court.ask): the page's own copy, so a
+        # question reads the match as the viewer has seen it, live or after full time.
+        self.state = MatchState(self.match.meta)
+        self.asked = 0
+        self._ask_rng = random.Random(seed + 1)
         self.queue: asyncio.Queue[tuple[str, dict[str, Any]] | None] = asyncio.Queue()
         self.notices: list[str] = []
         inner, self.narration = self._narrator(narration, seed, stress, budget)
@@ -284,6 +300,35 @@ class Session:
 
     def send(self, kind: str, data: dict[str, Any]) -> None:
         self.queue.put_nowait((kind, data))
+
+    async def ask(self, question: str) -> Answer:
+        """A viewer's question, answered from the events so far (court.ask). The models answer
+        a model-narrated match while the narrator is on air; otherwise, or if they fail, the
+        offline answerer does, from the same moment. The stress test overreaches on a share of
+        answers, as it does on lines."""
+        tools = MatchTools(self.state)
+        stress = self._ask_rng.random() < self.stress
+        model = self.narrator.inner if self.narration == "foundry" else None
+        if model is not None and self.narrator.on_air:
+            translate = None
+            if self.lang != "en":
+                localizer = Localizer(lang=self.lang, translator=model.translate)
+                localizer.bind(self.match.meta)
+                translate = localizer.translate
+            try:
+                return await ask_match(
+                    question,
+                    tools,
+                    model,
+                    stress=stress,
+                    lang=self.lang,
+                    translate=translate,
+                    spend=model.spend,
+                )
+            except Exception:  # an outage costs the model's answer, never the answer
+                log.exception("the models couldn't answer; the offline answerer does")
+        tools = MatchTools(self.state, as_of_seq=tools.as_of_seq)
+        return await ask_match(question, tools, RuleAnswerer(), stress=stress)
 
     async def run(self) -> None:
         meta = self.match.meta
@@ -364,6 +409,7 @@ class Session:
                 await asyncio.sleep(max(0.0, event.t - previous.t) / self.speed)
             previous = event
             seen.append(event)
+            self.state.apply(event)
             label = minute_label(event.t, event.period)
             if isinstance(event, Shot):
                 score[event.team] += event.outcome is ShotOutcome.GOAL
@@ -435,6 +481,7 @@ def create_app() -> FastAPI:
         title=f"{product_name()} studio", docs_url=None, redoc_url=None, lifespan=lifespan
     )
     sessions: dict[str, Session] = {}
+    boards: OrderedDict[str, Session] = OrderedDict()  # live and ended, for questions
     budget = ModelBudget(DAILY_MODEL_MATCHES)
     spoken = Spoken()
     voice = None
@@ -444,6 +491,7 @@ def create_app() -> FastAPI:
         voice = Voice(resource_id=resource, region=region)
     app.state.voice = voice  # the tests swap in a fake
     app.state.sessions = sessions  # read by the tests: every stream must leave none behind
+    app.state.boards = boards
 
     @app.get("/healthz")
     def healthz() -> dict[str, str]:
@@ -472,6 +520,7 @@ def create_app() -> FastAPI:
             "models": bool(os.environ.get("FOUNDRY_PROJECT_ENDPOINT")),
             "voice": app.state.voice is not None,
             "model_matches_left": budget.left,
+            "questions": MAX_QUESTIONS,
         }
 
     @app.get("/api/stream")
@@ -525,6 +574,9 @@ def create_app() -> FastAPI:
                 return
             session = Session(seed, budget=budget, **options)
             sessions[session.id] = session
+            boards[session.id] = session
+            while len(boards) > BOARDS:
+                boards.popitem(last=False)
             task = asyncio.create_task(session.run())
             task.add_done_callback(lambda _: sessions.pop(session.id, None))
             deadline = asyncio.get_running_loop().time() + MAX_SESSION_S
@@ -562,6 +614,33 @@ def create_app() -> FastAPI:
             raise HTTPException(404, "no such match is running")
         session.narrator.on_air = on
         return {"on_air": on}
+
+    @app.post("/api/sessions/{session_id}/ask")
+    async def ask(
+        session_id: str, question: str = Body(embed=True, min_length=1, max_length=MAX_QUESTION)
+    ) -> dict[str, Any]:
+        """A viewer's question about a match, live or after full time (court.ask)."""
+        session = boards.get(session_id)
+        if session is None:
+            raise HTTPException(404, "no such match in this studio: start one to ask about it")
+        if session.state.last_seq < 0:
+            raise HTTPException(409, "the match hasn't kicked off")
+        if session.asked >= MAX_QUESTIONS:
+            raise HTTPException(429, f"this match's {MAX_QUESTIONS} questions are used up")
+        session.asked += 1
+        with telemetry.tracer.start_as_current_span("ask") as span:
+            answer = await session.ask(question)
+            span.set_attributes(
+                {
+                    "hudhud.status": answer.status,
+                    "hudhud.attempts": answer.receipt.attempts,
+                    "hudhud.writer": answer.receipt.writer,
+                    "hudhud.refused": len(answer.refused),
+                }
+            )
+        if answer.status == "verified":
+            spoken.keep(session.id, answer.id, answer.text, answer.lang)
+        return answer.model_dump(mode="json") | {"left": MAX_QUESTIONS - session.asked}
 
     @app.get("/api/sessions/{session_id}/speak")
     async def speak(session_id: str, cue: str) -> Response:

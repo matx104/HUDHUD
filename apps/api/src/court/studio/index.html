@@ -158,6 +158,19 @@
       <ol class="cues" role="log" aria-live="polite" data-cues></ol>
     </section>
 
+    <!-- Ask the match: a viewer's question, answered from the events and checked by the Critic -->
+    <section class="ask" aria-labelledby="ask-title" data-ask hidden>
+      <h2 id="ask-title">Ask the match</h2>
+      <p class="hint">Answered from the events so far. Code counts every number, and the Critic checks the answer before you see it. After full time, ask about the whole match.</p>
+      <form class="ask-form" data-ask-form>
+        <input name="question" maxlength="200" autocomplete="off" required aria-label="Your question about the match" placeholder="Who has had the better chances?">
+        <button type="submit" class="go" data-ask-go>Ask</button>
+      </form>
+      <div class="ask-try" data-ask-try aria-label="Questions to try"></div>
+      <p class="ask-left" data-ask-left aria-live="polite"></p>
+      <ol class="answers" aria-live="polite" data-answers></ol>
+    </section>
+
     <section class="desk" aria-labelledby="desk-title">
       <h2 id="desk-title">The Critic's desk</h2>
       <p class="hint">Claims the Critic refused before they aired, and why. Each one went back to be rewritten.</p>

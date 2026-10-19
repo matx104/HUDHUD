@@ -91,7 +91,7 @@ class Localizer:
             return cue
         update: dict = {"headline": local_headline(cue.headline, self.lang)}
         if self.translator is not None:
-            translated = await self._translate(cue)
+            translated = await self.translate(cue.alert_id, cue.text)
             if translated is None:
                 update["receipt"] = cue.receipt.model_copy(update={"translation_refused": True})
             else:
@@ -100,16 +100,17 @@ class Localizer:
                 update["receipt"] = cue.receipt.model_copy(update={"translated_by": model})
         return cue.model_copy(update=update)
 
-    async def _translate(self, cue: Cue) -> tuple[str, str] | None:
-        """The translation, or None if it states a number the verified line doesn't, twice."""
+    async def translate(self, key: str, line: str) -> tuple[str, str] | None:
+        """A verified line (a cue's, or an answer's: court.ask) in the chosen language, or None
+        if the translation states a number the line doesn't, or drops a name, twice."""
         reasons: list[str] = []
         for _ in range(2):
             try:
-                text, model = await self.translator(cue.alert_id, cue.text, self.lang, reasons)
-            except Exception:  # a translator outage costs the language, never the cue
+                text, model = await self.translator(key, line, self.lang, reasons)
+            except Exception:  # a translator outage costs the language, never the line
                 return None
-            invented = invented_numbers(cue.text, text)
-            renamed = [n for n in self.names if n in cue.text and n not in text]
+            invented = invented_numbers(line, text)
+            renamed = [n for n in self.names if n in line and n not in text]
             if not invented and not renamed:
                 return text, model
             reasons = [f"the translation states {n}, which the line doesn't" for n in invented]
