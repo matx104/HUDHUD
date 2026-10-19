@@ -252,3 +252,26 @@ def test_one_call_counts_several_things_for_both_sides(at_70):
     assert len(facts) == 4
     assert [tools.facts[f["id"]].team for f in facts] == [Side.HOME, Side.AWAY] * 2
     assert "error" in json.loads(tools.team_numbers(["shots"], team="Nowhere United"))
+
+
+def test_what_event_data_cant_see_is_held_back_before_any_model_is_asked(at_70):
+    class Never:
+        async def answer(self, question, tools, feedback):
+            raise AssertionError("no model should be asked")
+
+    for question in ("Is Adem Rosmere injured?", "How does the crowd feel?", "Is it raining?"):
+        reply = answer(at_70, question, Never())
+        assert reply.status == "cannot" and reply.text == CANNOT["beyond_data"]
+        assert reply.receipt.writer == "none"
+    # "Training" is not rain, and a question about passes is a question about passes.
+    assert answer(at_70, "Which side has completed more passes?").status == "verified"
+
+
+def test_which_chance_was_biggest_is_a_fact_of_its_own(at_70):
+    tools = MatchTools(at_70)
+    facts = json.loads(tools.moments("big_chances"))["facts"]
+    top = facts[-1]
+    assert top["says"].startswith("Of these, the biggest by xG: ")
+    shots = [tools.facts[f["id"]] for f in facts[:-1]]
+    biggest = max(shots, key=lambda f: f.assertions[0].value)
+    assert tools.facts[top["id"]].citations == biggest.citations

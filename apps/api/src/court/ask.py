@@ -324,7 +324,12 @@ class MatchTools:
                 figures=self._minute_figures(self.now),
             )
             return self._result(fact)
-        return json.dumps({"facts": [self._moment(e) for e in found]})
+        facts = [self._moment(e) for e in found]
+        if isinstance(found[0], Shot) and len(found) > 1:
+            # Which is biggest is a comparison: a fact of its own, so an answer can stand on it.
+            top = max(found, key=shot_xg)
+            facts.append(self._moment(top, prefix="Of these, the biggest by xG: "))
+        return json.dumps({"facts": facts})
 
     def functions(self, max_calls: int = 8) -> list[Any]:
         """The tools as Agent Framework function tools, for a model to call."""
@@ -418,7 +423,7 @@ class MatchTools:
         self.facts[fact.id] = fact
         return fact
 
-    def _moment(self, event: MatchEvent) -> dict[str, str]:
+    def _moment(self, event: MatchEvent, prefix: str = "") -> dict[str, str]:
         minute = minute_label(event.t, event.period)
         team = self.meta.team(event.team)
         figures = self._minute_figures(event)
@@ -433,7 +438,7 @@ class MatchTools:
         if isinstance(event, Tackle):
             names.append(self.state.player_name(event.opponent_id))
         fact = self._add(
-            f"{minute} {describe(event, self.state)} ({team.name})",
+            f"{prefix}{minute} {describe(event, self.state)} ({team.name})",
             team=event.team,
             citations=(event.id,),
             assertions=assertions,
@@ -590,9 +595,12 @@ class RuleAnswerer:
         facts = [tools.facts[f["id"]] for f in found]
         if not facts[0].assertions and not facts[0].names:  # "No goals so far"
             return Draft(text=f"{facts[0].says}.", facts=[facts[0].id], cannot="")
+        ranked = [f for f in facts if f.says.startswith("Of these")]
+        facts = [f for f in facts if f not in ranked]
         if biggest:
-            top = max(facts, key=lambda f: f.assertions[0].value)
-            return Draft(text=f"The biggest chance: {top.says}.", facts=[top.id], cannot="")
+            top = ranked[0] if ranked else facts[0]
+            says = top.says.removeprefix("Of these, the biggest by xG: ")
+            return Draft(text=f"The biggest chance: {says}.", facts=[top.id], cannot="")
         label = "Goals" if kind == "goals" else kind.replace("_", " ").capitalize()
         lines = "; ".join(f.says for f in facts)
         return Draft(text=f"{label} so far: {lines}.", facts=[f.id for f in facts], cannot="")
@@ -625,6 +633,21 @@ class RuleAnswerer:
 
 # --- asking ------------------------------------------------------------------------------
 
+# What event data can't see: a body, a mind, the sky, a contract, words spoken. A question about
+# one of these is held back by code, before any model is asked: on unseen matches the model, asked
+# whether a player was injured, twice inferred "no signs of injury" from his pass counts. Every
+# number in those answers was true, so the Critic passed them; the inference was not.
+LIMITS = re.compile(
+    r"\b(?:injur|hurt|fitness|fatigue|tired|exhaust|feel|mood|angry|upset|happy|nervous|"
+    r"weather|rain|wind|crowd|salary|wage|transfer|contract|said|say to|told|interview)",
+    re.IGNORECASE,
+)
+
+
+def beyond_the_data(question: str) -> bool:
+    return LIMITS.search(question) is not None
+
+
 # Translates a verified answer: (the answer's id, its text) -> (the translation, the model), or
 # None when it can't be checked. The Localizer's, in the studio.
 Translate = Callable[[str, str], Awaitable[tuple[str, str] | None]]
@@ -652,6 +675,9 @@ async def ask(
     refused: list[RefusedDraft] = []
     feedback: list[str] = []
     attempt, verdict, used = 0, None, []
+    if beyond_the_data(question):
+        text = CANNOT["beyond_data"]
+        return _answer(tools, question, "cannot", text, 0, "none", started, None)
     for attempt in range(1, MAX_ATTEMPTS + 1):
         draft = await answerer.answer(question, tools, feedback)
         if draft.cannot or not draft.text.strip():

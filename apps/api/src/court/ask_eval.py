@@ -149,14 +149,18 @@ async def run(
     async def one(seed: int, state: MatchState, probe: Probe) -> dict[str, Any]:
         minute = minute_label(state.events[-1].t, state.events[-1].period)
         failure, answer = "", None
+        tools = MatchTools(state)
+        # The judge reads what the model was told: the match, the moment, then the facts.
+        brief = tools.brief().splitlines()[0]
         async with gate:
             # A rate limit waits and goes again; any other failure (a reply cut off mid-JSON) gets
             # one more try. One that still fails counts against the model, and the run goes on.
             for wait in (1, 2, 4, 0):
                 try:
-                    answer = await ask(probe.question, MatchTools(state), answerer, spend=spend)
+                    answer = await ask(probe.question, tools, answerer, spend=spend)
                     break
                 except NarrationUnavailable as error:
+                    tools = MatchTools(state)  # a fresh ledger for the retry
                     failure = str(error).splitlines()[0][:160]
                     limited = "429" in failure
                     if not wait or (not limited and wait > 1):
@@ -185,7 +189,7 @@ async def run(
             "grade": grade(probe, answer),
             "status": answer.status,
             "answer": answer.original or answer.text,
-            "facts": [f.says for f in answer.facts],
+            "facts": [brief, *(f.says for f in answer.facts)],
             "drafts_refused": len(answer.refused),
             "reasons": [r.code for d in answer.refused for r in d.reasons],
             "latency_ms": answer.receipt.latency_ms,
