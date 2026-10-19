@@ -1,6 +1,8 @@
 # GOALS — The Grand Slam Doctrine
 
-> **Declaration (revised 2026-10-18 by the Monarch):** The original plan was to win **all six awards together**. The official rules (§4.2, §8) let one project win at most **one Grand Prize and one Category Prize**, so the fallback goal is: **Grand Prize: First Place** and **Best Use of Microsoft Foundry** (the AI category). Every lane is still built to its full standard: that is what first place takes. This file maps every award to the features that win it; if a feature doesn't serve a lane, it's cut. The intention is **public on the showcase site** (#/goal), stated plainly, backed by the artifact.
+> **Declaration (revised 2026-10-19 by the Monarch):** Build and claim **every award: all six**. Nothing is narrowed: each lane is built to win and claimed as such on the site's Goal chapter ("Built to win every award"). The rules (§4.2, §8) cap what one project can take home at one Grand Prize and one Category Prize; that cap is stated once, as a fact, and is the judges' call, not a reduction of the build. One engineer: every public word is first person singular (I, my), never we or our.
+>
+> *Superseded (2026-10-18):* the fallback goal of Grand Prize: First Place plus Best Use of Microsoft Foundry.
 
 ## The doctrine in one line
 

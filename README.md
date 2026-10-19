@@ -56,7 +56,7 @@ My scouting notes stay off this repo out of respect for the other entrants. What
 
 ## Credits
 
-Every match is synthetic, made by our own generator. The realism check compares its scorelines with Mart Jürisoo's *International football results from 1872* (public domain, CC0 1.0, https://github.com/martj42/international_results), used only as a benchmark and never committed. The ideas, tools and type we build on are
+Every match is synthetic, made by my own generator. The realism check compares its scorelines with Mart Jürisoo's *International football results from 1872* (public domain, CC0 1.0, https://github.com/martj42/international_results), used only as a benchmark and never committed. The ideas, tools and type I build on are
 credited on the site's Credits page (`site/index.html`, `#/credits`): the Microsoft Reactor session
 "Build AI-powered soccer insights apps with AKS and ACA" (Brian Benz, Oct 14, 2026), Microsoft
 Foundry, Microsoft Agent Framework (MIT), Pydantic (MIT), Azure Identity, pytest and Ruff (MIT),

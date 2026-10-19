@@ -6,7 +6,7 @@ description. The Monarch records and narrates; everything on screen is live, not
 
 ## The rules that bind it (task.md, brand.md)
 
-- **Under 2:00, hard.** We aim for 1:50, so a slow take still fits.
+- **Under 2:00, hard.** I aim for 1:50, so a slow take still fits.
 - **No third-party trademarks or logos**: no league, club or broadcaster marks on screen or in the
   voiceover's visuals. Every club and player in HUDHUD is invented, so the studio is safe as it is.
   Keep browser tabs, bookmarks and the taskbar out of frame.
@@ -44,7 +44,7 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 250 words.
 | Time | On screen | Do | Say |
 |---|---|---|---|
 | 0:00–0:14 | Showcase site, home, then "In plain words" | Scroll slowly | "AI can already commentate a football match. The trouble is, it sounds just as sure when it's wrong, and on air one wrong number costs a broadcaster its viewers' trust. HUDHUD fixes that: every line is checked against the match before it airs." |
-| 0:14–0:40 | **Take: English** (the studio) | Let it run from 54' | "This is the studio, live on Azure Container Apps. A synthetic match streams in. The Scout spots the moments, and a model on Microsoft Foundry writes each line from facts our own code computed. Every cue shows its evidence, tags its players, and carries a receipt: who wrote it, how many numbers were checked, how long it took, and what it cost: a fraction of a cent." |
+| 0:14–0:40 | **Take: English** (the studio) | Let it run from 54' | "This is the studio, live on Azure Container Apps. A synthetic match streams in. The Scout spots the moments, and a model on Microsoft Foundry writes each line from facts my own code computed. Every cue shows its evidence, tags its players, and carries a receipt: who wrote it, how many numbers were checked, how long it took, and what it cost: a fraction of a cent." |
 | 0:40–1:05 | The Critic's desk, as a red card lands | Point at the card; open its reason | "Here a draft cited an event that hadn't happened yet. The Critic recomputes every claim from the raw events, so it refused it, said exactly why, and sent it back. The rewrite aired seconds later. Nothing unverified reaches the screen." |
 | 1:05–1:20 | The studio, then "Take the narrator off air" | Press it at about 70'; press again after the 73' cue | "Now I take the narrator off air. The Orchestrator keeps the broadcast going with the Scout's own facts, says so on screen, and brings full commentary back the moment the narrator returns." |
 | 1:20–1:32 | **Take: Urdu**, then **Take: Arabic** | A cue in each; open "In English" once | "The same law holds in Urdu and Arabic: a translation may not state a number the checked line doesn't, or change a name." |
