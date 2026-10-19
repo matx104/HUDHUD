@@ -74,6 +74,12 @@ def main() -> int:
     writers = sorted({c["receipt"]["writer"] for c in cues})
     check(not args.models or writers == ["gpt-4.1-mini"], f"written by {', '.join(writers)}")
     check(kinds[-1:] == ["end"], f"full time in {seconds:.1f} s")
+    if config.get("voice") and cues:
+        # One line, spoken: about a hundred characters of Azure AI Speech.
+        session = events[0][1]["session"]
+        with get(f"{base}api/sessions/{session}/speak?cue={cues[0]['id']}", headers) as response:
+            audio = response.read()
+        check(len(audio) > 1000, f"the voice read a line aloud: {len(audio):,} bytes of audio")
     if kinds[-1:] == ["end"]:
         end = events[-1][1]
         print(f"   {end['stats']}  cost ${end['cost_usd']:.4f}  {end.get('audit', '')}")

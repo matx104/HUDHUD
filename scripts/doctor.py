@@ -221,6 +221,7 @@ def main() -> int:
         body[:60] if status != 200 else "",
     )
     config = json.loads(body) if status == 200 else {}
+    check("Studio: voice connected (Azure AI Speech)", config.get("voice") is True)
     check(
         "Studio: models connected",
         config.get("models") is True,

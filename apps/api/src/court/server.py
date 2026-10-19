@@ -14,6 +14,8 @@ Personal modes (court.personal) ride in the address too: a favourite club and pl
 that are the viewer's own, player focus follows one player with a live card, and single-metric mode
 follows one number for both sides. The models tell the line from the favourite club's side; the
 Critic checks it as it checks every line. At full time the page gets the recap (court.recap).
+With SPEECH_RESOURCE_ID and SPEECH_REGION set, the page can ask for any line that aired to be
+spoken aloud (court.speech): by its cue's id, never as free text.
 
 On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner in at
 studio.hudhud.com.pk, and a Worker (edge/) carries each request on to Azure. With `ACCESS_TEAM` and
@@ -35,6 +37,7 @@ import threading
 import time
 import urllib.request
 import uuid
+from collections import OrderedDict
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime
 from pathlib import Path
@@ -42,7 +45,7 @@ from typing import Any, Literal
 
 import jwt
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
+from fastapi.responses import FileResponse, PlainTextResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from mcp.server.transport_security import TransportSecuritySettings
 from opentelemetry import trace
@@ -53,7 +56,7 @@ from match_events import MatchMeta, Shot, ShotOutcome, Side, generate, minute_la
 from . import telemetry
 from .audit import AuditTrail, CosmosStore
 from .config import product_name
-from .contracts import OUTPUT_ADAPTER, Output, Preferences, TickerMetric
+from .contracts import OUTPUT_ADAPTER, Cue, Output, Preferences, TickerMetric
 from .critic import Critic
 from .localizer import Localizer
 from .mcp_server import server as critic_mcp
@@ -66,6 +69,7 @@ from .recap import build as build_recap
 from .recap import render_html as recap_page
 from .referee import Profile
 from .scout import Scout
+from .speech import SpeechBudgetSpent, SpeechUnavailable, Voice
 
 STUDIO = Path(__file__).parent / "studio"
 # The demo matches: 21 has two goals each way and two momentum swings; 7 has six goals; 33 a
@@ -215,6 +219,22 @@ class ModelBudget:
 Narration = Literal["foundry", "template"]
 
 
+class Spoken:
+    """The lines a viewer saw air, by session and cue, for the voice: the last `size` of them, so
+    a line can still be spoken just after full time, and nothing else can be."""
+
+    def __init__(self, size: int = 2000) -> None:
+        self.size, self._lines = size, OrderedDict()
+
+    def keep(self, session: str, cue: str, text: str, lang: str) -> None:
+        self._lines[(session, cue)] = (text, lang)
+        while len(self._lines) > self.size:
+            self._lines.popitem(last=False)
+
+    def line(self, session: str, cue: str) -> tuple[str, str] | None:
+        return self._lines.get((session, cue))
+
+
 class Session:
     def __init__(
         self,
@@ -229,7 +249,9 @@ class Session:
         lang: Literal["en", "ur", "ar"] = "en",
         prefs: Preferences | None = None,
         strictness: Profile = "standard",
+        spoken: Spoken | None = None,
     ) -> None:
+        self.spoken = spoken
         self.strictness = strictness  # how strictly the referee's likely calls are read
         self.id = uuid.uuid4().hex[:12]
         self.match = generate(seed)
@@ -314,6 +336,8 @@ class Session:
         """What the court produced, as this viewer sees it (the audit trail keeps it unchanged)."""
         self.record.append(output)
         if (seen := self.personal.view(output)) is not None:
+            if isinstance(seen, Cue) and self.spoken is not None:
+                self.spoken.keep(self.id, seen.id, seen.text, seen.lang)
             self.send("output", OUTPUT_ADAPTER.dump_python(seen, mode="json"))
 
     def _personal(self, events: list[Any]) -> None:
@@ -412,6 +436,13 @@ def create_app() -> FastAPI:
     )
     sessions: dict[str, Session] = {}
     budget = ModelBudget(DAILY_MODEL_MATCHES)
+    spoken = Spoken()
+    voice = None
+    if (resource := os.environ.get("SPEECH_RESOURCE_ID")) and (
+        region := os.environ.get("SPEECH_REGION")
+    ):
+        voice = Voice(resource_id=resource, region=region)
+    app.state.voice = voice  # the tests swap in a fake
     app.state.sessions = sessions  # read by the tests: every stream must leave none behind
 
     @app.get("/healthz")
@@ -439,6 +470,7 @@ def create_app() -> FastAPI:
             "product": product_name(),
             "matches": matches,
             "models": bool(os.environ.get("FOUNDRY_PROJECT_ENDPOINT")),
+            "voice": app.state.voice is not None,
             "model_matches_left": budget.left,
         }
 
@@ -481,6 +513,7 @@ def create_app() -> FastAPI:
             "lang": lang,
             "prefs": prefs,
             "strictness": strictness,
+            "spoken": spoken,
         }
 
         async def events() -> AsyncIterator[str]:
@@ -529,6 +562,27 @@ def create_app() -> FastAPI:
             raise HTTPException(404, "no such match is running")
         session.narrator.on_air = on
         return {"on_air": on}
+
+    @app.get("/api/sessions/{session_id}/speak")
+    async def speak(session_id: str, cue: str) -> Response:
+        """A line that aired, spoken (court.speech). Only by its cue's id: never free text."""
+        voice = app.state.voice
+        if voice is None:
+            raise HTTPException(404, "no voice is connected here")
+        line = spoken.line(session_id, cue)
+        if line is None:
+            raise HTTPException(404, "no such line aired in this match")
+        text, lang = line
+        with telemetry.tracer.start_as_current_span(
+            "speak", attributes={"hudhud.lang": lang, "hudhud.chars": len(text)}
+        ):
+            try:
+                audio = await voice.speak(text, lang)
+            except SpeechBudgetSpent as error:
+                raise HTTPException(429, str(error)) from None
+            except SpeechUnavailable as error:
+                raise HTTPException(503, str(error)) from None
+        return Response(audio, media_type="audio/mpeg", headers={"Cache-Control": "no-store"})
 
     app.mount("/mcp", critic)
     app.mount("/static", StaticFiles(directory=STUDIO), name="static")

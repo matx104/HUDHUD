@@ -35,6 +35,12 @@
   let teams = null;
   let matches = [];
   let history = [];
+  // The voice: verified lines read aloud by Azure AI Speech, one after another, newest kept.
+  const hear = $("[data-hear]");
+  const said = new Map(); // cue id -> its list item, to mark the line being spoken
+  let voiceSession = null;
+  let queue = [];
+  let speaking = false;
   let tally = { refused: 0, checked: 0, cost: 0 };
 
   fetch("/api/config")
@@ -49,6 +55,10 @@
         $("[data-matches]").append(option);
       }
       if (!config.models) form.narration.value = "template";
+      if (!config.voice) {
+        hear.disabled = true;
+        $("[data-hear-label]").title = "No voice is connected here: the offline studio has none";
+      }
       const params = new URLSearchParams(location.search);
       if (params.has("seed")) form.seed.value = params.get("seed");
       fillYours();
@@ -176,6 +186,9 @@
 
   function hello(data) {
     session = data.session;
+    voiceSession = data.session; // kept after full time, so the last line can still be heard
+    queue = [];
+    said.clear();
     teams = { home: data.home, away: data.away };
     for (const side of ["home", "away"]) {
       const node = $(`[data-${side}]`);
@@ -311,9 +324,41 @@
     item.append(evidence);
     if (c.receipt) item.append(receipt(c.receipt));
     cues.prepend(item);
+    said.set(c.id, item);
+    say(c);
     tally.checked += c.receipt?.numbers_checked ?? 0;
     tally.cost += c.receipt?.cost_usd ?? 0;
     drawTally();
+  }
+
+  // A line is spoken only by its cue's id: the server reads exactly what aired, never free text.
+  function say(c) {
+    if (!hear.checked || !voiceSession) return;
+    if (queue.length > 1) queue.shift(); // fall no more than two lines behind the broadcast
+    queue.push(c.id);
+    if (!speaking) speakNext();
+  }
+
+  async function speakNext() {
+    const id = queue.shift();
+    if (!id) { speaking = false; return; }
+    speaking = true;
+    const item = said.get(id);
+    try {
+      const response = await fetch(`/api/sessions/${voiceSession}/speak?cue=${encodeURIComponent(id)}`);
+      if (!response.ok) throw new Error(`the voice answered ${response.status}`);
+      const url = URL.createObjectURL(await response.blob());
+      const audio = new Audio(url);
+      item?.classList.add("speaking");
+      await audio.play();
+      await new Promise((done) => { audio.onended = done; audio.onerror = done; });
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      if (String(error).includes("429")) { hear.checked = false; notice("Today's budget for the voice is spent: the lines stay on screen."); }
+    } finally {
+      item?.classList.remove("speaking");
+      speakNext();
+    }
   }
 
   // Who the cue is about (§4.1): number, name, role, and the speed or distance badges a

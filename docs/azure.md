@@ -138,6 +138,18 @@ So a Worker (`edge/`, deployed by `scripts/edge`) forwards each request to the s
 and points Azure's redirects back at the address the viewer used. Moving the studio to a full
 environment would let Azure serve the name with its own certificate.
 
+## The voice: Azure AI Speech (2026-10-19)
+
+Every verified line can be read aloud (`court/speech.py`): neural voices en-GB-RyanNeural,
+ur-PK-AsadNeural and ar-AE-HamdanNeural on the same Foundry resource (`hudhud-foundry`, an
+AIServices account), at `https://uaenorth.tts.speech.microsoft.com`. Entra ID only: the request
+names the resource and carries the token (`Authorization: Bearer aad#<resource id>#<token>`); the
+studio's identity has Cognitive Services User on the resource. Settings: `SPEECH_RESOURCE_ID`,
+`SPEECH_REGION`. The page asks for a line by its cue's id (`/api/sessions/<id>/speak?cue=...`),
+never with text, so the voice can only say what aired. A daily budget of 150,000 characters
+(about 1,000 lines) caps the cost; neural voices list at about $15 a million characters. The
+doctor and `make smoke` check it.
+
 ## Running it: probes, one replica, retention (2026-10-19)
 
 - **Health probes:** liveness every 30 s and readiness every 10 s on `/healthz` (the template,
