@@ -1,8 +1,9 @@
 """Does the live studio work, end to end, right now? Streams one short match and checks every part.
 
-Health, config, then a match from the 80th minute: the hello, the clock, the cues with their
-receipts, the end. The offline narrator by default, so it costs nothing; --models has the Foundry
-models narrate it instead (well under a cent). Exits 1 on any failure: run it before a recording.
+Health, config, then a match from the 70th minute: the hello, the clock, the cues with their
+receipts, the end, and after full time one question asked of the match (court.ask). The offline
+narrator by default, so it costs nothing; --models has the Foundry models narrate it and answer
+instead (well under a cent). Exits 1 on any failure: run it before a recording.
 The deployed studio is behind the wall, so it goes through with the Access service token.
 
     make smoke                         # the deployed studio, at its own address
@@ -81,6 +82,23 @@ def main() -> int:
             audio = response.read()
         check(len(audio) > 1000, f"the voice read a line aloud: {len(audio):,} bytes of audio")
     if kinds[-1:] == ["end"]:
+        # One question, after full time: answered from the events, checked by the Critic.
+        session = events[0][1]["session"]
+        ask = urllib.request.Request(
+            f"{base}api/sessions/{session}/ask",
+            data=json.dumps({"question": "Who has had more shots?"}).encode(),
+            headers=headers | {"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(ask, timeout=90) as response:
+            answer = json.load(response)
+        receipt = answer["receipt"]
+        check(
+            answer["status"] == "verified"
+            and (not args.models or receipt["writer"] == "gpt-4.1-mini"),
+            f"asked the match, {receipt['writer']} answered, {receipt['numbers_checked']} numbers "
+            f"checked: {answer['text']}",
+        )
         end = events[-1][1]
         print(f"   {end['stats']}  cost ${end['cost_usd']:.4f}  {end.get('audit', '')}")
     print(f"\n{'all good' if not failures else f'{len(failures)} failed'}")
