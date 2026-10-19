@@ -307,7 +307,7 @@
       <ol class="lanes">
         <li data-reveal>
           <h2>Grand prize: first place</h2>
-          <p>Explainable match intelligence, every line with its evidence. Engaging narratives: live commentary, the recap and the ref's call. Ask the match anything, and get a checked answer. Context: momentum, breaks, the press, a card for any player. Accessible and personal: English, Urdu or Arabic, read aloud for fans who can't watch the screen, with questions asked out loud and answered aloud for fans who can't type them, casual or analyst, your club, your player, one number. All in one match, end to end.</p>
+          <p>Explainable match intelligence, every line with its evidence. Engaging narratives: live commentary, the recap and the ref's call. Ask the match anything, and get a checked answer. Context: momentum, breaks, the press, a card for any player. Accessible and personal: English, Urdu or Arabic, read aloud for fans who can't watch the screen, with questions asked out loud and answered aloud for fans who can't type them, casual or analyst, your club, your player, one number. And HUD², the same match on one heads-up screen through the referee's, the commentator's or the fan's lens, every checked line pinned where it happened. All in one match, end to end.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
@@ -342,7 +342,7 @@
         <li data-status="done" data-reveal><time>Oct 17–19</time><strong>Groundwork</strong><span>The field studied, the name chosen, a synthetic match generator calibrated over 100 seeds.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–20</time><strong>Skeleton</strong><span>All five agents run a match end to end with offline backends, tested on every push.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
-        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, Urdu and Arabic, personal modes, the recap, breaks, the high press, the ref's call, ask the match and a realism check are live.</span></li>
+        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, Urdu and Arabic, personal modes, the recap, breaks, the high press, the ref's call, ask the match, HUD² and a realism check are live.</span></li>
         <li data-status="planned" data-reveal><time>Oct 26</time><strong>Ship kit</strong><span>The 110-second video, the README, the repo made public.</span></li>
         <li data-status="planned" data-reveal><time>Oct 27</time><strong>Submit</strong><span>A day early, never on deadline day.</span></li>
       </ol>
@@ -611,6 +611,7 @@
         <div class="log-lists">
           <h2 class="log-heading">Live</h2>
           <ol class="log">
+            <li data-reveal><time>Oct 20</time><div><strong>HUD², the match through your lens</strong><p>The same match on one heads-up screen, through the referee's, the commentator's or the fan's lens. The referee sees every foul with its distance from goal, the pressing, and the zones a likely call is read against at the competition's strictness. The commentator sees who's on the ball, the passes and shots, and the last five minutes in numbers. The fan sees who's on top, where each side has played, and plain words for anyone new to football. Every checked line is pinned where the events it cites happened, the Critic's lock closing on the spot, and every refusal is struck where it was aimed. Each viewer switches layers on or off, and the choice is kept. Today a screen; next glasses, then lenses.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>The Critic, for other agents</strong><p>The Critic now talks Agent2Agent (A2A) as well as MCP. Another agent reads its card, then hands it a claim or a question as a peer: Microsoft Agent Framework serves it, with no model inside, so its verdicts are computed and can't be talked round. Agent Framework's own A2A client checked it: a claim verified, the same claim a minute early refused, a question answered.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>Ask out loud</strong><p>A fan who can't type can say the question, in English, Urdu or Arabic. The studio records it, Azure AI Speech turns it into words in that language, and the answer comes back checked and read aloud. Asked in Urdu who scored for an invented club, it named both scorers and their minutes, every number recomputed, and answered in Urdu. The audio is kept nowhere: only the words go on.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>Ask the match</strong><p>Ask the match a question, live or after full time, and the answer comes back checked. The model calls the Scout's tools for every number (function calling on Microsoft Foundry), and the Critic recomputes each count, checks each number and refuses any player the facts aren't about. On its first live run the model cited facts that were never counted; the Critic refused that draft, and the next one was right. Questions the events can't answer get fixed words. Offline, a rule-based answerer handles the common questions through the same Critic. Every question is screened by Prompt Shields (Azure AI Content Safety) before a model reads it. Measured on two unseen matches, 57 questions: the first run got every answerable one right but inferred "no signs of injury" from a player's pass counts, twice, so code now holds back what event data can't see before any model is asked.</p><div class="eval" data-ask-eval></div></div></li>
@@ -707,6 +708,16 @@
           <p class="gate"><strong>Path:</strong> simulation and esports first, then grassroots football, then professional trials inside the game's own rules, and the biggest tournaments once each step has proven itself.</p>
         </li>
       </ol>
+
+      <h2 class="section-title" data-reveal>HUD²: the match, seen your way</h2>
+      <p class="section-lede" data-reveal>Everything above has to reach people's eyes. HUD² is how: one match, and each viewer's own lens on it, shaped to their needs and their language.</p>
+      <ul class="principles">
+        <li data-reveal><strong>Today, a screen.</strong> Live now: one central display with overlays, markings and annotations, through the referee's, the commentator's or the fan's lens.</li>
+        <li data-reveal><strong>Next, glasses.</strong> The same lenses, worn, with the marks on the real pitch. That takes the Scout's eyes: where the ball and every player are.</li>
+        <li data-reveal><strong>Then, contact lenses.</strong> As the hardware arrives.</li>
+        <li data-reveal><strong>Further out, neural interfaces.</strong> Only with consent, and only once they are proven safe.</li>
+        <li data-reveal><strong>What never changes.</strong> On any device, a word passed the Critic and a mark is an event that happened. The referee's lens shows the least, and never decides.</li>
+      </ul>
 
       <h2 class="section-title" data-reveal>What holds at every stage</h2>
       <ul class="principles">

@@ -141,6 +141,8 @@ def main() -> None:
 
     dash = "https://dash.cloudflare.com/?to=/:account"
     take = STUDIO_URL + "?seed=21&narration=foundry&start=54&speed=30&stress=1&autostart=1&lang="
+    hud = STUDIO_URL.rstrip("/") + "/hud"
+    hud_take = "&seed=21&narration=foundry&start=50&speed=30&stress=1&view=stand&autostart=1"
     groups = [
         (
             "Addresses",
@@ -193,6 +195,22 @@ def main() -> None:
                     STUDIO_URL
                     + "?seed=21&narration=foundry&start=85&speed=60&stress=1&autostart=1&lang=en"
                     + "&player=h09",
+                ),
+                ("HUD²", "The heads-up display: the referee's, commentator's or fan's lens", hud),
+                (
+                    "Take: HUD², the referee",
+                    "Seed 21 from 50', 30x, models: fouls, the zones, the penalty and its call",
+                    hud + "?lens=referee" + hud_take,
+                ),
+                (
+                    "Take: HUD², the commentator",
+                    "The same match: who's on the ball, the last five minutes, every line pinned",
+                    hud + "?lens=commentator" + hud_take,
+                ),
+                (
+                    "Take: HUD², the fan",
+                    "The same match as a fan of the home side: who's on top, in plain words",
+                    hud + "?lens=fan&club=home" + hud_take,
                 ),
                 ("Container app", "hudhud-studio: revision, replica, identity", res(studio)),
                 ("App metrics", "Requests, CPU and memory of the studio", res(studio, "metrics")),
