@@ -59,12 +59,23 @@ test("the countdown ends at the official close: Oct 27, 11:59 PM Pacific", () =>
 
 test("the control room says who its buttons are for, and its links name no account", () => {
   // The buttons are the owner's shortcuts, published by choice: the page says they need the
-  // owner's Azure environment, and the links carry IDs only, never the email-based domain.
-  assert.match(html, /These buttons work only for me/);
+  // owner's accounts, and the links carry IDs only, never the email-based domain. The Cloudflare
+  // links name the account as ":account", so its ID stays out.
+  assert.match(html, /Most of these buttons work only for me/);
   const ops = read("data/ops.js");
   assert.doesNotMatch(ops, /onmicrosoft\.com|@[\w-]+\.(com|net|org)/);
+  assert.doesNotMatch(ops, /cloudflare\.com\/[0-9a-f]{32}/, "a Cloudflare account ID");
+  assert.match(ops, /dash\.cloudflare\.com\/\?to=\/:account/);
   assert.doesNotMatch(read("data/doctor.js"), /@[\w-]+\.(com|net|org)/);
   assert.match(html, /data-page="control" data-aside/, "an aside: out of the chapters");
+});
+
+test("the private studio stays off the public pages", () => {
+  // Owner-only behind Cloudflare Access: a visitor would meet a sign-in page, so only the Control
+  // room links it (from ops.js), and "Watch a live match" appears only if studioPublic is true.
+  assert.equal(config.studioPublic, false);
+  assert.doesNotMatch(html, /studio\.hudhud\.com\.pk/);
+  assert.match(read("assets/site.js"), /site\.studioUrl && site\.studioPublic/);
 });
 
 test("the media kit is a public Drive folder, and the site points at it", () => {

@@ -136,8 +136,8 @@
     const share = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(site.siteUrl ?? location.origin)}`;
     $$("[data-share-linkedin]").forEach((n) => { n.href = share; });
     $$("[data-when-repo]").forEach((n) => { n.hidden = (n.dataset.whenRepo === "public") !== Boolean(site.repoPublic); });
-    // The live studio leads: a match a visitor can watch, with the Critic at work.
-    if (site.studioUrl) {
+    // The live studio leads, when visitors may open it: a match to watch, with the Critic at work.
+    if (site.studioUrl && site.studioPublic) {
       $(".page-home .actions").prepend(Object.assign(el("a", "button", "Watch a live match"), { href: site.studioUrl }));
       $(".page-home .actions .button[href='#/problem']")?.classList.add("button-quiet");
       $$("[data-studio-link]").forEach((n) => { n.href = site.studioUrl; n.hidden = false; });
