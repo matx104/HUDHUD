@@ -20,7 +20,8 @@ spoken aloud (court.speech): by its cue's id, never as free text.
 A viewer can ask the match a question, during it or after full time (court.ask): the narrator
 answers from the Scout's tools, and the Critic checks the answer before the page shows it. A
 model-narrated match answers with the models; otherwise, or when they fail, the offline answerer
-does. Questions are capped per match.
+does. Questions are capped per match. With the voice connected, a question can be asked out loud:
+the page records it and the studio turns it into words in the match's language, keeping no audio.
 
 On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner in at
 studio.hudhud.com.pk, and a Worker (edge/) carries each request on to Azure. With `ACCESS_TEAM` and
@@ -76,7 +77,14 @@ from .recap import build as build_recap
 from .recap import render_html as recap_page
 from .referee import Profile
 from .scout import Scout
-from .speech import SpeechBudgetSpent, SpeechUnavailable, Voice
+from .speech import (
+    MAX_LISTEN_S,
+    WAV_RATE,
+    NothingHeard,
+    SpeechBudgetSpent,
+    SpeechUnavailable,
+    Voice,
+)
 from .state import MatchState
 
 STUDIO = Path(__file__).parent / "studio"
@@ -657,9 +665,39 @@ def create_app() -> FastAPI:
                     "hudhud.refused": len(answer.refused),
                 }
             )
-        if answer.status == "verified":
-            spoken.keep(session.id, answer.id, answer.text, answer.lang)
+        # The voice may read it: a verified answer, or the product's own fixed words, never a
+        # draft the Critic refused.
+        spoken.keep(session.id, answer.id, answer.text, answer.lang)
         return answer.model_dump(mode="json") | {"left": MAX_QUESTIONS - session.asked}
+
+    @app.post("/api/sessions/{session_id}/listen")
+    async def listen(session_id: str, request: Request) -> dict[str, str]:
+        """A question said aloud (court.speech): 16 kHz mono WAV in, its words out, in the match's
+        language. The page then asks it as if it had been typed."""
+        voice = app.state.voice
+        if voice is None:
+            raise HTTPException(404, "no voice is connected here")
+        session = boards.get(session_id)
+        if session is None:
+            raise HTTPException(404, "no such match in this studio: start one to ask about it")
+        most = 44 + int(WAV_RATE * 2 * (MAX_LISTEN_S + 0.5))
+        if int(request.headers.get("content-length") or 0) > most:
+            raise HTTPException(413, f"a question can be at most {MAX_LISTEN_S} seconds long")
+        wav = await request.body()
+        if len(wav) > most:
+            raise HTTPException(413, f"a question can be at most {MAX_LISTEN_S} seconds long")
+        with telemetry.tracer.start_as_current_span(
+            "listen", attributes={"hudhud.lang": session.lang, "hudhud.bytes": len(wav)}
+        ):
+            try:
+                text = await voice.listen(wav, session.lang)
+            except NothingHeard as error:
+                raise HTTPException(422, str(error)) from None
+            except SpeechBudgetSpent as error:
+                raise HTTPException(429, str(error)) from None
+            except SpeechUnavailable as error:
+                raise HTTPException(503, str(error)) from None
+        return {"text": text[:MAX_QUESTION], "lang": session.lang}
 
     @app.get("/api/sessions/{session_id}/speak")
     async def speak(session_id: str, cue: str) -> Response:

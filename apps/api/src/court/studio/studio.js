@@ -61,6 +61,7 @@
         $("[data-matches]").append(option);
       }
       if (!config.models) form.narration.value = "template";
+      $("[data-mic]").hidden = !config.voice || !navigator.mediaDevices?.getUserMedia;
       if (!config.voice) {
         hear.disabled = true;
         $("[data-hear-label]").title = "No voice is connected here: the offline studio has none";
@@ -239,7 +240,7 @@
     askNow();
   });
 
-  async function askNow() {
+  async function askNow(aloud = false) {
     const question = askForm.question.value.trim();
     if (!question || !askSession) return;
     const go = $("[data-ask-go]");
@@ -257,7 +258,7 @@
         left.textContent = response.status === 422 ? "Ask in 200 characters or fewer." : `${body.detail ?? "That question couldn't be asked"}.`;
         return;
       }
-      answer(body);
+      answer(body, aloud);
       askForm.question.value = "";
       left.textContent = `${plural(body.left, "question")} left for this match.`;
     } catch {
@@ -274,7 +275,7 @@
     refused: (a) => `No answer could be proven: the Critic refused ${plural(a.refused.length, "draft")}`,
   };
 
-  function answer(a) {
+  function answer(a, aloud = false) {
     const item = el("li", `answer ${a.status}`);
     const asked = el("p", "asked");
     asked.append(el("b", "", a.minute), document.createTextNode(` You asked: ${a.question}`));
@@ -318,10 +319,110 @@
     tally.checked += a.receipt?.numbers_checked ?? 0;
     tally.cost += a.receipt?.cost_usd ?? 0;
     drawTally();
-    if (a.status === "verified") {
-      said.set(a.id, item);
-      say(a);
+    // Asked out loud, the answer is said out loud: the fixed words too, which are the product's.
+    said.set(a.id, item);
+    say(a, aloud);
+  }
+
+  // ---------- Ask out loud ----------
+  // The question recorded here as 16 kHz mono WAV, turned into words by Azure AI Speech in the
+  // match's language, then asked as if typed. The audio goes to the studio once and is kept nowhere.
+  const mic = $("[data-mic]");
+  const MAX_LISTEN_MS = 12000;
+  let recording = null;
+  mic.addEventListener("click", () => (recording ? stopListening() : startListening()));
+
+  async function startListening() {
+    if (!askSession || recording) return;
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
+    } catch {
+      $("[data-ask-left]").textContent = "The microphone wasn't allowed. Type the question instead.";
+      return;
     }
+    const context = new AudioContext({ sampleRate: 16000 });
+    const source = context.createMediaStreamSource(stream);
+    const tap = context.createScriptProcessor(4096, 1, 1);
+    const chunks = [];
+    tap.onaudioprocess = (e) => chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+    source.connect(tap);
+    tap.connect(context.destination);
+    recording = { stream, context, source, tap, chunks, timer: setTimeout(stopListening, MAX_LISTEN_MS) };
+    mic.setAttribute("aria-pressed", "true");
+    $("[data-mic-label]").textContent = "Listening. Tap to stop";
+  }
+
+  async function stopListening() {
+    const r = recording;
+    recording = null;
+    if (!r) return;
+    clearTimeout(r.timer);
+    r.source.disconnect();
+    r.tap.disconnect();
+    for (const track of r.stream.getTracks()) track.stop();
+    const rate = r.context.sampleRate;
+    await r.context.close();
+    mic.setAttribute("aria-pressed", "false");
+    mic.disabled = true;
+    $("[data-mic-label]").textContent = "Hearing it";
+    try {
+      const response = await fetch(`/api/sessions/${askSession}/listen`, {
+        method: "POST",
+        headers: { "Content-Type": "audio/wav" },
+        body: wav(resample(join(r.chunks), rate, 16000), 16000),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        $("[data-ask-left]").textContent = `${body.detail ?? "That couldn't be heard"}.`;
+        return;
+      }
+      askForm.question.value = body.text;
+      await askNow(true);
+    } finally {
+      mic.disabled = false;
+      $("[data-mic-label]").textContent = "Ask out loud";
+    }
+  }
+
+  function join(chunks) {
+    const all = new Float32Array(chunks.reduce((n, c) => n + c.length, 0));
+    let at = 0;
+    for (const chunk of chunks) { all.set(chunk, at); at += chunk.length; }
+    return all;
+  }
+
+  // Where a browser won't record at 16 kHz, the samples are brought down to it.
+  function resample(samples, from, to) {
+    if (from === to) return samples;
+    const out = new Float32Array(Math.floor((samples.length * to) / from));
+    for (let i = 0; i < out.length; i++) {
+      const x = (i * from) / to;
+      const j = Math.floor(x);
+      const next = samples[Math.min(j + 1, samples.length - 1)];
+      out[i] = samples[j] + (next - samples[j]) * (x - j);
+    }
+    return out;
+  }
+
+  // 16-bit PCM WAV, mono: what the short-audio speech to text takes.
+  function wav(samples, rate) {
+    const view = new DataView(new ArrayBuffer(44 + samples.length * 2));
+    const ascii = (at, text) => [...text].forEach((ch, i) => view.setUint8(at + i, ch.charCodeAt(0)));
+    ascii(0, "RIFF");
+    view.setUint32(4, 36 + samples.length * 2, true);
+    ascii(8, "WAVEfmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, rate, true);
+    view.setUint32(28, rate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    ascii(36, "data");
+    view.setUint32(40, samples.length * 2, true);
+    samples.forEach((sample, i) => view.setInt16(44 + i * 2, Math.max(-1, Math.min(1, sample)) * 0x7fff, true));
+    return new Blob([view.buffer], { type: "audio/wav" });
   }
 
   // The player card and the single metric: counted on the server from the match's own events.
@@ -450,8 +551,8 @@
   }
 
   // A line is spoken only by its cue's id: the server reads exactly what aired, never free text.
-  function say(c) {
-    if (!hear.checked || !voiceSession) return;
+  function say(c, always = false) {
+    if ((!hear.checked && !always) || !voiceSession) return;
     if (queue.length > 1) queue.shift(); // fall no more than two lines behind the broadcast
     queue.push(c.id);
     if (!speaking) speakNext();

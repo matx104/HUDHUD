@@ -165,6 +165,10 @@
       <form class="ask-form" data-ask-form>
         <input name="question" maxlength="200" autocomplete="off" required aria-label="Your question about the match" placeholder="Who has had the better chances?">
         <button type="submit" class="go" data-ask-go>Ask</button>
+        <button type="button" class="mic" data-mic aria-pressed="false" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>
+          <span data-mic-label>Ask out loud</span>
+        </button>
       </form>
       <div class="ask-try" data-ask-try aria-label="Questions to try"></div>
       <p class="ask-left" data-ask-left aria-live="polite"></p>
