@@ -35,6 +35,7 @@ from match_events import Shot, ShotOutcome, Side, generate, minute_label
 from .ask import CANNOT, MatchTools, ask
 from .contracts import Answer, Window
 from .critic import NUMBER
+from .foundry import NarrationUnavailable
 from .metrics import compute, shot_xg
 from .state import MatchState
 
@@ -126,8 +127,12 @@ def grade(probe: Probe, answer: Answer) -> str:
     return "right" if numbers and names else "off the question"
 
 
-async def run(seeds: range, answerer, *, spend=None, parallel: int = 4) -> list[dict[str, Any]]:
-    """Every probe at every moment of every match, answered and graded."""
+async def run(
+    seeds: range, answerer, *, spend=None, parallel: int = 1, backoff_s: float = 20.0
+) -> list[dict[str, Any]]:
+    """Every probe at every moment of every match, answered and graded. One at a time by default:
+    the student subscription's deployments allow a few requests a second, and an answer that hits
+    the limit waits and goes again rather than counting as a failure."""
     gate = asyncio.Semaphore(parallel)
     jobs = []
     for seed in seeds:
@@ -143,7 +148,14 @@ async def run(seeds: range, answerer, *, spend=None, parallel: int = 4) -> list[
 
     async def one(seed: int, state: MatchState, probe: Probe) -> dict[str, Any]:
         async with gate:
-            answer = await ask(probe.question, MatchTools(state), answerer, spend=spend)
+            for wait in (1, 2, 4, 0):
+                try:
+                    answer = await ask(probe.question, MatchTools(state), answerer, spend=spend)
+                    break
+                except NarrationUnavailable as error:
+                    if not wait or "429" not in str(error):
+                        raise
+                    await asyncio.sleep(backoff_s * wait)
         return {
             "seed": seed,
             "minute": minute_label(state.events[-1].t, state.events[-1].period),

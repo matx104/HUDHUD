@@ -40,7 +40,9 @@ is a named technology in the official rules, and the owner first chose it for th
   the trail, counts what it dropped and reports it at the end of the run; the match goes on.
 - **A run is a story:** a `run` record (product, narrator, seed, teams), one record per output
   (cue, rejection with the Critic's reasons, spiked claim, degradation), then a `summary` (stats,
-  handovers, model cost).
+  handovers, model cost). Since 2026-10-19 a viewer's question and its answer join the run as an
+  `answer` record, with every draft the Critic refused (ADR 0010); a question can come after full
+  time, so each is written on its own, off the viewer's path.
 
 ## Why the first draft changed
 

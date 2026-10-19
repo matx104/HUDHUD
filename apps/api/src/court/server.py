@@ -61,7 +61,7 @@ from match_events import MatchMeta, Shot, ShotOutcome, Side, generate, minute_la
 from . import telemetry
 from .ask import MAX_QUESTION, MatchTools, RuleAnswerer
 from .ask import ask as ask_match
-from .audit import AuditTrail, CosmosStore
+from .audit import AuditTrail, CosmosStore, record_answer
 from .config import product_name
 from .contracts import OUTPUT_ADAPTER, Answer, Cue, Output, Preferences, TickerMetric
 from .critic import Critic
@@ -275,6 +275,8 @@ class Session:
         self.state = MatchState(self.match.meta)
         self.asked = 0
         self._ask_rng = random.Random(seed + 1)
+        self.run_id: str | None = None  # the audit trail's run, for the answers' records
+        self._writes: set[asyncio.Task] = set()
         self.queue: asyncio.Queue[tuple[str, dict[str, Any]] | None] = asyncio.Queue()
         self.notices: list[str] = []
         inner, self.narration = self._narrator(narration, seed, stress, budget)
@@ -302,10 +304,26 @@ class Session:
         self.queue.put_nowait((kind, data))
 
     async def ask(self, question: str) -> Answer:
-        """A viewer's question, answered from the events so far (court.ask). The models answer
-        a model-narrated match while the narrator is on air; otherwise, or if they fail, the
-        offline answerer does, from the same moment. The stress test overreaches on a share of
-        answers, as it does on lines."""
+        """A viewer's question, answered from the events so far (court.ask), and kept in the
+        match's audit trail when it has one."""
+        answer = await self._answer(question)
+        endpoint = os.environ.get("COSMOS_ENDPOINT")
+        if endpoint and self.run_id:
+            write = record_answer(
+                CosmosStore(endpoint),
+                match_id=self.match.meta.match_id,
+                run_id=self.run_id,
+                answer=answer,
+            )
+            task = asyncio.create_task(write)
+            self._writes.add(task)  # held until written: a bare task can be collected mid-write
+            task.add_done_callback(self._writes.discard)
+        return answer
+
+    async def _answer(self, question: str) -> Answer:
+        """The models answer a model-narrated match while the narrator is on air; otherwise, or
+        if they fail, the offline answerer does, from the same moment. The stress test
+        overreaches on a share of answers, as it does on lines."""
         tools = MatchTools(self.state)
         stress = self._ask_rng.random() < self.stress
         model = self.narrator.inner if self.narration == "foundry" else None
@@ -342,6 +360,7 @@ class Session:
                 if endpoint := os.environ.get("COSMOS_ENDPOINT"):
                     trail = AuditTrail(CosmosStore(endpoint), meta, narrator=self.narration)
                     trail.start()
+                    self.run_id = trail.run_id
                 sink = self._output if trail is None else trail.tee(self._output)
                 orch = await run_match(
                     self._paced(),

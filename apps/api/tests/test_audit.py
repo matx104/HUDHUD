@@ -69,3 +69,29 @@ async def test_a_broken_store_costs_the_trail_not_the_broadcast(swing_match):
 async def test_a_hanging_store_is_abandoned_at_close(swing_match):
     trail, aired = await _run(swing_match, SlowStore(), timeout_s=0.2)
     assert aired and trail.failure
+
+
+async def test_an_answer_joins_its_matchs_run_and_a_failing_store_costs_only_the_record():
+    from court.ask import MatchTools, RuleAnswerer, ask
+    from court.audit import record_answer
+    from court.state import MatchState
+    from match_events import generate
+
+    match = generate(21)
+    state = MatchState(match.meta)
+    for event in match.events:
+        state.apply(event)
+    answer = await ask("What's the score?", MatchTools(state), RuleAnswerer(), stress=True)
+    store = MemoryStore()
+    kept = await record_answer(store, match_id=match.meta.match_id, run_id="r1", answer=answer)
+    [record] = store.records
+    assert kept and record["type"] == "answer" and record["runId"] == "r1"
+    assert record["matchId"] == match.meta.match_id and record["id"] == f"r1-{answer.id}"
+    assert record["question"] == "What's the score?" and record["status"] == "verified"
+    assert record["refused"], "the drafts the Critic refused are kept too"
+
+    class Broken(MemoryStore):
+        async def write(self, record):
+            raise ConnectionError("down")
+
+    assert not await record_answer(Broken(), match_id="m", run_id="r", answer=answer)

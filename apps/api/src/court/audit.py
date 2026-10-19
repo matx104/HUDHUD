@@ -6,8 +6,9 @@ cue. If the store fails, the trail stops writing, counts what it dropped and rep
 end of the run; the match goes on regardless.
 
 A run writes a `run` record first, then one record per output (cue, rejection, spiked,
-degradation), then a `summary`. Records are partitioned by match, so one query gives a match's
-whole story, including what the Critic refused, not only what aired.
+degradation), then a `summary`. A viewer's question and its answer (court.ask) join the same run
+as an `answer` record, with every draft the Critic refused. Records are partitioned by match, so
+one query gives a match's whole story, including what the Critic refused, not only what aired.
 
     pip install -e "apps/api[audit]"    # azure-cosmos, azure-identity, aiohttp
 """
@@ -20,7 +21,7 @@ from typing import Any, Protocol
 from match_events import MatchMeta
 
 from .config import product_name
-from .contracts import OUTPUT_ADAPTER, Output
+from .contracts import OUTPUT_ADAPTER, Answer, Output
 
 
 class AuditStore(Protocol):
@@ -155,3 +156,27 @@ class AuditTrail:
             except Exception as error:  # a store failure costs the trail, never the broadcast
                 self.failure = f"{type(error).__name__}: {error}".splitlines()[0][:200]
                 self.dropped += 1
+
+
+async def record_answer(
+    store: AuditStore, *, match_id: str, run_id: str, answer: Answer, timeout_s: float = 10.0
+) -> bool:
+    """A viewer's question and its answer, kept with the match's run. A question can come after
+    full time, when the run's trail has closed, so each answer is written on its own, off the
+    viewer's path: a failing store costs the record, never the answer. True if it was kept."""
+    record = {
+        **answer.model_dump(mode="json", exclude={"type", "id"}),
+        "id": f"{run_id}-{answer.id}",
+        "answerId": answer.id,
+        "matchId": match_id,
+        "runId": run_id,
+        "type": "answer",
+        "recordedAt": datetime.now(UTC).isoformat(),
+    }
+    try:
+        await asyncio.wait_for(store.write(record), timeout=timeout_s)
+        return True
+    except Exception:  # the answer has already gone to the viewer
+        return False
+    finally:
+        await store.close()
