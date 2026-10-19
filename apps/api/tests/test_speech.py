@@ -142,4 +142,11 @@ def test_the_studio_hears_a_question_for_a_match_it_knows(client):
     assert heard.status_code == 200 and heard.json() == {"text": "What's the score?", "lang": "en"}
     assert test.post(f"/api/sessions/{session}/listen", content=b"RIFF").status_code == 422
     assert test.post(f"/api/sessions/{session}/listen", content=_wav(16)).status_code == 413
+
+    def chunked():  # no Content-Length: the limit holds as the pieces arrive
+        wav = _wav(16)
+        for at in range(0, len(wav), 65536):
+            yield wav[at : at + 65536]
+
+    assert test.post(f"/api/sessions/{session}/listen", content=chunked()).status_code == 413
     assert test.post("/api/sessions/nope/listen", content=_wav(1)).status_code == 404

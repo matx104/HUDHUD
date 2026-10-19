@@ -681,11 +681,17 @@ def create_app() -> FastAPI:
         if session is None:
             raise HTTPException(404, "no such match in this studio: start one to ask about it")
         most = 44 + int(WAV_RATE * 2 * (MAX_LISTEN_S + 0.5))
+        too_long = HTTPException(413, f"a question can be at most {MAX_LISTEN_S} seconds long")
         if int(request.headers.get("content-length") or 0) > most:
-            raise HTTPException(413, f"a question can be at most {MAX_LISTEN_S} seconds long")
-        wav = await request.body()
-        if len(wav) > most:
-            raise HTTPException(413, f"a question can be at most {MAX_LISTEN_S} seconds long")
+            raise too_long
+        # Read in pieces and stop at the limit: a chunked upload declares no length up front.
+        chunks, size = [], 0
+        async for chunk in request.stream():
+            size += len(chunk)
+            if size > most:
+                raise too_long
+            chunks.append(chunk)
+        wav = b"".join(chunks)
         with telemetry.tracer.start_as_current_span(
             "listen", attributes={"hudhud.lang": session.lang, "hudhud.bytes": len(wav)}
         ):
