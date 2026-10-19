@@ -26,30 +26,36 @@ description. The Monarch records and narrates; everything on screen is live, not
 1. `scripts/studio-power on`: the studio warm, no cold start mid-take.
 2. `make doctor`: all checks green. `make smoke`: the live studio streams a match.
 3. Sign in to the Azure portal in the recording browser, for the control-room shots.
-4. Open the takes from the showcase site's Control room page (`#/control`, "The live studio"):
-   **Take: English**, **Take: Urdu**, **Take: Arabic**. Each starts seed 21 at 54', 30 times live
-   speed, narrated by the Foundry models, with the stress test on, the moment it opens.
+4. Sign in to the studio (studio.hudhud.com.pk: a code to your email), then open the takes from
+   the showcase site's Control room page (`#/control`, "The live studio"): **Take: the whole
+   story**, then **Take: Urdu** and **Take: Arabic** (seed 21 from 54', 30 times live, models,
+   stress test on). Each starts the moment it opens.
 5. Browser window 1920×1080, zoom 100–110%, dark OS theme. Close everything else. Do not disturb on.
 6. Record with OBS (or any recorder) at 1080p, 30 fps; record voice separately if you prefer, and
    lay it over.
 
-Seed 21 from 54' gives, in about 70 seconds: two goals (55', 56'), a momentum swing (62'), a big
-chance (73'), and a second swing (78'). The stress test corrupts about one draft in four, so the
-Critic's desk gets red cards to show.
+**Take: the whole story** (Control room, "The live studio") starts seed 21 at 45', 60 times live,
+narrated by the Foundry models, stress test on, Saltmarsh Rovers as your club, Adem Rosmere as your
+player, xG as your one number, the referee at standard. Tick **Hear the commentary** before it
+starts. In about 50 seconds it gives: big chances (48', 53', 73'), the ref's call on the penalty
+(54'), two goals (55', 56'), momentum swings (62', 78'), the high press (66', 77', 86') and a
+second ref's call (90'); the stress test corrupts about one draft in four, so the Critic's desk
+gets red cards. At full time the recap is offered.
 
 ## The shots
 
-Spoken pace: about 2.4 words a second. The voiceover below is about 250 words.
+Spoken pace: about 2.4 words a second. The voiceover below is about 255 words.
 
 | Time | On screen | Do | Say |
 |---|---|---|---|
-| 0:00–0:14 | Showcase site, home, then "In plain words" | Scroll slowly | "AI can already commentate a football match. The trouble is, it sounds just as sure when it's wrong, and on air one wrong number costs a broadcaster its viewers' trust. HUDHUD fixes that: every line is checked against the match before it airs." |
-| 0:14–0:40 | **Take: English** (the studio) | Let it run from 54' | "This is the studio, live on Azure Container Apps. A synthetic match streams in. The Scout spots the moments, and a model on Microsoft Foundry writes each line from facts my own code computed. Every cue shows its evidence, tags its players, and carries a receipt: who wrote it, how many numbers were checked, how long it took, and what it cost: a fraction of a cent." |
-| 0:40–1:05 | The Critic's desk, as a red card lands | Point at the card; open its reason | "Here a draft cited an event that hadn't happened yet. The Critic recomputes every claim from the raw events, so it refused it, said exactly why, and sent it back. The rewrite aired seconds later. Nothing unverified reaches the screen." |
-| 1:05–1:20 | The studio, then "Take the narrator off air" | Press it at about 70'; press again after the 73' cue | "Now I take the narrator off air. The Orchestrator keeps the broadcast going with the Scout's own facts, says so on screen, and brings full commentary back the moment the narrator returns." |
-| 1:20–1:32 | **Take: Urdu**, then **Take: Arabic** | A cue in each; open "In English" once | "The same law holds in Urdu and Arabic: a translation may not state a number the checked line doesn't, or change a name." |
-| 1:32–1:48 | Control room: the HUDHUD workbook, then the showcase site's How it works | Scroll the workbook's headline tiles | "Five agents on Microsoft Agent Framework. Models chosen by evaluation, on Foundry. Every claim in an audit trail on Cosmos DB, every step traced in Application Insights, and the Critic itself an MCP tool any assistant can use." |
-| 1:48–1:52 | Showcase home, the hero line | Hold | "HUDHUD. Every call comes with its evidence." |
+| 0:00–0:10 | Showcase site: the crest and the wordmark, then "In plain words" | Scroll slowly | "AI can commentate a football match. The trouble is, it sounds just as sure when it's wrong. HUDHUD checks every line against the match before it airs." |
+| 0:10–0:34 | **Take: the whole story**, voice on | Let it run from 45' | "This is my studio, on Azure Container Apps. A model on Microsoft Foundry writes each line from facts my code computed, and Azure AI Speech reads it aloud. I made it mine: my club's moments come first, my player gets a live card, and xG ticks for both sides. Every cue carries its evidence and a receipt." |
+| 0:34–0:50 | The ref's call at 54', then the Critic's desk as a red card lands | Point at the yellow card; open a red card's reason | "A foul in the box: the likely call, a penalty and a yellow, read from the Law at the strictness I chose, and recomputed by the Critic. Here it refused a draft that cited an event that hadn't happened yet, said why, and the rewrite aired." |
+| 0:50–1:04 | "Take the narrator off air", then back | Press at about 70'; again after the 73' cue | "Now I take the narrator off air. The Orchestrator keeps the broadcast going on the Scout's own facts, says so, and brings commentary back when the narrator returns." |
+| 1:04–1:14 | **Take: Urdu**, voice on; then **Take: Arabic** | Let one line be spoken in each | "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not add a number or change a name." |
+| 1:14–1:24 | Full time: "Read the recap" | Open it; scroll | "At full time the match writes its own recap, and every line it writes passes the Critic first." |
+| 1:24–1:46 | Control room: the workbook; Foundry's tracing and its evaluation run; the studio's sign-in | Scroll the tiles; open the evaluation | "Five agents on Microsoft Agent Framework. Models chosen by evaluation and judged again by Foundry's own evaluators. Every call traced in Foundry and Application Insights, every claim in an audit trail on Cosmos DB, and the studio private behind its own wall. The Critic is an MCP tool any assistant can use." |
+| 1:46–1:52 | Showcase home, the crest | Hold | "HUDHUD. Built by one engineer. Every call comes with its evidence." |
 
 ## The description (the video's page, and the submission)
 

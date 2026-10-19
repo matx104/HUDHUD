@@ -174,6 +174,13 @@ def main() -> None:
             [
                 ("Open the studio", "The live match, behind the wall", STUDIO_URL),
                 (
+                    "Take: the whole story",
+                    "Seed 21 from 45', 60x, models, your club and player, xG, voice: the video",
+                    STUDIO_URL
+                    + "?seed=21&narration=foundry&start=45&speed=60&stress=1&autostart=1&lang=en"
+                    + "&club=home&player=h09&metric=xg&strictness=standard",
+                ),
+                (
                     "Take: English",
                     "Seed 21 from 54', 30x, models, stress test on, starts at once",
                     take + "en",
