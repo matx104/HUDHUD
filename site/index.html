@@ -307,7 +307,7 @@
       <ol class="lanes">
         <li data-reveal>
           <h2>Grand prize: first place</h2>
-          <p>Explainable match intelligence, every line with its evidence. Engaging narratives: live commentary, the recap and the ref's call. Ask the match anything, and get a checked answer. Context: momentum, breaks, the press, a card for any player. Accessible and personal: English, Urdu or Arabic, read aloud for fans who can't watch the screen, casual or analyst, your club, your player, one number. All in one match, end to end.</p>
+          <p>Explainable match intelligence, every line with its evidence. Engaging narratives: live commentary, the recap and the ref's call. Ask the match anything, and get a checked answer. Context: momentum, breaks, the press, a card for any player. Accessible and personal: English, Urdu or Arabic, read aloud for fans who can't watch the screen, with questions asked out loud and answered aloud for fans who can't type them, casual or analyst, your club, your player, one number. All in one match, end to end.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
@@ -317,17 +317,17 @@
         </li>
         <li data-reveal>
           <h2>Best use of Microsoft Foundry</h2>
-          <p>Models on Foundry write the commentary from facts code computed, and translate it into Urdu and Arabic under the same law. Asked a question, the model calls tools for every number it states, and the Critic checks each one. Azure AI Speech, on the same Foundry resource, reads every verified line aloud in English, Urdu or Arabic. A backup model takes over when the first fails. Evaluation chose which model serves, by a rule fixed before the run, and Foundry's own evaluators judge the lines that aired: groundedness 4.84 of 5. Every model call is traced with its tokens and its cost, in Application Insights and in Foundry's own tracing view. Keys are off: Entra ID only.</p>
+          <p>Models on Foundry write the commentary from facts code computed, and translate it into Urdu and Arabic under the same law. Asked a question, the model calls tools for every number it states, and the Critic checks each one. Azure AI Speech, on the same Foundry resource, reads every verified line aloud and hears questions asked out loud, in English, Urdu or Arabic. A backup model takes over when the first fails. Evaluation chose which model serves, by a rule fixed before the run, and Foundry's own evaluators judge the lines that aired (groundedness 4.84 of 5) and the answers to viewers' questions (5.0 of 5, after the fix the first run called for). Every model call is traced with its tokens and its cost, in Application Insights and in Foundry's own tracing view. Keys are off: Entra ID only.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
           <h2>Best multi-agent orchestration</h2>
-          <p>Five agents on Microsoft Agent Framework with typed handoffs and shared match state. The Critic sends a line back with its reasons; take the narrator off air mid-match and the broadcast keeps going, and says so. Asked a question, the Narrator answers with the Scout's counting tools and the Critic checks the answer: three agents on one question. The Critic is also an MCP server any assistant can call.</p>
+          <p>Five agents on Microsoft Agent Framework with typed handoffs and shared match state. The Critic sends a line back with its reasons; take the narrator off air mid-match and the broadcast keeps going, and says so. Asked a question, the Narrator answers with the Scout's counting tools and the Critic checks the answer: three agents on one question. Other agents can reach the Critic as a peer over A2A, and assistants over MCP. The Critic is also an MCP server any assistant can call.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
           <h2>Best enterprise solution</h2>
-          <p>Private by default: Cloudflare Access in front, and the studio checks Cloudflare's signature on every request. An audit trail on Azure Cosmos DB for every claim, refusal and cue, kept 90 days and then deleted by policy, a receipt on every line, traces and a workbook in Application Insights, a daily model budget under a $100 ceiling, and a 36-point health check before every recording.</p>
+          <p>Private by default: Cloudflare Access in front, and the studio checks Cloudflare's signature on every request. An audit trail on Azure Cosmos DB for every claim, refusal, cue and answer, kept 90 days and then deleted by policy, a receipt on every line, traces and a workbook in Application Insights, a daily model budget under a $100 ceiling, and a 36-point health check before every recording.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
@@ -465,7 +465,7 @@
         <li class="step" data-reveal>
           <div class="step-copy">
             <h3>Ask the match</h3>
-            <p>A viewer can ask the match anything, live or after full time. The Narrator answers, but it learns a number only by calling the Scout's tools: code that counts the events so far. Each count comes back as a fact with an id, the answer names the facts it uses, and code builds the claim from them. The Critic then checks it like any line: every count recomputed, every number and every player it names backed by those facts. What the events can't answer, like an injury or the final score, gets plain fixed words, not a guess.</p>
+            <p>A viewer can ask the match anything, live or after full time. The Narrator answers, but it learns a number only by calling the Scout's tools: code that counts the events so far. Each count comes back as a fact with an id, the answer names the facts it uses, and code builds the claim from them. The Critic then checks it like any line: every count recomputed, every number and every player it names backed by those facts. What the events can't answer, like an injury or the final score, gets plain fixed words, not a guess. With the voice on, ask out loud in English, Urdu or Arabic: Azure AI Speech turns the question into words, and the checked answer is read back in the same language.</p>
           </div>
           <div class="example">
             <div class="ex-head">70' · You asked: Which team has pressed higher in the second half?</div>
@@ -479,8 +479,8 @@
       <p class="section-lede" data-reveal>Everything the court produces is built for someone else's system to use, not only this studio.</p>
       <ul class="adopt">
         <li data-reveal><h3>A cue stream with a contract</h3><p>Each line leaves as a timed, prioritised JSON cue with its evidence, its receipt, the players it tags and, for a foul, the card to draw. A JSON Schema, written from the code and checked on every push, is the contract a graphics system builds against.</p></li>
-        <li data-reveal><h3>The Critic, for any assistant</h3><p>Five read-only MCP tools: an assistant can read a match and put a claim to the same Critic before it says anything.</p></li>
-        <li data-reveal><h3>An audit trail</h3><p>Every cue, refusal and change of service level, kept for 90 days on Azure Cosmos DB: what aired, who wrote it, what was refused and why.</p></li>
+        <li data-reveal><h3>The Critic, for any assistant or agent</h3><p>Six read-only MCP tools, so an assistant can read a match and put a claim to the same Critic before it says anything. And an A2A agent with a card, so another agent can hand it a claim or a question as a peer. Same rules either way.</p></li>
+        <li data-reveal><h3>An audit trail</h3><p>Every cue, refusal, answer and change of service level, kept for 90 days on Azure Cosmos DB: what aired, who wrote it, what was refused and why.</p></li>
         <li data-reveal><h3>The cost of a line, known</h3><p>A receipt on every cue: the model, its tokens and its cost. A model-written line costs about $0.0007, a whole match under a cent.</p></li>
         <li data-reveal><h3>The recap, as a page</h3><p>One standalone page per match that prints to PDF, every line it wrote checked by the Critic.</p></li>
         <li data-reveal><h3>Your rules, your languages</h3><p>The competition picks how strictly fouls are read. English, Urdu and Arabic, on screen and spoken aloud.</p></li>
@@ -611,7 +611,9 @@
         <div class="log-lists">
           <h2 class="log-heading">Live</h2>
           <ol class="log">
-            <li data-reveal><time>Oct 19</time><div><strong>Ask the match</strong><p>Ask the match a question, live or after full time, and the answer comes back checked. The model calls the Scout's tools for every number (function calling on Microsoft Foundry), and the Critic recomputes each count, checks each number and refuses any player the facts aren't about. On its first live run the model cited facts that were never counted; the Critic refused that draft, and the next one was right. Questions the events can't answer get fixed words. Offline, a rule-based answerer handles the common questions through the same Critic.</p></div></li>
+            <li data-reveal><time>Oct 19</time><div><strong>The Critic, for other agents</strong><p>The Critic now talks Agent2Agent (A2A) as well as MCP. Another agent reads its card, then hands it a claim or a question as a peer: Microsoft Agent Framework serves it, with no model inside, so its verdicts are computed and can't be talked round. Agent Framework's own A2A client checked it: a claim verified, the same claim a minute early refused, a question answered.</p></div></li>
+            <li data-reveal><time>Oct 19</time><div><strong>Ask out loud</strong><p>A fan who can't type can say the question, in English, Urdu or Arabic. The studio records it, Azure AI Speech turns it into words in that language, and the answer comes back checked and read aloud. Asked in Urdu who scored for an invented club, it named both scorers and their minutes, every number recomputed, and answered in Urdu. The audio is kept nowhere: only the words go on.</p></div></li>
+            <li data-reveal><time>Oct 19</time><div><strong>Ask the match</strong><p>Ask the match a question, live or after full time, and the answer comes back checked. The model calls the Scout's tools for every number (function calling on Microsoft Foundry), and the Critic recomputes each count, checks each number and refuses any player the facts aren't about. On its first live run the model cited facts that were never counted; the Critic refused that draft, and the next one was right. Questions the events can't answer get fixed words. Offline, a rule-based answerer handles the common questions through the same Critic. Every question is screened by Prompt Shields (Azure AI Content Safety) before a model reads it. Measured on two unseen matches, 57 questions: the first run got every answerable one right but inferred "no signs of injury" from a player's pass counts, twice, so code now holds back what event data can't see before any model is asked.</p><div class="eval" data-ask-eval></div></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>Foundry's judges, a second opinion</strong><p>The Critic checks numbers and citations by code. Microsoft Foundry's evaluators now read every line that aired against the fact sheet it came from, judged by a different model from the one that wrote it. They caught what code can't: colour the facts don't give, and a true number told as the wrong thing. The Narrator's instructions changed, and groundedness rose.</p><div class="eval" data-foundry-eval></div></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>Hear the commentary</strong><p>Every verified line can be read aloud by Azure AI Speech, in English, Urdu or Arabic, for fans who can't watch the screen. The voice reads only what aired: the studio asks for a line by its id, never with free text, so it says exactly what the Critic passed. Same Foundry resource, signed in with Entra ID, with a daily budget.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>The ref's call</strong><p>The first step on the road to an AI fourth official. When a foul carries a card or a penalty, the line states the referee's likely decision, read from Law 12 at the strictness the competition chose, and the Critic recomputes it from the foul before it airs. A harsher card than the Law gives is refused.</p></div></li>
@@ -877,7 +879,7 @@
             <dt>Microsoft Foundry</dt>
             <dd>Hosts the models that write the commentary: gpt-4.1-mini, with gpt-5-mini as the backup, both from OpenAI.</dd>
             <dt><a href="https://github.com/microsoft/agent-framework">Microsoft Agent Framework</a></dt>
-            <dd>The agents and their workflow. MIT license.</dd>
+            <dd>The agents and their workflow, the tools the Narrator calls to answer a question, and the Critic's A2A agent. MIT license.</dd>
             <dt><a href="https://github.com/pydantic/pydantic">Pydantic</a></dt>
             <dd>The typed contracts every agent hands to the next. MIT license.</dd>
             <dt>Azure Container Apps and Container Registry</dt>
@@ -890,6 +892,8 @@
             <dd>Keeps the audit trail, on its free tier. The Python SDK is MIT licensed.</dd>
             <dt><a href="https://github.com/modelcontextprotocol/python-sdk">MCP Python SDK</a></dt>
             <dd>Serves the Critic as tools for any assistant. MIT license.</dd>
+            <dt><a href="https://github.com/a2aproject/a2a-python">A2A Python SDK</a></dt>
+            <dd>Serves the Critic to other agents over Agent2Agent, through Microsoft Agent Framework's A2A executor. Apache 2.0 license.</dd>
             <dt>Azure Identity, pytest, Ruff</dt>
             <dd>Sign-in without keys, the tests, and the linter. MIT licenses.</dd>
             <dt>GitHub Actions and GitHub Pages</dt>
@@ -1004,6 +1008,7 @@
   <script src="data/proof.js"></script>
   <script src="data/realism.js"></script>
   <script src="data/foundry_eval.js"></script>
+  <script src="data/ask_eval.js"></script>
   <script src="assets/router.js"></script>
   <script src="assets/site.js"></script>
   <script src="assets/field.js"></script>

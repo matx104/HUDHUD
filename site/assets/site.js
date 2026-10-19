@@ -54,6 +54,7 @@
   if (window.PROOF?.length) drawProof(window.PROOF);
   if (window.REALISM) drawRealism(window.REALISM);
   if (window.FOUNDRY_EVAL) drawFoundryEval(window.FOUNDRY_EVAL);
+  if (window.ASK_EVAL) drawAskEval(window.ASK_EVAL);
   placeEmblems();
   startProgress();
   startMenu();
@@ -115,6 +116,30 @@
     }
     const note = el("p", "eval-note", `Means out of 5. ${r.writer} wrote, ${r.judge} judged; unseen matches.`);
     $("[data-foundry-eval]").append(table, note);
+  }
+
+  // Ask the match, measured: how many answers were right, and what Foundry's judges said, before
+  // and after the fix the first run called for.
+  function drawAskEval(r) {
+    const runs = r.before ? [r.before, r] : [r];
+    const table = el("table");
+    const head = el("tr");
+    for (const h of ["Measured", ...(r.before ? ["Before", "After"] : ["Result"])]) head.append(el("th", "", h));
+    table.append(head);
+    const rows = [
+      ["Answered right", (x) => `${x.right} of ${x.answerable}`],
+      ["Held back, for the right reason", (x) => `${x.declined_right} of ${x.unanswerable}`],
+    ];
+    for (const metric of Object.keys(r.judged ?? {})) {
+      rows.push([`${metric[0].toUpperCase()}${metric.slice(1)}, Foundry's judge`, (x) => `${Number(x.judged[metric].mean).toFixed(2)} (${x.judged[metric].pass_pct}% passed)`]);
+    }
+    for (const [label, cell] of rows) {
+      const row = el("tr");
+      row.append(el("td", "", label), ...runs.map((x) => el("td", "", cell(x))));
+      table.append(row);
+    }
+    const note = el("p", "eval-note", `${r.writer} answered ${r.questions} questions about unseen matches, at 30', 70' and full time; ${r.judge} judged, out of 5. Median ${r.median_s} s an answer, $${r.cost_usd} for the run.`);
+    $("[data-ask-eval]")?.append(table, note);
   }
 
   // How real is the synthetic football: the verdict in words, then goals a match as paired bars.
