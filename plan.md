@@ -9,7 +9,7 @@
 - [ ] Sharpen the differentiation sentence (inspiration.md §Differentiation memo) against what the top 10 actually build — gated on the detail pass
 - [ ] Check platform Resources tab for a sample dataset / schema (if one exists, it replaces the generator in Phase 1) — **DEFERRED** to the Monarch's manual pass; generator built meanwhile, so a platform schema would become an adapter, not a rewrite
 - [x] Pick name — **HUDHUD** (Monarch, 2026-10-17; story in brand.md, set in `site/config.js` + `court/config.py`)
-- [ ] Buy domain (re-run RDAP day-of; Cloudflare/Porkbun) — candidates in project-names.md §H, lead: hudhud.football
+- [x] **Domain: hudhud.com.pk** (bought 2026-10-19 at PKNIC; nameservers macy/matteo.ns.cloudflare.com). Cloudflare zone on the Free plan, DNS only (no proxy, so GitHub and Azure issue their own certificates): apex A/AAAA → GitHub Pages, `www` → matx104.github.io, `studio` → the container app with its `asuid.studio` verification TXT, SPF `-all` and DMARC `reject` (no mail). Waiting on PKNIC to publish the delegation; then: Pages custom domain + HTTPS, `siteUrl`, the social card (`scripts/social_card.py`), the studio's managed certificate at studio.hudhud.com.pk, and every copy of both addresses
 - **Done when:** differentiation memo v2 written, name+domain owned.
 
 ## Phase 1 — Architecture lock + skeleton (Oct 18–20)

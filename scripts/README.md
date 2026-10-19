@@ -15,6 +15,7 @@ sign-in through `_azure.py`. "Read-only" means a script changes nothing in Azure
 | `.venv/bin/python scripts/doctor.py --publish` | Runs the doctor and writes its checklist to `site/data/doctor.js`, the public proof on the site's Control room page (email addresses replaced) | read-only | free |
 | `.venv/bin/python scripts/redact.py` | Covers every identifier in the Azure screenshots saved to `proof/raw/` (git-ignored) with solid boxes, by OCR plus optional manual boxes, and publishes them to the Control room page. **Look at every output before committing** | none | free |
 | `.venv/bin/python scripts/drive_kit.py` | Builds the public media kit (the Read me and brand sheet PDFs from `kit/`, the crest and icons, the approved screenshots) and syncs it to the Google Drive folder with rclone, shared as "anyone with the link can view". `--build` builds only; `--video demo.mp4` uploads the recording. Copies, never deletes. Needs Playwright (`pip install playwright`) and Chromium | none | free |
+| `.venv/bin/python scripts/social_card.py` | Prints the link-preview card (`site/assets/og.png`) from `kit/social-card.html`, with the site's address from `site/config.js`. Rerun when the address changes; `--out` to look first | none | free |
 | `.venv/bin/python scripts/audit.py runs` / `show RUN` | Browses the audit trail: recent runs with what aired and was refused, or one run's every record (`--out run.json` exports it) | read-only | free |
 
 ## Running and shipping

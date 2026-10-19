@@ -20,6 +20,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 from _azure import GROUP, ROOT, az
+from _azure import studio_url as studio_address
 
 WORKBOOK = ROOT / "infra" / "monitor" / "hudhud-workbook.json"
 OUT = ROOT / "site" / "data" / "ops.js"
@@ -97,10 +98,7 @@ def main() -> None:
     foundry = resource_id("cognitiveservices", "account", "show", "-n", "hudhud-foundry")
     cosmos = resource_id("cosmosdb", "show", "-n", "hudhud-audit")
     studio = resource_id("containerapp", "show", "-n", "hudhud-studio")
-    fqdn = "properties.configuration.ingress.fqdn"
-    studio_url = "https://" + az(
-        "containerapp", "show", "-n", "hudhud-studio", "-g", GROUP, "--query", fqdn, "-o", "tsv"
-    )
+    studio_url = studio_address()  # its own domain once bound
     location = az(
         "monitor",
         "app-insights",

@@ -6,6 +6,7 @@ machine's default az. The Azure SDKs inside the court use the same sign-in throu
 
 import json
 import os
+import re
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -13,7 +14,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 GROUP = "rg-hudhud"
 STUDIO_APP = "hudhud-studio"
-SITE_URL = "https://matx104.github.io/HUDHUD/"
+# The showcase site's address, from the one place it's set (site/config.js, siteUrl).
+SITE_URL = re.search(r'siteUrl: "([^"]+)"', (ROOT / "site" / "config.js").read_text())[1]
 
 
 class AzureError(RuntimeError):
@@ -44,16 +46,12 @@ def use_project_cli() -> None:
 
 
 def studio_url() -> str:
-    fqdn = az(
-        "containerapp",
-        "show",
-        "-n",
-        STUDIO_APP,
-        "-g",
-        GROUP,
-        "--query",
-        "properties.configuration.ingress.fqdn",
-        "-o",
-        "tsv",
-    )
-    return f"https://{fqdn}/"
+    """The studio's address: its own domain once one is bound, else the one Azure gave it."""
+    ingress = az_json(
+        "containerapp", "show", "-n", STUDIO_APP, "-g", GROUP,
+        "--query", "properties.configuration.ingress",
+    )  # fmt: skip
+    bound = [
+        d["name"] for d in ingress.get("customDomains") or [] if d.get("bindingType") != "Disabled"
+    ]
+    return f"https://{bound[0] if bound else ingress['fqdn']}/"
