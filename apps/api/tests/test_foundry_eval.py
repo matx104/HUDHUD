@@ -32,10 +32,11 @@ def test_the_summary_counts_what_was_scored_and_no_more():
             "outputs.groundedness.groundedness_result": "fail",
         },
         {"outputs.groundedness.groundedness": "error"},
+        {"outputs.groundedness.groundedness": float("nan")},  # a call that failed: no verdict
     ]
     summary = summarize(
         {"rows": scored, "studio_url": "https://ai.azure.com/x"}, [{}] * 3, "j", "w"
     )
-    assert summary["groundedness"] == {"mean": 3.5, "pass_pct": 33.3, "scored": 2}
+    assert summary["groundedness"] == {"mean": 3.5, "pass_pct": 50.0, "scored": 2}
     assert summary["relevance"]["mean"] is None and summary["portal"] == "https://ai.azure.com/x"
     assert set(METRICS) <= set(summary)

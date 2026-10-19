@@ -131,12 +131,17 @@ def summarize(result: dict, rows: list[dict[str, Any]], judge_model: str, writer
         "portal": result.get("studio_url"),
     }
     for metric in METRICS:
-        values = [
-            float(r[f"outputs.{metric}.{metric}"])
+        # Only lines the judge answered: a call that failed (a dropped connection) is no verdict,
+        # so it counts neither for nor against, and the summary says how many were judged.
+        judged = [
+            r
             for r in scored
-            if isinstance(r.get(f"outputs.{metric}.{metric}"), int | float)
+            if r.get(f"outputs.{metric}.{metric}_result") in ("pass", "fail")
+            and isinstance(r.get(f"outputs.{metric}.{metric}"), int | float)
+            and r[f"outputs.{metric}.{metric}"] == r[f"outputs.{metric}.{metric}"]  # not NaN
         ]
-        passed = [r.get(f"outputs.{metric}.{metric}_result") == "pass" for r in scored]
+        values = [float(r[f"outputs.{metric}.{metric}"]) for r in judged]
+        passed = [r[f"outputs.{metric}.{metric}_result"] == "pass" for r in judged]
         summary[metric] = {
             "mean": round(statistics.mean(values), 2) if values else None,
             "pass_pct": round(100 * sum(passed) / len(passed), 1) if passed else None,
@@ -147,7 +152,8 @@ def summarize(result: dict, rows: list[dict[str, Any]], judge_model: str, writer
 
 def write(summary: dict) -> None:
     rows = "\n".join(
-        f"| {m.capitalize()} | {summary[m]['mean']} | {summary[m]['pass_pct']}% |" for m in METRICS
+        f"| {m.capitalize()} | {s['mean']} | {s['pass_pct']}% | {s['scored']} |"
+        for m, s in ((m, summary[m]) for m in METRICS)
     )
     portal = f"\nThe run in the Foundry portal: {summary['portal']}\n" if summary["portal"] else ""
     (ROOT / "docs" / "foundry-eval.md").write_text(f"""# Foundry's judges on the lines that aired
@@ -159,8 +165,8 @@ each against the fact sheet it was written from, and scored them from 1 to 5 (pa
 lines were written by {summary["writer"]} and passed the Critic first; the judge was
 {summary["judge"]}, a different model, so none graded its own work. Unseen matches, seeds 60 on.
 
-| Judged for | Mean (1-5) | Passed |
-|---|---|---|
+| Judged for | Mean (1-5) | Passed | Lines judged |
+|---|---|---|---|
 {rows}
 {portal}
 The Critic's checks are code: every number recomputed, every citation real. These judges are a
