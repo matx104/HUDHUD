@@ -6,6 +6,8 @@
 
 An official that watches every moment of the match and judges calls in a blink, at the strictness the competition has chosen. It shows the evidence for every decision and explains it to the referee, the broadcast and the crowd, each in their own language and at their own depth.
 
+**The ambition: a standard part of the game.** In the world's most prestigious international tournaments, at every level beneath them and above them, as much a part of football as the assistant referees, without taking anything away from the game's beauty: the flow, the drama and the referee stay; what HUDHUD adds is understanding. Set by the Monarch, 2026-10-19.
+
 **It advises, and the human referee decides.** This follows where the game is already going. Semi-automated offside builds the offside line with AI, and a human still signs it off. Research such as X-VARS (CVPR 2024 workshop) shows a model can classify fouls from video and explain them against the Laws, but no deployed system judges subjective calls. That gap is the destination.
 
 ## Principles that hold at every stage
@@ -16,6 +18,7 @@ An official that watches every moment of the match and judges calls in a blink, 
 4. **The Laws come first.** The Laws of the Game are encoded as checkable rules, and any judgment the rules can't settle is flagged as judgment.
 5. **Explain to everyone.** The referee gets the reasoning, the broadcast gets the evidence, and the crowd gets the call in its own language.
 6. **Never go dark.** When something fails, the system degrades, announces it and recovers, as the Orchestrator does today.
+7. **Add, never take away.** The game keeps its flow, its drama and its people. Nothing HUDHUD does may slow a restart, mute a celebration or stand between the referee and the players; it earns its place only by adding understanding.
 
 ## Stage 1 — The court of claims (the hackathon, Oct 17–27, 2026) · IN PROGRESS
 
@@ -52,7 +55,7 @@ Real-time advice to the referee team.
 - **The strictness spectrum:** per competition, published in advance and applied consistently.
 - **Talking to the crowd:** scripted announcements for the stadium screen and PA, and explanations in the app, in the fan's language.
 - **Audit:** every recommendation is kept with its evidence for post-match referee assessment and league review.
-- **Pilot path:** simulation and esports first, then grassroots and academy football, then lower-tier professional trials. Every trial runs inside the competition's protocol and with the approval of the game's law-making body. Bias audits and transparency reports are part of the product, not an afterthought.
+- **Pilot path:** simulation and esports first, then grassroots and academy football, then lower-tier professional trials, and, once each stage has proven itself, the top professional leagues and the biggest international tournaments. Every trial runs inside the competition's protocol and with the approval of the game's law-making body. Bias audits and transparency reports are part of the product, not an afterthought.
 
 ## Beyond
 

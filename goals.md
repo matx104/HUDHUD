@@ -10,7 +10,7 @@
 
 ## The north star (beyond the hackathon)
 
-The hackathon build is stage one. HUDHUD's end goal is an **AI fourth official**: it judges calls in a blink at a chosen strictness, shows the evidence for every decision and explains it to the crowd, while the human referee decides. The stages, gates and principles are in **roadmap.md**. Motto: **Onwards & Upwards.** For the hackathon, the vision is the declared direction, not a claim: the entry is judged on what Stage 1 ships.
+The hackathon build is stage one. HUDHUD's end goal is an **AI fourth official**: it judges calls in a blink at a chosen strictness, shows the evidence for every decision and explains it to the crowd, while the human referee decides. The ambition is for it to become a standard part of the game, from the grassroots to the most prestigious international tournaments, adding understanding and taking nothing from the game's beauty. The stages, gates and principles are in **roadmap.md**. Motto: **Onwards & Upwards.** For the hackathon, the vision is the declared direction, not a claim: the entry is judged on what Stage 1 ships.
 
 ## Award → Feature mapping (the build contract)
 
