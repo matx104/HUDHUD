@@ -147,19 +147,41 @@ async def run(
                 jobs.append((seed, state, probe))
 
     async def one(seed: int, state: MatchState, probe: Probe) -> dict[str, Any]:
+        minute = minute_label(state.events[-1].t, state.events[-1].period)
+        failure, answer = "", None
         async with gate:
+            # A rate limit waits and goes again; any other failure (a reply cut off mid-JSON) gets
+            # one more try. One that still fails counts against the model, and the run goes on.
             for wait in (1, 2, 4, 0):
                 try:
                     answer = await ask(probe.question, MatchTools(state), answerer, spend=spend)
                     break
                 except NarrationUnavailable as error:
-                    if not wait or "429" not in str(error):
-                        raise
-                    await asyncio.sleep(backoff_s * wait)
+                    failure = str(error).splitlines()[0][:160]
+                    limited = "429" in failure
+                    if not wait or (not limited and wait > 1):
+                        break
+                    await asyncio.sleep(backoff_s * wait if limited else 1)
+        if answer is None:
+            return {
+                "seed": seed,
+                "minute": minute,
+                "question": probe.question,
+                "expects": probe.cannot or "answer",
+                "grade": "unavailable",
+                "status": "unavailable",
+                "answer": failure,
+                "facts": [],
+                "drafts_refused": 0,
+                "reasons": [],
+                "latency_ms": 0.0,
+                "cost_usd": 0.0,
+            }
         return {
             "seed": seed,
-            "minute": minute_label(state.events[-1].t, state.events[-1].period),
+            "minute": minute,
             "question": probe.question,
+            "expects": probe.cannot or "answer",
             "grade": grade(probe, answer),
             "status": answer.status,
             "answer": answer.original or answer.text,
@@ -174,14 +196,14 @@ async def run(
 
 
 def summarize(rows: list[dict[str, Any]], writer: str) -> dict[str, Any]:
-    answerable = [r for r in rows if not r["grade"].startswith(("declined, ", "answered"))]
-    unanswerable = [r for r in rows if r not in answerable]
+    answerable = [r for r in rows if r["expects"] == "answer"]
+    unanswerable = [r for r in rows if r["expects"] != "answer"]
     grades: dict[str, int] = {}
     for r in rows:
         grades[r["grade"]] = grades.get(r["grade"], 0) + 1
     right = sum(r["grade"] == "right" for r in answerable)
     held = sum(r["grade"] == "declined, right reason" for r in unanswerable)
-    latencies = sorted(r["latency_ms"] for r in rows)
+    latencies = sorted(r["latency_ms"] for r in rows if r["status"] != "unavailable")
     return {
         "date": date.today().isoformat(),
         "writer": writer,
@@ -193,6 +215,7 @@ def summarize(rows: list[dict[str, Any]], writer: str) -> dict[str, Any]:
         "unanswerable": len(unanswerable),
         "declined_right": held,
         "grades": grades,
+        "unavailable": sum(r["grade"] == "unavailable" for r in rows),
         "drafts_refused": sum(r["drafts_refused"] for r in rows),
         "refusal_reasons": sorted({c for r in rows for c in r["reasons"]}),
         "median_s": round(statistics.median(latencies) / 1000, 1) if latencies else None,
@@ -241,6 +264,8 @@ can't be answered.
 - **Caught on the way:** the Critic refused {summary["drafts_refused"]} drafts before an answer
   showed ({", ".join(summary["refusal_reasons"]) or "none"}).
 - **Speed and cost:** median {summary["median_s"]} s an answer, ${summary["cost_usd"]} for the run.
+- **Failed to reply:** {summary["unavailable"]} (the model's reply couldn't be read after a retry;
+  in the studio the backup model or the offline answerer would have answered).
 
 | Grade | Answers |
 |---|---|
