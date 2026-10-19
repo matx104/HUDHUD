@@ -25,7 +25,7 @@ An official that watches every moment of the match and judges calls in a blink, 
 Commentary that proves every claim. Five agents (Orchestrator, Scout, Narrator, Critic, Localizer) work over synthetic match events. The Critic rejects anything it can't verify, the broadcast survives agent failure, and cues go out as overlay cues for analysts and casual fans in English, with Urdu and Arabic to follow. Phases and dates are in plan.md.
 
 - **Bridge item, "Ref's call": live since 2026-10-19.** The Scout flags a foul that carries a card or a penalty, the Narrator states the likely decision, and the Critic recomputes it from the cited foul under a lenient, standard or strict profile (court/referee.py). It proves the official's loop on today's agents. The restart has ground truth in the generator; cards wait for Stage 2's generator.
-- **Exit gate:** entry submitted, repo public, the 110-second video live on YouTube (the owner's channel, @matx104).
+- **Exit gate:** entry submitted, repo public, the 110-second video live on YouTube (the owner's channel, MATX104: @monarch-_-mat).
 
 ## Stage 2 — The decision explainer (after submission, Nov 2026 → Q1 2027)
 

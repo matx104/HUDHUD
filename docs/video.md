@@ -13,8 +13,9 @@ description. The Monarch records and narrates; everything on screen is live, not
 - **No copyrighted music.** Voice only, or royalty-free audio you have the licence for.
 - **A public URL on YouTube, Vimeo, Facebook Video or Youku** (official rules §4, Submission
   Requirements). Those four are the only hosts the rules name: a Google Drive link does not count
-  for the submission. An unlisted YouTube video works (it never shows on the channel YouTube makes
-  for the upload), and so does a free Vimeo account.
+  for the submission. It goes on the Monarch's channel, MATX104
+  (https://www.youtube.com/@monarch-_-mat). Public or unlisted both work: an unlisted video plays
+  for anyone with the link but never shows on the channel.
 - **The master copy lives on Google Drive**, in the public media kit:
   `.venv/bin/python scripts/drive_kit.py --video demo.mp4` uploads it to "1 Demo video" and prints
   its link. Put the link in `site/config.js` (`videoUrl`) and the site shows it on the home page.
