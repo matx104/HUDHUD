@@ -187,6 +187,13 @@ def main() -> None:
                 ),
                 ("Take: Urdu", "The same match, narrated in Urdu", take + "ur"),
                 ("Take: Arabic", "The same match, narrated in Arabic", take + "ar"),
+                (
+                    "Take: ask the match",
+                    "Seed 21 from 85', 60x, models, your player: full time in a minute, then ask",
+                    STUDIO_URL
+                    + "?seed=21&narration=foundry&start=85&speed=60&stress=1&autostart=1&lang=en"
+                    + "&player=h09",
+                ),
                 ("Container app", "hudhud-studio: revision, replica, identity", res(studio)),
                 ("App metrics", "Requests, CPU and memory of the studio", res(studio, "metrics")),
             ],
