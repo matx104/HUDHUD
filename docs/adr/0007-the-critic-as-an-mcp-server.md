@@ -7,9 +7,10 @@
 
 ## Decision
 
-- **`court/mcp_server.py`**, built on the MCP Python SDK (2.x, `MCPServer`), offers five tools:
+- **`court/mcp_server.py`**, built on the MCP Python SDK (2.x, `MCPServer`), offers six tools:
   `list_matches`, `match_events` (raw events with the ids a claim cites), `match_stats` (statistics
-  code computed, returned as assertions ready to use), `match_moments` (the court's own verified
+  code computed, returned as assertions ready to use), `player_stats` (one player's counts, as
+  assertions the Critic recomputes from that player's own events; added 2026-10-19), `match_moments` (the court's own verified
   claims, as worked examples) and `verify_claim` (the Critic's verdict, as of the end of a minute).
 - **All read-only and deterministic,** annotated as such: no model calls, no keys, nothing written.
 - **The evidence law holds for outside callers.** Inside the pipeline, a claim's figures are trusted

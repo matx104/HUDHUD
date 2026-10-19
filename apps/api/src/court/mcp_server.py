@@ -33,7 +33,16 @@ DEMO_SEEDS = (21, 7, 33)
 READ_ONLY = ToolAnnotations(readOnlyHint=True, idempotentHint=True, openWorldHint=False)
 Kind = Literal["goal", "big_chance", "momentum_swing", "great_pass"]
 Team = Literal["home", "away"]
-METRICS = ("goals", "shots", "xg", "passes", "passes_completed", "final_third_passes")
+METRICS = (
+    "goals",
+    "shots",
+    "xg",
+    "passes",
+    "passes_completed",
+    "final_third_passes",
+    "tackles_won",
+    "fouls",
+)
 
 server = MCPServer(
     name=f"{product_name().lower()}-critic",
@@ -41,7 +50,8 @@ server = MCPServer(
     version=version("match-court"),
     instructions=(
         "Check claims about synthetic football matches against their raw events. Read a match "
-        "with match_events and match_stats, then put a claim to verify_claim: cite the events it "
+        "with match_events, match_stats and player_stats, then put a claim to verify_claim: cite "
+        "the events it "
         "rests on, and back every number in the text with an assertion (match_stats returns them "
         "ready to use) or an event the claim cites. The Critic refuses anything it can't prove, "
         "and says why. Every club, player and match is invented."
@@ -187,6 +197,35 @@ def match_stats(seed: int, team: Team, from_minute: int, to_minute: int) -> dict
 
 
 @server.tool(annotations=READ_ONLY)
+def player_stats(seed: int, player: str, minute: int) -> dict[str, Any]:
+    """One player's counts up to the end of the given minute, each returned as an assertion
+    verify_claim accepts as it is. It carries the player's id, so the Critic recomputes it from
+    that player's own events. player: the player's id or full name."""
+    with _traced("player_stats", seed):
+        if not 1 <= minute <= 90:
+            raise ValueError("minute must be between 1 and 90")
+        match = _match(seed)
+        wanted = player.strip().lower()
+        found = next(
+            (p for p in match.meta.players if wanted in (p.id.lower(), p.name.lower())), None
+        )
+        if found is None:
+            raise ValueError(f"no player {player!r} in match {seed}")
+        state = _state_at(match, minute)
+        assertions = [
+            {
+                "metric": metric,
+                "team": found.team.value,
+                "player_id": found.id,
+                "value": round(compute(metric, found.team, state.events, found.id), 2),
+            }
+            for metric in METRICS
+        ]
+        team = match.meta.team(found.team).name
+        return {"seed": seed, "player": found.name, "team": team, "assertions": assertions}
+
+
+@server.tool(annotations=READ_ONLY)
 def match_moments(seed: int) -> dict[str, Any]:
     """The moments the court itself called in this match, and the verified claim it aired for
     each: worked examples of claims the Critic accepts."""
@@ -231,8 +270,9 @@ def verify_claim(
     """Put a claim about a match to the Critic, as of the end of the given minute.
 
     citations: the event ids the claim rests on (match_events lists them). assertions: the
-    numbers the claim relies on, as {metric, team, value, from_minute, to_minute}; metrics are
-    goals, shots, xg, passes, passes_completed, final_third_passes, or one event's own with an
+    numbers the claim relies on, as {metric, team, value, from_minute, to_minute}, with a
+    player_id for one player's count (player_stats returns them); metrics are goals, shots, xg,
+    passes, passes_completed, final_third_passes, tackles_won, fouls, or one event's own with an
     event_id: shot_xg, shot_speed (km/h), pass_distance (m), pass_difficulty (0-100),
     pass_accuracy (%), ball_speed (km/h).
     Returns approved, and every reason if not, in the Critic's own words.
@@ -257,6 +297,7 @@ def verify_claim(
                     value=float(a["value"]),
                     window=window,
                     event_id=a.get("event_id"),
+                    player_id=a.get("player_id"),
                 )
             )
         figures = {"minute": float(minute), **_event_figures(state, citations)}

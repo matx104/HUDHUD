@@ -3,7 +3,14 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from court.mcp_server import list_matches, match_events, match_moments, match_stats, verify_claim
+from court.mcp_server import (
+    list_matches,
+    match_events,
+    match_moments,
+    match_stats,
+    player_stats,
+    verify_claim,
+)
 from court.server import create_app
 
 
@@ -95,6 +102,21 @@ def test_the_studio_serves_the_critic_over_streamable_http(monkeypatch):
             "list_matches",
             "match_events",
             "match_stats",
+            "player_stats",
             "match_moments",
             "verify_claim",
         }
+
+
+def test_a_players_count_is_recomputed_from_that_players_own_events():
+    stats = player_stats(21, "Adem Rosmere", 90)
+    done = next(a for a in stats["assertions"] if a["metric"] == "passes_completed")
+    assert stats["team"] == "Saltmarsh Rovers" and done["player_id"]
+    goal, _ = _first_goal()
+    text = f"{done['value']:.0f} passes completed."
+    verdict = verify_claim(21, "goal", goal["team"], 90, text, goal["citations"], [done])
+    assert "assertion_mismatch" not in {r["code"] for r in verdict["reasons"]}
+    claimed = dict(done, value=done["value"] + 1)
+    text = f"{claimed['value']:.0f} passes completed."
+    verdict = verify_claim(21, "goal", goal["team"], 90, text, goal["citations"], [claimed])
+    assert "assertion_mismatch" in {r["code"] for r in verdict["reasons"]}
