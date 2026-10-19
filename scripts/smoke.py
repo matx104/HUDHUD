@@ -1,9 +1,10 @@
 """Does the live studio work, end to end, right now? Streams one short match and checks every part.
 
-Health, config, then a match from the 70th minute: the hello, the clock, the cues with their
-receipts, the end, and after full time one question asked of the match (court.ask). The offline
-narrator by default, so it costs nothing; --models has the Foundry models narrate it and answer
-instead (well under a cent). Exits 1 on any failure: run it before a recording.
+Health, config, the HUD² page, then a match from the 70th minute with HUD²'s stream: the hello,
+the clock, the actions placed on the pitch, the cues with their receipts, the end, and after full
+time one question asked of the match (court.ask). The offline narrator by default, so it costs
+nothing; --models has the Foundry models narrate it and answer instead (well under a cent). Exits
+1 on any failure: run it before a recording.
 The deployed studio is behind the wall, so it goes through with the Access service token.
 
     make smoke                         # the deployed studio, at its own address
@@ -83,9 +84,12 @@ def main() -> int:
     if args.models:
         check(config["models"], f"models connected, {config['model_matches_left']} left today")
 
+    with get(base + "hud", headers) as response:
+        check("/static/hud.js" in response.read().decode(), "HUD²: the page is served")
+
     narration = "foundry" if args.models else "template"
     started = time.perf_counter()
-    query = f"seed=21&narration={narration}&speed=0&start=70&stress=0.25"
+    query = f"seed=21&narration={narration}&speed=0&start=70&stress=0.25&hud=1"
     events = stream(f"{base}api/stream?{query}", headers)
     seconds = time.perf_counter() - started
     kinds = [kind for kind, _ in events]
@@ -101,6 +105,14 @@ def main() -> int:
     writers = sorted({c["receipt"]["writer"] for c in cues})
     check(not args.models or writers == ["gpt-4.1-mini"], f"written by {', '.join(writers)}")
     check(kinds[-1:] == ["end"], f"full time in {seconds:.1f} s")
+    # HUD²: every action placed on the pitch, the pulse each minute, and a spot for every cue.
+    placed = {d["id"] for k, d in events if k == "play"}
+    pulses = kinds.count("pulse")
+    pinned = all(placed & set(c["evidence"]) for c in cues)
+    check(
+        len(placed) > 1000 and pulses > 0 and pinned,
+        f"HUD²: {len(placed)} actions placed, {pulses} pulses, every cue pinned to its events",
+    )
     if config.get("voice") and cues:
         # One line, spoken: about a hundred characters of Azure AI Speech.
         session = events[0][1]["session"]
