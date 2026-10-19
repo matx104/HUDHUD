@@ -611,6 +611,7 @@
     if (r.handovers) rows.push(["Backup model took over", r.handovers]);
     if (r.translated_by) rows.push(["Translated by", `${r.translated_by}, numbers and names checked`]);
     if (r.translation_refused) rows.push(["Translation", "refused: English aired"]);
+    if (r.screened_by) rows.push(["Question screened by", r.screened_by]);
     const list = el("dl");
     for (const [label, value] of rows) list.append(el("dt", "", label), el("dd", "", String(value)));
     box.append(list);

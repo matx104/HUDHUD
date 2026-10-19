@@ -63,7 +63,7 @@ from opentelemetry.trace import SpanKind
 from match_events import MatchMeta, Shot, ShotOutcome, Side, generate, minute_label
 
 from . import telemetry
-from .ask import MAX_QUESTION, MatchTools, RuleAnswerer
+from .ask import MAX_QUESTION, MatchTools, RuleAnswerer, held_back
 from .ask import ask as ask_match
 from .audit import AuditTrail, CosmosStore, record_answer
 from .config import product_name
@@ -80,6 +80,7 @@ from .recap import build as build_recap
 from .recap import render_html as recap_page
 from .referee import Profile
 from .scout import Scout
+from .shield import Shield
 from .speech import (
     MAX_LISTEN_S,
     WAV_RATE,
@@ -99,6 +100,7 @@ MAX_SESSION_S = 15 * 60  # a backstop: no stream outlives this, whatever the cli
 log = logging.getLogger("court.studio")
 DAILY_MODEL_MATCHES = int(os.environ.get("STUDIO_DAILY_MODEL_MATCHES", "200"))
 MAX_QUESTIONS = int(os.environ.get("STUDIO_MAX_QUESTIONS", "12"))  # per match
+SHIELD = "Prompt Shields (Azure AI Content Safety)"
 BOARDS = 16  # matches a viewer can still ask about, the latest, after their stream has ended
 
 
@@ -271,8 +273,10 @@ class Session:
         prefs: Preferences | None = None,
         strictness: Profile = "standard",
         spoken: Spoken | None = None,
+        shield: Shield | None = None,
     ) -> None:
         self.spoken = spoken
+        self.shield = shield  # Prompt Shields, read before any model sees a question
         self.strictness = strictness  # how strictly the referee's likely calls are read
         self.stress = stress
         self.id = uuid.uuid4().hex[:12]
@@ -338,6 +342,15 @@ class Session:
         tools = MatchTools(self.state)
         stress = self._ask_rng.random() < self.stress
         model = self.narrator.inner if self.narration == "foundry" else None
+        attack = None
+        if model is not None and self.narrator.on_air and self.shield is not None:
+            # A model reads only a question the shield passed. Flagged: fixed words. No verdict
+            # (the shield is down): the offline answerer takes it, and no model reads it.
+            attack = await self.shield.attack(question)
+            if attack:
+                return held_back(question, tools, "instruction", screened_by=SHIELD)
+            if attack is None:
+                model = None
         if model is not None and self.narrator.on_air:
             translate = None
             if self.lang != "en":
@@ -345,7 +358,7 @@ class Session:
                 localizer.bind(self.match.meta)
                 translate = localizer.translate
             try:
-                return await ask_match(
+                answer = await ask_match(
                     question,
                     tools,
                     model,
@@ -354,6 +367,10 @@ class Session:
                     translate=translate,
                     spend=model.spend,
                 )
+                if attack is False:
+                    receipt = answer.receipt.model_copy(update={"screened_by": SHIELD})
+                    answer = answer.model_copy(update={"receipt": receipt})
+                return answer
             except Exception:  # an outage costs the model's answer, never the answer
                 log.exception("the models couldn't answer; the offline answerer does")
         tools = MatchTools(self.state, as_of_seq=tools.as_of_seq)
@@ -520,6 +537,8 @@ def create_app() -> FastAPI:
     ):
         voice = Voice(resource_id=resource, region=region)
     app.state.voice = voice  # the tests swap in a fake
+    endpoint = os.environ.get("CONTENT_SAFETY_ENDPOINT")
+    app.state.shield = Shield(endpoint) if endpoint else None
     app.state.sessions = sessions  # read by the tests: every stream must leave none behind
     app.state.boards = boards
 
@@ -593,6 +612,7 @@ def create_app() -> FastAPI:
             "prefs": prefs,
             "strictness": strictness,
             "spoken": spoken,
+            "shield": app.state.shield,
         }
 
         async def events() -> AsyncIterator[str]:

@@ -121,6 +121,8 @@ CANNOT = {
     "off_topic": "I answer questions about this match, from its events.",
     "unsupported": "I can't answer that one from the events. Try the score, who scored, a side's "
     "or a player's shots, xG, passes or fouls, or the biggest chance.",
+    "instruction": "That reads as an instruction to the model, not a question about the match, so "
+    "no model was given it. Ask about the match itself.",
 }
 REFUSED = (
     "I couldn't prove an answer to that: the Critic refused every draft. The refusals show why."
@@ -676,8 +678,7 @@ async def ask(
     feedback: list[str] = []
     attempt, verdict, used = 0, None, []
     if beyond_the_data(question):
-        text = CANNOT["beyond_data"]
-        return _answer(tools, question, "cannot", text, 0, "none", started, None)
+        return held_back(question, tools, "beyond_data")
     for attempt in range(1, MAX_ATTEMPTS + 1):
         draft = await answerer.answer(question, tools, feedback)
         if draft.cannot or not draft.text.strip():
@@ -724,6 +725,14 @@ async def ask(
             receipt = answer.receipt.model_copy(update={"translation_refused": True})
             answer = answer.model_copy(update={"receipt": receipt})
     return answer
+
+
+def held_back(question: str, tools: MatchTools, why: str, *, screened_by: str = "") -> Answer:
+    """Fixed words, with no answerer asked: for what event data can't see, or a question the
+    shield flagged (court.shield)."""
+    answer = _answer(tools, question, "cannot", CANNOT[why], 0, "none", time.perf_counter(), None)
+    receipt = answer.receipt.model_copy(update={"screened_by": screened_by})
+    return answer.model_copy(update={"receipt": receipt})
 
 
 def overreach(claim: Claim) -> Claim:

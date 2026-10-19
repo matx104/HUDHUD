@@ -196,6 +196,9 @@ class Receipt(_Frozen):
     translation_refused: bool = Field(
         default=False, description="The translation stated a number the line doesn't: English aired"
     )
+    screened_by: str = Field(
+        default="", description="For an answer: what read the viewer's question before any model"
+    )
 
 
 class PlayerTag(_Frozen):

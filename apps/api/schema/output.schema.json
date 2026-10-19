@@ -546,6 +546,12 @@
           "title": "Numbers Checked",
           "type": "integer"
         },
+        "screened_by": {
+          "default": "",
+          "description": "For an answer: what read the viewer's question before any model",
+          "title": "Screened By",
+          "type": "string"
+        },
         "tokens_in": {
           "default": 0,
           "title": "Tokens In",
