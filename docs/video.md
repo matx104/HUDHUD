@@ -29,8 +29,9 @@ description. The Monarch records and narrates; everything on screen is live, not
 3. Sign in to the Azure portal in the recording browser, for the control-room shots.
 4. Sign in to the studio (studio.hudhud.com.pk: a code to your email), then open the takes from
    the showcase site's Control room page (`#/control`, "The live studio"): **Take: the whole
-   story**, then **Take: Urdu** and **Take: Arabic** (seed 21 from 54', 30 times live, models,
-   stress test on). Each starts the moment it opens.
+   story**, then **Take: HUD², the referee** (seed 21 from 50', 30 times live, models, stress test
+   on: the penalty's call comes about 8 seconds in), then **Take: Urdu** and **Take: Arabic** (seed
+   21 from 54', 30 times live, models, stress test on). Each starts the moment it opens.
 5. Browser window 1920×1080, zoom 100–110%, dark OS theme. Close everything else. Do not disturb on.
 6. Record with OBS (or any recorder) at 1080p, 30 fps; record voice separately if you prefer, and
    lay it over.
@@ -51,7 +52,7 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 255 words.
 |---|---|---|---|
 | 0:00–0:10 | Showcase site: the crest and the wordmark, then "In plain words" | Scroll slowly | "AI can commentate a football match. The trouble is, it sounds just as sure when it's wrong. HUDHUD checks every line against the match before it airs." |
 | 0:10–0:34 | **Take: the whole story**, voice on | Let it run from 45' | "This is my studio, on Azure Container Apps. A model on Microsoft Foundry writes each line from facts my code computed, and Azure AI Speech reads it aloud. I made it mine: my club's moments come first, my player gets a live card, and xG ticks for both sides. Every cue carries its evidence and a receipt." |
-| 0:34–0:50 | The ref's call at 54', then the Critic's desk as a red card lands | Point at the yellow card; open a red card's reason | "A foul in the box: the likely call, a penalty and a yellow, read from the Law at the strictness I chose, and recomputed by the Critic. Here it refused a draft that cited an event that hadn't happened yet, said why, and the rewrite aired." |
+| 0:34–0:50 | **Take: HUD², the referee** (from 50'): the ref's call at 54' pinned at the foul, the Critic's lock closing on it; a refused draft struck in red where it was aimed | Point at the yellow card on the pin; then at the next refusal (the stress test makes about one in four) | "HUD², the referee's lens. A foul in the box: likely a penalty and a yellow, read from the Law and recomputed by the Critic, pinned where it happened. A draft that cited an event yet to happen: refused, struck on the spot." |
 | 0:50–1:04 | "Take the narrator off air", then back | Press at about 70'; again after the 73' cue | "Now I take the narrator off air. The Orchestrator keeps the broadcast going on the Scout's own facts, says so, and brings commentary back when the narrator returns." |
 | 1:04–1:14 | **Take: Urdu**, voice on; then **Take: Arabic** | Let one line be spoken in each | "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not add a number or change a name." |
 | 1:14–1:24 | Full time: "Read the recap", then Ask the match: "Who has been the better side, by the numbers?" | Open the recap; then tap the question and open "What the tools counted" | "At full time the match writes its recap and answers my questions, every number checked by the Critic first." |
@@ -65,8 +66,9 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 255 words.
 > line airs, refuses what it can't prove, and sends it back for a rewrite. Models on Microsoft
 > Foundry (chosen by evaluation), the studio on Azure Container Apps, an audit trail on Azure Cosmos
 > DB, traces in Application Insights, and the Critic as an MCP server and an A2A agent. Viewers ask
-> the match questions, typed or out loud, and every answer is checked the same way. English, Urdu
-> and Arabic.
+> the match questions, typed or out loud, and every answer is checked the same way. HUD² shows the
+> match through the referee's, the commentator's or the fan's lens, every checked line pinned where
+> it happened. English, Urdu and Arabic.
 > Every club, player and match is invented; synthetic data only.
 >
 > About it: https://hudhud.com.pk/
