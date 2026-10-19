@@ -10,6 +10,11 @@ catch every one.
 An open demo must not run up the bill: model-narrated matches are capped per day (then the offline
 narrator takes over, and the studio says so), and so are concurrent streams.
 
+On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner in at
+studio.hudhud.com.pk, and a Worker (edge/) carries each request on to Azure. With `ACCESS_TEAM` and
+`ACCESS_AUD` set, the studio refuses any request that doesn't carry a token Access signed for it, so
+its own Azure address is no way around the wall.
+
     make studio        # http://localhost:8091
 """
 
@@ -26,8 +31,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 
+import jwt
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from mcp.server.transport_security import TransportSecuritySettings
 from opentelemetry import trace
@@ -53,6 +59,41 @@ MAX_STREAMS = int(os.environ.get("STUDIO_MAX_STREAMS", "8"))
 MAX_SESSION_S = 15 * 60  # a backstop: no stream outlives this, whatever the client does
 log = logging.getLogger("court.studio")
 DAILY_MODEL_MATCHES = int(os.environ.get("STUDIO_DAILY_MODEL_MATCHES", "200"))
+
+
+class AccessOnly:
+    """Lets through only requests Cloudflare Access let in. Access signs a token for each one
+    (Cf-Access-Jwt-Assertion), checked here against the team's published keys and this app's
+    audience tag: nothing secret is stored. Container Apps' health probes call /healthz directly,
+    so it stays open; it says only "ok".
+    """
+
+    HEADER = b"cf-access-jwt-assertion"
+
+    def __init__(self, app: Any, *, team: str, audience: str, keys: Any = None) -> None:
+        self.app, self.audience = app, audience
+        self.issuer = f"https://{team}"
+        self.keys = keys or jwt.PyJWKClient(f"{self.issuer}/cdn-cgi/access/certs", lifespan=3600)
+
+    async def __call__(self, scope, receive, send) -> None:
+        if scope["type"] == "http" and scope["path"] != "/healthz":
+            token = dict(scope["headers"]).get(self.HEADER, b"").decode()
+            if not await self._signed(token):
+                refused = PlainTextResponse(f"This {product_name()} studio is private.", 403)
+                return await refused(scope, receive, send)
+        await self.app(scope, receive, send)
+
+    async def _signed(self, token: str) -> bool:
+        if not token:
+            return False
+        try:  # the keys are fetched once an hour, off the event loop
+            key = await asyncio.to_thread(self.keys.get_signing_key_from_jwt, token)
+            jwt.decode(
+                token, key.key, algorithms=["RS256"], audience=self.audience, issuer=self.issuer
+            )
+        except jwt.PyJWTError:
+            return False
+        return True
 
 
 class OffAir(RuntimeError):
@@ -365,6 +406,8 @@ def create_app() -> FastAPI:
 
     app.mount("/mcp", critic)
     app.mount("/static", StaticFiles(directory=STUDIO), name="static")
+    if (team := os.environ.get("ACCESS_TEAM")) and (aud := os.environ.get("ACCESS_AUD")):
+        app.add_middleware(AccessOnly, team=team, audience=aud)
     return app
 
 

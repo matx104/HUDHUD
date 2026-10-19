@@ -109,3 +109,50 @@ def test_a_server_error_reaches_the_page_without_its_details(client, monkeypatch
 def test_a_full_studio_turns_new_streams_away(client, monkeypatch):
     monkeypatch.setattr("court.server.MAX_STREAMS", 0)
     assert client.get("/api/stream?seed=21&speed=0").status_code == 503
+
+
+def test_behind_the_wall_only_what_access_signed_gets_in(monkeypatch):
+    import time
+
+    import jwt
+    from cryptography.hazmat.primitives.asymmetric import rsa
+
+    from court.server import AccessOnly
+
+    access = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    impostor = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+
+    class Keys:  # stands in for the team's published keys
+        def get_signing_key_from_jwt(self, token):
+            return type("Key", (), {"key": access.public_key()})()
+
+    def token(key=access, aud="studio-aud", iss="https://team.example", ttl=60):
+        claims = {"aud": aud, "iss": iss, "exp": int(time.time()) + ttl}
+        return jwt.encode(claims, key, algorithm="RS256")
+
+    monkeypatch.delenv("FOUNDRY_PROJECT_ENDPOINT", raising=False)
+    monkeypatch.delenv("COSMOS_ENDPOINT", raising=False)
+    app = create_app()
+    app.add_middleware(AccessOnly, team="team.example", audience="studio-aud", keys=Keys())
+    client = TestClient(app)
+
+    def status(path, **claims):
+        return client.get(path, headers={"Cf-Access-Jwt-Assertion": token(**claims)}).status_code
+
+    assert client.get("/healthz").status_code == 200, "the probes call it directly"
+    for path in ("/", "/api/config", "/static/studio.js", "/mcp/"):
+        assert client.get(path).status_code == 403, path
+    assert status("/api/config") == 200
+    assert status("/api/config", key=impostor) == 403, "signed by someone else"
+    assert status("/api/config", aud="another-app") == 403, "signed for another app"
+    assert status("/api/config", iss="https://other.example") == 403, "another team's"
+    assert status("/api/config", ttl=-120) == 403, "expired"
+
+
+def test_the_wall_goes_up_only_when_configured(monkeypatch):
+    monkeypatch.setenv("ACCESS_TEAM", "team.example")
+    monkeypatch.setenv("ACCESS_AUD", "studio-aud")
+    monkeypatch.delenv("FOUNDRY_PROJECT_ENDPOINT", raising=False)
+    assert TestClient(create_app()).get("/api/config").status_code == 403
+    monkeypatch.delenv("ACCESS_AUD")
+    assert TestClient(create_app()).get("/api/config").status_code == 200
