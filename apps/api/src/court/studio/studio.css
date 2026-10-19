@@ -73,6 +73,9 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .slate-word { margin: 0; font: 900 clamp(4rem, 11vw, 9rem) / 0.85 var(--display); letter-spacing: 0.01em; }
 .slate-promise { margin: 0.6rem 0 0.9rem; font: 700 clamp(1.5rem, 3.4vw, 2.6rem) / 1 var(--display); color: var(--gold); }
 .slate-how { max-width: 46ch; margin: 0; color: var(--chalk-dim); font-size: 1.0625rem; }
+.slate-limits { max-width: 52ch; margin-top: 1rem; font-size: 0.875rem; color: var(--chalk-dim); }
+.slate-limits summary { cursor: pointer; color: var(--gold); font-weight: 600; }
+.slate-limits ul { margin: 0.5rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; }
 
 /* ---------- layout ---------- */
 .studio { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "board board" "feed desk"; gap: 1rem; padding: 1rem 1.25rem; align-items: start; }

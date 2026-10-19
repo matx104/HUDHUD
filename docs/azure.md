@@ -163,6 +163,10 @@ work, and the code, public at submission, runs the same studio on any machine
   `/healthz` stays open for Container Apps' probes; it says only "ok".
 - **Checked** by `make doctor`: strangers are sent to sign in, the Azure address answers 403, the
   service token gets through. `make smoke` streams a match through the wall.
+- **Settings take effect with an image.** On the express environment a settings-only update
+  (`containerapp update --set-env-vars`) changes the revision but leaves the running container as it
+  was, and `revision restart` fails (InternalServerError). Ship an image (`scripts/deploy-studio`) to
+  bring new settings into force; the doctor's wall checks show when they are.
 - **The Worker** builds with the cf CLI, which loads `edge/cloudflare.config.ts` with Node's own
   TypeScript support. Some distro builds of Node leave it out (this machine's did): `scripts/edge`
   then uses an official Node 24 build unpacked under `~/.local/share/hudhud/`, or `EDGE_NODE`.
