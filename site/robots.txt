@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://matx104.github.io/HUDHUD/sitemap.xml
+Sitemap: https://hudhud.com.pk/sitemap.xml

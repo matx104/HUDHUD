@@ -4,11 +4,11 @@
 window.SITE = {
   productName: "HUDHUD",
   productMark: "HUD²", // the short form: monogram, app icon
-  siteUrl: "https://matx104.github.io/HUDHUD/", // canonical address; change with the domain
+  siteUrl: "https://hudhud.com.pk/", // canonical address: the project's own domain since 2026-10-19 (was matx104.github.io/HUDHUD, which redirects here)
   repoUrl: "https://github.com/matx104/HUDHUD",
   repoPublic: false, // flip at submission: shows the Code links (a private repo 404s for visitors)
   videoUrl: null, // the 110-second demo, once it has a public URL
   kitUrl: "https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y", // the public media kit: video, screenshots, brand (scripts/drive_kit.py)
-  studioUrl: "https://hudhud-studio.politesand-62c3c2c4.uaenorth.azurecontainerapps.io/", // the live studio on Azure Container Apps
+  studioUrl: "https://studio.hudhud.com.pk/", // the live studio: a Cloudflare redirect to its Azure Container Apps address
   deadline: "2026-10-28T06:59:00Z", // submissions close: Oct 27, 11:59 PM Pacific (official rules §1)
 };

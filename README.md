@@ -3,7 +3,7 @@
 > Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
 > AI match intelligence on synthetic football-realistic data. **Solo build.**
 
-**Status:** live. **Watch a match in the studio:** https://hudhud-studio.politesand-62c3c2c4.uaenorth.azurecontainerapps.io/ (Azure Container Apps; commentary written by gpt-4.1-mini on Microsoft Foundry, every number checked by the Critic before it airs). Showcase site: https://matx104.github.io/HUDHUD/ . Media kit (the video, screenshots and brand): https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y . Audit trail on Azure Cosmos DB, traces in Application Insights, 120 tests on every push (109 Python, 11 for the site).
+**Status:** live. **Watch a match in the studio:** https://studio.hudhud.com.pk/ (Azure Container Apps; commentary written by gpt-4.1-mini on Microsoft Foundry, every number checked by the Critic before it airs). Showcase site: https://hudhud.com.pk/ . Media kit (the video, screenshots and brand): https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y . Audit trail on Azure Cosmos DB, traces in Application Insights, 120 tests on every push (109 Python, 11 for the site).
 
 ## Quickstart
 

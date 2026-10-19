@@ -38,3 +38,6 @@ site/review/
 # Azure screenshots before redaction: they never leave this machine (scripts/redact.py)
 proof/raw/
 proof/review/
+
+# the Cloudflare CLI's local cache (the account's ID and name): machine-local, never committed
+.cloudflare/

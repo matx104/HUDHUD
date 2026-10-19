@@ -60,7 +60,7 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 250 words.
 > DB, traces in Application Insights, and the Critic as an MCP server. English, Urdu and Arabic.
 > Every club, player and match is invented; synthetic data only.
 >
-> Try it: https://hudhud-studio.politesand-62c3c2c4.uaenorth.azurecontainerapps.io/
-> About it: https://matx104.github.io/HUDHUD/
+> Try it: https://studio.hudhud.com.pk/
+> About it: https://hudhud.com.pk/
 > Video, screenshots and brand kit: https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y
 > Built for Inside the Game: Developer Hackathon (October 2026). An independent entry.
