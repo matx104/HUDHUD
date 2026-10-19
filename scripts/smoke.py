@@ -12,8 +12,10 @@ The deployed studio is behind the wall, so it goes through with the Access servi
 
 import argparse
 import json
+import struct
 import sys
 import time
+import urllib.error
 import urllib.request
 
 from _azure import STUDIO_URL, through_the_wall
@@ -81,6 +83,24 @@ def main() -> int:
         with get(f"{base}api/sessions/{session}/speak?cue={cues[0]['id']}", headers) as response:
             audio = response.read()
         check(len(audio) > 1000, f"the voice read a line aloud: {len(audio):,} bytes of audio")
+        # A second of silence, as the page records it: the studio sends it to speech to text,
+        # which must answer that it heard nothing (422), not fail (503).
+        silence = b"\x00\x00" * 16_000
+        header = b"RIFF" + struct.pack("<I", 36 + len(silence)) + b"WAVEfmt "
+        header += struct.pack("<IHHIIHH", 16, 1, 1, 16_000, 32_000, 2, 16)
+        wav = header + b"data" + struct.pack("<I", len(silence)) + silence
+        listen = urllib.request.Request(
+            f"{base}api/sessions/{session}/listen",
+            data=wav,
+            headers=headers | {"Content-Type": "audio/wav"},
+            method="POST",
+        )
+        try:
+            urllib.request.urlopen(listen, timeout=30)
+            heard = 200
+        except urllib.error.HTTPError as error:
+            heard = error.code
+        check(heard == 422, f"listening works: a second of silence was heard as no words ({heard})")
     if kinds[-1:] == ["end"]:
         # One question, after full time: answered from the events, checked by the Critic.
         session = events[0][1]["session"]
