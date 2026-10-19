@@ -108,19 +108,18 @@ def main() -> int:
 
     app = az_json("containerapp", "show", "-n", STUDIO_APP, "-g", GROUP)
     image = app["properties"]["template"]["containers"][0]["image"]
-    head = subprocess.run(
-        ["git", "rev-parse", "--short", "HEAD"],
-        capture_output=True,
-        text=True,
-        cwd=str(sys.path[0]),
-    ).stdout.strip()
-    check("Studio: running", app["properties"].get("runningStatus") == "Running")
-    check(
-        "Studio: on the latest commit",
-        image.endswith(f":{head}"),
-        image.rsplit(":", 1)[-1],
-        warn=True,
+    # The image is tagged with the commit it was built from (scripts/deploy-studio). It's current
+    # when nothing the image is built from has changed since, whatever else has been committed.
+    tag = image.rsplit(":", 1)[-1]
+    built_from = ["apps", "packages", "Dockerfile", ".dockerignore"]
+    current = (
+        subprocess.run(
+            ["git", "diff", "--quiet", tag, "HEAD", "--", *built_from], cwd=ROOT
+        ).returncode
+        == 0
     )
+    check("Studio: running", app["properties"].get("runningStatus") == "Running")
+    check("Studio: built from the latest code", current, tag, warn=True)
     env = {e["name"]: e.get("value") for e in app["properties"]["template"]["containers"][0]["env"]}
     check(
         "Studio: no secrets in its settings",
