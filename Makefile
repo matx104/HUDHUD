@@ -1,7 +1,7 @@
 PY ?= python3.13
 BIN := .venv/bin
 
-.PHONY: setup test lint fmt schema demo eval site-data control-room doctor costs smoke links studio studio-offline edge site
+.PHONY: setup test lint fmt schema demo eval site-data control-room doctor costs smoke links studio studio-offline edge realism site
 
 setup:  ## create .venv and install both workspace packages (editable)
 	$(PY) -m venv .venv
@@ -26,6 +26,9 @@ demo:  ## one synthetic match, end to end, in the console
 
 eval:  ## score the Scout's momentum calls against hidden ground truth (unseen seeds 60-99)
 	$(BIN)/python -m court eval
+
+realism:  ## the generator's scorelines against real international results (needs benchmarks/, see the script)
+	$(BIN)/python scripts/realism.py
 
 site-data:  ## regenerate the showcase data: the hero claim (chain.js) and the match (match.js)
 	$(BIN)/python scripts/site_sample.py

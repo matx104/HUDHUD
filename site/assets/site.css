@@ -352,6 +352,22 @@ code { font-family: var(--mono); }
 .mark-player { background: var(--gold); }
 .example-yours { border-left: 4px solid var(--pitch); box-shadow: 0 0 28px -14px var(--pitch); }
 
+/* ---------- how real is it: verdict lines, then paired bars (real in chalk, synthetic in lime) ---------- */
+.realism-verdict { list-style: none; margin: 0 0 1.5rem; padding: 0; display: grid; gap: 0.4rem; }
+.realism-verdict li { padding-left: 1rem; border-left: 3px solid var(--gold); color: var(--chalk); }
+.realism-bars { display: grid; gap: 0.55rem; max-width: 46rem; }
+.realism-legend { display: flex; gap: 1.25rem; margin: 0 0 0.4rem; font-size: 0.875rem; color: var(--chalk-dim); }
+.key::before { content: ""; display: inline-block; width: 0.8rem; height: 0.8rem; margin-right: 0.4rem; border-radius: 2px; vertical-align: -0.1rem; }
+.key.real::before { background: rgba(244, 241, 232, 0.55); }
+.key.synthetic::before { background: var(--lime); }
+.realism-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); align-items: center; gap: 0.75rem; }
+.realism-goals { font: 500 0.875rem / 1 var(--mono); color: var(--chalk-dim); }
+.realism-pair { display: grid; gap: 3px; }
+.bar { position: relative; display: block; height: 0.95rem; width: var(--w); min-width: 2px; border-radius: 0 3px 3px 0; }
+.bar.real { background: rgba(244, 241, 232, 0.55); }
+.bar.synthetic { background: var(--lime); }
+.bar b { position: absolute; left: calc(100% + 0.4rem); top: 50%; transform: translateY(-50%); font: 500 0.75rem / 1 var(--mono); color: var(--chalk-dim); white-space: nowrap; }
+
 /* ---------- what this data can't tell you: a ruled list, the limit on the left, the why on the right ---------- */
 .limits { list-style: none; margin: 0; padding: 0; }
 .limits li {

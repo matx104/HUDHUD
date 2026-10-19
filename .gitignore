@@ -41,3 +41,6 @@ proof/review/
 
 # the Cloudflare CLI's local cache (the account's ID and name): machine-local, never committed
 .cloudflare/
+
+# real-world data downloaded only to benchmark the generator against: never committed (rules §4.7)
+benchmarks/

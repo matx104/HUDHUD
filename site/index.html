@@ -338,7 +338,7 @@
         <li data-status="done" data-reveal><time>Oct 17–19</time><strong>Groundwork</strong><span>The field studied, the name chosen, a synthetic match generator calibrated over 100 seeds.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–20</time><strong>Skeleton</strong><span>All five agents run a match end to end with offline backends, tested on every push.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
-        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, Urdu and Arabic, personal modes, the recap, breaks and the high press are live; a realism report comes next.</span></li>
+        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, Urdu and Arabic, personal modes, the recap, breaks, the high press and a realism check are live.</span></li>
         <li data-status="planned" data-reveal><time>Oct 26</time><strong>Ship kit</strong><span>The 110-second video, the README, the repo made public.</span></li>
         <li data-status="planned" data-reveal><time>Oct 27</time><strong>Submit</strong><span>A day early, never on deadline day.</span></li>
       </ol>
@@ -502,6 +502,14 @@
         <p>Replay this match yourself:</p>
         <pre><code>python -m court run --seed 7</code></pre>
       </div>
+
+      <section class="realism" data-realism hidden aria-labelledby="realism-title">
+        <h2 class="section-title" id="realism-title" data-reveal>How real is it?</h2>
+        <p class="section-lede" data-reveal>The generator's scorelines against real results: <span data-realism-count></span> competitive men's internationals since 2010 at a home venue, from a public-domain record of every international match. A result can't check what happens inside a match, so this checks the shape of the scores only.</p>
+        <ul class="realism-verdict" data-realism-verdict data-reveal></ul>
+        <div class="realism-bars" data-realism-bars data-reveal role="img" aria-label="Goals in a match: the share of real and synthetic matches with each total"></div>
+        <p class="aside" data-reveal>The full comparison is in the repository's docs/realism.md, written by scripts/realism.py. Credit for the real results is on the <a href="#/credits">credits page</a>.</p>
+      </section>
     </section>
 
     <!-- ============ LIMITS ============ -->
@@ -574,6 +582,7 @@
         <div class="log-lists">
           <h2 class="log-heading">Live</h2>
           <ol class="log">
+            <li data-reveal><time>Oct 19</time><div><strong>How real is the synthetic football?</strong><p>The generator's scorelines set against 7,559 real internationals: close on goals a match and on draws, a smaller home edge than real football, and too few goalless draws. Said plainly, and kept as a target for the generator. <a href="#/data">See the comparison</a>.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>Counterattacks and the high press</strong><p>Two more kinds of moment. A break: the ball won in a side's own half and a shot away within 15 seconds. The press: a side winning the ball back in the attacking third four times in ten minutes, told against how often it pressed there. The Critic recomputes both from the events, with a rule for each.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>Make it yours</strong><p>Personal modes from the rules' own list: pick a club, a player, or one number to follow. Your moments come first, marked in your club's colour; following one player keeps only their moments and adds a live card; one number gets a ticker for both sides. The models tell the line from your side, and the Critic checks it the same way.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>A recap after every match</strong><p>At full time the match writes its own recap, and every line it writes passes the Critic first. The studio offers it to read or download. <a href="recap/seed-21.html">Read a sample</a>.</p></div></li>
@@ -597,7 +606,6 @@
 
           <h2 class="log-heading">Next</h2>
           <ol class="log log-next">
-            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>How real is the synthetic football?</strong><p>The generator's scorelines set against real international results: goals a match, home wins, draws and the commonest scores.</p></div></li>
             <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>The video, on YouTube</strong><p>The 110-second demo, on my channel, @matx104, and in the media kit.</p></div></li>
           </ol>
 
@@ -812,6 +820,8 @@
           <dl>
             <dt>Every match on this site</dt>
             <dd>Synthetic, made by <span data-product-name></span>'s own generator. No real club, player or match data is used, as the hackathon's rules require.</dd>
+            <dt><a href="https://github.com/martj42/international_results">International football results from 1872</a></dt>
+            <dd>By Mart Jürisoo, in the public domain (CC0 1.0). Used only as a benchmark: the generator's scorelines are compared with real results in aggregate, never used as match data, and no team is named.</dd>
           </dl>
         </section>
 
@@ -956,6 +966,7 @@
   <script src="data/ops.js"></script>
   <script src="data/doctor.js"></script>
   <script src="data/proof.js"></script>
+  <script src="data/realism.js"></script>
   <script src="assets/router.js"></script>
   <script src="assets/site.js"></script>
   <script src="assets/field.js"></script>

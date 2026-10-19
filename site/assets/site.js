@@ -52,6 +52,7 @@
   if (window.OPS) drawControlRoom(window.OPS);
   if (window.DOCTOR) drawDoctor(window.DOCTOR);
   if (window.PROOF?.length) drawProof(window.PROOF);
+  if (window.REALISM) drawRealism(window.REALISM);
   placeEmblems();
   startProgress();
   startMenu();
@@ -98,6 +99,31 @@
     }
     const when = new Date(ops.generated).toLocaleDateString([], { dateStyle: "medium" });
     $("[data-ops-when]").textContent = `Links generated ${when}.`;
+  }
+
+  // How real is the synthetic football: the verdict in words, then goals a match as paired bars.
+  function drawRealism(r) {
+    $("[data-realism]").hidden = false;
+    $("[data-realism-count]").textContent = r.real.matches.toLocaleString("en-GB");
+    $("[data-realism-verdict]").append(...r.verdict.map((line) => el("li", "", line)));
+    const bars = $("[data-realism-bars]");
+    const top = Math.max(...Object.values(r.real.goals_spread_pct), ...Object.values(r.synthetic.goals_spread_pct));
+    const legend = el("p", "realism-legend");
+    legend.append(el("span", "key real", "Real"), el("span", "key synthetic", "Synthetic"));
+    bars.append(legend);
+    for (const [goals, real] of Object.entries(r.real.goals_spread_pct)) {
+      const syn = r.synthetic.goals_spread_pct[goals];
+      const row = el("div", "realism-row");
+      const pair = el("div", "realism-pair");
+      for (const [cls, value] of [["real", real], ["synthetic", syn]]) {
+        const bar = el("span", `bar ${cls}`);
+        bar.style.setProperty("--w", `${(100 * value) / top}%`);
+        bar.append(el("b", "", `${value}%`));
+        pair.append(bar);
+      }
+      row.append(el("span", "realism-goals", `${goals} ${goals === "1" ? "goal" : "goals"}`), pair);
+      bars.append(row);
+    }
   }
 
   function drawDoctor(doctor) {
