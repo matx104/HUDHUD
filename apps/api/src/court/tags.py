@@ -24,6 +24,15 @@ def player_tags(cue: Cue, state: MatchState) -> tuple[PlayerTag, ...]:
         # A spell has many hands: tag the two players behind most of the cited actions.
         counts = Counter(_actor(e, state) for e in cited)
         return tuple(_tag(state, pid, "involved", ()) for pid, _ in counts.most_common(2) if pid)
+    if cue.kind is AlertKind.REF_CALL:
+        foul = next((e for e in cited if isinstance(e, Tackle)), None)
+        if foul is None:
+            return ()
+        tags = (
+            _tag(state, foul.player_id, "offender", ()),
+            _tag(state, foul.opponent_id, "fouled", ()),
+        )
+        return tuple(t for t in tags if t is not None)
     shots = [e for e in cited if isinstance(e, Shot)]
     assists = {s.assist_event_id for s in shots}
     tags = []

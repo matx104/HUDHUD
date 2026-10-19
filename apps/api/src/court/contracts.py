@@ -23,6 +23,7 @@ class AlertKind(StrEnum):
     GREAT_PASS = "great_pass"
     COUNTER = "counter"  # the ball won in a side's own half, a shot within seconds
     HIGH_PRESS = "high_press"  # the ball won back in the attacking third, again and again
+    REF_CALL = "ref_call"  # a foul that matters, and the referee's likely decision (court.referee)
     RECAP = "recap"  # a line of the post-match recap (court.recap), never a live alert
 
 
@@ -47,6 +48,7 @@ class Alert(_Frozen):
     evidence: tuple[str, ...]
     metrics: dict[str, float]
     window: Window | None = None
+    call: "RefCall | None" = None
 
 
 Metric = Literal[
@@ -79,6 +81,18 @@ class Assertion(_Frozen):
     event_id: str | None = Field(default=None, description="For per-event metrics (shot_xg)")
 
 
+class RefCall(_Frozen):
+    """The referee's likely decision on a foul (court.referee), under a strictness profile."""
+
+    restart: Literal["free_kick", "penalty"]
+    card: Literal["none", "yellow", "red"]
+    profile: Literal["lenient", "standard", "strict"]
+    reason: str = Field(default="", description="Why the card: a goal chance, a promising attack")
+
+
+Alert.model_rebuild()
+
+
 class Claim(_Frozen):
     """Narrator -> Critic. Prose plus the machine-checkable chain behind it."""
 
@@ -99,6 +113,9 @@ class Claim(_Frozen):
         default_factory=dict,
         description="Numbers the text may state, computed by code from events; the Critic "
         "rejects any number in the text that is neither here nor in an assertion",
+    )
+    call: RefCall | None = Field(
+        default=None, description="For a ref's call: the decision the line states"
     )
 
 
@@ -177,7 +194,7 @@ class PlayerTag(_Frozen):
     number: int
     position: str
     team: Side
-    role: Literal["scorer", "shooter", "assister", "passer", "involved"]
+    role: Literal["scorer", "shooter", "assister", "passer", "involved", "fouled", "offender"]
     badges: tuple[str, ...] = Field(
         default=(), description="Speed and distance tags, shown when a threshold is reached"
     )
@@ -229,6 +246,9 @@ class Cue(_Frozen):
     )
     for_you: tuple[Literal["club", "rival", "player"], ...] = Field(
         default=(), description="Why this cue is the viewer's own (court.personal)"
+    )
+    call: RefCall | None = Field(
+        default=None, description="For a ref's call: the likely decision, for the overlay to draw"
     )
 
 

@@ -223,6 +223,7 @@ MOMENT_ORDER = {
     AlertKind.COUNTER: 2,
     AlertKind.GREAT_PASS: 3,
     AlertKind.BIG_CHANCE: 4,
+    AlertKind.REF_CALL: 5,
 }
 MOST_MOMENTS = 8
 

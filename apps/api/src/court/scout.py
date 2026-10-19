@@ -30,6 +30,7 @@ from match_events import (
     Shot,
     ShotOutcome,
     Side,
+    Tackle,
 )
 
 from .contracts import Alert, AlertKind, Window
@@ -42,6 +43,8 @@ from .metrics import (
     is_high_ball_win,
     shot_xg,
 )
+from .referee import Profile, distance_to_goal, matters
+from .referee import call as ref_call
 from .state import MatchState
 
 # Typical spread of each side-versus-side figure over seeds 0-59 (the eval reports on the
@@ -72,7 +75,9 @@ class Scout:
         min_events: int = 3,
         cooldown_s: float = 240.0,
         check_every_s: float = 30.0,
+        strictness: Profile = "standard",
     ) -> None:
+        self.strictness = strictness
         self.big_chance_xg = big_chance_xg
         self.window_s = window_s
         self.swing_z = swing_z
@@ -100,6 +105,8 @@ class Scout:
             self._won = event if is_ball_win(event) else None
             if is_high_ball_win(event) and (press := self._press(event, state)):
                 alerts.append(press)
+        if isinstance(event, Tackle) and matters(decision := ref_call(event, self.strictness)):
+            alerts.append(self._foul(event, decision))
         if isinstance(event, Shot):
             alerts.extend(self._shot(event, state))
         if isinstance(event, Pass | Shot) and event.t >= self._next_check_t:
@@ -135,6 +142,21 @@ class Scout:
                 metrics=metrics,
             )
         ]
+
+    def _foul(self, foul: Tackle, decision) -> Alert:
+        """A foul with a card or a penalty in it: the referee's likely call (court.referee)."""
+        severity = {"red": 0.9, "yellow": 0.55, "none": 0.5}[decision.card]
+        return self._alert(
+            kind=AlertKind.REF_CALL,
+            team=foul.team,
+            period=foul.period,
+            t=foul.t,
+            as_of_seq=foul.seq,
+            severity=max(severity, 0.7 if decision.restart == "penalty" else 0.0),
+            evidence=(foul.id,),
+            metrics={"distance_m": round(distance_to_goal(foul))},
+            call=decision,
+        )
 
     def _counter(self, shot: Shot, state: MatchState, xg: float) -> Alert | None:
         """A break: the ball won in the side's own half, and a shot away within seconds."""

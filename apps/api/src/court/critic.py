@@ -22,10 +22,14 @@ from match_events import (
     PossessionChange,
     Shot,
     ShotOutcome,
+    Tackle,
 )
 
 from .contracts import AlertKind, Claim, Reason, RejectionCode, Verdict
 from .metrics import is_ball_win, is_final_third_pass, is_high_ball_win, measure
+from .referee import Profile
+from .referee import call as ref_call
+from .referee import words as call_words
 from .state import MatchState
 
 # An evidence rule inspects the (valid) cited events and returns a failure detail,
@@ -140,6 +144,32 @@ def press_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
     return None
 
 
+def ref_rule(profile: Profile) -> EvidenceRule:
+    """The referee's likely call, recomputed from the cited foul under the competition's profile
+    (court.referee). The claim must cite the foul, carry the same decision, and say it in words."""
+
+    def rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
+        foul = next((e for e in cited if isinstance(e, Tackle) and e.team == claim.team), None)
+        decision = ref_call(foul, profile) if foul is not None else None
+        if decision is None:
+            return "a ref's call must cite the foul, by the side it names"
+        said = claim.call
+        if said is None or (said.restart, said.card) != (decision.restart, decision.card):
+            law = " and ".join(call_words(decision))
+            stated = " and ".join(call_words(said)) if said else "no decision"
+            return (
+                f"at {profile} strictness the Law gives {law} for {foul.id}; the claim gives "
+                f"{stated}"
+            )
+        text = claim.text.lower()
+        missing = [w for w in call_words(decision) if w not in text]
+        if missing:
+            return f"the line must say the decision: {', '.join(missing)}"
+        return None
+
+    return rule
+
+
 def recap_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
     """A recap line states the match as it ended: a number about the whole match must be counted
     to the final whistle, so the line cites it, and a line about moments cites those moments."""
@@ -171,6 +201,7 @@ EVIDENCE_RULES: Mapping[AlertKind, EvidenceRule] = {
     AlertKind.GREAT_PASS: great_pass_rule,
     AlertKind.COUNTER: counter_rule,
     AlertKind.HIGH_PRESS: press_rule,
+    AlertKind.REF_CALL: ref_rule("standard"),
     AlertKind.RECAP: recap_rule,
 }
 
@@ -186,8 +217,13 @@ class Critic:
         *,
         max_evidence_age_s: float = 900.0,
         hindsight: bool = False,
+        strictness: Profile = "standard",
     ) -> None:
-        self.rules = EVIDENCE_RULES if rules is None else rules
+        # The competition's strictness decides what the referee's likely call is (court.referee).
+        if rules is None:
+            rules = {**EVIDENCE_RULES, AlertKind.REF_CALL: ref_rule(strictness)}
+        self.rules = rules
+        self.strictness = strictness
         self.max_evidence_age_s = max_evidence_age_s
         # After full time a claim may look back over the whole match (court.recap): evidence from
         # either half and any minute. Every other check stands.

@@ -18,6 +18,7 @@ from match_events import MatchMeta, minute_label
 from .contracts import Alert, AlertKind, Cue, Receipt, Verdict
 from .critic import invented_numbers
 from .narrator import _count
+from .referee import words as call_words
 from .state import MatchState
 
 Mode = Literal["casual", "analyst"]
@@ -28,13 +29,14 @@ TTL_S = {
     AlertKind.GREAT_PASS: 8.0,
     AlertKind.COUNTER: 9.0,
     AlertKind.HIGH_PRESS: 9.0,
+    AlertKind.REF_CALL: 10.0,
 }
 
 
 # The headline's label in each language, replacing the English one before " · ". Signed off by the
 # owner for production, 2026-10-18 (docs/review/ur-ar.md): change them only with the owner.
-# COUNTER and HIGH PRESS (2026-10-19) await that review, so their headlines stay in English.
-AWAITING_REVIEW = ("COUNTER", "HIGH PRESS")
+# COUNTER, HIGH PRESS and REF'S CALL (2026-10-19) await that review: their headlines stay English.
+AWAITING_REVIEW = ("COUNTER", "HIGH PRESS", "REF'S CALL")
 LABELS = {
     "ur": {
         "GOAL": "گول",
@@ -134,11 +136,13 @@ class Localizer:
             attempts=claim.attempt,
             priority=claim.severity,
             ttl_s=TTL_S[claim.kind],
+            call=claim.call,
             # The checks; the Orchestrator adds the writer, its spend and the time.
             receipt=Receipt(
                 attempts=claim.attempt,
                 numbers_checked=verdict.numbers_checked,
-                facts_recomputed=len(claim.assertions),
+                # Its asserted numbers, and a ref's call's decision: the Critic recomputed each.
+                facts_recomputed=len(claim.assertions) + (claim.call is not None),
                 evidence=len(claim.citations),
             ),
         )
@@ -164,6 +168,10 @@ class Localizer:
         elif alert.kind is AlertKind.HIGH_PRESS:
             headline = f"HIGH PRESS · {team.short_name}"
             text = f"{team.name}: {m['wins']:.0f} ball wins in the attacking third."
+        elif alert.kind is AlertKind.REF_CALL and alert.call is not None:
+            restart, card = call_words(alert.call)
+            headline = f"REF'S CALL · {team.short_name}"
+            text = f"Foul by {team.name}: likely {restart}, and {card}."
         else:
             headline = f"MOMENTUM · {team.short_name} on top"
             mins = max(1, round(m["window_s"] / 60))
@@ -185,6 +193,7 @@ class Localizer:
             attempts=0,
             priority=alert.severity,
             ttl_s=TTL_S[alert.kind],
+            call=alert.call,
             # No writer and no Critic: the Scout's own computed facts, cited.
             receipt=Receipt(writer="none", evidence=len(alert.evidence)),
         )

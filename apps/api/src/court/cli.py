@@ -35,10 +35,12 @@ from .contracts import (
     RejectionNotice,
     Spiked,
 )
+from .critic import Critic
 from .evals import evaluate, report
 from .localizer import Localizer
 from .narrator import TemplateNarrator
 from .orchestrator import run_match
+from .scout import Scout
 
 
 def _console(output: Output) -> None:
@@ -103,6 +105,8 @@ async def _run(args: argparse.Namespace) -> int:
             sink=sink,
             speed=args.speed,
             narrator=narrator,
+            scout=Scout(strictness=args.strictness),
+            critic=Critic(strictness=args.strictness),
             localizer=Localizer(
                 mode=args.mode, lang=args.lang, translator=getattr(narrator, "translate", None)
             ),
@@ -231,6 +235,12 @@ def main(argv: list[str] | None = None) -> int:
         help="rate at which the offline narrator deliberately overreaches",
     )
     run.add_argument("--json", action="store_true", help="emit outputs as JSONL")
+    run.add_argument(
+        "--strictness",
+        choices=("lenient", "standard", "strict"),
+        default="standard",
+        help="how strictly the referee's likely calls are read (court.referee)",
+    )
     run.add_argument(
         "--narrator",
         choices=("template", "foundry"),

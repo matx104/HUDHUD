@@ -27,6 +27,7 @@ from .config import product_name
 from .contracts import Alert, AlertKind, Claim, Verdict
 from .describe import describe
 from .narrator import TemplateNarrator
+from .referee import words as call_words
 from .state import MatchState
 
 # USD per million tokens (input, output), Global Standard deployments. gpt-4.1-mini is from the
@@ -43,6 +44,7 @@ KIND = {
     AlertKind.GREAT_PASS: "great pass",
     AlertKind.COUNTER: "counterattack",
     AlertKind.HIGH_PRESS: "high press winning the ball back",
+    AlertKind.REF_CALL: "foul, and the referee's likely call",
 }
 
 
@@ -173,6 +175,13 @@ class FoundryNarrator:
             viewer = (
                 f"The viewer supports {self.viewer_club}: tell it from their side, with hope at "
                 "their moments and worry at the other side's. Change no fact for it.\n"
+            )
+        if facts.call is not None:
+            restart, card = call_words(facts.call)
+            viewer += (
+                f'State the decision exactly in these words: "{restart}" and "{card}", and call '
+                f"it likely: it is a {facts.call.profile} reading of the Law from event data, not "
+                "the referee's.\n"
             )
         return (
             viewer + f"Moment: {KIND[alert.kind]} for {side.name} against {other.name}.\n"

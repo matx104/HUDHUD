@@ -115,6 +115,13 @@ async def narrate(
     )
 
 
+# The kinds of moment the rule was fixed on (ADR 0005, 2026-10-18). Kinds added since (counter,
+# high press, ref's call) join at the next run, under a rule written before that run.
+EVAL_KINDS = frozenset(
+    {AlertKind.GOAL, AlertKind.BIG_CHANCE, AlertKind.MOMENTUM_SWING, AlertKind.GREAT_PASS}
+)
+
+
 async def _match(
     seed: int, models: Sequence[str], make_narrator: Callable[[str], Any], critic: Critic
 ) -> list[Trial]:
@@ -125,6 +132,8 @@ async def _match(
     for event in match.events:
         state.apply(event)
         for alert in scout.observe(event, state):
+            if alert.kind not in EVAL_KINDS:
+                continue
             # Every model narrates this alert at this moment, from the same state.
             trials += await asyncio.gather(
                 *(

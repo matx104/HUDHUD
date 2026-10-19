@@ -131,6 +131,12 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .yours-tag { padding: 0.1rem 0.45rem; border-radius: 999px; font-size: 0.6875rem; font-weight: 600; background: var(--team, var(--lime)); color: var(--navy-deep); }
 .yours-tag.player { background: var(--gold); }
 .yours-tag.rival { background: transparent; color: var(--chalk-dim); border: 1px solid var(--chalk-faint); }
+/* A ref's call: the card as a referee holds it up, and the restart beside it */
+.ref-card { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; font-weight: 600; }
+.ref-card::before { content: ""; width: 0.7rem; height: 0.95rem; border-radius: 2px; transform: rotate(-8deg); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
+.ref-card.yellow { color: #F5D547; } .ref-card.yellow::before { background: #F5D547; }
+.ref-card.red { color: var(--card); } .ref-card.red::before { background: var(--card); }
+.ref-restart { padding: 0.1rem 0.45rem; border: 1px solid var(--chalk); border-radius: 999px; font-size: 0.6875rem; font-weight: 600; }
 .cue header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.75rem; }
 .cue .minute { font: 500 0.875rem / 1 var(--mono); color: var(--lime); }
 .cue.detection .minute { color: var(--gold); }

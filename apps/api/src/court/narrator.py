@@ -15,10 +15,12 @@ import re
 from collections.abc import Awaitable
 from typing import Protocol
 
-from match_events import Pass, Shot, Side, minute_label
+from match_events import Pass, Shot, Side, Tackle, minute_label
 
 from .contracts import Alert, AlertKind, Assertion, Claim, Verdict, Window
 from .metrics import event_metric, shot_distance
+from .referee import REASONS
+from .referee import words as call_words
 from .state import MatchState
 from .tags import FAST_SHOT_KMH, HARD_PASS
 
@@ -104,6 +106,7 @@ class TemplateNarrator:
             AlertKind.GREAT_PASS: self._great_pass,
             AlertKind.COUNTER: self._counter,
             AlertKind.HIGH_PRESS: self._high_press,
+            AlertKind.REF_CALL: self._ref_call,
         }[alert.kind]
         headline, text, assertions, figures = compose(alert, state, metrics)
         return Claim(
@@ -121,6 +124,7 @@ class TemplateNarrator:
             citations=alert.evidence,
             assertions=assertions,
             figures={**minute_figures(alert), **_event_figures(alert, state), **figures},
+            call=alert.call,
         )
 
     def _goal(self, alert: Alert, state: MatchState, m: dict[str, float]):
@@ -211,6 +215,20 @@ class TemplateNarrator:
         )
         return f"COUNTER · {team.short_name}", text, assertions, figures
 
+    def _ref_call(self, alert: Alert, state: MatchState, m: dict[str, float]):
+        foul, decision = state.get(alert.evidence[0]), alert.call
+        assert isinstance(foul, Tackle) and decision is not None
+        team = state.meta.team(alert.team)
+        restart, card = call_words(decision)
+        why = f" for {REASONS[decision.reason]}" if decision.card != "none" else ""
+        # One sentence: casual mode airs only the first, and the decision is the news.
+        text = (
+            f"{state.player_name(foul.player_id)} fouls {state.player_name(foul.opponent_id)} "
+            f"{m['distance_m']:.0f} m from goal: likely {restart}, and {card}{why} "
+            f"(a {decision.profile} reading of the Law)."
+        )
+        return f"REF'S CALL · {team.short_name}", text, (), {"distance_m": m["distance_m"]}
+
     def _high_press(self, alert: Alert, state: MatchState, m: dict[str, float]):
         team = state.meta.team(alert.team)
         minutes = max(1, round(m["window_s"] / 60))
@@ -278,6 +296,12 @@ class TemplateNarrator:
             phantom = f"e{alert.as_of_seq + 3:05d}"  # an event that hasn't happened yet
             return claim.model_copy(update={"citations": (*claim.citations, phantom)})
         metrics = dict(alert.metrics)
+        if alert.kind is AlertKind.REF_CALL and alert.call is not None:
+            harsher = {"none": "yellow", "yellow": "red", "red": "yellow"}[alert.call.card]
+            harsh = alert.model_copy(
+                update={"call": alert.call.model_copy(update={"card": harsher})}
+            )
+            return self.compose(harsh, state, attempt=claim.attempt)
         if alert.kind is AlertKind.MOMENTUM_SWING:
             metrics["final_third"] += 3
         elif alert.kind is AlertKind.GREAT_PASS:

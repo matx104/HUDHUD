@@ -54,6 +54,7 @@ from . import telemetry
 from .audit import AuditTrail, CosmosStore
 from .config import product_name
 from .contracts import OUTPUT_ADAPTER, Output, Preferences, TickerMetric
+from .critic import Critic
 from .localizer import Localizer
 from .mcp_server import server as critic_mcp
 from .metrics import shot_xg
@@ -63,6 +64,8 @@ from .personal import Personal, PreferenceError, metric_line, player_card
 from .personal import check as check_preferences
 from .recap import build as build_recap
 from .recap import render_html as recap_page
+from .referee import Profile
+from .scout import Scout
 
 STUDIO = Path(__file__).parent / "studio"
 # The demo matches: 21 has two goals each way and two momentum swings; 7 has six goals; 33 a
@@ -225,7 +228,9 @@ class Session:
         budget: ModelBudget,
         lang: Literal["en", "ur", "ar"] = "en",
         prefs: Preferences | None = None,
+        strictness: Profile = "standard",
     ) -> None:
+        self.strictness = strictness  # how strictly the referee's likely calls are read
         self.id = uuid.uuid4().hex[:12]
         self.match = generate(seed)
         self.speed, self.start_t, self.mode, self.lang = speed, start * 60.0, mode, lang
@@ -275,6 +280,8 @@ class Session:
                     self._paced(),
                     sink=sink,
                     narrator=self.narrator,
+                    scout=Scout(strictness=self.strictness),
+                    critic=Critic(strictness=self.strictness),
                     localizer=Localizer(
                         mode=self.mode,
                         lang=self.lang,
@@ -449,6 +456,7 @@ def create_app() -> FastAPI:
         player: str = "",
         focus: Literal["match", "player"] = "match",
         metric: Literal["", TickerMetric] = "",
+        strictness: Profile = "standard",
     ) -> StreamingResponse:
         if seed not in DEMO_SEEDS:
             raise HTTPException(404, f"no demo match with seed {seed}")
@@ -472,6 +480,7 @@ def create_app() -> FastAPI:
             "stress": max(0.0, min(stress, 0.5)),
             "lang": lang,
             "prefs": prefs,
+            "strictness": strictness,
         }
 
         async def events() -> AsyncIterator[str]:
@@ -491,6 +500,7 @@ def create_app() -> FastAPI:
             hello |= {"home": _team(meta.home), "away": _team(meta.away)}
             hello |= {"notices": session.notices, "competition": meta.competition}
             hello["prefs"] = prefs.model_dump(mode="json")
+            hello["strictness"] = strictness
             try:
                 yield _sse("hello", hello)
                 while True:

@@ -85,7 +85,7 @@
   // ?seed=21&narration=foundry&lang=ur&start=54&speed=30&stress=1&casual=0&autostart=1
   // and the personal modes: &club=home&player=h09&focus=player&metric=xg
   function preset(params) {
-    for (const name of ["seed", "narration", "lang", "start", "speed", "club", "player", "focus", "metric"]) {
+    for (const name of ["seed", "narration", "lang", "start", "speed", "strictness", "club", "player", "focus", "metric"]) {
       const value = params.get(name);
       const select = form.elements[name];
       if (value !== null && [...select.options].some((o) => o.value === value)) select.value = value;
@@ -140,6 +140,7 @@
       mode: $("[data-casual]").checked ? "casual" : "analyst",
       lang: form.lang.value,
       stress: $("[data-stress]").checked ? "0.25" : "0",
+      strictness: form.strictness.value,
       club: yours.club.value,
       player: yours.player.value,
       focus: yours.focus.value,
@@ -183,7 +184,7 @@
       node.style.setProperty("--team", data[side].color);
     }
     const who = data.narration === "foundry" ? "AI models on Microsoft Foundry write the commentary" : "The offline template writes the commentary";
-    notice(`${data.home.name} v ${data.away.name}, ${data.competition}. ${who}.`, true);
+    notice(`${data.home.name} v ${data.away.name}, ${data.competition}. ${who}. Fouls are called on a ${data.strictness ?? "standard"} reading of the Law.`, true);
     for (const text of data.notices) notice(text);
     const prefs = data.prefs ?? {};
     const parts = [];
@@ -289,6 +290,11 @@
     const headline = Object.assign(el("span", "headline", c.headline), { dir: "auto" });
     head.append(el("span", "minute", c.minute), headline);
     for (const m of c.for_you ?? []) head.append(el("span", `yours-tag ${m}`, YOURS[m]));
+    // A ref's call: the likely decision as the overlay would draw it, the card itself first.
+    if (c.call) {
+      if (c.call.card !== "none") head.append(el("span", `ref-card ${c.call.card}`, `${c.call.card === "red" ? "Red" : "Yellow"} card`));
+      if (c.call.restart === "penalty") head.append(el("span", "ref-restart", "Penalty"));
+    }
     if (c.status !== "verified") head.append(el("span", "tag", "Detection only"));
     else if (c.attempts > 1) head.append(el("span", "tag", `Aired on attempt ${c.attempts}`));
     const evidence = el("div", "evidence");
