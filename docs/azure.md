@@ -138,6 +138,20 @@ So a Worker (`edge/`, deployed by `scripts/edge`) forwards each request to the s
 and points Azure's redirects back at the address the viewer used. Moving the studio to a full
 environment would let Azure serve the name with its own certificate.
 
+## Running it: probes, one replica, retention (2026-10-19)
+
+- **Health probes:** liveness every 30 s and readiness every 10 s on `/healthz` (the template,
+  applied with `containerapp update --yaml`; image updates keep it). A container that stops
+  answering is restarted; one that isn't ready gets no traffic.
+- **One replica, on purpose.** A match's stream and its off-air switch must reach the same
+  replica, since sessions live in memory, and express environments refuse sticky sessions
+  (`ExpressEnvironmentFeatureNotSupported`). One replica of 0.25 vCPU holds eight concurrent
+  matches (`STUDIO_MAX_STREAMS`) and a daily model budget, which is the demo's audience. Scaling
+  out means a full environment with sticky sessions, or the session's controls moved into shared
+  state: both are on the roadmap, not claimed.
+- **Retention:** audit records expire 90 days after their last write (the container's default
+  TTL, 7,776,000 s), past the judging period. Checked by `make doctor`.
+
 ## The wall: the studio is owner-only (Cloudflare Access)
 
 Decided 2026-10-19 by the owner: the studio stays private, through the judging period too. The

@@ -116,6 +116,11 @@ def main() -> int:
     )
     limit = (raw["properties"].get("capacity") or {}).get("totalThroughputLimit")
     check("Cosmos DB: capped at the free 1,000 RU/s", limit == 1000, f"limit {limit}")
+    ttl = az_json(
+        "cosmosdb", "sql", "container", "show", "-a", "hudhud-audit", "-g", GROUP,
+        "-d", "hudhud", "-n", "audit", "--query", "resource.defaultTtl",
+    )  # fmt: skip
+    check("Audit trail: records expire after 90 days", ttl == 90 * 24 * 3600, f"{ttl} s")
 
     insights = az_json("resource", "show", "--ids", resources["hudhud-insights"]["id"])
     check("Application Insights: keys off", insights["properties"].get("DisableLocalAuth") is True)
@@ -148,6 +153,13 @@ def main() -> int:
     check(
         "Studio: no secrets in its settings",
         not any("KEY" in k or "SECRET" in k or "PASSWORD" in k for k in env),
+    )
+    probes = app["properties"]["template"]["containers"][0].get("probes") or []
+    on_health = {pr["type"] for pr in probes if pr.get("httpGet", {}).get("path") == "/healthz"}
+    check(
+        "Studio: liveness and readiness probes on /healthz",
+        {"Liveness", "Readiness"} <= on_health,
+        ", ".join(sorted(on_health)) or "none",
     )
 
     principal = az(
