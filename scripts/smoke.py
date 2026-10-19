@@ -37,6 +37,30 @@ def stream(url: str, headers: dict[str, str]) -> list[tuple[str, dict]]:
     return events
 
 
+def a2a(base: str, headers: dict[str, str]) -> tuple[bool, str]:
+    """The Critic as an A2A agent: Agent Framework's own A2A client reads its card and asks it a
+    question, through the wall like any other client."""
+    import asyncio
+
+    import httpx
+    from agent_framework.a2a import A2AAgent
+
+    async def ask() -> tuple[bool, str]:
+        async with httpx.AsyncClient(headers=headers, timeout=60) as http:
+            card = (await http.get(f"{base}a2a/.well-known/agent-card.json")).json()
+            agent = A2AAgent(url=f"{base}a2a/", http_client=http)
+            question = {"seed": 21, "minute": 90, "question": "Who scored?"}
+            answer = json.loads((await agent.run(json.dumps(question))).text)
+        skills = [s["id"] for s in card["skills"]]
+        ok = skills == ["verify-claim", "ask-the-match"] and answer["status"] == "verified"
+        return ok, f"A2A: the Critic's card ({', '.join(skills)}), and a checked answer"
+
+    try:
+        return asyncio.run(ask())
+    except Exception as error:  # report it as a failed check, with what went wrong
+        return False, f"A2A: {type(error).__name__}: {error}"[:160]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--url", help="the studio's address (default: the deployed one)")
@@ -119,6 +143,7 @@ def main() -> int:
             f"asked the match, {receipt['writer']} answered, {receipt['numbers_checked']} numbers "
             f"checked: {answer['text']}",
         )
+        check(*a2a(base, headers))
         end = events[-1][1]
         print(f"   {end['stats']}  cost ${end['cost_usd']:.4f}  {end.get('audit', '')}")
     print(f"\n{'all good' if not failures else f'{len(failures)} failed'}")

@@ -197,6 +197,10 @@ work, and the code, public at submission, runs the same studio on any machine
   `/healthz` stays open for Container Apps' probes; it says only "ok".
 - **Checked** by `make doctor`: strangers are sent to sign in, the Azure address answers 403, the
   service token gets through. `make smoke` streams a match through the wall.
+- **Behind it too: the Critic for other agents.** The MCP server (`/mcp/`, also at
+  mcp.hudhud.com.pk) and the A2A agent (`/a2a/`, ADR 0011) are on the studio, so a client needs the
+  service token as a script does. `STUDIO_PUBLIC_URL` (https://studio.hudhud.com.pk/) is the address
+  the A2A agent card gives for itself.
 - **Settings take effect with an image.** On the express environment a settings-only update
   (`containerapp update --set-env-vars`) changes the revision but leaves the running container as it
   was, and `revision restart` fails (InternalServerError). Ship an image (`scripts/deploy-studio`) to
