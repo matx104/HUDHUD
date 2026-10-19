@@ -60,3 +60,11 @@ def test_momentum_counts_read_as_english_in_the_singular(match):
 def test_a_fall_in_completion_is_said_plainly(match):
     alert, state = _swing(match, passes_completed=30)
     assert "(65%, down from 76% earlier in the half)" in TemplateNarrator().draft(alert, state).text
+
+
+def test_a_detection_only_line_counts_in_the_singular_too(match):
+    from court.localizer import Localizer
+
+    alert, state = _swing(match, shots=1)
+    text = Localizer().detection_cue(alert, state).text
+    assert ": 1 shot, 0.40 xG in 5 min." in text

@@ -17,6 +17,7 @@ from match_events import MatchMeta, minute_label
 
 from .contracts import Alert, AlertKind, Cue, Receipt, Verdict
 from .critic import invented_numbers
+from .narrator import _count
 from .state import MatchState
 
 Mode = Literal["casual", "analyst"]
@@ -156,7 +157,7 @@ class Localizer:
         else:
             headline = f"MOMENTUM · {team.short_name} on top"
             mins = max(1, round(m["window_s"] / 60))
-            text = f"{team.name}: {m['shots']:.0f} shots, {m['xg']:.2f} xG in {mins} min."
+            text = f"{team.name}: {_count(m['shots'], 'shot')}, {m['xg']:.2f} xG in {mins} min."
         return Cue(
             id=f"q-{alert.id}.d",
             alert_id=alert.id,

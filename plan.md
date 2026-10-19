@@ -14,9 +14,9 @@
 
 ## Phase 1 — Architecture lock + skeleton (Oct 18–20)
 
-- [ ] Activate Azure for Students ($100 credit — the ceiling, not the budget) — Monarch-manual
+- [x] Activate Azure for Students ($100 credit — the ceiling, not the budget) — done 2026-10-18 (subscription a849f7b9…, spending limit on; `scripts/az`)
 - [x] **Synthetic match event generator** — `packages/event-schema` (2026-10-17). Deterministic per seed; calibrated over 100 seeds to ~3.0 goals, 78.5% pass completion, 29 shots, ~320 pressures, 46 tackles per match. Emits hidden ground-truth *momentum spells* (never streamed) so Scout detection can be scored. JSON Schema committed for the web side
-- [~] Agent spine — Orchestrator + Scout + Narrator + Critic + Localizer on Agent Framework 1.22 workflow (see docs/adr/0001). Shared `MatchState`, typed handoff contracts. **Offline backends only:** template Narrator, EN-only Localizer; Foundry-hosted LLM backends wait on Azure activation
+- [x] Agent spine — Orchestrator + Scout + Narrator + Critic + Localizer on Agent Framework 1.22 workflow (see docs/adr/0001). Shared `MatchState`, typed handoff contracts. Offline backends first (2026-10-17); the Foundry Narrator and the UR/AR Localizer since 2026-10-18
 - [x] Repo scaffold: `apps/api` (package `court`), `packages/event-schema` (package `match_events`); CI from first commit. `apps/web` deferred to Phase 2 (nothing to render until the cue stream is real)
 - **Done when:** one synthetic match flows end-to-end Scout→Narrator→Critic→console, with tests green. — **MET 2026-10-17** (offline backends): `make demo`, 48 tests green
 
@@ -26,7 +26,7 @@
   - [x] **Momentum, measured (2026-10-18, ADR 0002):** baseline-relative completion + final-third rate, held 3 min; scored against hidden ground truth by `make eval`. Sure-call operating point (Monarch): precision 62% / recall 26% on unseen seeds, vs 36% / 69% before. Momentum demo match: **seed 21**
   - **Eval finding (2026-10-17, seed 7):** only 1 of 5 momentum alerts overlaps a true spell. All three true spells were the away side's, yet 4 of the 5 alerts went to the stronger home side. The Scout reads *relative* dominance, so it reports a stronger team's baseline as momentum. Fix: baseline-relative (anomaly) detection, i.e. each side vs its own match-to-date rate (the SOCIRIS pattern). Score precision/recall against `GroundTruth.spells` over N seeds
 - [x] **Critic momentum evidence rule** (2026-10-18, ADR 0002): the side's own shots and final-third passes, inside the claimed spell, at least three; `tests/test_momentum_rule.py` (4 tests). Live on Foundry, seed 21: all 9 alerts aired, both momentum calls included, $0.0070
-- [ ] Narrator: live tactical narrative + key-moment explainers (the "why", cited to events)
+- [x] Narrator: live tactical narrative + key-moment explainers (the "why", cited to events) — the template and Foundry narrators (ADR 0003), every line cited and checked
 - [x] **Azure Phase A (2026-10-18):** Foundry resource `hudhud-foundry` and project `hudhud` in UAE North, `gpt-5-mini` and `gpt-4.1-mini` deployed (primary and backup chosen by evaluation, ADR 0005), Entra-only (docs/azure.md)
 - [x] **Foundry Narrator (2026-10-18, ADR 0003):** `gpt-5-mini` writes the line from a fact sheet, `gpt-4.1-mini` takes over on failure; the Critic's new grounded-numbers check rejects any number code didn't compute; token meter. First live match: 7 verified cues, $0.0066
 - [x] **The rules' feature list (§4.1 ii)** (2026-10-18, ADR 0008): the great-pass moment (0.8 a match), pass quality and shot speed in goal and chance lines, every number asserted and recomputed; player tags with threshold badges on every cue
@@ -37,17 +37,17 @@
 - [ ] **Counterattack and high-press alerts** (overview themes): transitions after a won tackle or interception, press efficiency from pressure events
 - [ ] **Realism report** (judging: "optimized synthetic data creation"): compare the generator's scorelines with real international results (goals per match, home-win and draw rates, scoreline frequencies). Source: the international results dataset by martj42 (Kaggle/GitHub, public domain), suggested by the Monarch 2026-10-18. **Benchmark only, never product data** (rules §4.7): downloaded locally with attribution, never committed; only our computed comparison is. Results-level only: it can't check event volumes
   - Copy bug seen in the seed-7 run: the momentum template pluralizes blindly ("1 box entries", "1 shots")
-- [ ] **Critic: the moat — adversarial verification.** Every claim must cite event evidence; rejections visible in UI with reasons; rewrite loop
-- [ ] Overlay cue stream: timed, machine-readable JSON (broadcast-renderer ready) — the platform's rendering-partner lane
+- [x] **Critic: the moat — adversarial verification.** Every claim must cite event evidence; rejections visible in UI with reasons; rewrite loop — the workflow's rewrite edge, the studio's Critic's desk, the stress test
+- [x] Overlay cue stream: timed, machine-readable JSON (broadcast-renderer ready) — the platform's rendering-partner lane — `Cue` (priority, ttl_s, evidence, receipt, player tags) over Server-Sent Events from the studio
 - [ ] Personalization: analyst mode vs casual fan mode; club/player focus; preference drives both content AND depth
 - **Done when:** live demo runs one match end-to-end in the UI with visible evidence links + at least one on-screen Critic rejection.
 
 ## Phase 3 — Differentiators + polish (Oct 24–25)
 
-- [ ] **Failure recovery demo (0/150 competitors claim it):** kill an agent mid-match on camera → orchestrator detects, retries/reassigns, broadcast never drops; surfaced as a feature, not a footnote
+- [x] **Failure recovery demo (0/150 competitors claim it):** (2026-10-18: the studio's off-air switch; the Orchestrator degrades to detection-only cues and says so) kill an agent mid-match on camera → orchestrator detects, retries/reassigns, broadcast never drops; surfaced as a feature, not a footnote
 - [x] **Multilingual** (2026-10-18, ADR 0009): Urdu and Arabic translated from the verified line under the same law (no invented number, names kept); refused translations air in English; the English original rides along. **Signed off by the Monarch for production, 2026-10-18** (docs/review/ur-ar.md)
 - [ ] Automated recap: post-match report, evidence-linked, exportable
-- [ ] Observability: agent traces, token/cost meter vs the $100 ceiling (the day-job flex)
+- [x] Observability: agent traces, token/cost meter vs the $100 ceiling (the day-job flex) — 2026-10-18, the control room below
   - Application Insights + Log Analytics + Foundry tracing; a HUDHUD workbook with the charts; a **local-only control room** page in the site whose buttons open the Azure portal views (cost, budget, app health, AI usage, AI logs) for the demo recording. Public site never shows it: the links carry subscription and tenant IDs
 - [x] **MCP server** (2026-10-18, ADR 0007): the Critic as five read-only MCP tools (`list_matches`, `match_events`, `match_stats`, `match_moments`, `verify_claim`); stdio for Copilot (`hudhud-critic`), streamable HTTP at the studio's `/mcp/` (`hudhud-critic-live`). Outside callers can't vouch for their own numbers. Next: an audit record per tools/call
 - [x] **The studio** (2026-10-18, local): `court/server.py` + `court/studio/` streams a match as Server-Sent Events: scoreboard and shot map, the on-air feed with a receipt per cue, the Critic's desk (red cards, the struck-through claim, reasons and the Critic's detail), a switch that takes the narrator off air (recovery on camera), a stress test that corrupts 1 in 4 drafts, join from a chosen minute (earlier alerts detected, not narrated). Caps: model matches per day, concurrent streams. `make studio`
@@ -58,7 +58,7 @@
 ## Phase 4 — Ship kit (Oct 26)
 
 - [ ] README: pitch (what/stack/problem), architecture diagram, quickstart, evidence philosophy
-- [ ] **Video: 110 seconds, hard law** — the kit is ready (2026-10-18): `docs/video.md` (rules, checklist, a 1:52 shot list with voiceover, the description) and one-click takes on #/control (English, Urdu, Arabic presets). The Monarch records. — 15s problem → 45s live demo → 30s Critic rejection (money shot) → 20s architecture + multilingual. No third-party trademarks/logos, no unlicensed music. Public URL **on YouTube, Vimeo, Facebook Video or Youku** (official rules §4; a Drive link doesn't count for the submission). The master copy goes in the media kit: `scripts/drive_kit.py --video`
+- [ ] **Video: 110 seconds, hard law** — **host: YouTube, the Monarch's channel @matx104** (being set up 2026-10-19; the video link joins the site's `videoUrl` and the media kit once it's up) — the kit is ready (2026-10-18): `docs/video.md` (rules, checklist, a 1:52 shot list with voiceover, the description) and one-click takes on #/control (English, Urdu, Arabic presets). The Monarch records. — 15s problem → 45s live demo → 30s Critic rejection (money shot) → 20s architecture + multilingual. No third-party trademarks/logos, no unlicensed music. Public URL **on YouTube, Vimeo, Facebook Video or Youku** (official rules §4; a Drive link doesn't count for the submission). The master copy goes in the media kit: `scripts/drive_kit.py --video`
 - [ ] Repo goes **public**; showcase site if time allows (domain from Phase 0) — **scaffold started 2026-10-17:** `site/` with an evidence-chain hero from a real seed-7 run (CI drift-checked). **Live 2026-10-17** at matx104.github.io/HUDHUD: Pages source = GitHub Actions, `pages.yml` deploys only `site/` on every push touching it (repo stays private until submission). **2026-10-18:** rebuilt as a hash-routed SPA (problem, goal, how, recovery, data, why, roadmap, name, who) with SEO tags, OG card, icons. At submission: flip `repoPublic` in `site/config.js` (shows the Code links); on domain purchase: change `siteUrl` + the `<head>` copies (tests/site fails until they agree)
 - **Done when:** submission package complete per task.md checklist.
 

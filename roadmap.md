@@ -22,7 +22,7 @@ An official that watches every moment of the match and judges calls in a blink, 
 Commentary that proves every claim. Five agents (Orchestrator, Scout, Narrator, Critic, Localizer) work over synthetic match events. The Critic rejects anything it can't verify, the broadcast survives agent failure, and cues go out as overlay cues for analysts and casual fans in English, with Urdu and Arabic to follow. Phases and dates are in plan.md.
 
 - **Bridge item, "Ref's call"** (cut first, and only if Phase 2 lands by Oct 23): the Scout flags a foul tackle, the Narrator states the likely decision, and the Critic checks it against the evidence under a lenient, standard or strict profile. It proves the official's loop on today's agents.
-- **Exit gate:** entry submitted, repo public, 110-second video live.
+- **Exit gate:** entry submitted, repo public, the 110-second video live on YouTube (the owner's channel, @matx104).
 
 ## Stage 2 — The decision explainer (after submission, Nov 2026 → Q1 2027)
 
