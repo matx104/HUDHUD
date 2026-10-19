@@ -6,16 +6,39 @@
   <title>Studio</title>
   <meta name="description" content="A synthetic football match, live: AI commentary where every claim is checked before it airs, and the refusals happen on screen.">
   <meta name="color-scheme" content="dark">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23B8F53D'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#06141F">
+  <!-- The crest: five feathers, the Critic's in gold -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='36 12 168 168'%3E%3Cg transform='translate(120 150)' fill='%23B8F53D'%3E%3Cpath transform='rotate(-52)' d='M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z'/%3E%3Cpath transform='rotate(-26)' d='M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z'/%3E%3Cpath fill='%23C9A227' d='M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z'/%3E%3Cpath transform='rotate(26)' d='M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z'/%3E%3Cpath transform='rotate(52)' d='M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z'/%3E%3C/g%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Nastaliq+Urdu:wght@400;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap">
   <link rel="stylesheet" href="/static/studio.css">
 </head>
 <body>
+  <svg class="sprite" aria-hidden="true">
+    <defs>
+      <path id="f78" d="M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z"/>
+      <path id="f96" d="M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z"/>
+      <path id="f112" d="M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z"/>
+      <symbol id="crest" viewBox="36 12 168 168">
+        <g transform="translate(120 150)" fill="#B8F53D">
+          <use href="#f78" transform="rotate(-52)"/>
+          <use href="#f96" transform="rotate(-26)"/>
+          <use href="#f112" fill="#C9A227"/>
+          <use href="#f96" transform="rotate(26)"/>
+          <use href="#f78" transform="rotate(52)"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
   <header class="bar">
-    <strong class="brand"><span class="dot" aria-hidden="true"></span><span data-product></span> studio</strong>
-    <form class="setup" data-setup autocomplete="off">
+    <a class="brand" href="/" aria-label="Studio home">
+      <svg class="brand-crest" aria-hidden="true"><use href="#crest"/></svg>
+      <span class="brand-word" data-product></span>
+      <span class="brand-sub">studio</span>
+    </a>
+    <form class="setup" id="setup" data-setup autocomplete="off">
       <label>Match <select name="seed" data-matches></select></label>
       <label>Commentary
         <select name="narration">
@@ -45,8 +68,52 @@
     </form>
   </header>
 
+  <!-- Personal modes (§4.1): the same verified broadcast, one viewer's way. Part of the setup form. -->
+  <fieldset class="yours" data-yours>
+    <legend>Make it yours</legend>
+    <label>Your club <select name="club" form="setup" data-club>
+      <option value="">Neither</option>
+      <option value="home" data-side="home">Home</option>
+      <option value="away" data-side="away">Away</option>
+    </select></label>
+    <label>Your player <select name="player" form="setup" data-player><option value="">Nobody in particular</option></select></label>
+    <label>Follow <select name="focus" form="setup" data-focus>
+      <option value="match">The whole match</option>
+      <option value="player">Only your player</option>
+    </select></label>
+    <label>One number <select name="metric" form="setup" data-metric>
+      <option value="">Off</option>
+      <option value="xg">Expected goals (xG)</option>
+      <option value="shots">Shots</option>
+      <option value="box_entries">Passes into the box</option>
+      <option value="final_third_passes">Passes ending in the final third</option>
+      <option value="passes_completed">Passes completed</option>
+      <option value="pass_completion">Pass completion (%)</option>
+    </select></label>
+    <p class="yours-note">Changes what airs first and what's marked as yours, never what's true: every line still passed the Critic.</p>
+  </fieldset>
+
   <main class="studio">
-    <section class="board" aria-label="Score">
+    <!-- Before kick-off: the opening slate -->
+    <section class="slate" data-slate aria-labelledby="slate-title">
+      <!-- The crest fans open once, as the studio comes on: the gold feather is the Critic -->
+      <svg class="slate-crest" viewBox="36 12 168 168" aria-hidden="true">
+        <g transform="translate(120 150)">
+          <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
+          <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
+          <g class="feather critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
+          <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
+          <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+        </g>
+      </svg>
+      <div class="slate-copy">
+        <h1 id="slate-title" class="slate-word" data-product></h1>
+        <p class="slate-promise">Every call comes with its evidence.</p>
+        <p class="slate-how">Five AI agents commentate a synthetic match. Before a line airs, the Critic recomputes every number from the match events and refuses what it can't prove. Pick a match and kick off.</p>
+      </div>
+    </section>
+
+    <section class="board" aria-label="Score" data-board hidden>
       <div class="score">
         <span class="team" data-home><i></i><b>Home</b></span>
         <span class="goals" data-score>0 – 0</span>
@@ -64,11 +131,16 @@
         <rect x="88.5" y="13.84" width="16.5" height="40.32"/>
         <g data-shots></g>
       </svg>
+      <!-- Personal modes: the player card and the single metric, counted from events -->
+      <div class="personal" data-mine hidden>
+        <article class="player-card" data-card hidden aria-live="polite"></article>
+        <article class="ticker" data-ticker hidden aria-live="polite"></article>
+      </div>
     </section>
 
     <section class="feed" aria-labelledby="feed-title">
       <h2 id="feed-title">On air</h2>
-      <p class="hint" data-feed-hint>Pick a match and kick off. Every line that airs carries its evidence and its receipt.</p>
+      <p class="hint" data-feed-hint>Every line that airs carries its evidence and its receipt.</p>
       <ol class="cues" role="log" aria-live="polite" data-cues></ol>
     </section>
 

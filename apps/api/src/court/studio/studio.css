@@ -17,7 +17,17 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; min-height: 100vh; background: var(--navy-deep); color: var(--chalk); font: 400 1rem / 1.5 var(--body); display: grid; grid-template-rows: auto 1fr auto; }
+body {
+  margin: 0; min-height: 100vh; color: var(--chalk); font: 400 1rem / 1.5 var(--body);
+  display: grid; grid-template-rows: auto auto 1fr auto;
+  /* The gallery's light: lime from the crest's side, gold from the verdict's */
+  background:
+    radial-gradient(60rem 40rem at 0% 0%, rgba(184, 245, 61, 0.07), transparent 60%),
+    radial-gradient(50rem 36rem at 100% 100%, rgba(201, 162, 39, 0.08), transparent 60%),
+    var(--navy-deep);
+  background-attachment: fixed;
+}
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 button, select, input { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
 h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
@@ -25,8 +35,11 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 
 /* ---------- top bar ---------- */
 .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; padding: 0.75rem 1.25rem; background: var(--navy); border-bottom: 1px solid var(--chalk-faint); }
-.brand { display: flex; align-items: center; gap: 0.5rem; font: 800 1.5rem / 1 var(--display); }
-.dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 4px rgba(184, 245, 61, 0.18); }
+/* The brand lockup: crest, wordmark, and what this is */
+.brand { display: flex; align-items: center; gap: 0.6rem; color: inherit; text-decoration: none; }
+.brand-crest { width: 2.6rem; height: 2.6rem; filter: drop-shadow(0 0 10px rgba(184, 245, 61, 0.35)); }
+.brand-word { font: 900 2.1rem / 0.9 var(--display); letter-spacing: 0.02em; }
+.brand-sub { align-self: flex-end; margin-bottom: 0.15rem; font: 500 0.8125rem / 1 var(--mono); color: var(--lime); }
 .setup { display: flex; flex-wrap: wrap; align-items: end; gap: 0.6rem 1rem; margin-left: auto; }
 .setup label { display: grid; gap: 0.15rem; font-size: 0.75rem; color: var(--chalk-dim); }
 .setup select { padding: 0.4rem 0.5rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: var(--navy-raised); font-size: 0.9375rem; }
@@ -34,9 +47,59 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .go { background: var(--lime); color: var(--navy-deep); }
 .go:disabled { opacity: 0.5; cursor: progress; }
 
+/* ---------- personal modes: make it yours ---------- */
+.yours { display: flex; flex-wrap: wrap; align-items: end; gap: 0.6rem 1rem; margin: 0; padding: 0.6rem 1.25rem 0.7rem; border: 0; border-bottom: 1px solid var(--chalk-faint); background: rgba(15, 42, 61, 0.6); }
+.yours legend { float: left; margin-right: 0.5rem; padding: 0; font: 800 1.125rem / 2.1 var(--display); color: var(--gold); }
+.yours label { display: grid; gap: 0.15rem; font-size: 0.75rem; color: var(--chalk-dim); }
+.yours select { padding: 0.35rem 0.5rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: var(--navy-raised); font-size: 0.875rem; max-width: 16rem; }
+.yours-note { flex: 1 1 18rem; margin: 0; font-size: 0.75rem; color: var(--chalk-dim); align-self: center; }
+
+/* ---------- the opening slate: the studio before kick-off ---------- */
+.slate {
+  grid-column: 1 / -1; position: relative; overflow: hidden;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1rem clamp(1.5rem, 4vw, 3.5rem);
+  padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1.25rem, 4vw, 3.5rem);
+  border: 1px solid var(--chalk-faint); border-radius: 8px;
+  background: radial-gradient(28rem 22rem at 18% 55%, rgba(184, 245, 61, 0.16), transparent 70%), var(--navy);
+}
+/* The pitch, faintly: touchlines, halfway line and centre circle, as on the showcase's card */
+.slate::before, .slate::after { content: ""; position: absolute; pointer-events: none; }
+.slate::before { inset: 1rem; border: 1px solid rgba(244, 241, 232, 0.07); border-radius: 6px; background: linear-gradient(90deg, transparent calc(50% - 0.5px), rgba(244, 241, 232, 0.06) 0 calc(50% + 0.5px), transparent 0); }
+.slate::after { left: 50%; top: 50%; width: 11rem; height: 11rem; margin: -5.5rem; border: 1px solid rgba(244, 241, 232, 0.06); border-radius: 50%; }
+.slate-crest { position: relative; width: clamp(8rem, 20vw, 15rem); height: auto; overflow: visible; filter: drop-shadow(0 0 28px rgba(184, 245, 61, 0.35)); }
+.slate-crest .feather use { fill: var(--lime); }
+.slate-crest .critic use { fill: var(--gold); }
+.slate-copy { position: relative; }
+.slate-word { margin: 0; font: 900 clamp(4rem, 11vw, 9rem) / 0.85 var(--display); letter-spacing: 0.01em; }
+.slate-promise { margin: 0.6rem 0 0.9rem; font: 700 clamp(1.5rem, 3.4vw, 2.6rem) / 1 var(--display); color: var(--gold); }
+.slate-how { max-width: 46ch; margin: 0; color: var(--chalk-dim); font-size: 1.0625rem; }
+
 /* ---------- layout ---------- */
 .studio { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "board board" "feed desk"; gap: 1rem; padding: 1rem 1.25rem; align-items: start; }
 .board { grid-area: board; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 15rem); align-items: center; gap: 1rem 2rem; padding: 1rem 1.25rem; background: var(--navy); border: 1px solid var(--chalk-faint); border-radius: 6px; }
+.board[hidden], .slate[hidden] { display: none; }
+
+/* ---------- personal modes on the board: the player card and the single metric ---------- */
+.personal { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 0.75rem; }
+.personal[hidden] { display: none; }
+.player-card, .ticker { padding: 0.75rem 0.9rem; background: var(--navy-deep); border-radius: 6px; border-top: 3px solid var(--team, var(--lime)); }
+.player-card header { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem; }
+.card-no { font: 900 1.75rem / 1 var(--display); color: var(--team, var(--lime)); }
+.player-card strong { font: 800 1.25rem / 1 var(--display); }
+.card-pos { font: 500 0.75rem / 1 var(--mono); color: var(--chalk-dim); }
+.player-card dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem 0.75rem; margin: 0; }
+.player-card dt { font-size: 0.6875rem; color: var(--chalk-dim); }
+.player-card dd { margin: 0; font: 800 1.375rem / 1.05 var(--display); font-variant-numeric: tabular-nums; }
+.player-card dd small { margin-left: 0.3rem; font: 500 0.75rem var(--mono); color: var(--lime); }
+.card-from { margin: 0.5rem 0 0; font: 400 0.6875rem / 1.3 var(--mono); color: var(--chalk-dim); }
+.ticker { border-top-color: var(--gold); }
+.ticker h3 { margin: 0 0 0.3rem; font: 800 1rem / 1.1 var(--display); color: var(--gold); }
+.ticker-row { display: flex; justify-content: space-between; gap: 1rem; }
+.ticker-side { display: flex; align-items: baseline; gap: 0.5rem; }
+.ticker-side.away { flex-direction: row-reverse; }
+.ticker-team { font: 500 0.8125rem / 1 var(--mono); color: var(--team); }
+.ticker-value { font: 900 2.5rem / 1 var(--display); font-variant-numeric: tabular-nums; }
+.spark { display: block; width: 100%; height: 3rem; margin-top: 0.35rem; }
 .feed { grid-area: feed; }
 .desk { grid-area: desk; padding: 1rem 1.1rem; background: rgba(242, 92, 84, 0.06); border: 1px solid rgba(242, 92, 84, 0.3); border-radius: 6px; }
 
@@ -60,6 +123,11 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .cues, .cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
 .cue { padding: 0.9rem 1rem 0.8rem; background: var(--navy); border-left: 4px solid var(--lime); border-radius: 0 6px 6px 0; }
 .cue.detection { border-left-color: var(--gold); }
+/* The viewer's own moments: their club's colour along the edge, and a quiet glow */
+.cue.is-mine { border-left-color: var(--team); box-shadow: inset 0 0 0 1px rgba(244, 241, 232, 0.08), 0 0 24px -12px var(--team); }
+.yours-tag { padding: 0.1rem 0.45rem; border-radius: 999px; font-size: 0.6875rem; font-weight: 600; background: var(--team, var(--lime)); color: var(--navy-deep); }
+.yours-tag.player { background: var(--gold); }
+.yours-tag.rival { background: transparent; color: var(--chalk-dim); border: 1px solid var(--chalk-faint); }
 .cue header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.75rem; }
 .cue .minute { font: 500 0.875rem / 1 var(--mono); color: var(--lime); }
 .cue.detection .minute { color: var(--gold); }
@@ -113,14 +181,20 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 /* ---------- motion: one entrance, for what just aired or was just refused ---------- */
 @media (prefers-reduced-motion: no-preference) {
   .cue, .card, .notice { animation: arrive 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .slate-crest .feather { animation: fan 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i) * 90ms + 150ms); }
   .card::before { animation: red-card 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
 }
 @keyframes arrive { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes fan { from { transform: rotate(0deg) scale(0.2); opacity: 0; } to { transform: rotate(var(--r)) scale(1); opacity: 1; } }
 @keyframes red-card { from { opacity: 0; transform: translateY(-14px) rotate(-28deg) scale(1.3); } }
 
 @media (max-width: 60rem) {
   .studio { grid-template-columns: minmax(0, 1fr); grid-template-areas: "board" "desk" "feed"; padding: 1rem; }
   .board { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .slate { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .slate-how { margin-inline: auto; }
+  .personal { width: 100%; }
+  .yours { padding-inline: 1rem; }
   .pitch { justify-self: center; }
   .setup { margin-left: 0; }
   .fine { margin-left: 0; }

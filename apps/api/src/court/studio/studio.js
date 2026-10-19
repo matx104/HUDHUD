@@ -1,7 +1,8 @@
 // The studio page: opens one match as Server-Sent Events and renders what the court does with it.
-// The server sends hello (teams, session), clock (minute, score), shot, output (cue, rejection,
-// spiked, degradation) and end. Nothing here computes a fact: every number on screen came from
-// the server, and every line came through the Critic.
+// The server sends hello (teams, session, the viewer's preferences), clock (minute, score), shot,
+// output (cue, rejection, spiked, degradation), personal (the player card and the single metric)
+// and end. Nothing here computes a fact: every number on screen came from the server, and every
+// line came through the Critic.
 (() => {
   const $ = (sel) => document.querySelector(sel);
   const el = (tag, cls, text) => Object.assign(document.createElement(tag), { className: cls ?? "", textContent: text ?? "" });
@@ -28,9 +29,12 @@
   const pull = $("[data-pull]");
   const cues = $("[data-cues]");
   const cards = $("[data-cards]");
+  const yours = { club: $("[data-club]"), player: $("[data-player]"), focus: $("[data-focus]"), metric: $("[data-metric]") };
   let source = null;
   let session = null;
   let teams = null;
+  let matches = [];
+  let history = [];
   let tally = { refused: 0, checked: 0, cost: 0 };
 
   fetch("/api/config")
@@ -38,21 +42,54 @@
     .then((config) => {
       document.querySelectorAll("[data-product]").forEach((n) => (n.textContent = config.product));
       document.title = `${config.product} studio`;
-      for (const m of config.matches) {
+      matches = config.matches;
+      for (const m of matches) {
         const option = el("option", "", `${m.home.name} v ${m.away.name}`);
         option.value = m.seed;
         $("[data-matches]").append(option);
       }
       if (!config.models) form.narration.value = "template";
-      preset(new URLSearchParams(location.search));
+      const params = new URLSearchParams(location.search);
+      if (params.has("seed")) form.seed.value = params.get("seed");
+      fillYours();
+      preset(params);
     });
+
+  // The personal modes' pickers follow the chosen match: its two clubs, its 22 players.
+  form.seed.addEventListener("change", fillYours);
+  yours.player.addEventListener("change", focusable);
+  function fillYours() {
+    const match = matches.find((m) => String(m.seed) === form.seed.value);
+    if (!match) return;
+    for (const option of yours.club.querySelectorAll("[data-side]")) option.textContent = match[option.dataset.side].name;
+    const keep = yours.player.value;
+    yours.player.replaceChildren(Object.assign(el("option", "", "Nobody in particular"), { value: "" }));
+    for (const side of ["home", "away"]) {
+      const group = Object.assign(document.createElement("optgroup"), { label: match[side].name });
+      for (const p of match.players.filter((x) => x.team === side)) {
+        group.append(Object.assign(el("option", "", `${p.number} ${p.name} (${p.position})`), { value: p.id }));
+      }
+      yours.player.append(group);
+    }
+    if ([...yours.player.options].some((o) => o.value === keep)) yours.player.value = keep;
+    focusable();
+  }
+  function focusable() {
+    // Following one player needs a player to follow.
+    const only = yours.focus.querySelector("[value=player]");
+    only.disabled = !yours.player.value;
+    if (only.disabled && yours.focus.value === "player") yours.focus.value = "match";
+  }
 
   // Settings can ride in the address, so a recording starts the same way every take:
   // ?seed=21&narration=foundry&lang=ur&start=54&speed=30&stress=1&casual=0&autostart=1
+  // and the personal modes: &club=home&player=h09&focus=player&metric=xg
   function preset(params) {
-    for (const name of ["seed", "narration", "lang", "start", "speed"]) {
+    for (const name of ["seed", "narration", "lang", "start", "speed", "club", "player", "focus", "metric"]) {
       const value = params.get(name);
-      if (value !== null && [...form[name].options].some((o) => o.value === value)) form[name].value = value;
+      const select = form.elements[name];
+      if (value !== null && [...select.options].some((o) => o.value === value)) select.value = value;
+      if (name === "player") focusable();
     }
     if (params.has("stress")) $("[data-stress]").checked = params.get("stress") === "1";
     if (params.has("casual")) $("[data-casual]").checked = params.get("casual") === "1";
@@ -82,6 +119,10 @@
     cards.replaceChildren();
     $("[data-shots]").replaceChildren();
     $("[data-feed-hint]").hidden = true;
+    $("[data-slate]").hidden = true;
+    $("[data-board]").hidden = false;
+    for (const node of ["[data-mine]", "[data-card]", "[data-ticker]"]) $(node).hidden = true;
+    history = [];
     tally = { refused: 0, checked: 0, cost: 0 };
     drawTally();
     setLevel("full", "On air");
@@ -99,12 +140,17 @@
       mode: $("[data-casual]").checked ? "casual" : "analyst",
       lang: form.lang.value,
       stress: $("[data-stress]").checked ? "0.25" : "0",
+      club: yours.club.value,
+      player: yours.player.value,
+      focus: yours.focus.value,
+      metric: yours.metric.value,
     });
     source = new EventSource(`/api/stream?${params}`);
     source.addEventListener("hello", (e) => hello(JSON.parse(e.data)));
     source.addEventListener("clock", (e) => clock(JSON.parse(e.data)));
     source.addEventListener("shot", (e) => shot(JSON.parse(e.data)));
     source.addEventListener("output", (e) => output(JSON.parse(e.data)));
+    source.addEventListener("personal", (e) => personal(JSON.parse(e.data)));
     source.addEventListener("end", (e) => finish(JSON.parse(e.data)));
     // An EventSource reconnects by itself, which would start a new match: close on any error.
     source.addEventListener("error", (e) => {
@@ -138,6 +184,71 @@
     const who = data.narration === "foundry" ? "AI models on Microsoft Foundry write the commentary" : "The offline template writes the commentary";
     notice(`${data.home.name} v ${data.away.name}, ${data.competition}. ${who}.`, true);
     for (const text of data.notices) notice(text);
+    const prefs = data.prefs ?? {};
+    const parts = [];
+    if (prefs.club) parts.push(`your club is ${data[prefs.club].name}: its moments are marked and come first, and the other side's still air`);
+    if (prefs.player) parts.push(prefs.focus === "player" ? "only your player's moments air here; the rest are counted, not lost" : "your player's moments are marked");
+    if (parts.length) notice(`Made yours: ${parts.join("; ")}. Every line still passed the Critic.`, true);
+  }
+
+  // The player card and the single metric: counted on the server from the match's own events.
+  function personal(data) {
+    $("[data-mine]").hidden = false;
+    if (data.card) drawCard(data.card);
+    if (data.metric) drawTicker(data.metric);
+  }
+
+  function drawCard(c) {
+    const node = $("[data-card]");
+    node.hidden = false;
+    node.style.setProperty("--team", teams?.[c.player.team]?.color ?? "var(--lime)");
+    const head = el("header");
+    head.append(el("span", "card-no", String(c.player.number)), el("strong", "", c.player.name), el("span", "card-pos", c.player.position));
+    const stats = el("dl");
+    const rows = [
+      ["Passes", c.passes ? `${c.passes_completed}/${c.passes}` : "0", c.completion_pct === null ? "" : `${c.completion_pct}%`],
+      ["Chances created", c.chances_created],
+      ["Shots", c.shots, c.shots ? `xG ${c.xg.toFixed(2)}` : ""],
+      ["Goals", c.goals],
+      ["Tackles won", c.tackles_won],
+      ["Pressures", c.pressures],
+    ];
+    for (const [label, value, extra] of rows) {
+      const box = el("div");
+      const dd = el("dd", "", String(value));
+      if (extra) dd.append(el("small", "", extra));
+      box.append(el("dt", "", label), dd);
+      stats.append(box);
+    }
+    node.replaceChildren(head, stats, el("p", "card-from", `Counted from ${c.evidence.length} of the player's own events`));
+  }
+
+  function drawTicker(m) {
+    const node = $("[data-ticker]");
+    node.hidden = false;
+    // A share has no value before the first pass: the line starts once both sides have one.
+    if (m.home !== null && m.away !== null) history.push([m.home, m.away]);
+    const value = (v) => (v === null ? "–" : m.metric === "xg" ? v.toFixed(2) : String(v));
+    const row = el("div", "ticker-row");
+    for (const side of ["home", "away"]) {
+      const cell = el("div", `ticker-side ${side}`);
+      cell.style.setProperty("--team", teams?.[side]?.color ?? "var(--chalk)");
+      cell.append(el("span", "ticker-team", teams?.[side]?.short ?? side), el("span", "ticker-value", value(m[side])));
+      row.append(cell);
+    }
+    node.replaceChildren(el("h3", "", m.label), row, spark(), el("p", "card-from", `Counted from ${m.counted} events so far`));
+  }
+
+  // The metric minute by minute, both sides on one scale.
+  function spark() {
+    const w = 240, h = 48;
+    const top = Math.max(1e-9, ...history.flat());
+    const line = (i) => history.map(([a, b], n) => `${(n / Math.max(1, history.length - 1)) * w},${h - (([a, b][i]) / top) * (h - 4) - 2}`).join(" ");
+    const box = svg("svg", { viewBox: `0 0 ${w} ${h}`, class: "spark", preserveAspectRatio: "none", role: "img", "aria-label": "The metric over the match so far" });
+    for (const [i, side] of [[0, "home"], [1, "away"]]) {
+      box.append(svg("polyline", { points: line(i), fill: "none", stroke: teams?.[side]?.color ?? "#fff", "stroke-width": 2, "vector-effect": "non-scaling-stroke" }));
+    }
+    return box;
   }
 
   function clock(data) {
@@ -166,11 +277,17 @@
     }
   }
 
+  // Why a cue is the viewer's own (personal modes), in the viewer's words.
+  const YOURS = { club: "Your club", rival: "Against your club", player: "Your player" };
+
   function cue(c) {
-    const item = el("li", `cue${c.status === "verified" ? "" : " detection"}`);
+    const mine = c.for_you?.some((m) => m !== "rival");
+    const item = el("li", `cue${c.status === "verified" ? "" : " detection"}${mine ? " is-mine" : ""}`);
+    if (mine) item.style.setProperty("--team", teams?.[c.team]?.color ?? "var(--lime)");
     const head = el("header");
     const headline = Object.assign(el("span", "headline", c.headline), { dir: "auto" });
     head.append(el("span", "minute", c.minute), headline);
+    for (const m of c.for_you ?? []) head.append(el("span", `yours-tag ${m}`, YOURS[m]));
     if (c.status !== "verified") head.append(el("span", "tag", "Detection only"));
     else if (c.attempts > 1) head.append(el("span", "tag", `Aired on attempt ${c.attempts}`));
     const evidence = el("div", "evidence");
@@ -247,9 +364,11 @@
 
   function finish(summary) {
     const s = summary.stats;
-    const parts = [`Full time. ${s.aired ?? 0} cues aired verified`];
+    const count = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+    const parts = [`Full time. ${count(s.aired ?? 0, "cue")} aired verified`];
     if (s.aired_detection_only) parts.push(`${s.aired_detection_only} detection-only`);
-    if (s.rejected) parts.push(`${s.rejected} claims refused and rewritten`);
+    if (s.rejected) parts.push(`${count(s.rejected, "claim")} refused and rewritten`);
+    if (summary.hidden_by_focus) parts.push(`${count(summary.hidden_by_focus, "other moment")} left out by player focus`);
     notice(`${parts.join(", ")}. Model cost $${summary.cost_usd.toFixed(4)}.`, true);
     setLevel("idle", "Full time");
     stop();
