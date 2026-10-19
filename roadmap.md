@@ -25,6 +25,7 @@ An official that watches every moment of the match and judges calls in a blink, 
 Commentary that proves every claim. Five agents (Orchestrator, Scout, Narrator, Critic, Localizer) work over synthetic match events. The Critic rejects anything it can't verify, the broadcast survives agent failure, and cues go out as overlay cues for analysts and casual fans in English, with Urdu and Arabic to follow. Phases and dates are in plan.md.
 
 - **Bridge item, "Ref's call": live since 2026-10-19.** The Scout flags a foul that carries a card or a penalty, the Narrator states the likely decision, and the Critic recomputes it from the cited foul under a lenient, standard or strict profile (court/referee.py). It proves the official's loop on today's agents. The restart has ground truth in the generator; cards wait for Stage 2's generator.
+- **HUD²: live since 2026-10-20.** The same match on one central screen, through the referee's, the commentator's or the fan's lens, with overlays, markings and annotations (ADR 0012). Today's first step of the HUD² road below.
 - **Exit gate:** entry submitted, repo public, the 110-second video live on YouTube (the owner's channel, MATX104: @monarch-_-mat).
 
 ## Stage 2 — The decision explainer (after submission, Nov 2026 → Q1 2027)
@@ -57,6 +58,17 @@ Real-time advice to the referee team.
 - **Audit:** every recommendation is kept with its evidence for post-match referee assessment and league review.
 - **Pilot path:** simulation and esports first, then grassroots and academy football, then lower-tier professional trials, and, once each stage has proven itself, the top professional leagues and the biggest international tournaments. Every trial runs inside the competition's protocol and with the approval of the game's law-making body. Bias audits and transparency reports are part of the product, not an afterthought.
 
+## HUD²: the official, seen
+
+Everything above has to reach people's eyes. HUD² is how: one match, each viewer's own lens. Set by the Monarch, 2026-10-20.
+
+- **Today, a screen (built).** One central display with overlays, markings and annotations, through three lenses: the referee's, the commentator's and the fan's. Every action is drawn where it happened, every line is checked by the Critic and pinned to the events it cites, and each viewer switches layers on or off, kept for next time.
+- **Next, glasses.** The same lenses on a head-worn display, with the marks anchored to the real pitch instead of a drawing of it. That needs Stage 3's eyes: where the ball and every player are, from the cameras.
+- **Then, contact lenses,** as the hardware arrives.
+- **Further out, neural interfaces,** only with consent and only once they are proven safe.
+- **The end state:** everyone sees the match through a lens shaped to their own needs and preferences: the referee's decision support, the commentator's spotter board, a newcomer's plain-words guide, each in their own language.
+- **What never changes:** the evidence law. On any device, a word passed the Critic and a mark is an event that happened. The referee's lens shows the least, never stands between the referee and the players (principle 7), and never decides (principle 2).
+
 ## Beyond
 
 - **Referee development:** match replays with the official's reasoning, for training and assessment.
@@ -73,6 +85,7 @@ Real-time advice to the referee team.
 | Localizer: casual or analyst, by language | Speaks to the referee, the broadcast and the crowd |
 | Orchestrator: retries, degrades, recovers | Meets the latency budget and never goes silent |
 | Evidence chain | Decision audit trail |
+| HUD²: one screen, three lenses | Each viewer's own lens: glasses, then contact lenses |
 
 ## Open questions and risks
 
