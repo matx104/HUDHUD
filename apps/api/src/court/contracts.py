@@ -21,6 +21,7 @@ class AlertKind(StrEnum):
     BIG_CHANCE = "big_chance"
     MOMENTUM_SWING = "momentum_swing"
     GREAT_PASS = "great_pass"
+    RECAP = "recap"  # a line of the post-match recap (court.recap), never a live alert
 
 
 class Window(_Frozen):

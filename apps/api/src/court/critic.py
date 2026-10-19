@@ -3,7 +3,7 @@
 Checks, in order (all failures are collected so the UI can show every reason):
 1. it cites evidence at all
 2. every citation is a real event that had happened by the claim's moment
-3. cited events are fresh: same period and recent
+3. cited events are fresh: same period and recent (lifted for the recap, which has hindsight)
 4. the claim kind's evidence rule is satisfied (unregistered kind -> refuse)
 5. every numeric assertion survives independent recomputation from raw events; one about a
    single event must be about an event the claim cites, of the side it names
@@ -14,7 +14,7 @@ Checks, in order (all failures are collected so the UI can show every reason):
 import re
 from collections.abc import Callable, Mapping, Sequence
 
-from match_events import MatchEvent, Pass, PassOutcome, Shot, ShotOutcome
+from match_events import MatchEvent, Pass, PassOutcome, PeriodEnd, Shot, ShotOutcome
 
 from .contracts import AlertKind, Claim, Reason, RejectionCode, Verdict
 from .metrics import is_final_third_pass, measure
@@ -85,6 +85,15 @@ def _attacking(event: MatchEvent) -> bool:
     return isinstance(event, Shot) or is_final_third_pass(event)
 
 
+def recap_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
+    """A recap line states the match as it ended: a number about the whole match must be counted
+    to the final whistle, so the line cites it, and a line about moments cites those moments."""
+    whole_match = [a for a in claim.assertions if a.window is None and a.event_id is None]
+    if whole_match and not any(isinstance(e, PeriodEnd) for e in cited):
+        return "a recap line with whole-match numbers must cite the final whistle"
+    return None
+
+
 def great_pass_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
     """A pass is called great for what it made: the claim cites the completed pass and the
     shot it set up, both the side's own."""
@@ -105,6 +114,7 @@ EVIDENCE_RULES: Mapping[AlertKind, EvidenceRule] = {
     AlertKind.BIG_CHANCE: big_chance_rule,
     AlertKind.MOMENTUM_SWING: momentum_rule,
     AlertKind.GREAT_PASS: great_pass_rule,
+    AlertKind.RECAP: recap_rule,
 }
 
 TOLERANCE = {"xg": 0.011, "shot_xg": 0.011}  # rounding slack; counts must match exactly
@@ -118,9 +128,13 @@ class Critic:
         rules: Mapping[AlertKind, EvidenceRule] | None = None,
         *,
         max_evidence_age_s: float = 900.0,
+        hindsight: bool = False,
     ) -> None:
         self.rules = EVIDENCE_RULES if rules is None else rules
         self.max_evidence_age_s = max_evidence_age_s
+        # After full time a claim may look back over the whole match (court.recap): evidence from
+        # either half and any minute. Every other check stands.
+        self.hindsight = hindsight
 
     def review(self, claim: Claim, state: MatchState) -> Verdict:
         reasons: list[Reason] = []
@@ -144,7 +158,8 @@ class Critic:
                 else:
                     refuse(RejectionCode.UNKNOWN_EVENT, f"{event_id} is not in the match record")
                 continue
-            if event.period != claim.period or claim.t - event.t > self.max_evidence_age_s:
+            stale = event.period != claim.period or claim.t - event.t > self.max_evidence_age_s
+            if stale and not self.hindsight:
                 refuse(RejectionCode.STALE_EVENT, f"{event_id} is too old to support this claim")
                 continue
             cited.append(event)
