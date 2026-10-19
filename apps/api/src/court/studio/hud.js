@@ -110,6 +110,10 @@
     for (const name of ["seed", "narration", "lang", "start", "speed", "strictness", "club"]) {
       const value = params.get(name);
       const select = form.elements[name];
+      // Any minute can start a take, not only the menu's: one not on it is added, never ignored.
+      if (name === "start" && /^\d{1,2}$/.test(value ?? "") && Number(value) <= 90 && ![...select.options].some((o) => o.value === value)) {
+        select.append(Object.assign(el("option", "", `${value}'`), { value }));
+      }
       if (value !== null && [...select.options].some((o) => o.value === value)) select.value = value;
     }
     if (params.has("stress")) form.stress.checked = params.get("stress") === "1";
@@ -335,13 +339,14 @@
 
   function goal(p) {
     const team = S.teams?.[p.team];
+    S.bursts.push({ kind: "goal", x: p.x > 52.5 ? 105 : 0, y: 34, color: team?.color ?? "#ffffff", born: now() });
+    if (S.lens === "referee") return; // the referee's lens shows the least: the rings, no banner
     const banner = $("[data-goal]");
     banner.style.setProperty("--team", team?.color ?? "#fff");
     banner.replaceChildren(el("strong", "", "Goal"), el("span", "", `${team?.name ?? ""}: ${p.player}, ${p.minute}`));
     banner.hidden = false;
     clearTimeout(goal.timer);
     goal.timer = setTimeout(() => (banner.hidden = true), 2600);
-    S.bursts.push({ kind: "goal", x: p.x > 52.5 ? 105 : 0, y: 34, color: team?.color ?? "#ffffff", born: now() });
   }
 
   function output(o) {
@@ -359,7 +364,7 @@
     meter();
     if (c.kind === "ref_call" && c.call && c.call.card !== "none") {
       const fouler = c.players?.find((p) => p.team === c.team);
-      S.cards.push({ minute: c.minute, team: c.team, card: c.call.card, who: fouler ? `${fouler.number} ${fouler.name}` : "" });
+      S.cards.push({ minute: c.minute, team: c.team, card: c.call.card, who: fouler?.name ?? "" });
     }
     if (H.EXPLAIN[c.kind]) S.explain = c.kind;
     readouts();
@@ -545,7 +550,7 @@
   function refereeRead(p) {
     const out = [el("h2", "", "Discipline")];
     const cards = el("div", "card-row");
-    for (const c of S.cards) cards.append(el("span", `ref-card ${c.card}`, `${c.minute} ${c.who} (${S.teams?.[c.team]?.short ?? c.team})`));
+    for (const c of S.cards) cards.append(el("span", `ref-card ${c.card}`, `${c.minute}: ${c.who || name(c.team)} (${S.teams?.[c.team]?.short ?? c.team})`));
     out.push(S.cards.length ? cards : el("p", "", "No card has been called yet."));
     if (p) out.push(duel("Fouls, the match so far", "fouls", p.match), duel("Fouls, the last five minutes", "fouls", p.recent), duel("Tackles won", "tackles_won", p.match), duel("Presses high up, the last five minutes", "high_pressures", p.recent));
     else out.push(waiting());
@@ -725,7 +730,7 @@
       c.font = "500 11px 'JetBrains Mono', monospace";
       c.fillStyle = `rgba(${COLORS.gold}, 0.9)`;
       c.textAlign = right ? "right" : "left";
-      const [lx, ly] = P(mx(z.goal_chance_m + 1.5), 34 - z.central_m - 2);
+      const [lx, ly] = P(mx(1), 34 + z.central_m + 3.5);
       c.fillText(`goal chance: ${z.goal_chance_m} m`, lx, ly);
       if (z.promising_x > 0) {
         // Beside its line, on the side of the goal it belongs to, so the two never meet midfield.

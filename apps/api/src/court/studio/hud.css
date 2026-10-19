@@ -149,7 +149,7 @@ body[data-state="slate"] .stage { grid-template-columns: minmax(0, 1fr); grid-te
 
 .goal-banner { position: absolute; left: 50%; top: 38%; translate: -50% -50%; text-align: center; pointer-events: none; }
 .goal-banner strong { display: block; font: 900 clamp(4rem, 12vw, 9rem) / 0.85 var(--display); letter-spacing: 0.02em; color: var(--chalk); text-shadow: 0 0 40px var(--team), 0 0 2px var(--team); }
-.goal-banner span { font: 700 clamp(1.1rem, 2.4vw, 1.8rem) / 1.1 var(--display); color: var(--team); }
+.goal-banner span { font: 700 clamp(1.1rem, 2.4vw, 1.8rem) / 1.1 var(--display); color: var(--team); text-shadow: 0 0 10px var(--navy-deep), 0 0 3px var(--navy-deep); }
 
 /* ---------- the slate: whose eyes, which match ---------- */
 .slate { grid-column: 1 / -1; grid-row: 1; align-self: center; justify-self: center; z-index: 2; width: min(64rem, 100%); padding: clamp(1.25rem, 3vw, 2.25rem); background: var(--glass); border: 1px solid var(--chalk-faint); border-radius: 6px; backdrop-filter: blur(8px); }
