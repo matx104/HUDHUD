@@ -7,6 +7,7 @@
     python -m court eval                                # momentum calls vs hidden ground truth
     python -m court narrator-eval --seeds 5             # which model writes the commentary
     python -m court foundry-eval --seeds 2              # Foundry's evaluators judge the lines
+    python -m court ask-eval --seeds 2                  # questions answered, graded and judged
     python -m court schema                              # the output stream's JSON Schema
 
 The Foundry narrator reads FOUNDRY_PROJECT_ENDPOINT and FOUNDRY_MODELS (comma-separated,
@@ -274,6 +275,10 @@ def main(argv: list[str] | None = None) -> int:
     fe.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
     fe.add_argument("--seeds", type=int, default=2, help="how many matches")
     fe.add_argument("--judge", default="gpt-5-mini", help="the judging model (not the writer)")
+    ae = sub.add_parser("ask-eval", help="questions asked of unseen matches, graded and judged")
+    ae.add_argument("--first", type=int, default=60, help="first seed (60-99 were never tuned on)")
+    ae.add_argument("--seeds", type=int, default=2, help="how many matches")
+    ae.add_argument("--judge", default="gpt-5-mini", help="the judging model (not the writer)")
     args = parser.parse_args(argv)
     if args.cmd == "schema":
         from .schema import write
@@ -286,6 +291,14 @@ def main(argv: list[str] | None = None) -> int:
         telemetry.configure()
         try:
             return foundry_eval(args.first, args.seeds, args.judge)
+        finally:
+            telemetry.flush()
+    if args.cmd == "ask-eval":
+        from .ask_eval import main as ask_eval
+
+        telemetry.configure()
+        try:
+            return ask_eval(args.first, args.seeds, args.judge)
         finally:
             telemetry.flush()
     if args.cmd == "eval":

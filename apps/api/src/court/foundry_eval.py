@@ -80,7 +80,15 @@ async def lines(seeds: range, make_narrator) -> list[dict[str, Any]]:
     return rows
 
 
-def judge(rows: list[dict[str, Any]], *, endpoint: str, judge_model: str, out: Path) -> dict:
+def judge(
+    rows: list[dict[str, Any]],
+    *,
+    endpoint: str,
+    judge_model: str,
+    out: Path,
+    metrics: tuple[str, ...] = METRICS,
+    name: str = "HUDHUD narrator lines",
+) -> dict:
     """Foundry's evaluators over the rows; the run is logged to the project."""
     from azure.ai.evaluation import (
         CoherenceEvaluator,
@@ -103,25 +111,33 @@ def judge(rows: list[dict[str, Any]], *, endpoint: str, judge_model: str, out: P
     }
     cred = credential()
     reasoning = judge_model.startswith(("gpt-5", "o1", "o3", "o4"))
+    classes = {
+        "groundedness": GroundednessEvaluator,
+        "relevance": RelevanceEvaluator,
+        "coherence": CoherenceEvaluator,
+        "fluency": FluencyEvaluator,
+    }
     evaluators = {
-        name: cls(model, credential=cred, is_reasoning_model=reasoning)
-        for name, cls in zip(
-            METRICS,
-            (GroundednessEvaluator, RelevanceEvaluator, CoherenceEvaluator, FluencyEvaluator),
-            strict=True,
-        )
+        metric: classes[metric](model, credential=cred, is_reasoning_model=reasoning)
+        for metric in metrics
     }
     result = evaluate(
         data=str(data),
         evaluators=evaluators,
-        evaluation_name=f"HUDHUD narrator lines, judged by {judge_model}",
+        evaluation_name=f"{name}, judged by {judge_model}",
         azure_ai_project=endpoint,
         output_path=str(out / "result.json"),
     )
     return result
 
 
-def summarize(result: dict, rows: list[dict[str, Any]], judge_model: str, writer: str) -> dict:
+def summarize(
+    result: dict,
+    rows: list[dict[str, Any]],
+    judge_model: str,
+    writer: str,
+    metrics: tuple[str, ...] = METRICS,
+) -> dict:
     scored = result.get("rows", [])
     summary: dict[str, Any] = {
         "lines": len(rows),
@@ -130,7 +146,7 @@ def summarize(result: dict, rows: list[dict[str, Any]], judge_model: str, writer
         "date": date.today().isoformat(),
         "portal": result.get("studio_url"),
     }
-    for metric in METRICS:
+    for metric in metrics:
         # Only lines the judge answered: a call that failed (a dropped connection) is no verdict,
         # so it counts neither for nor against, and the summary says how many were judged.
         judged = [

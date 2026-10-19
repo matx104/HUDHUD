@@ -556,7 +556,7 @@ class RuleAnswerer:
         sides = tools.teams_named(q) or list(Side)
         half = 1 if "first half" in q else 2 if "second half" in q else None
         metric = next((m for words, m in METRIC_WORDS if words in q), None)
-        scorers = "who scored" in q or "scorer" in q
+        scorers = ("scored" in q or "scorer" in q) and not player
         if scorers or ("goals" in q and not player and "how many" not in q):
             return self._moments(tools, "goals", sides, half)
         if any(w in q for w in ("score", "winning", "result", "leading", "who's ahead")):
