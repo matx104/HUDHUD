@@ -26,6 +26,10 @@ the page records it and the studio turns it into words in the match's language, 
 The Critic is also an A2A agent at /a2a/ (court.a2a_server): another agent can read its card and
 put claims or questions to it.
 
+HUD² (/hud, court.hud) is the same match on one heads-up screen, through the referee's, the
+commentator's or the fan's lens. Its stream (`hud=1`) adds every action placed on the pitch and,
+each minute, both sides' counts; the lines it draws are the same verified cues.
+
 On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner in at
 studio.hudhud.com.pk, and a Worker (edge/) carries each request on to Azure. With `ACCESS_TEAM` and
 `ACCESS_AUD` set, the studio refuses any request that doesn't carry a token Access signed for it, so
@@ -66,9 +70,10 @@ from . import telemetry
 from .ask import MAX_QUESTION, MatchTools, RuleAnswerer, held_back
 from .ask import ask as ask_match
 from .audit import AuditTrail, CosmosStore, record_answer
-from .config import product_name
+from .config import product_mark, product_name
 from .contracts import OUTPUT_ADAPTER, Answer, Cue, Output, Preferences, TickerMetric
 from .critic import Critic
+from .hud import names_of, play, pulse, zones
 from .localizer import Localizer
 from .mcp_server import server as critic_mcp
 from .metrics import shot_xg
@@ -274,7 +279,9 @@ class Session:
         strictness: Profile = "standard",
         spoken: Spoken | None = None,
         shield: Shield | None = None,
+        hud: bool = False,
     ) -> None:
+        self.hud = hud  # HUD² (court.hud): every action placed on the pitch, and the pulse
         self.spoken = spoken
         self.shield = shield  # Prompt Shields, read before any model sees a question
         self.strictness = strictness  # how strictly the referee's likely calls are read
@@ -443,11 +450,13 @@ class Session:
             self.send("personal", update)
 
     async def _paced(self) -> AsyncIterator[Any]:
-        """The match stream, paced from the chosen minute, with the clock and shots for the page."""
+        """The match stream, paced from the chosen minute, with the clock and shots for the page,
+        and for HUD² every action on the pitch and each minute's pulse."""
         messages = list(self.match.stream())
         meta: MatchMeta = messages[0]
         yield meta
         names = {p.id: p.name for p in meta.players}
+        placed = names_of(meta)
         score = {Side.HOME: 0, Side.AWAY: 0}
         minute, previous, seen = None, None, []
         for event in messages[1:]:
@@ -458,12 +467,16 @@ class Session:
             seen.append(event)
             self.state.apply(event)
             label = minute_label(event.t, event.period)
+            if self.hud and (action := play(event, meta, placed)) is not None:
+                self.send("play", action)
             if isinstance(event, Shot):
                 score[event.team] += event.outcome is ShotOutcome.GOAL
                 self.send("shot", _shot(event, label, names))
             if label != minute or isinstance(event, Shot):
                 if label != minute:
                     self._personal(seen)
+                    if self.hud:
+                        self.send("pulse", pulse(seen, event.t, event.period))
                 minute = label
                 self.send(
                     "clock",
@@ -550,6 +563,11 @@ def create_app() -> FastAPI:
     def index() -> FileResponse:
         return FileResponse(STUDIO / "index.html")
 
+    @app.get("/hud")
+    def hud_page() -> FileResponse:
+        """HUD²: one match on one screen, through the referee's, commentator's or fan's lens."""
+        return FileResponse(STUDIO / "hud.html")
+
     @app.get("/api/config")
     def config() -> dict[str, Any]:
         matches = []
@@ -565,6 +583,7 @@ def create_app() -> FastAPI:
             )
         return {
             "product": product_name(),
+            "mark": product_mark(),
             "matches": matches,
             "models": bool(os.environ.get("FOUNDRY_PROJECT_ENDPOINT")),
             "voice": app.state.voice is not None,
@@ -587,6 +606,7 @@ def create_app() -> FastAPI:
         focus: Literal["match", "player"] = "match",
         metric: Literal["", TickerMetric] = "",
         strictness: Profile = "standard",
+        hud: bool = False,
     ) -> StreamingResponse:
         if seed not in DEMO_SEEDS:
             raise HTTPException(404, f"no demo match with seed {seed}")
@@ -613,6 +633,7 @@ def create_app() -> FastAPI:
             "strictness": strictness,
             "spoken": spoken,
             "shield": app.state.shield,
+            "hud": hud,
         }
 
         async def events() -> AsyncIterator[str]:
@@ -636,6 +657,11 @@ def create_app() -> FastAPI:
             hello |= {"notices": session.notices, "competition": meta.competition}
             hello["prefs"] = prefs.model_dump(mode="json")
             hello["strictness"] = strictness
+            if hud:
+                hello["hud"] = {
+                    "home_attacks_right_first": meta.home_attacks_right_first,
+                    "zones": zones(strictness),
+                }
             try:
                 yield _sse("hello", hello)
                 while True:
