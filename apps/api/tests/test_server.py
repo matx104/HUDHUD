@@ -122,13 +122,15 @@ def test_behind_the_wall_only_what_access_signed_gets_in(monkeypatch):
     access = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     impostor = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 
-    class Keys:  # stands in for the team's published keys
-        def get_signing_key_from_jwt(self, token):
-            return type("Key", (), {"key": access.public_key()})()
+    class Keys:  # stands in for the team's published keys: one, "k1"
+        def cached(self, kid):
+            return access.public_key() if kid == "k1" else None
 
-    def token(key=access, aud="studio-aud", iss="https://team.example", ttl=60):
+        get = cached
+
+    def token(key=access, aud="studio-aud", iss="https://team.example", ttl=60, kid="k1"):
         claims = {"aud": aud, "iss": iss, "exp": int(time.time()) + ttl}
-        return jwt.encode(claims, key, algorithm="RS256")
+        return jwt.encode(claims, key, algorithm="RS256", headers={"kid": kid})
 
     monkeypatch.delenv("FOUNDRY_PROJECT_ENDPOINT", raising=False)
     monkeypatch.delenv("COSMOS_ENDPOINT", raising=False)
@@ -147,6 +149,20 @@ def test_behind_the_wall_only_what_access_signed_gets_in(monkeypatch):
     assert status("/api/config", aud="another-app") == 403, "signed for another app"
     assert status("/api/config", iss="https://other.example") == 403, "another team's"
     assert status("/api/config", ttl=-120) == 403, "expired"
+    assert status("/api/config", kid="k2") == 403, "a key Access never published"
+    unsigned = jwt.encode({"aud": "studio-aud", "iss": "https://team.example"}, None, "none")
+    assert client.get("/", headers={"Cf-Access-Jwt-Assertion": unsigned}).status_code == 403
+
+
+def test_made_up_key_ids_cant_turn_requests_into_fetches(monkeypatch):
+    from court.server import AccessKeys
+
+    keys, fetches = AccessKeys("https://team.example/certs", cooldown_s=300), []
+    monkeypatch.setattr(keys, "_fetch", lambda: fetches.append(1) or {"k1": "key"})
+    assert keys.get("k1") == "key" and len(fetches) == 1
+    assert [keys.get(f"made-up-{i}") for i in range(50)] == [None] * 50
+    assert len(fetches) == 1, "one refresh per cooldown, however many unknown ids arrive"
+    assert keys.get("k1") == "key"
 
 
 def test_the_wall_goes_up_only_when_configured(monkeypatch):

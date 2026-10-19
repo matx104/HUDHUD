@@ -25,6 +25,9 @@ import json
 import logging
 import os
 import random
+import threading
+import time
+import urllib.request
 import uuid
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime
@@ -61,6 +64,44 @@ log = logging.getLogger("court.studio")
 DAILY_MODEL_MATCHES = int(os.environ.get("STUDIO_DAILY_MODEL_MATCHES", "200"))
 
 
+class AccessKeys:
+    """The Access team's signing keys, by key id. A token naming a key not seen yet refreshes them,
+    but at most once every `cooldown_s`, and never while a refresh is under way: made-up key ids
+    can't turn requests into fetches.
+    """
+
+    def __init__(self, url: str, *, cooldown_s: float = 300.0) -> None:
+        self.url, self.cooldown_s = url, cooldown_s
+        self._keys: dict[str, Any] = {}
+        self._fetched = float("-inf")
+        self._lock = threading.Lock()
+
+    def cached(self, kid: str) -> Any | None:
+        return self._keys.get(kid)
+
+    def get(self, kid: str) -> Any | None:
+        """The key, refreshing first if it's unknown and the cooldown has passed. Blocks on the
+        network when it refreshes: call it off the event loop."""
+        if kid in self._keys or not self._lock.acquire(blocking=False):
+            return self._keys.get(kid)
+        try:
+            if time.monotonic() - self._fetched >= self.cooldown_s:
+                self._fetched = time.monotonic()
+                self._keys = self._fetch() or self._keys
+        finally:
+            self._lock.release()
+        return self._keys.get(kid)
+
+    def _fetch(self) -> dict[str, Any]:
+        try:
+            with urllib.request.urlopen(self.url, timeout=10) as response:
+                keys = jwt.PyJWKSet.from_dict(json.load(response)).keys
+        except (OSError, ValueError, jwt.PyJWTError):
+            log.warning("couldn't fetch the Access signing keys from %s", self.url)
+            return {}
+        return {k.key_id: k.key for k in keys if k.key_id}
+
+
 class AccessOnly:
     """Lets through only requests Cloudflare Access let in. Access signs a token for each one
     (Cf-Access-Jwt-Assertion), checked here against the team's published keys and this app's
@@ -73,7 +114,7 @@ class AccessOnly:
     def __init__(self, app: Any, *, team: str, audience: str, keys: Any = None) -> None:
         self.app, self.audience = app, audience
         self.issuer = f"https://{team}"
-        self.keys = keys or jwt.PyJWKClient(f"{self.issuer}/cdn-cgi/access/certs", lifespan=3600)
+        self.keys = keys or AccessKeys(f"{self.issuer}/cdn-cgi/access/certs")
 
     async def __call__(self, scope, receive, send) -> None:
         if scope["type"] == "http" and scope["path"] != "/healthz":
@@ -84,13 +125,18 @@ class AccessOnly:
         await self.app(scope, receive, send)
 
     async def _signed(self, token: str) -> bool:
-        if not token:
+        try:
+            header = jwt.get_unverified_header(token)
+        except jwt.PyJWTError:
             return False
-        try:  # the keys are fetched once an hour, off the event loop
-            key = await asyncio.to_thread(self.keys.get_signing_key_from_jwt, token)
-            jwt.decode(
-                token, key.key, algorithms=["RS256"], audience=self.audience, issuer=self.issuer
-            )
+        kid = header.get("kid")
+        if header.get("alg") != "RS256" or not isinstance(kid, str):
+            return False
+        key = self.keys.cached(kid) or await asyncio.to_thread(self.keys.get, kid)
+        if key is None:
+            return False
+        try:
+            jwt.decode(token, key, algorithms=["RS256"], audience=self.audience, issuer=self.issuer)
         except jwt.PyJWTError:
             return False
         return True
