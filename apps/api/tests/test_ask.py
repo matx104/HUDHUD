@@ -112,7 +112,7 @@ def test_a_name_the_facts_arent_about_is_refused(at_70):
     other = next(p for p in at_70.meta.players if p.team is Side.AWAY)
     scripted = Scripted(
         lambda tools: f"{other.name} drove it: Saltmarsh Rovers have the shots.",
-        [("team_numbers", {"team": "home", "metric": "shots"})],
+        [("team_numbers", {"metrics": ["shots"], "team": "home"})],
     )
     reply = answer(at_70, "Who is on top?", scripted)
     assert reply.status == "refused" and reply.text == REFUSED
@@ -131,7 +131,8 @@ def test_a_fact_the_tools_never_returned_is_refused(at_70):
 
 def test_a_number_the_facts_dont_hold_is_refused(at_70):
     scripted = Scripted(
-        "Saltmarsh Rovers have 99 shots.", [("team_numbers", {"team": "home", "metric": "shots"})]
+        "Saltmarsh Rovers have 99 shots.",
+        [("team_numbers", {"metrics": ["shots"], "team": "home"})],
     )
     reply = answer(at_70, "Shots?", scripted)
     assert reply.status == "refused"
@@ -223,7 +224,7 @@ class ToolCallingAgent:
         assert options["response_format"] is Draft
         by_name = {t.name: t for t in tools}
         assert set(by_name) == {"score", "team_numbers", "player_numbers", "moments"}
-        result = json.loads(by_name["team_numbers"].func(team="Saltmarsh Rovers", metric="xg"))
+        result = json.loads(by_name["team_numbers"].func(metrics=["xg"], team="Saltmarsh Rovers"))
         fact = result["facts"][0]
         value = fact["says"].split("xG ")[1].split(" ")[0]
         draft = Draft(text=f"Saltmarsh Rovers have xG {value}.", facts=[fact["id"]], cannot="")
@@ -243,3 +244,11 @@ def test_the_model_answers_with_the_tools_and_its_spend_is_on_the_receipt(at_70)
     assert reply.receipt.tokens_in == 900 and reply.receipt.cost_usd > 0
     assert "Question: What's Saltmarsh's xG?" in agent.prompts[0]
     assert "Saltmarsh Rovers (home)" in agent.prompts[0]
+
+
+def test_one_call_counts_several_things_for_both_sides(at_70):
+    tools = MatchTools(at_70)
+    facts = json.loads(tools.team_numbers(["shots", "xg"]))["facts"]
+    assert len(facts) == 4
+    assert [tools.facts[f["id"]].team for f in facts] == [Side.HOME, Side.AWAY] * 2
+    assert "error" in json.loads(tools.team_numbers(["shots"], team="Nowhere United"))

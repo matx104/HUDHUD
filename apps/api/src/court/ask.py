@@ -210,27 +210,39 @@ class MatchTools:
 
     def team_numbers(
         self,
-        team: Annotated[str, "The team's name, or home or away"],
-        metric: Annotated[TeamMetric, "What to count"],
+        metrics: Annotated[list[TeamMetric], "What to count: one or more"],
+        team: Annotated[str | None, "The team's name, or home or away; empty for both"] = None,
         half: Annotated[int | None, "1 or 2 for one half only; empty for the match so far"] = None,
         last_minutes: Annotated[
             int | None, "Only the last this many minutes of the current half"
         ] = None,
     ) -> str:
-        """One side's count of something, over the match so far, one half or the last minutes."""
-        side = self.find_team(team)
-        if side is None:
-            return self._error(f"no team called {team!r}: {self._teams()}")
+        """The sides' counts, one fact per side and thing counted: over the match so far, one
+        half or the last minutes. Ask for several at once to compare the sides."""
+        sides = list(Side)
+        if team:
+            side = self.find_team(team)
+            if side is None:
+                return self._error(f"no team called {team!r}: {self._teams()}")
+            sides = [side]
         window, words, figures = self._window(half, last_minutes)
         if isinstance(window, str):
             return self._error(window)
-        name = self.meta.team(side).name
         counted = self._in(window)
+        facts = [
+            self._team_fact(side, metric, window, words, figures, counted)
+            for metric in dict.fromkeys(metrics)
+            for side in sides
+        ]
+        return json.dumps({"facts": [{"id": f.id, "says": f.says} for f in facts]})
+
+    def _team_fact(self, side, metric, window, words, figures, counted) -> Fact:
+        name = self.meta.team(side).name
         if metric == "pass_completion":
             passes = compute("passes", side, counted)
             done = compute("passes_completed", side, counted)
             pct = round(100 * done / passes) if passes else 0
-            fact = self._add(
+            return self._add(
                 f"{name}, pass completion{words}, as of {self.minute}: {pct}% "
                 f"({done:.0f} of {passes:.0f} passes completed)",
                 team=side,
@@ -241,16 +253,14 @@ class MatchTools:
                 ),
                 figures=figures | {"pct": pct},
             )
-            return self._result(fact)
         value = compute(metric, side, counted)
-        fact = self._add(
+        return self._add(
             f"{name}, {_count(metric, value)}{words}, as of {self.minute}",
             team=side,
             citations=self._cite(metric, side, counted),
             assertions=(Assertion(metric=metric, team=side, value=value, window=window),),
             figures=figures,
         )
-        return self._result(fact)
 
     def player_numbers(self, player: Annotated[str, "The player's name"]) -> str:
         """One player's counts so far: goals, shots, xG, passes, presses, tackles and fouls."""
@@ -316,7 +326,7 @@ class MatchTools:
             return self._result(fact)
         return json.dumps({"facts": [self._moment(e) for e in found]})
 
-    def functions(self, max_calls: int = 6) -> list[Any]:
+    def functions(self, max_calls: int = 8) -> list[Any]:
         """The tools as Agent Framework function tools, for a model to call."""
         from agent_framework import tool
 
@@ -603,7 +613,7 @@ class RuleAnswerer:
         ids, parts = [], []
         for side in sides:
             name = tools.meta.team(side).name
-            fact = tools.facts[_only(tools.team_numbers(name, metric, half=half))]
+            fact = tools.facts[_only(tools.team_numbers([metric], team=name, half=half))]
             ids.append(fact.id)
             if metric == "pass_completion":
                 parts.append(f"{name} {fact.figures['pct']:.0f}% of passes completed")
