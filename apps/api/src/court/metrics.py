@@ -14,6 +14,7 @@ from match_events import (
     Shot,
     ShotOutcome,
     Side,
+    Tackle,
 )
 
 from .contracts import Assertion
@@ -81,8 +82,16 @@ def is_high_pressure(event: MatchEvent) -> bool:
     return isinstance(event, Pressure) and event.x >= FINAL_THIRD_X
 
 
-def compute(metric: str, team: Side, events: Iterable[MatchEvent]) -> float:
-    mine = [e for e in events if getattr(e, "team", None) == team]
+def compute(
+    metric: str, team: Side, events: Iterable[MatchEvent], player_id: str | None = None
+) -> float:
+    """A side's count, or with `player_id` one player's: only the events that player made."""
+    mine = [
+        e
+        for e in events
+        if getattr(e, "team", None) == team
+        and (player_id is None or getattr(e, "player_id", None) == player_id)
+    ]
     if metric == "goals":
         return sum(isinstance(e, Shot) and e.outcome is ShotOutcome.GOAL for e in mine)
     if metric == "shots":
@@ -101,6 +110,10 @@ def compute(metric: str, team: Side, events: Iterable[MatchEvent]) -> float:
         return sum(is_high_ball_win(e) for e in mine)
     if metric == "high_pressures":
         return sum(is_high_pressure(e) for e in mine)
+    if metric == "tackles_won":
+        return sum(isinstance(e, Tackle) and e.outcome == "won" for e in mine)
+    if metric == "fouls":
+        return sum(isinstance(e, Tackle) and e.outcome == "foul" for e in mine)
     raise ValueError(f"unknown metric {metric!r}")
 
 
@@ -135,4 +148,4 @@ def measure(assertion: Assertion, state: MatchState, as_of_seq: int) -> float | 
         events: Iterable[MatchEvent] = state.until(as_of_seq)
     else:
         events = state.in_window(assertion.window, as_of_seq=as_of_seq)
-    return compute(assertion.metric, assertion.team, events)
+    return compute(assertion.metric, assertion.team, events, assertion.player_id)

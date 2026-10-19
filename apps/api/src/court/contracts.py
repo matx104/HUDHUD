@@ -25,6 +25,7 @@ class AlertKind(StrEnum):
     HIGH_PRESS = "high_press"  # the ball won back in the attacking third, again and again
     REF_CALL = "ref_call"  # a foul that matters, and the referee's likely decision (court.referee)
     RECAP = "recap"  # a line of the post-match recap (court.recap), never a live alert
+    ANSWER = "answer"  # a viewer's question, answered from the events (court.ask), never an alert
 
 
 class Window(_Frozen):
@@ -62,6 +63,8 @@ Metric = Literal[
     "final_third_passes",
     "high_ball_wins",  # the ball won (tackle or interception) in the attacking third
     "high_pressures",  # pressures on the ball in the attacking third
+    "tackles_won",
+    "fouls",  # fouls committed: tackles that were fouls
     # Per-event metrics (the assertion names its event_id), all as broadcast integers:
     "shot_speed",  # km/h
     "pass_distance",  # metres
@@ -79,6 +82,9 @@ class Assertion(_Frozen):
     value: float
     window: Window | None = Field(default=None, description="None = whole match so far")
     event_id: str | None = Field(default=None, description="For per-event metrics (shot_xg)")
+    player_id: str | None = Field(
+        default=None, description="For one player's count: only the events that player made"
+    )
 
 
 class RefCall(_Frozen):
@@ -114,6 +120,11 @@ class Claim(_Frozen):
         description="Numbers the text may state, computed by code from events; the Critic "
         "rejects any number in the text that is neither here nor in an assertion",
     )
+    names: tuple[str, ...] | None = Field(
+        default=None,
+        description="Players the text may name, from its evidence; the Critic refuses any other "
+        "player of the match it names. None: names aren't checked",
+    )
     call: RefCall | None = Field(
         default=None, description="For a ref's call: the decision the line states"
     )
@@ -127,6 +138,7 @@ class RejectionCode(StrEnum):
     ASSERTION_MISMATCH = "assertion_mismatch"
     INSUFFICIENT_EVIDENCE = "insufficient_evidence"
     UNGROUNDED_NUMBER = "ungrounded_number"
+    UNGROUNDED_NAME = "ungrounded_name"
     NO_RULE = "no_rule"
 
 
@@ -283,3 +295,42 @@ class Degradation(_Frozen):
 
 Output = Annotated[Cue | RejectionNotice | Spiked | Degradation, Field(discriminator="type")]
 OUTPUT_ADAPTER: TypeAdapter[Output] = TypeAdapter(Output)
+
+
+# --- answers: a viewer's question (court.ask) ------------------------------------------
+
+
+class AnswerFact(_Frozen):
+    """One thing the Scout's tools counted for an answer, in plain words."""
+
+    id: str
+    says: str
+    evidence: tuple[str, ...] = Field(default=(), description="The events it was counted from")
+
+
+class RefusedDraft(_Frozen):
+    """A draft answer the Critic refused, and why."""
+
+    text: str
+    reasons: tuple[Reason, ...]
+
+
+class Answer(_Frozen):
+    """A viewer's question, answered from the events so far. Verified: the Critic passed it.
+    Cannot: the events can't answer it, said in fixed words, never a model's. Refused: no draft
+    could be proven, and the refusals show why."""
+
+    type: Literal["answer"] = "answer"
+    id: str
+    question: str
+    status: Literal["verified", "cannot", "refused"]
+    text: str
+    lang: str = "en"
+    original: str | None = Field(
+        default=None, description="The verified English answer, when the text is its translation"
+    )
+    minute: str = Field(description="The moment of the match the answer is as of")
+    evidence: tuple[str, ...] = Field(default=(), description="Events the answer cites")
+    facts: tuple[AnswerFact, ...] = Field(default=(), description="What the tools counted for it")
+    refused: tuple[RefusedDraft, ...] = ()
+    receipt: Receipt | None = None

@@ -9,6 +9,8 @@ Checks, in order (all failures are collected so the UI can show every reason):
    single event must be about an event the claim cites, of the side it names
 6. every number the text states is one the claim accounts for (its figures or assertions):
    a model that invents a statistic is caught here, whatever else it got right
+7. when the claim says which players its evidence is about (an answer does), every player of
+   the match the text names is one of them
 """
 
 import re
@@ -179,6 +181,18 @@ def recap_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
     return None
 
 
+def answer_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
+    """An answer counts what had happened when it was asked (court.ask): a count over the match so
+    far cites the moment it was counted to, so a viewer opening the evidence sees where it stops."""
+    so_far = [a for a in claim.assertions if a.window is None and a.event_id is None]
+    if so_far and not any(e.seq == claim.as_of_seq for e in cited):
+        return (
+            "a count of the match so far must cite the moment it was counted to "
+            f"(e{claim.as_of_seq:05d})"
+        )
+    return None
+
+
 def great_pass_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
     """A pass is called great for what it made: the claim cites the completed pass and the
     shot it set up, both the side's own."""
@@ -203,6 +217,7 @@ EVIDENCE_RULES: Mapping[AlertKind, EvidenceRule] = {
     AlertKind.HIGH_PRESS: press_rule,
     AlertKind.REF_CALL: ref_rule("standard"),
     AlertKind.RECAP: recap_rule,
+    AlertKind.ANSWER: answer_rule,
 }
 
 TOLERANCE = {"xg": 0.011, "shot_xg": 0.011}  # rounding slack; counts must match exactly
@@ -298,6 +313,12 @@ class Critic:
                 f"the text says {number}, which none of the claim's figures or assertions support",
             )
 
+        for name in _unbacked_names(claim, state):
+            refuse(
+                RejectionCode.UNGROUNDED_NAME,
+                f"the text names {name}, whom none of the claim's evidence is about",
+            )
+
         stated = len(dict.fromkeys(NUMBER.findall(claim.text)))
         return Verdict(
             claim=claim, reasons=tuple(reasons), numbers_checked=stated - len(ungrounded)
@@ -309,6 +330,29 @@ def _ungrounded(claim: Claim) -> list[str]:
     known = [*claim.figures.values(), *(a.value for a in claim.assertions)]
     stated = dict.fromkeys(NUMBER.findall(claim.text))
     return [n for n in stated if not any(abs(float(n) - k) < 0.005 for k in known)]
+
+
+def _unbacked_names(claim: Claim, state: MatchState) -> list[str]:
+    """Players of the match the text names (in full, or by a surname none of its own players
+    share) whom the claim's evidence isn't about. Unchecked when the claim lists no names."""
+    if claim.names is None:
+        return []
+    text = claim.text.lower()
+    backed = {n.lower() for n in claim.names}
+    surnames = {n.split()[-1] for n in backed}
+    named = []
+    for player in state.meta.players:
+        full = player.name.lower()
+        surname = full.split()[-1]
+        if full in backed:
+            continue
+        if _says(text, full) or (surname not in surnames and _says(text, surname)):
+            named.append(player.name)
+    return named
+
+
+def _says(text: str, words: str) -> bool:
+    return re.search(rf"(?<!\w){re.escape(words)}(?!\w)", text) is not None
 
 
 # Eastern Arabic (U+0660) and Persian (U+06F0) digits, and the Arabic decimal separator, read as

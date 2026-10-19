@@ -111,6 +111,22 @@ def instructions() -> str:
     )
 
 
+def ask_instructions() -> str:
+    """For answering a viewer's question (court.ask): the facts come only from the tools."""
+    return (
+        f"You answer a viewer's questions about one football match for {product_name()}, from "
+        "the match's events and nothing else. You learn a fact only by calling the tools: they "
+        "count the events up to the moment of the question, and each result is a fact with an "
+        "id. Call the tools you need, then answer in at most 60 words, plainly, as a broadcast "
+        "analyst would, and list in facts the id of every fact your answer uses. State numbers "
+        "only as the facts give them, in digits, each as what the fact says it counts. Name only "
+        "players the facts you list are about. Add no detail the facts don't give. If the events "
+        "can't answer it (feelings, injuries, the weather, what anyone said, a player's fitness), "
+        "leave the text empty and set cannot to beyond_data; for what hasn't happened yet (who "
+        "will win, the next goal), not_yet; for a question not about this match, off_topic."
+    )
+
+
 class FoundryNarrator:
     def __init__(
         self,
@@ -132,7 +148,7 @@ class FoundryNarrator:
         self.handovers = 0
         self._template = TemplateNarrator()
         self._make_agent = agent_factory or self._foundry_agent
-        self._agents: dict[str, Any] = {}
+        self._agents: dict[tuple[str, str], Any] = {}
         self._drafts: dict[str, tuple[Alert, Claim]] = {}
         self._spend: dict[str, dict[str, Any]] = {}  # per alert, for the cue's receipt
 
@@ -216,6 +232,21 @@ class FoundryNarrator:
         text = await self._write(prompt + f'Line: "{line}"', alert_id)
         return text, self._spend[alert_id]["writer"]
 
+    async def answer(self, question: str, tools: Any, feedback: Sequence[str]) -> Any:
+        """A viewer's question (court.ask). The model calls the Scout's tools for its facts and
+        returns the answer with the ids of the facts it used; code builds the claim from those,
+        and the Critic reviews it. A rewrite is shown the facts already counted."""
+        prompt = f"{tools.brief()}\n\nQuestion: {question}"
+        if feedback:
+            prompt = (
+                "\n".join(feedback)
+                + "\nAnswer again, fixing exactly that. The facts the tools returned so far:\n"
+                + tools.known()
+                + "\n\n"
+                + prompt
+            )
+        return await self._call(prompt, tools.id, purpose="ask", tools=tools.functions())
+
     def spend(self, alert_id: str) -> dict[str, Any]:
         """The receipt's writer line for one alert: the model, its calls, tokens and cost."""
         ledger = dict(self._spend.get(alert_id, {}))
@@ -224,6 +255,13 @@ class FoundryNarrator:
         return ledger
 
     async def _write(self, prompt: str, alert_id: str) -> str:
+        line = await self._call(prompt, alert_id)
+        return line.text.strip()
+
+    async def _call(
+        self, prompt: str, alert_id: str, *, purpose: str = "line", tools: Any = None
+    ) -> Any:
+        """One request, on the first deployment that answers; its spend goes on the receipt."""
         ledger = self._spend.setdefault(
             alert_id,
             {"model_calls": 0, "tokens_in": 0, "tokens_out": 0, "cost_usd": 0.0, "handovers": 0},
@@ -231,19 +269,30 @@ class FoundryNarrator:
         failure: Exception | None = None
         for i, model in enumerate(self.models):
             try:
-                agent = self._agents.get(model) or self._agents.setdefault(
-                    model, self._make_agent(model)
+                agent = self._agents.get((model, purpose)) or self._agents.setdefault(
+                    (model, purpose),
+                    self._make_agent(model)
+                    if purpose == "line"
+                    else self._make_agent(model, purpose),
                 )
-                response = await asyncio.wait_for(
-                    agent.run(prompt, options=_options(model)), timeout=self.timeout_s
+                # Answering calls tools in rounds, so it gets longer than a line.
+                timeout = self.timeout_s * (2 if tools else 1)
+                options = _options(model, purpose)
+                run = (
+                    agent.run(prompt, tools=tools, options=options)
+                    if tools
+                    else agent.run(prompt, options=options)
                 )
+                response = await asyncio.wait_for(run, timeout=timeout)
                 tokens = self.meter.record(model, getattr(response, "usage_details", None))
                 ledger["writer"] = model
                 ledger["model_calls"] += 1
                 ledger["tokens_in"] += tokens[0]
                 ledger["tokens_out"] += tokens[1]
                 ledger["cost_usd"] += self.meter.price(model, *tokens)
-                return response.value.text.strip()
+                if response.value is None:
+                    raise ValueError("the model's reply didn't parse")
+                return response.value
             except Exception as error:  # timeouts, throttling, outages: hand over to the next
                 failure = error
                 if i + 1 < len(self.models):
@@ -251,7 +300,7 @@ class FoundryNarrator:
                     ledger["handovers"] += 1
         raise NarrationUnavailable(f"no deployment answered: {failure!r}") from failure
 
-    def _foundry_agent(self, model: str) -> Any:
+    def _foundry_agent(self, model: str, purpose: str = "line") -> Any:
         from agent_framework import Agent
         from agent_framework.foundry import FoundryChatClient
 
@@ -260,11 +309,19 @@ class FoundryNarrator:
         client = FoundryChatClient(
             project_endpoint=self.project_endpoint, model=model, credential=credential()
         )
-        return Agent(client=client, name="Narrator", instructions=instructions())
+        guide = instructions() if purpose == "line" else ask_instructions()
+        return Agent(client=client, name="Narrator", instructions=guide)
 
 
-def _options(model: str) -> dict[str, Any]:
-    """Structured output always. Reasoning models think briefly; live cues can't wait."""
+def _options(model: str, purpose: str = "line") -> dict[str, Any]:
+    """Structured output always. Reasoning models think briefly; live cues can't wait. An answer
+    is written cooler than a line: it reports, it doesn't commentate."""
+    if purpose == "ask":
+        from .ask import Draft
+
+        if model.startswith(("gpt-5", "o")):
+            return {"response_format": Draft, "reasoning": {"effort": "low"}, "max_tokens": 2500}
+        return {"response_format": Draft, "temperature": 0.2, "max_tokens": 400}
     if model.startswith(("gpt-5", "o")):
         return {"response_format": Line, "reasoning": {"effort": "low"}, "max_tokens": 1200}
     return {"response_format": Line, "temperature": 0.6, "max_tokens": 200}
