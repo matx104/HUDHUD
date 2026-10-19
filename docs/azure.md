@@ -117,6 +117,28 @@ prices with the pricing calculator before creating anything.
    length, responses are cached, and token cost is metered from the first call.
 4. **No resource without a named reason** tied to the rubric (super-prompt.md).
 
+## The domain: hudhud.com.pk (Cloudflare, Free plan)
+
+Bought 2026-10-19 at PKNIC, delegated to Cloudflare (macy and matteo.ns.cloudflare.com), managed
+with the `cf` CLI. Records:
+
+| Name | Points at | Proxy | Why |
+|---|---|---|---|
+| `hudhud.com.pk` | GitHub Pages: A 185.199.108-111.153, AAAA 2606:50c0:8000-8003::153 | DNS only | the showcase site; GitHub issues its certificate, which needs the name to reach GitHub directly |
+| `www` | CNAME matx104.github.io | DNS only | GitHub redirects it to the apex |
+| `studio` | CNAME to the container app's address | **proxied** | a Cloudflare redirect rule (307, path and query kept) sends it to the studio |
+| `@` TXT, `_dmarc` TXT | SPF `-all`, DMARC `p=reject` | | the domain sends no mail, so nothing may claim to |
+
+The studio can't take the domain itself: Azure refuses custom domains on an **express** Container
+Apps environment (`ExpressEnvironmentFeatureNotSupported`). So `studio.hudhud.com.pk` is a redirect
+to the studio's Azure address, kept temporary (307) so browsers don't cache it. The short address is
+for people (the site, the README, the video); machines use the Azure address, which is what MCP
+clients need since they may not follow a redirect (`.vscode/mcp.json`, the Control room, the doctor).
+Moving the studio to a full environment would let Azure serve the name with its own certificate.
+
+GitHub Pages serves the site at the apex with HTTPS enforced; matx104.github.io/HUDHUD/ redirects
+there. Set a Pages custom domain only once the name resolves to GitHub: the redirect starts at once.
+
 ## Fabric: considered, out of scope (ADR 0004)
 
 Fabric was considered for analytics over the audit trail: mirroring the free-tier Cosmos DB account

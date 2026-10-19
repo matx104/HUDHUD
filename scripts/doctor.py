@@ -183,7 +183,14 @@ def main() -> int:
 
     status, body = fetch(SITE_URL + "config.js")
     check("Showcase site: up", status == 200, SITE_URL)
-    check("Showcase site: links the live studio", url in body)
+    # The site may link the studio by a short address that redirects: follow it to the studio.
+    linked = re.search(r'studioUrl: "([^"]+)"', body)
+    reached, _ = fetch(linked[1].rstrip("/") + "/healthz") if linked else (0, "")
+    check(
+        "Showcase site: links the live studio",
+        reached == 200,
+        linked[1] if linked else "no studioUrl in config.js",
+    )
 
     runs = subprocess.run(
         ["gh", "run", "list", "--limit", "1", "--workflow", "ci", "--json", "conclusion,headSha"],
