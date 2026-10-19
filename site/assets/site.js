@@ -52,9 +52,34 @@
   if (window.OPS) drawControlRoom(window.OPS);
   if (window.DOCTOR) drawDoctor(window.DOCTOR);
   if (window.PROOF?.length) drawProof(window.PROOF);
+  placeEmblems();
+  startProgress();
   startMenu();
   startReveals();
   startRouter();
+
+  // Every chapter heading gets the crest in its centre circle (the not-found page doesn't).
+  function placeEmblems() {
+    const emblem = $("#head-emblem");
+    for (const head of $$("[data-page]:not([data-page='missing']) .page-head")) {
+      head.append(emblem.content.cloneNode(true));
+    }
+  }
+
+  // The line along the header's lower edge: how far down the current page the reader is.
+  function startProgress() {
+    const bar = $("[data-progress]");
+    let queued = false;
+    const draw = () => {
+      queued = false;
+      const room = document.documentElement.scrollHeight - innerHeight;
+      bar.style.setProperty("--read", room > 0 ? Math.min(1, scrollY / room).toFixed(4) : "0");
+    };
+    const later = () => { if (!queued) { queued = true; requestAnimationFrame(draw); } };
+    addEventListener("scroll", later, { passive: true });
+    addEventListener("resize", later);
+    document.addEventListener("page:change", later);
+  }
 
   function drawControlRoom(ops) {
     const grid = $("[data-ops]");

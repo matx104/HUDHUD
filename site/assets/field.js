@@ -1,7 +1,8 @@
-// The hero's event field. Particles drift across a faint pitch like play; every second or two a
-// few of them link into an evidence chain that turns gold when it is verified, or red when it
-// isn't. It runs only while the home page is on screen, and draws one still frame for viewers
-// who ask for reduced motion.
+// The event field, behind every page. Particles drift across a faint pitch like play; every second
+// or two a few of them link into an evidence chain that turns gold when it is verified, or red when
+// it isn't. On the home page it plays in full; on the reading pages it calms down (half the play,
+// fainter, slower chains) so the words stay first. It pauses while the tab is hidden, and draws one
+// still frame for viewers who ask for reduced motion.
 (() => {
   const canvas = document.querySelector(".field");
   if (!canvas) return;
@@ -19,8 +20,8 @@
   let raf = 0;
   let last = 0;
   let nextChain = 0;
-  let onScreen = true;
-  let onHome = canvas.closest("[data-page]")?.classList.contains("is-current") ?? true;
+  let onHome = !location.hash || location.hash === "#/" || location.hash === "#";
+  const level = () => (onHome ? 1 : 0.5); // how strongly the field plays on this page
 
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const spawn = (x) => ({
@@ -53,7 +54,7 @@
     const ph = h - m * 2;
     const box = pw * 0.16;
     const tall = ph * 0.6;
-    ctx.strokeStyle = `rgba(${RGB.chalk}, 0.06)`;
+    ctx.strokeStyle = `rgba(${RGB.chalk}, ${0.06 * level()})`;
     ctx.lineWidth = 1;
     ctx.strokeRect(m, m, pw, ph);
     ctx.beginPath();
@@ -69,8 +70,10 @@
 
   // A claim: one event and the two or three earlier ones nearest it, joined in order of play.
   // Heads come from anywhere but the far edges, so no node leaves the field mid-chain.
+  // Away from home the words come first, so chains form only on the right, around the emblem.
   function link(t) {
-    const pool = dots.filter((d) => d.x > w * 0.12 && d.x < w - 220);
+    const from = onHome ? w * 0.12 : Math.max(w * 0.62 + 170, w - 520);
+    const pool = dots.filter((d) => d.x > from && d.x < w - 220);
     if (!pool.length) return;
     const head = pool[Math.floor(Math.random() * pool.length)];
     const near = dots
@@ -84,7 +87,7 @@
   function drawChain(c, t) {
     const p = (t - c.born) / CHAIN_MS;
     if (p > 1.9) return false;
-    const fade = p > 1.4 ? Math.max(0, 1 - (p - 1.4) / 0.5) : 1;
+    const fade = (p > 1.4 ? Math.max(0, 1 - (p - 1.4) / 0.5) : 1) * level();
     const segs = c.nodes.length - 1;
     const drawn = Math.min(1, p / 0.6) * segs;
 
@@ -139,20 +142,22 @@
         if (d.x > w + 10) Object.assign(d, spawn(-10));
       }
     }
+    const quiet = !onHome;
     if (pointer) {
       ctx.lineWidth = 1;
-      for (const d of dots) {
+      for (const [i, d] of dots.entries()) {
         const gap = dist(d, pointer);
-        if (gap > 140) continue;
-        ctx.strokeStyle = `rgba(${RGB.lime}, ${0.35 * (1 - gap / 140)})`;
+        if (gap > 140 || (quiet && i % 2)) continue;
+        ctx.strokeStyle = `rgba(${RGB.lime}, ${0.35 * (1 - gap / 140) * level()})`;
         ctx.beginPath();
         ctx.moveTo(pointer.x, pointer.y);
         ctx.lineTo(d.x, d.y);
         ctx.stroke();
       }
     }
-    for (const d of dots) {
-      ctx.fillStyle = d.hot ? `rgba(${RGB.lime}, 0.7)` : `rgba(${RGB.chalk}, 0.32)`;
+    for (const [i, d] of dots.entries()) {
+      if (quiet && i % 2) continue; // the reading pages show half the play
+      ctx.fillStyle = d.hot ? `rgba(${RGB.lime}, ${0.7 * level()})` : `rgba(${RGB.chalk}, ${0.32 * level()})`;
       ctx.beginPath();
       ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
       ctx.fill();
@@ -163,7 +168,7 @@
       if (!chains.length) link(t - CHAIN_MS * 1.1);
     } else if (t > nextChain) {
       link(t);
-      nextChain = t + 900 + Math.random() * 1400;
+      nextChain = t + (onHome ? 900 + Math.random() * 1400 : 2400 + Math.random() * 2600);
     }
     chains = chains.filter((c) => drawChain(c, t));
   }
@@ -174,7 +179,7 @@
   }
 
   function update() {
-    const run = onScreen && onHome && !document.hidden && !calm.matches && w > 0;
+    const run = !document.hidden && !calm.matches && w > 0;
     if (run && !raf) {
       last = performance.now();
       raf = requestAnimationFrame(loop);
@@ -185,17 +190,17 @@
   }
 
   new ResizeObserver(() => { resize(); update(); }).observe(canvas);
-  new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; update(); }).observe(canvas);
   document.addEventListener("visibilitychange", update);
-  document.addEventListener("page:change", (e) => { onHome = e.detail.page === ""; update(); });
+  document.addEventListener("page:change", (e) => {
+    onHome = e.detail.page === "";
+    if (calm.matches) frame(performance.now(), true);
+    update();
+  });
   calm.addEventListener("change", () => {
     update();
     if (calm.matches) frame(performance.now(), true);
   });
-  const hero = canvas.parentElement;
-  hero.addEventListener("pointermove", (e) => {
-    const box = canvas.getBoundingClientRect();
-    pointer = { x: e.clientX - box.left, y: e.clientY - box.top };
-  });
-  hero.addEventListener("pointerleave", () => { pointer = null; });
+  // The field is fixed to the screen, so the pointer's place on screen is its place on the field.
+  addEventListener("pointermove", (e) => { pointer = { x: e.clientX, y: e.clientY }; }, { passive: true });
+  document.documentElement.addEventListener("pointerleave", () => { pointer = null; });
 })();

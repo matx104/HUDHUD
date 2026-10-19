@@ -72,6 +72,8 @@
 </head>
 <body>
   <a class="skip" href="#main" data-skip>Skip to content</a>
+  <!-- The event field: drifting play and evidence chains, behind every page (assets/field.js) -->
+  <canvas class="field" aria-hidden="true"></canvas>
 
   <header class="top">
     <div class="top-inner wrap">
@@ -107,6 +109,7 @@
         <span class="menu-icon" aria-hidden="true"></span><span data-menu-label>Chapters</span>
       </button>
     </div>
+    <span class="progress" aria-hidden="true" data-progress></span>
   </header>
 
   <div class="chapters" id="chapters" hidden>
@@ -125,16 +128,46 @@
     </defs>
   </svg>
 
+  <!-- Each chapter heading's emblem: the crest inside a centre circle, placed by site.js -->
+  <template id="head-emblem">
+    <div class="head-emblem" aria-hidden="true">
+      <svg class="crest-art" viewBox="0 0 240 240">
+        <circle class="ring" cx="120" cy="104" r="104"/>
+        <circle class="ring ring-run" cx="120" cy="104" r="116"/>
+        <line class="ring" x1="0" y1="104" x2="10" y2="104"/>
+        <line class="ring" x1="230" y1="104" x2="240" y2="104"/>
+        <g transform="translate(120 150)">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+          </g>
+      </svg>
+    </div>
+  </template>
+
   <main id="main" tabindex="-1">
 
     <!-- ============ KICK-OFF ============ -->
     <section class="page page-home" data-page="" data-title="Kick-off" data-summary="Every call comes with its evidence" aria-labelledby="home-title">
       <div class="hero">
-        <canvas class="field" aria-hidden="true"></canvas>
         <div class="hero-inner wrap">
           <div class="hero-copy">
             <p class="live"><span class="live-dot" aria-hidden="true"></span>Running on a synthetic match, right now</p>
-            <h1 id="home-title" tabindex="-1">Every call comes with its evidence.</h1>
+            <h1 id="home-title" class="lockup" tabindex="-1">
+              <svg class="lockup-crest crest-art" viewBox="36 12 168 168" aria-hidden="true">
+          <g transform="translate(120 150)">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+          </g>
+              </svg>
+              <span class="lockup-word" data-product-name></span>
+            </h1>
+            <p class="promise">Every call comes with its evidence.</p>
             <p class="lede">AI agents commentate a live football match. Before any line goes to air, a Critic agent checks it against the raw match events. If a claim can't be proven, it's rewritten or dropped.</p>
             <div class="actions">
               <a class="button" href="#/problem">Start with the problem</a>
@@ -173,7 +206,7 @@
       </div>
     </section>
 
-    <!-- ============ 01 IN PLAIN WORDS ============ -->
+    <!-- ============ IN PLAIN WORDS ============ -->
     <section class="page wrap" data-page="about" data-title="In plain words" data-summary="What this is, why, and the hackathon behind it" aria-labelledby="about-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">01</span>
@@ -217,7 +250,7 @@
       </ul>
     </section>
 
-    <!-- ============ 02 THE PROBLEM ============ -->
+    <!-- ============ THE PROBLEM ============ -->
     <section class="page wrap" data-page="problem" data-title="The problem" data-summary="Fluent AI commentary that can't prove what it says" aria-labelledby="problem-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">02</span>
@@ -257,7 +290,7 @@
       </div>
     </section>
 
-    <!-- ============ 03 THE GOAL ============ -->
+    <!-- ============ THE GOAL ============ -->
     <section class="page wrap" data-page="goal" data-title="The goal" data-summary="Built to win everything; aiming where the rules allow" aria-labelledby="goal-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">03</span>
@@ -305,7 +338,7 @@
         <li data-status="done" data-reveal><time>Oct 17–19</time><strong>Groundwork</strong><span>The field studied, the name chosen, a synthetic match generator calibrated over 100 seeds.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–20</time><strong>Skeleton</strong><span>All five agents run a match end to end with offline backends, tested on every push.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
-        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, and Urdu and Arabic are live; personal modes and automated recaps come next.</span></li>
+        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, Urdu and Arabic, personal modes and the recap are live; two more kinds of moment come next.</span></li>
         <li data-status="planned" data-reveal><time>Oct 26</time><strong>Ship kit</strong><span>The 110-second video, the README, the repo made public.</span></li>
         <li data-status="planned" data-reveal><time>Oct 27</time><strong>Submit</strong><span>A day early, never on deadline day.</span></li>
       </ol>
@@ -320,7 +353,7 @@
       </a>
     </section>
 
-    <!-- ============ 04 HOW IT WORKS ============ -->
+    <!-- ============ HOW IT WORKS ============ -->
     <section class="page wrap" data-page="how" data-title="How it works" data-summary="Five agents, a hot path and a warm path" aria-labelledby="how-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">04</span>
@@ -397,14 +430,38 @@
         <li class="step" data-reveal>
           <div class="step-copy">
             <h3>Air</h3>
-            <p>The Localizer turns the verified claim into an on-screen cue for casual fans or analysts, in English, Urdu or Arabic, with its player tags and a receipt of what was checked and what it cost. A claim that never passes never airs. <a data-studio-link hidden href="#">Watch it happen in the studio</a>.</p>
+            <p>The Localizer turns the verified claim into an on-screen cue for casual fans or analysts, in English, Urdu or Arabic, with its player tags and a receipt of what was checked and what it cost. A claim that never passes never airs.</p>
           </div>
           <div class="example" data-example="air"></div>
+        </li>
+        <li class="step" data-reveal>
+          <div class="step-copy">
+            <h3>Make it yours</h3>
+            <p>A viewer picks a club, a player, or one number to follow. Their moments come first and carry their club's colour; the other side's still air, marked as the rival's. Following one player keeps only that player's moments, counts the rest, and adds a live card counted from the player's own events. The models tell the line from the viewer's side. The facts don't move: every line still passed the Critic.</p>
+          </div>
+          <div class="example example-yours">
+            <div class="ex-head"><span class="minute">56'</span>GOAL · SAL 2–2 BRK</div>
+            <p class="ex-marks"><span class="mark mark-club">Your club</span><span class="mark mark-player">Your player</span></p>
+            <blockquote>Bilal Arholm scores for Saltmarsh Rovers from 10 m, a speculative chance (xG 0.11). Set up by Adem Rosmere's 22 m pass, difficulty 58 of 100.</blockquote>
+            <p class="ex-note">Synthetic match seed 21, with Saltmarsh Rovers as the viewer's club and Adem Rosmere as their player.</p>
+          </div>
+        </li>
+        <li class="step" data-reveal>
+          <div class="step-copy">
+            <h3>Recap</h3>
+            <p>At full time the match writes its own recap: the result, every goal, the numbers for both sides, the moments that aired and the players who made them. Each line it writes goes to the Critic first, with one rule lifted: it may look back over the whole match. A whole-match number must be counted to the final whistle, and the line cites it.</p>
+          </div>
+          <div class="example">
+            <div class="ex-head">SAL 2–2 BRK, the numbers</div>
+            <blockquote>Shots: SAL 19, BRK 10. Expected goals: SAL 2.82, BRK 1.64.</blockquote>
+            <p class="ex-note">Checked by the Critic, citing all 29 shots and the final whistle.</p>
+            <p><a class="button button-quiet" href="recap/seed-21.html">Read the whole recap</a></p>
+          </div>
         </li>
       </ol>
     </section>
 
-    <!-- ============ 05 RECOVERY ============ -->
+    <!-- ============ RECOVERY ============ -->
     <section class="page wrap" data-page="recovery" data-title="When an agent fails" data-summary="The broadcast never goes dark" aria-labelledby="recovery-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">05</span>
@@ -425,7 +482,7 @@
       <p class="aside" data-reveal>A test knocks the Narrator out four times in a row mid-match and checks that the cues never stop. In the studio a switch takes the narrator off air mid-match and puts it back, and the demo video does it on camera.</p>
     </section>
 
-    <!-- ============ 06 DATA ============ -->
+    <!-- ============ DATA ============ -->
     <section class="page wrap" data-page="data" data-title="Synthetic by design" data-summary="Invented clubs, real volumes, every match reproducible" aria-labelledby="data-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">06</span>
@@ -447,10 +504,30 @@
       </div>
     </section>
 
-    <!-- ============ 07 WHY ============ -->
-    <section class="page wrap" data-page="why" data-title="Why it matters" data-summary="Trust is the product" aria-labelledby="why-title">
+    <!-- ============ LIMITS ============ -->
+    <section class="page wrap" data-page="limits" data-title="What this can't tell you" data-summary="The limits, stated plainly" aria-labelledby="limits-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">07</span>
+        <h1 id="limits-title" tabindex="-1">What this data can't tell you</h1>
+        <p class="lede">A system that checks its claims should say where its checks stop. These are the limits as they stand today, measured where they can be.</p>
+      </header>
+
+      <ul class="limits">
+        <li data-reveal><h2>Momentum calls are sure, not complete</h2><p>On matches never used for tuning, 62% of the Scout's momentum calls match a real swing, and it catches about a quarter of the swings there are. It's tuned to say less and be right, so when it stays quiet a swing may still be under way.</p></li>
+        <li data-reveal><h2>The football is synthetic</h2><p>Every club, player and match is invented by code. The generator matches real volumes over 100 seeds (about three goals, 29 shots, 78.5% of passes completed and 320 pressures a match), but no real team plays in it, so nothing here says anything about real clubs or players.</p></li>
+        <li data-reveal><h2>Events, not video</h2><p>The court sees what the event stream records: passes, shots, tackles, pressures and changes of possession, each with a place and a time. It doesn't see runs off the ball, a team's shape between events, or anything only a camera would. Speed and distance tags come from the events' own fields: a shot's speed, a pass's length.</p></li>
+        <li data-reveal><h2>Its own xG</h2><p>Expected goals here come from a small, open formula (distance, angle, headers, pressure), the same one the Critic recomputes with. It's consistent, not a trained provider's model: its numbers aren't comparable with a broadcaster's.</p></li>
+        <li data-reveal><h2>True isn't the whole story</h2><p>The Critic proves that a line's numbers and citations hold. It doesn't judge emphasis or fairness, so a verified line can still be one-sided or dull. Checked means supported by the events it cites, and nothing more.</p></li>
+        <li data-reveal><h2>Translations are checked for numbers and names</h2><p>An Urdu or Arabic line may state no number the English line doesn't, and must keep every name. The wording itself is the model's, reviewed by a person, not by the Critic.</p></li>
+        <li data-reveal><h2>Standouts are counted, not rated</h2><p>The recap's players who made it happen are counted from their own events. There's no rating behind them and no per-player rule for the Critic yet, so the recap marks those lines as counted, not checked.</p></li>
+        <li data-reveal><h2>Making it yours changes emphasis only</h2><p>A favourite club or player changes what comes first and what's marked as yours. The facts are the same for every viewer.</p></li>
+      </ul>
+    </section>
+
+    <!-- ============ WHY ============ -->
+    <section class="page wrap" data-page="why" data-title="Why it matters" data-summary="Trust is the product" aria-labelledby="why-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">08</span>
         <h1 id="why-title" tabindex="-1">Trust is the product</h1>
         <p class="lede">A model can already write commentary. The open question is whether anyone can rely on it, live, with millions watching. <span data-product-name></span> is built around that question.</p>
       </header>
@@ -469,10 +546,10 @@
       </ol>
     </section>
 
-    <!-- ============ 08 BUILD LOG ============ -->
+    <!-- ============ BUILD LOG ============ -->
     <section class="page wrap" data-page="log" data-title="Build log" data-summary="What runs today, and what's next" aria-labelledby="log-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">08</span>
+        <span class="chapter-no" aria-hidden="true">09</span>
         <h1 id="log-title" tabindex="-1">What runs today, and what's next</h1>
         <p class="lede">Built in the open, one tested commit at a time. Everything under “Live” runs today, on synthetic matches.</p>
       </header>
@@ -497,6 +574,10 @@
         <div class="log-lists">
           <h2 class="log-heading">Live</h2>
           <ol class="log">
+            <li data-reveal><time>Oct 19</time><div><strong>Make it yours</strong><p>Personal modes from the rules' own list: pick a club, a player, or one number to follow. Your moments come first, marked in your club's colour; following one player keeps only their moments and adds a live card; one number gets a ticker for both sides. The models tell the line from your side, and the Critic checks it the same way.</p></div></li>
+            <li data-reveal><time>Oct 19</time><div><strong>A recap after every match</strong><p>At full time the match writes its own recap, and every line it writes passes the Critic first. The studio offers it to read or download. <a href="recap/seed-21.html">Read a sample</a>.</p></div></li>
+            <li data-reveal><time>Oct 19</time><div><strong>What this data can't tell you</strong><p>The limits, stated plainly: how often the momentum calls are right, what synthetic data and event-only data leave out, and what "checked" does and doesn't mean. <a href="#/limits">Read them</a>.</p></div></li>
+            <li data-reveal><time>Oct 19</time><div><strong>A home of its own, and a wall</strong><p><span data-product-name></span> moved to hudhud.com.pk. The studio went private behind Cloudflare Access, and its own Azure address now turns away anything Access didn't sign. Nothing secret is stored for it: the studio checks Cloudflare's signature on every visit.</p></div></li>
             <li data-reveal><time>Oct 18</time><div><strong>Urdu and Arabic</strong><p>The studio speaks Urdu and Arabic as well as English. The verified line is translated, and the translation is held to the same law: it may state no number the checked line doesn't, and every name stays as written. If it breaks either, the English line airs instead. I reviewed the wording myself and signed it off.</p></div></li>
             <li data-reveal><time>Oct 18</time><div><strong>Pass quality, speed and player tags</strong><p>A great pass is now a moment of its own, with its distance, difficulty and accuracy; a fast shot says how fast. Every number is recomputed by the Critic from the match. Each cue tags its players, with badges when a shot passes 110 km/h or a pass is long or hard.</p></div></li>
             <li data-reveal><time>Oct 18</time><div><strong>The Critic, for any assistant</strong><p>The Critic is an MCP server: GitHub Copilot, or any assistant that speaks the Model Context Protocol, can read a match and put a claim to the same Critic that guards the broadcast. An assistant can't vouch for its own numbers: each must be recomputed from the match or carried by an event it cites.</p></div></li>
@@ -515,7 +596,8 @@
 
           <h2 class="log-heading">Next</h2>
           <ol class="log log-next">
-            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>What this data can't tell you</strong><p>The system's limits stated plainly, on this site and in the app.</p></div></li>
+            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>Counterattacks and the high press</strong><p>Two more kinds of moment: a break that starts from a won tackle or interception, and how well a side's press wins the ball back.</p></div></li>
+            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>How real is the synthetic football?</strong><p>The generator's scorelines set against real international results: goals a match, home wins, draws and the commonest scores.</p></div></li>
             <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>The video, on YouTube</strong><p>The 110-second demo, on my channel, @matx104, and in the media kit.</p></div></li>
           </ol>
 
@@ -527,10 +609,10 @@
       </div>
     </section>
 
-    <!-- ============ 09 ROADMAP ============ -->
+    <!-- ============ ROADMAP ============ -->
     <section class="page wrap" data-page="roadmap" data-title="Onwards & upwards" data-summary="From checking claims to an AI fourth official" aria-labelledby="roadmap-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">09</span>
+        <span class="chapter-no" aria-hidden="true">10</span>
         <h1 id="roadmap-title" tabindex="-1">Onwards &amp; upwards</h1>
         <p class="lede">The hackathon is stage one. <span data-product-name></span> keeps going after it, toward an AI fourth official that sits beside the referee team.</p>
       </header>
@@ -593,7 +675,7 @@
       </ul>
     </section>
 
-    <!-- ============ 10 THE NAME ============ -->
+    <!-- ============ THE NAME ============ -->
     <!-- Non-English strings (lang="ur", lang="ar") are marked data-owner-review: the owner signs them off. -->
     <section class="page name wrap" data-page="name" data-title="The name" data-summary="The messenger who came back with proof" aria-labelledby="name-title">
       <div class="name-head">
@@ -662,10 +744,10 @@
       <p class="kin" data-reveal>Every culture has a messenger that brings back the truth. Odin's ravens, Huginn and Muninn, fly over the world each day and report what they saw. Noah's dove returns with an olive leaf, proof in its beak that the flood is going down. Hermes carries the Greek gods' messages on winged sandals. In Urdu, Persian and Arabic, the messenger is the hudhud.</p>
     </section>
 
-    <!-- ============ 11 WHO ============ -->
+    <!-- ============ WHO ============ -->
     <section class="page wrap" data-page="who" data-title="Who's building it" data-summary="One engineer, from Karachi" aria-labelledby="who-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">11</span>
+        <span class="chapter-no" aria-hidden="true">12</span>
         <h1 id="who-title" tabindex="-1">Built by one engineer, from Karachi</h1>
       </header>
 
@@ -716,10 +798,10 @@
       </div>
     </section>
 
-    <!-- ============ 12 CREDITS ============ -->
+    <!-- ============ CREDITS ============ -->
     <section class="page wrap" data-page="credits" data-title="Credits" data-summary="The data, people and tools this stands on" aria-labelledby="credits-title">
       <header class="page-head">
-        <span class="chapter-no" aria-hidden="true">12</span>
+        <span class="chapter-no" aria-hidden="true">13</span>
         <h1 id="credits-title" tabindex="-1">Credits</h1>
         <p class="lede"><span data-product-name></span> stands on other people's data, teaching and tools. Each is named here with its author and license.</p>
       </header>
@@ -846,6 +928,18 @@
   <footer class="foot">
     <div class="wrap">
       <nav class="pager" aria-label="Previous and next chapter" data-pager></nav>
+      <div class="foot-brand">
+        <svg class="foot-crest crest-art" viewBox="36 12 168 168" aria-hidden="true">
+          <g transform="translate(120 150)">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+          </g>
+        </svg>
+        <p><strong class="foot-word" data-product-name></strong><span>Every call comes with its evidence.</span></p>
+      </div>
       <p class="credit"><span data-product-name></span> is being built for the Inside the Game developer hackathon, October 2026, and keeps going after it. Every club and player on this site is invented.
         <span data-when-repo="public"><a data-repo-link href="#">Source on GitHub</a>.</span>
         <span data-when-repo="private">The source goes public when the entry is submitted.</span>
