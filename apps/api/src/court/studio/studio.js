@@ -642,15 +642,16 @@
     const squares = [...chainBlocks.children];
     squares.forEach((sq) => delete sq.dataset.ok);
     const outcome = await window.Ledger.verifyLedger(ledger, (b, ok) => { if (squares[b.height]) squares[b.height].dataset.ok = String(ok); });
+    // The seal sealed live must be in the chain: answers asked after full time extend it.
     const live = chain.at(-1)?.hash;
-    const same = ledger.head === live;
+    const same = ledger.blocks.some((b) => b.hash === live);
     result.className = `chain-result ${outcome.ok && same ? "good" : "bad"}`;
     if (outcome.ok && same) {
-      result.textContent = `Verified in this browser: ${plural(outcome.blocks, "block")} and ${plural(outcome.entries, "entry", "entries")}, every hash recomputed here, and the seal is the one sealed live. Nothing has changed.`;
+      result.textContent = `Verified in this browser: ${plural(outcome.blocks, "block")} and ${plural(outcome.entries, "entry", "entries")}, every hash recomputed here, and the seal sealed live is in the chain. Nothing has changed.`;
     } else if (note) {
       result.textContent = `${note}: that block's entries no longer match the root it was sealed with, and every block after it hangs on that block's hash.`;
     } else {
-      result.textContent = `Not verified: ${outcome.problems[0] ?? "the seal isn't the one sealed live"}.`;
+      result.textContent = `Not verified: ${outcome.problems[0] ?? "the seal sealed live isn't in the chain"}.`;
     }
   }
 
