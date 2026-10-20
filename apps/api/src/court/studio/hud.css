@@ -66,6 +66,7 @@ button, select, input { font: inherit; color: inherit; }
 .meter-ok dd { color: var(--lime); }
 .meter-no dd { color: var(--card); }
 .meter-chain dd { color: var(--gold); }
+.to-studio + .to-studio { margin-left: 0; }
 .to-studio { margin-left: auto; padding: 0.35rem 0.75rem; border: 1px solid var(--chalk-faint); border-radius: 4px; color: var(--chalk-dim); text-decoration: none; font-size: 0.875rem; }
 .to-studio:hover { color: var(--lime); border-color: rgba(184, 245, 61, 0.5); }
 

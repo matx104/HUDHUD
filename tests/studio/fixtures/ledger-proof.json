@@ -1,0 +1,33 @@
+{
+ "id": "cue:c1",
+ "kind": "cue",
+ "text": "{\"id\":\"c1\",\"n\":3,\"text\":\"سنہری موقع: Saltmarsh Rovers, xG 0.42\"}",
+ "leaf": "5acddbed25e682d82fa94732d90b49049d5201010f4daaf0bf281e1bc4eac7e4",
+ "index": 7,
+ "path": [
+  "223c4d1c91ad2a2131d504eebaa20fe1e9368b6a4041a845662dfd647aca2540",
+  "213327f797c8c3aabb12e34220bf9850121ffa572e0372949876811f4b9e40ad",
+  "17e0409094a629fe52f29e2785a6d2df43b3a4d2cbfc0e718d16a3adc7871d87"
+ ],
+ "block": {
+  "height": 2,
+  "minute": "2'",
+  "count": 8,
+  "root": "afd12f4b007bd90ba1e4bfb29be5575dd124be2e8c1607af882b5525089cd1c0",
+  "prev": "7f44829760793a23b356edbfe67ad28ce9744a82d933c58122f18930d27ffa1e",
+  "at": "2026-10-20T12:00:00+00:00",
+  "hash": "4f46dd3fed2eec360cbfde0d6f8a7ce1151c8fae7d36e5ffcfec13d5fde79194"
+ },
+ "after": [
+  {
+   "height": 3,
+   "minute": "after full time: q1",
+   "count": 1,
+   "root": "bb7a62fff7d98897e3431d4a80980e2df0a9a72d37177123f5baff09c9edf6bf",
+   "prev": "4f46dd3fed2eec360cbfde0d6f8a7ce1151c8fae7d36e5ffcfec13d5fde79194",
+   "at": "2026-10-20T12:00:00+00:00",
+   "hash": "99fc5f5daacb5944d77ec7f72ee7bd35541effd32ac2b7366674781d90a111ac"
+  }
+ ],
+ "head": "99fc5f5daacb5944d77ec7f72ee7bd35541effd32ac2b7366674781d90a111ac"
+}

@@ -62,7 +62,36 @@
     return { ok: problems.length === 0, blocks: ledger.blocks.length, entries, problems, brokenAt };
   }
 
-  const api = { GENESIS_PREV, leafHash, nodeHash, merkleRoot, headerText, headerHash, verifyLedger };
+  // One entry's proof (RFC 9162 §2.1.3.2): its leaf, its Merkle path to its block's root, then each
+  // block's header hash and link, on to the seal. Returns which step failed, or null.
+  async function verifyProof(proof) {
+    if ((await leafHash(proof.text)) !== proof.leaf) return "the entry's text isn't its leaf";
+    const block = proof.block;
+    let fn = proof.index;
+    let sn = block.count - 1;
+    let r = proof.leaf;
+    if (fn > sn) return "the entry isn't in its block";
+    for (const p of proof.path) {
+      if (sn === 0) return "the Merkle path is too long";
+      if (fn & 1 || fn === sn) {
+        r = await nodeHash(p, r);
+        if (!(fn & 1)) while (!(fn & 1) && fn !== 0) { fn >>= 1; sn >>= 1; }
+      } else {
+        r = await nodeHash(r, p);
+      }
+      fn >>= 1; sn >>= 1;
+    }
+    if (sn !== 0 || r !== block.root) return "the Merkle path doesn't reach its block's root";
+    let previous = null;
+    for (const b of [block, ...proof.after]) {
+      if ((await headerHash(b)) !== b.hash) return `block ${b.height}'s header isn't its hash`;
+      if (previous && b.prev !== previous.hash) return `block ${b.height} doesn't name the block before it`;
+      previous = b;
+    }
+    return previous.hash === proof.head ? null : "the chain doesn't end at the seal";
+  }
+
+  const api = { GENESIS_PREV, leafHash, nodeHash, merkleRoot, headerText, headerHash, verifyLedger, verifyProof };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.Ledger = api;
 })(globalThis);

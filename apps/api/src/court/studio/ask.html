@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ask the match</title>
+  <meta name="description" content="Ask a synthetic football match anything, typed or out loud, in English, Urdu or Arabic. Code counts every number, the Critic checks every answer, and each answer is sealed in the match's ledger.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#06141F">
+  <!-- The crest: five feathers, the Critic's in gold -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='36 12 168 168'%3E%3Cg transform='translate(120 150)' fill='%23B8F53D'%3E%3Cpath transform='rotate(-52)' d='M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z'/%3E%3Cpath transform='rotate(-26)' d='M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z'/%3E%3Cpath fill='%23C9A227' d='M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z'/%3E%3Cpath transform='rotate(26)' d='M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z'/%3E%3Cpath transform='rotate(52)' d='M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Nastaliq+Urdu:wght@400;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap">
+  <link rel="stylesheet" href="/static/ask.css">
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true">
+    <defs>
+      <path id="f78" d="M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z"/>
+      <path id="f96" d="M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z"/>
+      <path id="f112" d="M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z"/>
+      <symbol id="crest" viewBox="36 12 168 168">
+        <g transform="translate(120 150)" fill="#B8F53D">
+          <use href="#f78" transform="rotate(-52)"/>
+          <use href="#f96" transform="rotate(-26)"/>
+          <use href="#f112" fill="#C9A227"/>
+          <use href="#f96" transform="rotate(26)"/>
+          <use href="#f78" transform="rotate(52)"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="top">
+    <a class="brand" href="/ask" aria-label="Ask the match">
+      <svg class="brand-crest" aria-hidden="true"><use href="#crest"/></svg>
+      <span class="brand-word">Ask the match</span>
+      <span class="brand-sub" data-product></span>
+    </a>
+    <nav class="elsewhere" aria-label="The rest of the studio">
+      <a href="/">Studio</a>
+      <a href="/hud" data-mark-link>HUD²</a>
+    </nav>
+  </header>
+
+  <main class="room">
+    <!-- The match the questions are about -->
+    <aside class="match" aria-labelledby="match-title">
+      <h2 id="match-title" class="visually-hidden">The match</h2>
+      <form class="pick" data-pick autocomplete="off">
+        <label>Match <select name="seed" data-matches></select></label>
+        <fieldset class="when">
+          <legend>Ask about</legend>
+          <label><input type="radio" name="when" value="full" checked> The whole match <small>played to full time in a few seconds</small></label>
+          <label><input type="radio" name="when" value="live"> It live <small>from 60', 30 times live</small></label>
+        </fieldset>
+        <div class="pick-row">
+          <label>Answers by
+            <select name="narration">
+              <option value="foundry">AI models (Microsoft Foundry)</option>
+              <option value="template">Code only (offline)</option>
+            </select>
+          </label>
+          <label>Language
+            <select name="lang">
+              <option value="en">English</option>
+              <option value="ur">اردو Urdu</option>
+              <option value="ar">العربية Arabic</option>
+            </select>
+          </label>
+        </div>
+        <button class="go" type="submit" data-go>Open the match</button>
+      </form>
+
+      <section class="card" data-card hidden aria-live="polite">
+        <div class="score">
+          <span class="team" data-side="home"><i></i><b></b></span>
+          <span class="goals" data-score>0 – 0</span>
+          <span class="team away" data-side="away"><b></b><i></i></span>
+        </div>
+        <p class="status"><span class="clock" data-clock>Kick-off</span> <span data-status>Playing the match</span></p>
+        <svg class="pitch" viewBox="-2 -2 109 72" role="img" aria-label="Every shot so far, sized by chance quality">
+          <rect x="0" y="0" width="105" height="68" rx="1"/>
+          <line x1="52.5" y1="0" x2="52.5" y2="68"/>
+          <circle cx="52.5" cy="34" r="9.15"/>
+          <rect x="0" y="13.84" width="16.5" height="40.32"/>
+          <rect x="88.5" y="13.84" width="16.5" height="40.32"/>
+          <g data-shots></g>
+        </svg>
+        <div class="seal">
+          <p><strong>Match ledger</strong> <span data-blocks>no blocks yet</span></p>
+          <code data-seal>none yet</code>
+          <button type="button" class="quiet" data-verify-ledger hidden>Verify the whole ledger</button>
+          <p class="seal-result" data-ledger-result></p>
+        </div>
+      </section>
+
+      <p class="rules">The events answer what has happened. What they can't see (an injury, a mood, the weather), what hasn't happened yet, and anything about betting get fixed words, never a model's.</p>
+    </aside>
+
+    <!-- The conversation -->
+    <section class="talk" aria-labelledby="talk-title">
+      <div class="empty" data-empty>
+        <h1 id="talk-title">Ask anything about the match.</h1>
+        <p>Code counts every number from the match's events. The Critic checks every answer before you see it, and refuses what it can't prove. Each answer is sealed into the match's ledger, so you can check it was never changed.</p>
+      </div>
+      <ol class="thread" data-thread aria-live="polite"></ol>
+      <div class="compose">
+        <div class="chips" data-chips aria-label="Questions to try"></div>
+        <form class="ask" data-ask>
+          <input name="question" maxlength="200" autocomplete="off" required disabled aria-label="Your question about the match" placeholder="Open a match, then ask it anything">
+          <button type="button" class="mic" data-mic aria-pressed="false" hidden disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>
+            <span data-mic-label>Say it</span>
+          </button>
+          <button type="submit" class="go" data-ask-go disabled>Ask</button>
+        </form>
+        <p class="left" data-left aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/ledger-core.js"></script>
+  <script src="/static/voice.js"></script>
+  <script src="/static/ask.js"></script>
+</body>
+</html>

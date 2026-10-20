@@ -206,6 +206,8 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .ask-try button { padding: 0.25rem 0.6rem; border: 1px solid var(--chalk-faint); border-radius: 999px; background: transparent; font-size: 0.8125rem; color: var(--chalk-dim); cursor: pointer; }
 .ask-try button:hover { color: var(--lime); border-color: rgba(184, 245, 61, 0.5); }
 .ask-left { margin: 0.5rem 0 0; min-height: 1.2em; font: 400 0.75rem / 1.2 var(--mono); color: var(--chalk-dim); }
+.ask-more { margin: 0.75rem 0 0; font-size: 0.8125rem; color: var(--chalk-dim); }
+.ask-more a { color: var(--lime); }
 .answers { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; gap: 0.75rem; }
 .answer { padding: 0.75rem 0.9rem; background: var(--navy-deep); border-left: 4px solid var(--lime); border-radius: 0 6px 6px 0; }
 .answer.cannot { border-left-color: var(--chalk-faint); }

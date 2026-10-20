@@ -36,3 +36,12 @@ test("one changed word in one line breaks its block, and hiding it breaks the ne
   assert.equal(check.ok, false);
   assert.match(check.problems.join("\n"), /block 3 .*doesn't name the block before it/);
 });
+
+test("one line's proof, Python's, checks here: leaf, Merkle path, then the chain to the seal", async () => {
+  const proof = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "ledger-proof.json"), "utf8"));
+  assert.equal(await Ledger.verifyProof(proof), null);
+  assert.match(await Ledger.verifyProof({ ...proof, text: proof.text.replace("0.42", "0.52") }), /isn't its leaf/);
+  const moved = structuredClone(proof);
+  moved.after[0].prev = "0".repeat(64);
+  assert.match(await Ledger.verifyProof(moved), /header isn't its hash|doesn't name/);
+});

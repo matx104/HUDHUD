@@ -143,8 +143,15 @@ def test_after_full_time_each_answer_seals_a_block_of_its_own(client, match):
 SAMPLE = Path(__file__).parents[3] / "tests" / "studio" / "fixtures" / "ledger-sample.json"
 
 
+PROOF = SAMPLE.with_name("ledger-proof.json")
+
+
 def _sample() -> dict:
     """A small ledger with fixed times: the same bytes Python and the browser's code both check."""
+    return _sample_ledger().export()
+
+
+def _sample_ledger() -> Ledger:
     match = generate(21)
     at = datetime(2026, 10, 20, 12, 0, tzinfo=UTC)
     ledger = Ledger(match.meta.model_dump(mode="json"), at=at)
@@ -158,7 +165,7 @@ def _sample() -> dict:
     ledger.seal("2'", at=at)
     ledger.add("answer", "q1", {"id": "q1", "text": "Saltmarsh Rovers 1, Brackenfield 0."})
     ledger.seal("after full time: q1", at=at)
-    return ledger.export()
+    return ledger
 
 
 def test_the_sample_both_languages_check_is_current_and_verifies():
@@ -167,3 +174,8 @@ def test_the_sample_both_languages_check_is_current_and_verifies():
         SAMPLE.write_text(json.dumps(sample, ensure_ascii=False, indent=1) + "\n")
     assert json.loads(SAMPLE.read_text()) == sample, "UPDATE_FIXTURES=1 pytest writes it again"
     assert verify(sample).ok
+    # And one entry's proof, for the browser's proof check: a line in the middle of the chain.
+    proof = _sample_ledger().proof("cue:c1")
+    if os.environ.get("UPDATE_FIXTURES"):
+        PROOF.write_text(json.dumps(proof, ensure_ascii=False, indent=1) + "\n")
+    assert json.loads(PROOF.read_text()) == proof and check_proof(proof)

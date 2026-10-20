@@ -65,7 +65,7 @@
         $("[data-matches]").append(option);
       }
       if (!config.models) form.narration.value = "template";
-      $("[data-mic]").hidden = !config.voice || !navigator.mediaDevices?.getUserMedia;
+      $("[data-mic]").hidden = !config.voice || !window.Voice.available();
       if (!config.voice) {
         hear.disabled = true;
         $("[data-hear-label]").title = "No voice is connected here: the offline studio has none";
@@ -341,8 +341,9 @@
   }
 
   // ---------- Ask out loud ----------
-  // The question recorded here as 16 kHz mono WAV, turned into words by Azure AI Speech in the
-  // match's language, then asked as if typed. The audio goes to the studio once and is kept nowhere.
+  // The question recorded here as 16 kHz mono WAV (voice.js), turned into words by Azure AI Speech
+  // in the match's language, then asked as if typed. The audio goes to the studio once and is kept
+  // nowhere.
   const mic = $("[data-mic]");
   const MAX_LISTEN_MS = 12000;
   let recording = null;
@@ -350,21 +351,13 @@
 
   async function startListening() {
     if (!askSession || recording) return;
-    let stream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
+      const take = await window.Voice.start();
+      recording = { take, timer: setTimeout(stopListening, MAX_LISTEN_MS) };
     } catch {
       $("[data-ask-left]").textContent = "The microphone wasn't allowed. Type the question instead.";
       return;
     }
-    const context = new AudioContext({ sampleRate: 16000 });
-    const source = context.createMediaStreamSource(stream);
-    const tap = context.createScriptProcessor(4096, 1, 1);
-    const chunks = [];
-    tap.onaudioprocess = (e) => chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
-    source.connect(tap);
-    tap.connect(context.destination);
-    recording = { stream, context, source, tap, chunks, timer: setTimeout(stopListening, MAX_LISTEN_MS) };
     mic.setAttribute("aria-pressed", "true");
     $("[data-mic-label]").textContent = "Listening. Tap to stop";
   }
@@ -374,11 +367,7 @@
     recording = null;
     if (!r) return;
     clearTimeout(r.timer);
-    r.source.disconnect();
-    r.tap.disconnect();
-    for (const track of r.stream.getTracks()) track.stop();
-    const rate = r.context.sampleRate;
-    await r.context.close();
+    const body = await r.take.finish();
     mic.setAttribute("aria-pressed", "false");
     mic.disabled = true;
     $("[data-mic-label]").textContent = "Hearing it";
@@ -386,59 +375,19 @@
       const response = await fetch(`/api/sessions/${askSession}/listen`, {
         method: "POST",
         headers: { "Content-Type": "audio/wav" },
-        body: wav(resample(join(r.chunks), rate, 16000), 16000),
+        body,
       });
-      const body = await response.json().catch(() => ({}));
+      const heard = await response.json().catch(() => ({}));
       if (!response.ok) {
-        $("[data-ask-left]").textContent = `${body.detail ?? "That couldn't be heard"}.`;
+        $("[data-ask-left]").textContent = `${heard.detail ?? "That couldn't be heard"}.`;
         return;
       }
-      askForm.question.value = body.text;
+      askForm.question.value = heard.text;
       await askNow(true);
     } finally {
       mic.disabled = false;
       $("[data-mic-label]").textContent = "Ask out loud";
     }
-  }
-
-  function join(chunks) {
-    const all = new Float32Array(chunks.reduce((n, c) => n + c.length, 0));
-    let at = 0;
-    for (const chunk of chunks) { all.set(chunk, at); at += chunk.length; }
-    return all;
-  }
-
-  // Where a browser won't record at 16 kHz, the samples are brought down to it.
-  function resample(samples, from, to) {
-    if (from === to) return samples;
-    const out = new Float32Array(Math.floor((samples.length * to) / from));
-    for (let i = 0; i < out.length; i++) {
-      const x = (i * from) / to;
-      const j = Math.floor(x);
-      const next = samples[Math.min(j + 1, samples.length - 1)];
-      out[i] = samples[j] + (next - samples[j]) * (x - j);
-    }
-    return out;
-  }
-
-  // 16-bit PCM WAV, mono: what the short-audio speech to text takes.
-  function wav(samples, rate) {
-    const view = new DataView(new ArrayBuffer(44 + samples.length * 2));
-    const ascii = (at, text) => [...text].forEach((ch, i) => view.setUint8(at + i, ch.charCodeAt(0)));
-    ascii(0, "RIFF");
-    view.setUint32(4, 36 + samples.length * 2, true);
-    ascii(8, "WAVEfmt ");
-    view.setUint32(16, 16, true);
-    view.setUint16(20, 1, true);
-    view.setUint16(22, 1, true);
-    view.setUint32(24, rate, true);
-    view.setUint32(28, rate * 2, true);
-    view.setUint16(32, 2, true);
-    view.setUint16(34, 16, true);
-    ascii(36, "data");
-    view.setUint32(40, samples.length * 2, true);
-    samples.forEach((sample, i) => view.setInt16(44 + i * 2, Math.max(-1, Math.min(1, sample)) * 0x7fff, true));
-    return new Blob([view.buffer], { type: "audio/wav" });
   }
 
   // The player card and the single metric: counted on the server from the match's own events.
