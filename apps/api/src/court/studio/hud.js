@@ -1,7 +1,7 @@
 // HUD²: one match on one heads-up screen, through the referee's, the commentator's or the fan's
 // lens (ADR 0012). The stream is the studio's, with hud=1: hello, clock, play (every action,
 // placed on the pitch as the camera sees it), pulse (both sides' counts each minute), output (the
-// court's cues and refusals), recap and end. The canvas draws where things happened; every word on
+// court's cues and refusals), block (the match ledger's, ADR 0013), recap and end. The canvas draws where things happened; every word on
 // screen came through the Critic, and every number from the server. Pure parts: hud-core.js.
 (() => {
   const H = window.HUD;
@@ -259,6 +259,7 @@
     listen("pulse", (d) => { S.pulse = d; readouts(); });
     listen("output", output);
     listen("recap", recap);
+    listen("block", (b) => ($("[data-chain]").textContent = `block ${b.height}`));
     listen("end", finish);
     // An EventSource reconnects by itself, which would start a new match: close on any error.
     source.addEventListener("error", (e) => {
@@ -441,6 +442,10 @@
     const s = summary.stats;
     note(`Full time. ${plural(s.aired ?? 0, "line")} aired checked, ${plural(s.rejected ?? 0, "claim")} refused and rewritten. Model cost $${summary.cost_usd.toFixed(4)}. You can still ask about the whole match.`);
     $("[data-live]").textContent = "Full time";
+    if (summary.ledger) {
+      $("[data-chain]").textContent = "sealed";
+      note(`The match ledger is sealed: ${plural(summary.ledger.blocks, "block")}, ${plural(summary.ledger.entries, "entry", "entries")}, seal ${summary.ledger.seal.slice(0, 16)}…`);
+    }
     stop();
   }
 

@@ -106,6 +106,28 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .feed { grid-area: feed; }
 .desk { grid-area: desk; padding: 1rem 1.1rem; background: rgba(242, 92, 84, 0.06); border: 1px solid rgba(242, 92, 84, 0.3); border-radius: 6px; }
 
+/* ---------- the match ledger: blocks chained by hashes ---------- */
+.chain { grid-column: 1 / -1; display: grid; gap: 0.45rem; padding-top: 0.75rem; border-top: 1px solid var(--chalk-faint); }
+.chain-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; }
+.chain-head strong { font: 800 1.05rem / 1 var(--display); color: var(--gold); }
+.chain-head span { font-size: 0.8125rem; color: var(--chalk-dim); }
+.chain-blocks { list-style: none; display: flex; flex-wrap: wrap; gap: 3px; margin: 0; padding: 0; }
+/* A block, linked to the one before it by the bar on its left */
+.chain-blocks li { position: relative; width: 0.85rem; height: 0.85rem; border: 1px solid rgba(201, 162, 39, 0.7); border-radius: 2px; background: rgba(201, 162, 39, 0.18); }
+.chain-blocks li + li::before { content: ""; position: absolute; left: -4px; top: 50%; width: 4px; height: 1px; background: rgba(201, 162, 39, 0.7); }
+.chain-blocks li[data-ok="true"] { border-color: var(--lime); background: rgba(184, 245, 61, 0.45); }
+.chain-blocks li[data-ok="false"] { border-color: var(--card); background: var(--card); }
+.chain-seal { margin: 0; font-size: 0.75rem; color: var(--chalk-dim); }
+.chain-seal code { font: 400 0.75rem / 1.3 var(--mono); color: var(--gold); word-break: break-all; }
+.chain-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chain-actions[hidden] { display: none; }
+.chain-try { padding: 0.5rem 0.9rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: transparent; color: var(--chalk); font-size: 0.875rem; cursor: pointer; text-decoration: none; }
+.chain-try:hover { border-color: var(--gold); color: var(--gold); }
+.chain-result { margin: 0; min-height: 1.2em; font-size: 0.875rem; }
+.chain-result.good { color: var(--lime); }
+.chain-result.bad { color: var(--card); }
+.sealed { display: inline-block; margin-top: 0.35rem; font: 400 0.6875rem / 1.2 var(--mono); color: var(--gold); }
+
 /* ---------- scoreboard ---------- */
 .score { display: flex; align-items: center; gap: 1rem; font: 800 clamp(1.5rem, 3vw, 2.25rem) / 1 var(--display); }
 .team { display: flex; align-items: center; gap: 0.6rem; }

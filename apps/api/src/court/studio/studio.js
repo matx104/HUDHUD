@@ -1,7 +1,7 @@
 // The studio page: opens one match as Server-Sent Events and renders what the court does with it.
 // The server sends hello (teams, session, the viewer's preferences), clock (minute, score), shot,
-// output (cue, rejection, spiked, degradation), personal (the player card and the single metric)
-// and end. Questions go to the match by POST (Ask the match) and come back as answers. Nothing here
+// output (cue, rejection, spiked, degradation), personal (the player card and the single metric),
+// block (each minute's block of the match ledger, sealed) and end. Questions go to the match by POST (Ask the match) and come back as answers. Nothing here
 // computes a fact: every number on screen came from the server, and every line and answer came
 // through the Critic.
 (() => {
@@ -47,6 +47,10 @@
   // Ask the match: kept after full time, so the whole match can be asked about.
   const askForm = $("[data-ask-form]");
   let askSession = null;
+  // The match ledger: the blocks as they were sealed live, to check the downloaded file against.
+  const chainBlocks = $("[data-chain-blocks]");
+  let chain = [];
+  let ledgerSession = null;
   const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
   fetch("/api/config")
@@ -105,6 +109,10 @@
     for (const name of ["seed", "narration", "lang", "start", "speed", "strictness", "club", "player", "focus", "metric"]) {
       const value = params.get(name);
       const select = form.elements[name];
+      // Any minute can start a take, not only the menu's: one not on it is added, never ignored.
+      if (name === "start" && /^\d{1,2}$/.test(value ?? "") && Number(value) <= 90 && ![...select.options].some((o) => o.value === value)) {
+        select.append(Object.assign(el("option", "", `${value}'`), { value }));
+      }
       if (value !== null && [...select.options].some((o) => o.value === value)) select.value = value;
       if (name === "player") focusable();
     }
@@ -142,6 +150,11 @@
     $("[data-board]").hidden = false;
     for (const node of ["[data-mine]", "[data-card]", "[data-ticker]"]) $(node).hidden = true;
     history = [];
+    chain = [];
+    chainBlocks.replaceChildren();
+    $("[data-chain-seal]").textContent = "none yet";
+    $("[data-chain-actions]").hidden = true;
+    $("[data-chain-result]").textContent = "";
     tally = { refused: 0, checked: 0, cost: 0 };
     drawTally();
     setLevel("full", "On air");
@@ -172,6 +185,7 @@
     source.addEventListener("output", (e) => output(JSON.parse(e.data)));
     source.addEventListener("personal", (e) => personal(JSON.parse(e.data)));
     source.addEventListener("recap", (e) => recap(JSON.parse(e.data)));
+    source.addEventListener("block", (e) => block(JSON.parse(e.data)));
     source.addEventListener("end", (e) => finish(JSON.parse(e.data)));
     // An EventSource reconnects by itself, which would start a new match: close on any error.
     source.addEventListener("error", (e) => {
@@ -197,6 +211,7 @@
     session = data.session;
     voiceSession = data.session; // kept after full time, so the last line can still be heard
     askSession = data.session;
+    ledgerSession = data.session;
     $("[data-ask]").hidden = false;
     suggest(data);
     queue = [];
@@ -313,6 +328,7 @@
       item.append(struck);
     }
     if (a.status !== "cannot") item.append(receipt(a.receipt, "Question to answer"));
+    if (a.ledger) item.append(el("span", "sealed", a.ledger.block === null ? "Joins the ledger's next block" : `Sealed in block ${a.ledger.block}`));
     $("[data-answers]").prepend(item);
     // The desk keeps every refusal, the answers' as well as the lines'.
     a.refused.forEach((r, i) => card({ type: "rejection", minute: `${a.minute} · your question`, claim: { attempt: i + 1, text: r.text }, reasons: r.reasons }));
@@ -647,6 +663,72 @@
     cues.prepend(box);
   }
 
+  // ---------- the match ledger ----------
+  // Each block as it was sealed: a square in the chain, and its seal. The lines and answers in it
+  // are marked with the block that holds them.
+  function block(b) {
+    chain.push(b);
+    const square = el("li");
+    square.title = `Block ${b.height}, ${b.minute}: ${plural(b.count, "entry", "entries")}`;
+    chainBlocks.append(square);
+    $("[data-chain-seal]").textContent = b.hash;
+    $("[data-chain-state]").textContent = `Block ${b.height} sealed (${b.minute}): ${plural(b.count, "entry", "entries")}, linked to the block before it.`;
+    for (const id of b.ids ?? []) {
+      const [kind, natural] = id.includes(":") ? id.split(/:(.*)/s) : ["event", id];
+      const item = (kind === "cue" || kind === "answer") && said.get(natural);
+      if (item && !item.querySelector(".sealed")) item.append(el("span", "sealed", `Sealed in block ${b.height}`));
+    }
+  }
+
+  let ledgerCopy = null;
+  async function fetchLedger() {
+    const response = await fetch(`/api/sessions/${ledgerSession}/ledger`);
+    if (!response.ok) throw new Error("the ledger couldn't be fetched");
+    return response.json();
+  }
+
+  // Recompute every hash in the browser, then compare the seal with the one sealed live.
+  async function check(ledger, note) {
+    const result = $("[data-chain-result]");
+    const squares = [...chainBlocks.children];
+    squares.forEach((sq) => delete sq.dataset.ok);
+    const outcome = await window.Ledger.verifyLedger(ledger, (b, ok) => { if (squares[b.height]) squares[b.height].dataset.ok = String(ok); });
+    const live = chain.at(-1)?.hash;
+    const same = ledger.head === live;
+    result.className = `chain-result ${outcome.ok && same ? "good" : "bad"}`;
+    if (outcome.ok && same) {
+      result.textContent = `Verified in this browser: ${plural(outcome.blocks, "block")} and ${plural(outcome.entries, "entry", "entries")}, every hash recomputed here, and the seal is the one sealed live. Nothing has changed.`;
+    } else if (note) {
+      result.textContent = `${note}: that block's entries no longer match the root it was sealed with, and every block after it hangs on that block's hash.`;
+    } else {
+      result.textContent = `Not verified: ${outcome.problems[0] ?? "the seal isn't the one sealed live"}.`;
+    }
+  }
+
+  $("[data-verify]").addEventListener("click", async () => {
+    try {
+      ledgerCopy = await fetchLedger();
+      await check(ledgerCopy);
+    } catch (error) {
+      $("[data-chain-result]").textContent = `${error.message}.`;
+    }
+  });
+
+  // The tamper test: change one word of one line in a copy, and let the browser find it.
+  $("[data-tamper]").addEventListener("click", async () => {
+    try {
+      const forged = structuredClone(ledgerCopy ?? (ledgerCopy = await fetchLedger()));
+      const target = forged.blocks.find((b) => b.entries.some((e) => e.kind === "cue"));
+      const entry = target.entries.find((e) => e.kind === "cue");
+      const cue = JSON.parse(entry.text);
+      cue.text = `${cue.text.replace(/\d+(\.\d+)?/, (n) => String(Number(n) + 1))}`;
+      entry.text = JSON.stringify(cue);
+      await check(forged, `You changed one line in block ${target.height} (${target.minute}), and the browser caught it`);
+    } catch (error) {
+      $("[data-chain-result]").textContent = `${error.message}.`;
+    }
+  });
+
   function finish(summary) {
     const s = summary.stats;
     const count = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -655,6 +737,13 @@
     if (s.rejected) parts.push(`${count(s.rejected, "claim")} refused and rewritten`);
     if (summary.hidden_by_focus) parts.push(`${count(summary.hidden_by_focus, "other moment")} left out by player focus`);
     notice(`${parts.join(", ")}. Model cost $${summary.cost_usd.toFixed(4)}.`, true);
+    if (summary.ledger) {
+      $("[data-chain-state]").textContent = `Sealed at full time: ${plural(summary.ledger.blocks, "block")}, ${plural(summary.ledger.entries, "entry", "entries")}. Answers you ask now each seal a block of their own.`;
+      $("[data-chain-actions]").hidden = false;
+      const download = $("[data-ledger-download]");
+      download.href = `/api/sessions/${ledgerSession}/ledger`;
+      download.download = `${document.title.split(" ")[0].toLowerCase()}-ledger-${form.seed.value}.json`;
+    }
     setLevel("idle", "Full time");
     stop();
   }
