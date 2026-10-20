@@ -24,6 +24,13 @@
 - **What the events can't answer gets fixed words.** The model may only say why it can't
   (beyond the data, not yet happened, off topic); the words shown are the product's, never the
   model's.
+- **Who has the most, and follow-ups** (added 2026-10-20). A `leaders` tool ranks the players by
+  code: a fact per player with their count (checked per player by the Critic), then a fact naming
+  who leads, or everyone level at the top, never a tie cut short. A follow-up ("and Brackenfield?")
+  is read with the viewer's last two exchanges: the model is told them for what the question refers
+  to, never for a number, and counts again; the offline answerer borrows what the last question
+  counted. Each answer is sealed into the match ledger (ADR 0013), and its proof checks in the
+  browser. Ask the match has a page of its own (`/ask`): a conversation with one match.
 - **Never a betting tool** (added 2026-10-20, roadmap principle 8). A question about bets, odds or
   gambling, in English, Urdu or Arabic, is held back by code before any model reads it, and gets
   fixed words that steer away from gambling. The model is told the same, should one slip past.

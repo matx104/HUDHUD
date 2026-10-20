@@ -191,6 +191,13 @@ def main() -> None:
                 ("Take: Arabic", "The same match, narrated in Arabic", take + "ar"),
                 (
                     "Take: ask the match",
+                    "The Ask page: seed 21 played to full time in seconds, models, first question",
+                    STUDIO_URL.rstrip("/")
+                    + "/ask?seed=21&when=full&narration=foundry&autostart=1"
+                    + "&q=Who%20has%20completed%20the%20most%20passes%3F",
+                ),
+                (
+                    "Take: ask the match, in the studio",
                     "Seed 21 from 85', 60x, models, your player: full time in a minute, then ask",
                     STUDIO_URL
                     + "?seed=21&narration=foundry&start=85&speed=60&stress=1&autostart=1&lang=en"
