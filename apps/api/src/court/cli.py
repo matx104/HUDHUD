@@ -217,6 +217,40 @@ def _narrator_eval(args: argparse.Namespace) -> int:
     return 0
 
 
+def _verify(args: argparse.Namespace) -> int:
+    from .ledger import verify
+
+    exported = json.loads(args.ledger.read_text())
+    check = verify(exported, regenerate=not args.no_regenerate)
+    print(f"{exported['match_id']}, seal {exported['head']}")
+    print(f"{check.blocks} blocks, {check.entries} entries, every hash recomputed")
+    if not args.no_regenerate:
+        print(f"{check.events_regenerated} events compared with the match its seed generates")
+    for problem in check.problems:
+        print(f"  ✘ {problem}")
+    print("verified: nothing has changed" if check.ok else "NOT verified: the ledger was changed")
+    return 0 if check.ok else 1
+
+
+async def _ledger(args: argparse.Namespace) -> int:
+    """The studio's own session, offline and at full speed: the ledger a viewer would download."""
+    from .server import ModelBudget, Session
+
+    session = Session(
+        args.seed,
+        narration="template",
+        speed=0,
+        start=0,
+        mode="analyst",
+        stress=0.25,
+        budget=ModelBudget(0),
+    )
+    await session.run()
+    args.out.write_text(json.dumps(session.ledger.export(), ensure_ascii=False) + "\n")
+    print(f"wrote {args.out}: {len(session.ledger.blocks)} blocks, seal {session.ledger.head}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="court")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -282,7 +316,21 @@ def main(argv: list[str] | None = None) -> int:
     ae.add_argument(
         "--rejudge", action="store_true", help="only judge again the answers the last run saved"
     )
+    vf = sub.add_parser("verify", help="recompute every hash in a match ledger (court.ledger)")
+    vf.add_argument("ledger", type=Path, help="a ledger, as the studio's Download gives it")
+    vf.add_argument(
+        "--no-regenerate",
+        action="store_true",
+        help="skip generating the match from its seed to compare the events",
+    )
+    lg = sub.add_parser("ledger", help="run one match offline and write its ledger")
+    lg.add_argument("--seed", type=int, default=21, help="synthetic match seed")
+    lg.add_argument("--out", type=Path, default=Path("ledger.json"), help="where to write it")
     args = parser.parse_args(argv)
+    if args.cmd == "verify":
+        return _verify(args)
+    if args.cmd == "ledger":
+        return asyncio.run(_ledger(args))
     if args.cmd == "schema":
         from .schema import write
 

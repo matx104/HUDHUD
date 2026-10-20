@@ -1,0 +1,128 @@
+{
+ "ledger": 1,
+ "match_id": "syn-000021",
+ "seed": 21,
+ "generator_version": "0.1.0",
+ "head": "99fc5f5daacb5944d77ec7f72ee7bd35541effd32ac2b7366674781d90a111ac",
+ "blocks": [
+  {
+   "height": 0,
+   "minute": "genesis",
+   "count": 1,
+   "root": "b7fe4cdd71c41262020d3ad9b6ba45911355543ad035527615c0c4089f69ec06",
+   "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+   "at": "2026-10-20T12:00:00+00:00",
+   "hash": "64a40587a5dc996e633d55e81d65b05490714492d345cf942a0bdd1f2864e567",
+   "entries": [
+    {
+     "kind": "meta",
+     "id": "meta:meta",
+     "text": "{\"away\":{\"color\":\"#6B46C1\",\"formation\":\"4-3-3\",\"name\":\"Brackenfield\",\"short_name\":\"BRK\",\"side\":\"away\"},\"competition\":\"Synthetic League\",\"generator_version\":\"0.1.0\",\"home\":{\"color\":\"#2F855A\",\"formation\":\"4-3-3\",\"name\":\"Saltmarsh Rovers\",\"short_name\":\"SAL\",\"side\":\"home\"},\"home_attacks_right_first\":false,\"match_id\":\"syn-000021\",\"players\":[{\"id\":\"h01\",\"name\":\"Rafi Quinholm\",\"number\":1,\"position\":\"GK\",\"team\":\"home\"},{\"id\":\"h02\",\"name\":\"Elio Quinsen\",\"number\":2,\"position\":\"DF\",\"team\":\"home\"},{\"id\":\"h03\",\"name\":\"Luka Arston\",\"number\":5,\"position\":\"DF\",\"team\":\"home\"},{\"id\":\"h04\",\"name\":\"Cian Stendal\",\"number\":6,\"position\":\"DF\",\"team\":\"home\"},{\"id\":\"h05\",\"name\":\"Omar Esksen\",\"number\":3,\"position\":\"DF\",\"team\":\"home\"},{\"id\":\"h06\",\"name\":\"Niko Halston\",\"number\":4,\"position\":\"MF\",\"team\":\"home\"},{\"id\":\"h07\",\"name\":\"Viktor Yardal\",\"number\":8,\"position\":\"MF\",\"team\":\"home\"},{\"id\":\"h08\",\"name\":\"Kai Orvston\",\"number\":10,\"position\":\"MF\",\"team\":\"home\"},{\"id\":\"h09\",\"name\":\"Adem Rosmere\",\"number\":7,\"position\":\"FW\",\"team\":\"home\"},{\"id\":\"h10\",\"name\":\"Luka Dunvik\",\"number\":9,\"position\":\"FW\",\"team\":\"home\"},{\"id\":\"h11\",\"name\":\"Bilal Arholm\",\"number\":11,\"position\":\"FW\",\"team\":\"home\"},{\"id\":\"a01\",\"name\":\"Elio Corwick\",\"number\":1,\"position\":\"GK\",\"team\":\"away\"},{\"id\":\"a02\",\"name\":\"Faris Armere\",\"number\":2,\"position\":\"DF\",\"team\":\"away\"},{\"id\":\"a03\",\"name\":\"Mateo Rosford\",\"number\":5,\"position\":\"DF\",\"team\":\"away\"},{\"id\":\"a04\",\"name\":\"Faris Pellholm\",\"number\":6,\"position\":\"DF\",\"team\":\"away\"},{\"id\":\"a05\",\"name\":\"Pavel Varston\",\"number\":3,\"position\":\"DF\",\"team\":\"away\"},{\"id\":\"a06\",\"name\":\"Caden Halwick\",\"number\":4,\"position\":\"MF\",\"team\":\"away\"},{\"id\":\"a07\",\"name\":\"Zane Garsen\",\"number\":8,\"position\":\"MF\",\"team\":\"away\"},{\"id\":\"a08\",\"name\":\"Bilal Varton\",\"number\":10,\"position\":\"MF\",\"team\":\"away\"},{\"id\":\"a09\",\"name\":\"Sami Corwick\",\"number\":7,\"position\":\"FW\",\"team\":\"away\"},{\"id\":\"a10\",\"name\":\"Ilyas Pellby\",\"number\":9,\"position\":\"FW\",\"team\":\"away\"},{\"id\":\"a11\",\"name\":\"Kai Morsen\",\"number\":11,\"position\":\"FW\",\"team\":\"away\"}],\"seed\":21,\"synthetic\":true,\"type\":\"match_meta\"}"
+    }
+   ]
+  },
+  {
+   "height": 1,
+   "minute": "1'",
+   "count": 5,
+   "root": "9d8effcbd4367c59aea5e91ecd968419749f2c16d1d753ff3d45e0f215517573",
+   "prev": "64a40587a5dc996e633d55e81d65b05490714492d345cf942a0bdd1f2864e567",
+   "at": "2026-10-20T12:00:00+00:00",
+   "hash": "7f44829760793a23b356edbfe67ad28ce9744a82d933c58122f18930d27ffa1e",
+   "entries": [
+    {
+     "kind": "event",
+     "id": "e00000",
+     "text": "{\"id\":\"e00000\",\"kickoff_team\":\"home\",\"period\":1,\"seq\":0,\"t\":0.0,\"type\":\"period_start\"}"
+    },
+    {
+     "kind": "event",
+     "id": "e00001",
+     "text": "{\"cause_event_id\":null,\"id\":\"e00001\",\"period\":1,\"possession\":1,\"reason\":\"kickoff\",\"seq\":1,\"t\":0.0,\"team\":\"home\",\"type\":\"possession_change\",\"x\":52.5,\"y\":34.0}"
+    },
+    {
+     "kind": "event",
+     "id": "e00002",
+     "text": "{\"accuracy\":0.919,\"ball_speed_kmh\":41.1,\"cross\":false,\"difficulty\":0.03,\"distance_m\":7.4,\"end_x\":52.2,\"end_y\":41.4,\"height\":\"ground\",\"id\":\"e00002\",\"outcome\":\"complete\",\"period\":1,\"player_id\":\"h07\",\"possession\":1,\"recipient_id\":\"h06\",\"seq\":2,\"t\":0.0,\"team\":\"home\",\"type\":\"pass\",\"under_pressure\":false,\"x\":52.5,\"y\":34.0}"
+    },
+    {
+     "kind": "event",
+     "id": "e00003",
+     "text": "{\"accuracy\":0.984,\"ball_speed_kmh\":87.2,\"cross\":false,\"difficulty\":0.393,\"distance_m\":46.1,\"end_x\":90.2,\"end_y\":67.5,\"height\":\"high\",\"id\":\"e00003\",\"outcome\":\"complete\",\"period\":1,\"player_id\":\"h06\",\"possession\":1,\"recipient_id\":\"h09\",\"seq\":3,\"t\":3.4,\"team\":\"home\",\"type\":\"pass\",\"under_pressure\":false,\"x\":52.2,\"y\":41.4}"
+    },
+    {
+     "kind": "event",
+     "id": "e00004",
+     "text": "{\"accuracy\":0.767,\"ball_speed_kmh\":70.5,\"cross\":true,\"difficulty\":0.72,\"distance_m\":32.3,\"end_x\":99.1,\"end_y\":36.2,\"height\":\"high\",\"id\":\"e00004\",\"outcome\":\"complete\",\"period\":1,\"player_id\":\"h09\",\"possession\":1,\"recipient_id\":\"h11\",\"seq\":4,\"t\":8.8,\"team\":\"home\",\"type\":\"pass\",\"under_pressure\":false,\"x\":91.1,\"y\":67.5}"
+    }
+   ]
+  },
+  {
+   "height": 2,
+   "minute": "2'",
+   "count": 8,
+   "root": "afd12f4b007bd90ba1e4bfb29be5575dd124be2e8c1607af882b5525089cd1c0",
+   "prev": "7f44829760793a23b356edbfe67ad28ce9744a82d933c58122f18930d27ffa1e",
+   "at": "2026-10-20T12:00:00+00:00",
+   "hash": "4f46dd3fed2eec360cbfde0d6f8a7ce1151c8fae7d36e5ffcfec13d5fde79194",
+   "entries": [
+    {
+     "kind": "event",
+     "id": "e00005",
+     "text": "{\"accuracy\":0.871,\"ball_speed_kmh\":54.7,\"cross\":false,\"difficulty\":0.163,\"distance_m\":13.1,\"end_x\":96.9,\"end_y\":49.1,\"height\":\"ground\",\"id\":\"e00005\",\"outcome\":\"complete\",\"period\":1,\"player_id\":\"h11\",\"possession\":1,\"recipient_id\":\"h10\",\"seq\":5,\"t\":15.7,\"team\":\"home\",\"type\":\"pass\",\"under_pressure\":false,\"x\":99.0,\"y\":36.2}"
+    },
+    {
+     "kind": "event",
+     "id": "e00006",
+     "text": "{\"duration_s\":1.2,\"id\":\"e00006\",\"period\":1,\"player_id\":\"a04\",\"possession\":1,\"seq\":6,\"t\":18.3,\"target_player_id\":\"h10\",\"team\":\"away\",\"type\":\"pressure\",\"x\":8.1,\"y\":18.9}"
+    },
+    {
+     "kind": "event",
+     "id": "e00007",
+     "text": "{\"accuracy\":0.576,\"ball_speed_kmh\":36.6,\"cross\":false,\"difficulty\":0.255,\"distance_m\":4.7,\"end_x\":94.4,\"end_y\":53.1,\"height\":\"low\",\"id\":\"e00007\",\"outcome\":\"intercepted\",\"period\":1,\"player_id\":\"h10\",\"possession\":1,\"recipient_id\":\"h11\",\"seq\":7,\"t\":19.5,\"team\":\"home\",\"type\":\"pass\",\"under_pressure\":true,\"x\":96.9,\"y\":49.1}"
+    },
+    {
+     "kind": "event",
+     "id": "e00008",
+     "text": "{\"cause_event_id\":\"e00007\",\"id\":\"e00008\",\"period\":1,\"possession\":2,\"reason\":\"interception\",\"seq\":8,\"t\":21.3,\"team\":\"away\",\"type\":\"possession_change\",\"x\":10.6,\"y\":14.9}"
+    },
+    {
+     "kind": "event",
+     "id": "e00009",
+     "text": "{\"duration_s\":1.9,\"id\":\"e00009\",\"period\":1,\"player_id\":\"h09\",\"possession\":2,\"seq\":9,\"t\":21.3,\"target_player_id\":\"a03\",\"team\":\"home\",\"type\":\"pressure\",\"x\":94.4,\"y\":53.1}"
+    },
+    {
+     "kind": "event",
+     "id": "e00010",
+     "text": "{\"accuracy\":0.972,\"ball_speed_kmh\":52.5,\"cross\":false,\"difficulty\":0.269,\"distance_m\":21.1,\"end_x\":31.0,\"end_y\":9.7,\"height\":\"ground\",\"id\":\"e00010\",\"outcome\":\"complete\",\"period\":1,\"player_id\":\"a03\",\"possession\":2,\"recipient_id\":\"a04\",\"seq\":10,\"t\":22.0,\"team\":\"away\",\"type\":\"pass\",\"under_pressure\":true,\"x\":10.6,\"y\":14.9}"
+    },
+    {
+     "kind": "event",
+     "id": "e00011",
+     "text": "{\"accuracy\":0.849,\"ball_speed_kmh\":63.4,\"cross\":false,\"difficulty\":0.235,\"distance_m\":30.6,\"end_x\":60.3,\"end_y\":0.5,\"height\":\"ground\",\"id\":\"e00011\",\"outcome\":\"complete\",\"period\":1,\"player_id\":\"a04\",\"possession\":2,\"recipient_id\":\"a06\",\"seq\":11,\"t\":24.6,\"team\":\"away\",\"type\":\"pass\",\"under_pressure\":false,\"x\":31.0,\"y\":9.7}"
+    },
+    {
+     "kind": "cue",
+     "id": "cue:c1",
+     "text": "{\"id\":\"c1\",\"n\":3,\"text\":\"سنہری موقع: Saltmarsh Rovers, xG 0.42\"}"
+    }
+   ]
+  },
+  {
+   "height": 3,
+   "minute": "after full time: q1",
+   "count": 1,
+   "root": "bb7a62fff7d98897e3431d4a80980e2df0a9a72d37177123f5baff09c9edf6bf",
+   "prev": "4f46dd3fed2eec360cbfde0d6f8a7ce1151c8fae7d36e5ffcfec13d5fde79194",
+   "at": "2026-10-20T12:00:00+00:00",
+   "hash": "99fc5f5daacb5944d77ec7f72ee7bd35541effd32ac2b7366674781d90a111ac",
+   "entries": [
+    {
+     "kind": "answer",
+     "id": "answer:q1",
+     "text": "{\"id\":\"q1\",\"text\":\"Saltmarsh Rovers 1, Brackenfield 0.\"}"
+    }
+   ]
+  }
+ ]
+}

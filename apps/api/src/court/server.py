@@ -41,6 +41,7 @@ its own Azure address is no way around the wall.
 import asyncio
 import contextlib
 import functools
+import hashlib
 import inspect
 import json
 import logging
@@ -74,6 +75,7 @@ from .config import product_mark, product_name
 from .contracts import OUTPUT_ADAPTER, Answer, Cue, Output, Preferences, TickerMetric
 from .critic import Critic
 from .hud import names_of, play, pulse, zones
+from .ledger import Ledger
 from .localizer import Localizer
 from .mcp_server import server as critic_mcp
 from .metrics import shot_xg
@@ -288,6 +290,10 @@ class Session:
         self.stress = stress
         self.id = uuid.uuid4().hex[:12]
         self.match = generate(seed)
+        # The match ledger (court.ledger): every event, output and answer, chained by hashes.
+        self.ledger = Ledger(self.match.meta.model_dump(mode="json"))
+        self.over = False  # after full time, each answer seals a block of its own
+        self._minute = "1'"
         self.speed, self.start_t, self.mode, self.lang = speed, start * 60.0, mode, lang
         self.prefs = prefs or Preferences()
         self.personal = Personal(self.prefs, self.match.meta)
@@ -329,6 +335,9 @@ class Session:
         """A viewer's question, answered from the events so far (court.ask), and kept in the
         match's audit trail when it has one."""
         answer = await self._answer(question)
+        self.ledger.add("answer", answer.id, answer.model_dump(mode="json"))
+        if self.over:
+            self._seal(f"after full time: {answer.id}")
         endpoint = os.environ.get("COSMOS_ENDPOINT")
         if endpoint and self.run_id:
             write = record_answer(
@@ -397,6 +406,7 @@ class Session:
                     trail.start()
                     self.run_id = trail.run_id
                 sink = self._output if trail is None else trail.tee(self._output)
+                self._block(self.ledger.export()["blocks"][0] | {"ids": ["meta:meta"]})
                 orch = await run_match(
                     self._paced(),
                     sink=sink,
@@ -415,13 +425,26 @@ class Session:
                 summary = {"stats": dict(orch.stats), "cost_usd": cost}
                 if self.prefs.focus == "player":
                     summary["hidden_by_focus"] = self.personal.hidden
+                # The last minute, then the recap, sealed: the seal stands for the whole match.
+                self._seal(self._minute)
+                recap = build_recap(orch.state, self.record)
+                html = recap_page(recap)
+                digest = hashlib.sha256(html.encode()).hexdigest()
+                self.ledger.add("recap", "recap", {"sha256": digest, "refused": len(recap.refused)})
+                self._seal("full time")
+                self.over = True
+                summary["ledger"] = {
+                    "seal": self.ledger.head,
+                    "blocks": len(self.ledger.blocks),
+                    "entries": self.ledger.size,
+                }
                 if trail:
                     await trail.close(summary)
                     summary["audit"] = trail.report()
                 span.set_attributes({f"hudhud.{k}": v for k, v in orch.stats.items()})
                 span.set_attribute("hudhud.cost_usd", cost)
-                recap = build_recap(orch.state, self.record)
-                self.send("recap", {"html": recap_page(recap), "refused": len(recap.refused)})
+                span.set_attribute("hudhud.ledger_seal", self.ledger.head)
+                self.send("recap", {"html": html, "refused": len(recap.refused)})
                 self.send("end", summary)
         except Exception as error:  # tell the page, never leave it waiting; details stay here
             ref = uuid.uuid4().hex[:8]
@@ -434,10 +457,29 @@ class Session:
     def _output(self, output: Output) -> None:
         """What the court produced, as this viewer sees it (the audit trail keeps it unchanged)."""
         self.record.append(output)
+        body = OUTPUT_ADAPTER.dump_python(output, mode="json")
+        natural = getattr(output, "id", None) or getattr(getattr(output, "claim", None), "id", "")
+        self.ledger.add(output.type, natural or f"{output.minute}@{body.get('t', '')}", body)
         if (seen := self.personal.view(output)) is not None:
             if isinstance(seen, Cue) and self.spoken is not None:
                 self.spoken.keep(self.id, seen.id, seen.text, seen.lang)
             self.send("output", OUTPUT_ADAPTER.dump_python(seen, mode="json"))
+
+    def _seal(self, minute: str) -> dict[str, Any] | None:
+        """Seal the ledger's open block and tell the page: its header, hash and entries."""
+        header = self.ledger.seal(minute)
+        if header is not None:
+            self._block(header)
+        return header
+
+    def _block(self, header: dict[str, Any]) -> None:
+        self.send("block", header)
+
+    def sealed(self, item: str) -> dict[str, Any]:
+        """Where an entry stands in the ledger: its block, once sealed, and the seal so far."""
+        proof = self.ledger.proof(item)
+        block = proof["block"]["height"] if proof else None
+        return {"id": item, "block": block, "head": self.ledger.head}
 
     def _personal(self, events: list[Any]) -> None:
         """The player card and the single metric, recounted from the events so far."""
@@ -467,6 +509,10 @@ class Session:
             seen.append(event)
             self.state.apply(event)
             label = minute_label(event.t, event.period)
+            if minute is not None and label != minute:
+                self._seal(minute)
+            self.ledger.add("event", event.id, event.model_dump(mode="json"))
+            self._minute = label
             if self.hud and (action := play(event, meta, placed)) is not None:
                 self.send("play", action)
             if isinstance(event, Shot):
@@ -717,7 +763,31 @@ def create_app() -> FastAPI:
         # The voice may read it: a verified answer, or the product's own fixed words, never a
         # draft the Critic refused.
         spoken.keep(session.id, answer.id, answer.text, answer.lang)
-        return answer.model_dump(mode="json") | {"left": MAX_QUESTIONS - session.asked}
+        sealed = session.sealed(f"answer:{answer.id}")
+        return (
+            answer.model_dump(mode="json")
+            | {"left": MAX_QUESTIONS - session.asked}
+            | {"ledger": sealed}
+        )
+
+    @app.get("/api/sessions/{session_id}/ledger")
+    def ledger(session_id: str) -> dict[str, Any]:
+        """The match's ledger so far (court.ledger): every sealed block with its entries."""
+        session = boards.get(session_id)
+        if session is None:
+            raise HTTPException(404, "no such match in this studio")
+        return session.ledger.export()
+
+    @app.get("/api/sessions/{session_id}/ledger/proof")
+    def ledger_proof(session_id: str, item: str) -> dict[str, Any]:
+        """One entry's proof: its Merkle path in its block, and the headers to the seal."""
+        session = boards.get(session_id)
+        if session is None:
+            raise HTTPException(404, "no such match in this studio")
+        proof = session.ledger.proof(item)
+        if proof is None:
+            raise HTTPException(404, "no such entry is sealed in this match's ledger yet")
+        return proof
 
     @app.post("/api/sessions/{session_id}/listen")
     async def listen(session_id: str, request: Request) -> dict[str, str]:
