@@ -15,6 +15,7 @@ from court.ask import (
     RuleAnswerer,
     about_betting,
     ask,
+    suggestions,
 )
 from court.contracts import AlertKind, Assertion, Claim, RejectionCode
 from court.critic import Critic
@@ -224,7 +225,7 @@ class ToolCallingAgent:
         self.prompts.append(prompt)
         assert options["response_format"] is Draft
         by_name = {t.name: t for t in tools}
-        assert set(by_name) == {"score", "team_numbers", "player_numbers", "moments"}
+        assert set(by_name) == {"score", "team_numbers", "player_numbers", "leaders", "moments"}
         result = json.loads(by_name["team_numbers"].func(metrics=["xg"], team="Saltmarsh Rovers"))
         fact = result["facts"][0]
         value = fact["says"].split("xG ")[1].split(" ")[0]
@@ -298,3 +299,68 @@ def test_betting_gets_fixed_words_that_steer_away_before_any_model_is_asked(at_7
     assert answer(at_70, "Who has had more shots?").status == "verified"
     assert about_betting("کس ٹیم کے جوابی حملے زیادہ تھے؟") is False
     assert about_betting("Who has the better chances?") is False
+
+
+def test_who_has_the_most_is_ranked_by_code_and_a_tie_names_everyone_level(at_70):
+    reply = answer(at_70, "Who has completed the most passes?")
+    assert reply.status == "verified" and "has the most passes completed" in reply.text
+    passes = {
+        p.name: compute("passes_completed", p.team, at_70.events, p.id) for p in at_70.meta.players
+    }
+    best = max(passes.values())
+    assert reply.text.startswith(next(n for n, v in passes.items() if v == best))
+    # Four players scored once each by 70': all four are level, none left out.
+    reply = answer(at_70, "Who is the top scorer?")
+    scorers = {
+        at_70.player_name(e.player_id)
+        for e in at_70.events
+        if isinstance(e, Shot) and e.outcome is ShotOutcome.GOAL
+    }
+    assert reply.status == "verified" and reply.text.startswith("Level at the top with 1 goal each")
+    assert all(name in reply.text for name in scorers)
+
+
+def test_a_wrong_count_in_a_ranking_is_refused(at_70):
+    scripted = Scripted(
+        lambda tools: (
+            next(f.says for f in tools.facts.values() if f.says.startswith("Of these"))
+            .replace("Of these, the most passes completed: ", "")
+            .replace(", as of", " (and 9 more), as of")
+        ),
+        [("leaders", {"metric": "passes_completed"})],
+    )
+    reply = answer(at_70, "Who passes most?", scripted)
+    assert reply.status == "refused"
+    assert RejectionCode.UNGROUNDED_NUMBER in codes(reply)
+
+
+def test_a_follow_up_borrows_what_the_last_question_counted(at_70):
+    first = answer(at_70, "How many shots have Saltmarsh Rovers had?")
+    shots = compute("shots", Side.AWAY, at_70.events)
+    reply = answer(at_70, "And Brackenfield?", history=[(first.question, first.text)])
+    assert (
+        reply.status == "verified"
+        and reply.text == f"Brackenfield {shots:.0f} shots so far, as of 70'."
+    )
+    # With no question before it, a bare "And Brackenfield?" has nothing to borrow.
+    assert answer(at_70, "And Brackenfield?").status == "cannot"
+
+
+def test_the_model_is_told_the_conversation_but_counts_again(at_70):
+    agent = ToolCallingAgent()
+    narrator = FoundryNarrator(
+        project_endpoint="https://example.invalid",
+        models=("gpt-4.1-mini",),
+        agent_factory=lambda model, purpose="line": agent,
+    )
+    history = [("How many shots have Saltmarsh Rovers had?", "Saltmarsh Rovers 9 shots so far.")]
+    answer(at_70, "And their xG?", narrator, spend=narrator.spend, history=history)
+    assert "Earlier in this conversation" in agent.prompts[0]
+    assert "never reuse a number from here" in agent.prompts[0]
+
+
+def test_suggestions_come_from_what_has_happened(at_70):
+    asked = suggestions(MatchTools(at_70))
+    assert asked[0] == "Who scored?" and asked[-1] == "Who will win?"
+    assert any(q.startswith("How is ") for q in asked)
+    assert "How many fouls has Saltmarsh Rovers committed in the second half?" in asked

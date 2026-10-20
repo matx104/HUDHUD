@@ -102,6 +102,19 @@ TeamMetric = Literal[
     "tackles_won",
     "fouls",
 ]
+PlayerMetric = Literal[
+    "goals",
+    "shots",
+    "xg",
+    "passes",
+    "passes_completed",
+    "final_third_passes",
+    "high_pressures",
+    "tackles_won",
+    "fouls",
+]
+LEADERS_MAX = 5
+HISTORY = 2  # earlier exchanges a follow-up question is read with
 MomentKind = Literal["goals", "shots", "big_chances", "saves", "penalties", "fouls"]
 MOMENTS: dict[str, Callable[[MatchEvent], bool]] = {
     "goals": lambda e: isinstance(e, Shot) and e.outcome is ShotOutcome.GOAL,
@@ -165,9 +178,18 @@ class MatchTools:
     """The Scout's tools for one question: they count the events up to the moment it was asked,
     and keep every result as a fact the answer can stand on."""
 
-    def __init__(self, state: MatchState, as_of_seq: int | None = None) -> None:
+    def __init__(
+        self,
+        state: MatchState,
+        as_of_seq: int | None = None,
+        *,
+        history: Sequence[tuple[str, str]] = (),
+    ) -> None:
         if state.last_seq < 0:
             raise ValueError("the match hasn't kicked off")
+        # The viewer's last questions and the answers they got, for a follow-up ("and them?"): what
+        # it refers to, never a number to reuse. Every number is counted again for this question.
+        self.history = tuple(history)[-HISTORY:]
         self.id = f"ask-{uuid.uuid4().hex[:8]}"
         self.state, self.meta = state, state.meta
         self.as_of_seq = state.last_seq if as_of_seq is None else as_of_seq
@@ -293,6 +315,78 @@ class MatchTools:
         )
         return self._result(fact)
 
+    def leaders(
+        self,
+        metric: Annotated[PlayerMetric, "What to rank the players by"],
+        team: Annotated[str | None, "Only this team's players (its name, or home or away)"] = None,
+        top: Annotated[int, "How many players, 1 to 5"] = 3,
+    ) -> str:
+        """The players with the most of one thing so far, ranked by code: a fact per player with
+        their count, then a fact naming who leads, or everyone level at the top."""
+        side = self.find_team(team) if team else None
+        if team and side is None:
+            return self._error(f"no team called {team!r}: {self._teams()}")
+        players = [p for p in self.meta.players if side is None or p.team is side]
+        counted = {p.id: compute(metric, p.team, self.events, p.id) for p in players}
+        ranked = sorted(
+            (p for p in players if counted[p.id] > 0), key=lambda p: (-counted[p.id], p.number)
+        )
+        if not ranked:
+            fact = self._add(
+                f"No player has any {TEAM_METRICS[metric][1]} so far, as of {self.minute}",
+                team=side or Side.HOME,
+                citations=(self.now.id,),
+                figures=self._minute_figures(self.now),
+            )
+            return self._result(fact)
+        best = counted[ranked[0].id]
+        level = [p for p in ranked if counted[p.id] == best]
+        # Everyone level at the top is named, never a tie cut short; then the rest, to `top`.
+        shown = (
+            level[:LEADERS_MAX] if len(level) > 1 else ranked[: max(1, min(int(top), LEADERS_MAX))]
+        )
+        facts = [self._player_count(p, metric, counted[p.id]) for p in shown]
+        thing = TEAM_METRICS[metric][1]
+        if len(level) == 1:
+            says = f"Of these, the most {thing}: {level[0].name}, {_count(metric, best)}"
+        else:
+            named = _names([p.name for p in level[:LEADERS_MAX]])
+            says = f"Of these, level at the top with {_count(metric, best)} each: {named}"
+            if len(level) > LEADERS_MAX:
+                says = (
+                    f"Of these, {len(level)} players level at the top with "
+                    f"{_count(metric, best)} each, among them {named}"
+                )
+        tops = facts[: min(len(level), LEADERS_MAX)]
+        top_fact = self._add(
+            f"{says}, as of {self.minute}",
+            team=level[0].team,
+            citations=tuple(c for f in tops for c in f.citations),
+            assertions=tuple(a for f in tops for a in f.assertions),
+            figures=self._minute_figures(self.now) | {"level": float(len(level))},
+            names=tuple(p.name for p in level[:LEADERS_MAX]),
+        )
+        return json.dumps({"facts": [{"id": f.id, "says": f.says} for f in (*facts, top_fact)]})
+
+    def _player_count(self, player: Player, metric: str, value: float) -> Fact:
+        team = self.meta.team(player.team).name
+        mine = [
+            e.id
+            for e in self.events
+            if getattr(e, "player_id", None) == player.id
+            and compute(metric, player.team, [e], player.id) > 0
+        ]
+        return self._add(
+            f"{player.name} ({team}), {_count(metric, value)}, as of {self.minute}",
+            team=player.team,
+            citations=(*mine[-CITE_MAX:], self.now.id),
+            assertions=(
+                Assertion(metric=metric, team=player.team, value=value, player_id=player.id),
+            ),
+            figures=self._minute_figures(self.now),
+            names=(player.name,),
+        )
+
     def moments(
         self,
         kind: Annotated[MomentKind, "Which moments"],
@@ -343,7 +437,13 @@ class MatchTools:
 
         return [
             tool(fn, name=fn.__name__, max_invocations=max_calls)
-            for fn in (self.score, self.team_numbers, self.player_numbers, self.moments)
+            for fn in (
+                self.score,
+                self.team_numbers,
+                self.player_numbers,
+                self.leaders,
+                self.moments,
+            )
         ]
 
     # --- names ---------------------------------------------------------------------------
@@ -551,6 +651,16 @@ METRIC_WORDS = (
 )
 
 
+RANKING = (" most ", " top ", " leading ", " best passer", " highest ")
+FOLLOW_UP = ("and ", "what about", "how about", "same for", "what of")
+
+
+def _follow_up(q: str) -> bool:
+    """A question that leans on the one before it: short, or opening as a follow-up does."""
+    text = q.strip()
+    return text.startswith(FOLLOW_UP) or len(text.split()) <= 4
+
+
 class RuleAnswerer:
     """The offline answerer: the common questions, by their words. It calls the same tools as a
     model would, and its answers go through the same Critic."""
@@ -567,6 +677,16 @@ class RuleAnswerer:
         sides = tools.teams_named(q) or list(Side)
         half = 1 if "first half" in q else 2 if "second half" in q else None
         metric = next((m for words, m in METRIC_WORDS if words in q), None)
+        if metric is None and tools.history and _follow_up(q):
+            # "And Brackenfield?": what the last question counted, for whoever this one names.
+            last = f" {tools.history[-1][0].lower()} "
+            metric = next((m for words, m in METRIC_WORDS if words in last), None)
+            if half is None:
+                half = 1 if "first half" in last else 2 if "second half" in last else None
+        if not player and any(w in q for w in RANKING):
+            ranked = "goals" if "scorer" in q else "passes_completed" if "passer" in q else metric
+            if ranked in PLAYER_METRICS:
+                return self._leaders(tools, ranked, sides)
         scorers = ("scored" in q or "scorer" in q) and not player
         if scorers or ("goals" in q and not player and "how many" not in q):
             return self._moments(tools, "goals", sides, half)
@@ -583,6 +703,38 @@ class RuleAnswerer:
         if metric:
             return self._teams(tools, metric, sides, half)
         return Draft.unanswerable("unsupported")
+
+    def _leaders(self, tools: MatchTools, metric: str, sides) -> Draft:
+        side = sides[0] if len(sides) == 1 else None
+        team = tools.meta.team(side).name if side else None
+        found = [
+            tools.facts[f["id"]] for f in json.loads(tools.leaders(metric, team=team))["facts"]
+        ]
+        if len(found) == 1:  # nobody has one yet
+            return Draft(text=f"{found[0].says}.", facts=[found[0].id], cannot="")
+        players, top = found[:-1], found[-1]
+        value = {f.names[0]: f.assertions[0].value for f in players}
+        club = {f.names[0]: tools.meta.team(f.team).name for f in players}
+        thing = TEAM_METRICS[metric][1]
+        if len(top.names) == 1:
+            name = top.names[0]
+            rest = [n for n in value if n != name]
+            text = f"{name} ({club[name]}) has the most {thing}: {_figure(metric, value[name])}"
+            if rest:
+                then = _names([f"{n} ({club[n]}) {_figure(metric, value[n])}" for n in rest])
+                text += f"; then {then}"
+        else:
+            count = _count(metric, value[top.names[0]])
+            named = _names([f"{n} ({club[n]})" for n in top.names])
+            text = f"Level at the top with {count} each: {named}"
+            if top.figures["level"] > len(top.names):
+                many = f"{top.figures['level']:.0f} players are level at the top"
+                text = f"{many} with {count} each, among them {named}"
+        return Draft(
+            text=f"{text}, as of {tools.minute}.",
+            facts=[top.id, *(f.id for f in players)],
+            cannot="",
+        )
 
     def _score(self, tools: MatchTools) -> Draft:
         fact = _only(tools.score())
@@ -685,13 +837,17 @@ async def ask(
     lang: str = "en",
     translate: Translate | None = None,
     spend: Callable[[str], dict[str, Any]] | None = None,
+    history: Sequence[tuple[str, str]] = (),
 ) -> Answer:
     """The question, answered from the tools' facts and passed by the Critic, or told it can't be.
+    With history (the viewer's last questions and answers), a follow-up can say "and them?".
 
     The Critic has hindsight here (an answer may look back over the whole match), and every other
     check stands. The stress test overreaches on the first draft, as it does for the lines."""
     question = " ".join(question.split())[:MAX_QUESTION]
     critic = critic or Critic(hindsight=True)
+    if history:
+        tools.history = tuple(history)[-HISTORY:]
     started = time.perf_counter()
     writer = getattr(answerer, "writer", "template")
     refused: list[RefusedDraft] = []
@@ -747,6 +903,24 @@ async def ask(
             receipt = answer.receipt.model_copy(update={"translation_refused": True})
             answer = answer.model_copy(update={"receipt": receipt})
     return answer
+
+
+def suggestions(tools: MatchTools) -> list[str]:
+    """Questions worth asking of this match now, in a viewer's words: drawn from what has
+    happened, never an answer. The last is one the events can't answer, to show its fixed words."""
+    home, away = tools.meta.home.name, tools.meta.away.name
+    whose = f"{home}'" if home.endswith("s") else f"{home}'s"
+    goals = any(MOMENTS["goals"](e) for e in tools.events)
+    shots = {p: compute("shots", p.team, tools.events, p.id) for p in tools.meta.players}
+    shooter = max(tools.meta.players, key=lambda p: (shots[p], -p.number))
+    out = ["Who scored?" if goals else "What's the score?"]
+    if shots[shooter]:
+        out.append(f"How is {shooter.name} doing?")
+    out += ["Who has completed the most passes?", f"How many shots have {away} had?"]
+    if tools.now.period == 2:
+        out.append(f"How many fouls has {home} committed in the second half?")
+    out += ["What was the biggest chance?", f"What's {whose} pass completion?", "Who will win?"]
+    return out
 
 
 def held_back(question: str, tools: MatchTools, why: str, *, screened_by: str = "") -> Answer:
@@ -818,6 +992,16 @@ def _count(metric: str, value: float) -> str:
     if metric == "xg":
         return f"xG {value:.2f}"
     return f"{value:.0f} {one if value == 1 else many}"
+
+
+def _figure(metric: str, value: float) -> str:
+    """A count's number alone, as _count writes it."""
+    return f"{value:.2f}" if metric == "xg" else f"{value:.0f}"
+
+
+def _names(items: list[str]) -> str:
+    """A, B and C."""
+    return items[0] if len(items) == 1 else f"{', '.join(items[:-1])} and {items[-1]}"
 
 
 def _only(result: str) -> str:

@@ -120,7 +120,9 @@ def ask_instructions() -> str:
         "id. Call the tools you need, then answer in at most 60 words, plainly, as a broadcast "
         "analyst would, and list in facts the id of every fact your answer uses. State numbers "
         "only as the facts give them, in digits, each as what the fact says it counts. Name only "
-        "players the facts you list are about. Add no detail the facts don't give, and never "
+        "players the facts you list are about. For who has the most of something, call leaders: "
+        "code ranks the players, so rank only as its facts do. Add no detail the facts don't "
+        "give, and never "
         "infer from the counts what they can't show (an injury, fitness, a mood, intent). If the "
         "events "
         "can't answer it (feelings, injuries, the weather, what anyone said, a player's fitness), "
@@ -241,6 +243,15 @@ class FoundryNarrator:
         returns the answer with the ids of the facts it used; code builds the claim from those,
         and the Critic reviews it. A rewrite is shown the facts already counted."""
         prompt = f"{tools.brief()}\n\nQuestion: {question}"
+        if getattr(tools, "history", ()):
+            # A follow-up ("and them?") is read with the last exchanges: for what it refers to,
+            # never for a number. Every number is counted again by the tools for this question.
+            earlier = "\n".join(f"Q: {q}\nA: {a}" for q, a in tools.history)
+            prompt = (
+                f"{tools.brief()}\n\nEarlier in this conversation (for what the question refers "
+                f"to; never reuse a number from here, count again):\n{earlier}\n\nQuestion: "
+                f"{question}"
+            )
         if feedback:
             prompt = (
                 "\n".join(feedback)

@@ -232,3 +232,26 @@ def test_questions_are_capped_and_checked_for_size(client, monkeypatch):
     assert client.post(ask, json={"question": "Shots?"}).status_code == 200
     assert client.post(ask, json={"question": "Shots?"}).status_code == 429
     assert client.post("/api/sessions/nope/ask", json={"question": "Shots?"}).status_code == 404
+
+
+def test_the_ask_page_is_served_and_suggests_from_the_match(client):
+    page = client.get("/ask")
+    assert page.status_code == 200 and "/static/ask.js" in page.text
+    events = _events(client, "seed=21&speed=0&start=89")
+    session = events[0][1]["session"]
+    questions = client.get(f"/api/sessions/{session}/suggest").json()["questions"]
+    assert questions[0] == "Who scored?" and "Who has completed the most passes?" in questions
+    assert client.get("/api/sessions/nothing/suggest").status_code == 404
+
+
+def test_a_follow_up_in_the_studio_reads_the_question_before_it(client):
+    session = _events(client, "seed=21&speed=0&start=89")[0][1]["session"]
+    first = client.post(
+        f"/api/sessions/{session}/ask",
+        json={"question": "How many fouls has Brackenfield committed?"},
+    ).json()
+    follow = client.post(
+        f"/api/sessions/{session}/ask", json={"question": "And Saltmarsh Rovers?"}
+    ).json()
+    assert first["status"] == follow["status"] == "verified"
+    assert follow["text"].startswith("Saltmarsh Rovers") and "foul" in follow["text"]

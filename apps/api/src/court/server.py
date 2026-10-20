@@ -68,7 +68,7 @@ from opentelemetry.trace import SpanKind
 from match_events import MatchMeta, Shot, ShotOutcome, Side, generate, minute_label
 
 from . import telemetry
-from .ask import MAX_QUESTION, MatchTools, RuleAnswerer, held_back
+from .ask import MAX_QUESTION, MatchTools, RuleAnswerer, held_back, suggestions
 from .ask import ask as ask_match
 from .audit import AuditTrail, CosmosStore, record_answer
 from .config import product_mark, product_name
@@ -302,6 +302,9 @@ class Session:
         # question reads the match as the viewer has seen it, live or after full time.
         self.state = MatchState(self.match.meta)
         self.asked = 0
+        self.history: list[
+            tuple[str, str]
+        ] = []  # the viewer's questions and answers, for follow-ups
         self._ask_rng = random.Random(seed + 1)
         self.run_id: str | None = None  # the audit trail's run, for the answers' records
         self._writes: set[asyncio.Task] = set()
@@ -335,6 +338,8 @@ class Session:
         """A viewer's question, answered from the events so far (court.ask), and kept in the
         match's audit trail when it has one."""
         answer = await self._answer(question)
+        if answer.status != "refused":
+            self.history = [*self.history, (answer.question, answer.original or answer.text)][-2:]
         self.ledger.add("answer", answer.id, answer.model_dump(mode="json"))
         if self.over:
             self._seal(f"after full time: {answer.id}")
@@ -355,7 +360,7 @@ class Session:
         """The models answer a model-narrated match while the narrator is on air; otherwise, or
         if they fail, the offline answerer does, from the same moment. The stress test
         overreaches on a share of answers, as it does on lines."""
-        tools = MatchTools(self.state)
+        tools = MatchTools(self.state, history=self.history)
         stress = self._ask_rng.random() < self.stress
         model = self.narrator.inner if self.narration == "foundry" else None
         attack = None
@@ -389,7 +394,7 @@ class Session:
                 return answer
             except Exception:  # an outage costs the model's answer, never the answer
                 log.exception("the models couldn't answer; the offline answerer does")
-        tools = MatchTools(self.state, as_of_seq=tools.as_of_seq)
+        tools = MatchTools(self.state, as_of_seq=tools.as_of_seq, history=self.history)
         return await ask_match(question, tools, RuleAnswerer(), stress=stress)
 
     async def run(self) -> None:
@@ -609,6 +614,11 @@ def create_app() -> FastAPI:
     def index() -> FileResponse:
         return FileResponse(STUDIO / "index.html")
 
+    @app.get("/ask")
+    def ask_page() -> FileResponse:
+        """Ask the match on its own page: a conversation with one match, every answer checked."""
+        return FileResponse(STUDIO / "ask.html")
+
     @app.get("/hud")
     def hud_page() -> FileResponse:
         """HUD²: one match on one screen, through the referee's, commentator's or fan's lens."""
@@ -769,6 +779,16 @@ def create_app() -> FastAPI:
             | {"left": MAX_QUESTIONS - session.asked}
             | {"ledger": sealed}
         )
+
+    @app.get("/api/sessions/{session_id}/suggest")
+    def suggest(session_id: str) -> dict[str, Any]:
+        """Questions worth asking of this match now, drawn from what has happened."""
+        session = boards.get(session_id)
+        if session is None:
+            raise HTTPException(404, "no such match in this studio: start one to ask about it")
+        if session.state.last_seq < 0:
+            return {"questions": ["What's the score?"]}
+        return {"questions": suggestions(MatchTools(session.state))}
 
     @app.get("/api/sessions/{session_id}/ledger")
     def ledger(session_id: str) -> dict[str, Any]:
