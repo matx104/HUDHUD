@@ -1,0 +1,238 @@
+/* HUD²: the match through a visor. The studio's tokens and their meanings hold: lime is live air
+   and evidence, gold is a verdict, red appears only where the Critic refuses a claim. Each lens
+   takes one accent: gold for the referee (the one who decides), lime for the commentator (on
+   air), chalk for the fan (the match itself). */
+:root {
+  --navy: #0A1F2E;
+  --navy-deep: #06141F;
+  --navy-raised: #0F2A3D;
+  --chalk: #F4F1E8;
+  --chalk-dim: rgba(244, 241, 232, 0.72);
+  --chalk-faint: rgba(244, 241, 232, 0.16);
+  --lime: #B8F53D;
+  --gold: #C9A227;
+  --card: #F25C54;
+  --glass: rgba(10, 31, 46, 0.62);
+  --display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --body: "Hanken Grotesk", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --accent: var(--chalk);
+  color-scheme: dark;
+}
+body[data-lens="referee"] { --accent: var(--gold); }
+body[data-lens="commentator"] { --accent: var(--lime); }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; color: var(--chalk); font: 400 1rem / 1.5 var(--body);
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; min-height: 100vh;
+  background:
+    radial-gradient(70rem 42rem at 50% 55%, rgba(184, 245, 61, 0.06), transparent 65%),
+    var(--navy-deep);
+  overflow: hidden;
+}
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+/* ---------- the visor: four corners around everything ---------- */
+.visor { position: fixed; inset: 0.5rem; pointer-events: none; z-index: 5; }
+.visor i { position: absolute; width: 2rem; height: 2rem; border: 0 solid var(--accent); opacity: 0.55; transition: border-color 0.4s; }
+.visor i:nth-child(1) { top: 0; left: 0; border-width: 2px 0 0 2px; }
+.visor i:nth-child(2) { top: 0; right: 0; border-width: 2px 2px 0 0; }
+.visor i:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+.visor i:nth-child(4) { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+/* ---------- top: the mark, the score bug, the Critic's meter ---------- */
+.top { display: flex; align-items: center; gap: 1rem 1.75rem; padding: 0.9rem 1.75rem 0.5rem; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 0.6rem; color: inherit; text-decoration: none; }
+.brand-crest { width: 2.4rem; height: 2.4rem; filter: drop-shadow(0 0 10px rgba(184, 245, 61, 0.4)); }
+.brand-mark { font: 900 2.2rem / 0.9 var(--display); letter-spacing: 0.01em; }
+.brand-sub { align-self: flex-end; margin-bottom: 0.15rem; font: 500 0.75rem / 1 var(--mono); color: var(--accent); }
+.bug { display: flex; align-items: center; gap: 0.9rem; margin-inline: auto; padding: 0.35rem 1rem; background: var(--glass); border: 1px solid var(--chalk-faint); border-radius: 4px; backdrop-filter: blur(6px); }
+.bug-team { display: flex; align-items: center; gap: 0.5rem; font: 800 1.6rem / 1 var(--display); }
+.bug-team i { width: 0.55rem; height: 1.5rem; border-radius: 1px; background: var(--team, var(--chalk-dim)); box-shadow: 0 0 12px var(--team, transparent); }
+.bug-score { font: 900 2.1rem / 1 var(--display); font-variant-numeric: tabular-nums; min-width: 4.5ch; text-align: center; }
+.bug-clock { font: 500 1.1rem / 1 var(--mono); color: var(--lime); min-width: 6ch; }
+.bug-live { display: flex; align-items: center; gap: 0.35rem; font: 500 0.75rem / 1 var(--mono); color: var(--chalk-dim); }
+.bug-live::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--card); }
+.bug-live[data-on="false"]::before { background: var(--chalk-faint); }
+.meter { display: flex; gap: 1.1rem; margin: 0; }
+.meter div { display: grid; }
+.meter dt { font: 500 0.6875rem / 1.2 var(--mono); color: var(--chalk-dim); }
+.meter dd { margin: 0; font: 800 1.35rem / 1 var(--display); font-variant-numeric: tabular-nums; }
+.meter-ok dd { color: var(--lime); }
+.meter-no dd { color: var(--card); }
+.meter-chain dd { color: var(--gold); }
+.to-studio + .to-studio { margin-left: 0; }
+.to-studio { margin-left: auto; padding: 0.35rem 0.75rem; border: 1px solid var(--chalk-faint); border-radius: 4px; color: var(--chalk-dim); text-decoration: none; font-size: 0.875rem; }
+.to-studio:hover { color: var(--lime); border-color: rgba(184, 245, 61, 0.5); }
+
+/* ---------- the stage: readouts, the field, the log ---------- */
+.stage { position: relative; display: grid; grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr) minmax(15rem, 19rem); grid-template-areas: "read field log"; gap: 1rem; padding: 0.5rem 1.75rem 0.75rem; min-height: 0; }
+.field-box { grid-area: field; position: relative; min-height: 0; }
+.field { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pins { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+body[data-state="slate"] .stage { grid-template-columns: minmax(0, 1fr); grid-template-areas: "field"; }
+
+/* The panels: glass with a bracket at two corners, as a visor draws them */
+.rail { position: relative; min-height: 0; overflow: hidden auto; padding: 0.9rem 1rem; background: var(--glass); border: 1px solid rgba(244, 241, 232, 0.1); border-radius: 4px; backdrop-filter: blur(6px); scrollbar-width: thin; }
+.rail::before, .rail::after { content: ""; position: absolute; width: 0.9rem; height: 0.9rem; border: 0 solid var(--accent); pointer-events: none; }
+.rail::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.rail::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+.rail-read { grid-area: read; }
+.rail-log { grid-area: log; }
+.rail h2, .rail h3 { margin: 0 0 0.5rem; font: 800 1.2rem / 1.1 var(--display); color: var(--accent); }
+.rail h3 { font-size: 1rem; margin-top: 1rem; }
+.rail p { margin: 0 0 0.6rem; font-size: 0.875rem; color: var(--chalk-dim); }
+.rail .from { font: 400 0.6875rem / 1.4 var(--mono); color: var(--chalk-dim); }
+
+/* Two sides, one row: home's number, the bar between them, away's */
+.duel { display: grid; grid-template-columns: 3ch minmax(0, 1fr) 3ch; align-items: center; gap: 0.2rem 0.5rem; margin-bottom: 0.45rem; }
+.duel-label { grid-column: 1 / -1; font-size: 0.75rem; color: var(--chalk-dim); }
+.duel b { font: 800 1.1rem / 1 var(--display); font-variant-numeric: tabular-nums; }
+.duel b:last-child { text-align: right; }
+.duel-bar { display: flex; height: 0.4rem; border-radius: 1px; overflow: hidden; background: var(--chalk-faint); }
+.duel-bar span { background: var(--team); transition: flex-grow 0.6s ease; }
+.big-pair { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.6rem; }
+.big-pair div { display: grid; }
+.big-pair div:last-child { text-align: right; }
+.big-pair small { font: 500 0.75rem / 1.2 var(--mono); color: var(--team); }
+.big-pair strong { font: 900 2.6rem / 1 var(--display); font-variant-numeric: tabular-nums; }
+.tilt { position: relative; height: 0.7rem; margin: 0.4rem 0 0.4rem; border-radius: 1px; overflow: hidden; display: flex; }
+.tilt span { background: var(--team); }
+.explain { margin-top: 0.6rem; padding: 0.6rem 0.75rem; border-left: 3px solid var(--accent); background: rgba(244, 241, 232, 0.05); font-size: 0.9375rem; color: var(--chalk); }
+.explain b { display: block; font: 800 1rem / 1.2 var(--display); color: var(--accent); }
+.card-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.ref-card { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; }
+.ref-card::before { content: ""; width: 0.65rem; height: 0.9rem; border-radius: 2px; transform: rotate(-8deg); }
+.ref-card.yellow::before { background: #F5D547; }
+.ref-card.red::before { background: var(--card); }
+.on-ball { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.5rem 0.6rem; border-left: 3px solid var(--team, var(--lime)); background: var(--navy-raised); }
+.on-ball .no { font: 900 1.8rem / 1 var(--display); color: var(--team, var(--lime)); }
+.on-ball strong { font: 800 1.2rem / 1.1 var(--display); }
+.on-ball span { font: 400 0.75rem / 1.2 var(--mono); color: var(--chalk-dim); }
+
+/* ---------- the log: every checked line, and every refusal ---------- */
+.log { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.log li { padding: 0.55rem 0.7rem; border-left: 3px solid var(--lime); background: rgba(6, 20, 31, 0.7); font-size: 0.9375rem; }
+.log li.detection { border-left-color: var(--gold); }
+.log li.refused { border-left-color: var(--card); }
+.log li.note { border-left-color: var(--chalk-faint); color: var(--chalk-dim); font-size: 0.8125rem; }
+.log li.mine { box-shadow: inset 0 0 0 1px rgba(244, 241, 232, 0.08), 0 0 22px -12px var(--team); border-left-color: var(--team); }
+.log .when { font: 500 0.75rem / 1 var(--mono); color: var(--lime); margin-right: 0.4rem; }
+.log .what { font: 800 1rem / 1.15 var(--display); }
+.log p { margin: 0.25rem 0 0; }
+.log p:lang(ur) { font: 400 1.05rem / 2.1 "Noto Nastaliq Urdu", serif; }
+.log p:lang(ar) { font: 400 1.1rem / 1.8 "Noto Naskh Arabic", serif; }
+.log s { color: var(--chalk-dim); text-decoration-color: var(--card); }
+.log small { display: block; margin-top: 0.2rem; font: 400 0.6875rem / 1.4 var(--mono); color: var(--chalk-dim); }
+.log a { color: var(--lime); }
+
+/* ---------- pins: a checked line where it happened ---------- */
+.pin { position: absolute; left: 0; top: 0; max-width: 19rem; padding: 0.5rem 0.7rem 0.55rem; background: rgba(6, 20, 31, 0.86); border: 1px solid rgba(184, 245, 61, 0.55); border-radius: 3px; box-shadow: 0 0 24px -8px rgba(184, 245, 61, 0.5); font-size: 0.875rem; will-change: transform; }
+.pin.detection { border-color: rgba(201, 162, 39, 0.7); box-shadow: 0 0 24px -8px rgba(201, 162, 39, 0.5); }
+.pin.refused { border-color: var(--card); box-shadow: 0 0 24px -6px rgba(242, 92, 84, 0.6); }
+.pin.answer { border-color: rgba(244, 241, 232, 0.6); }
+.pin header { display: flex; align-items: baseline; gap: 0.45rem; }
+.pin .when { font: 500 0.75rem / 1 var(--mono); color: var(--lime); }
+.pin .what { font: 800 1.05rem / 1.1 var(--display); }
+.pin p { margin: 0.25rem 0 0; line-height: 1.35; }
+.pin p:lang(ur) { font: 400 1rem / 2 "Noto Nastaliq Urdu", serif; }
+.pin p:lang(ar) { font: 400 1.05rem / 1.7 "Noto Naskh Arabic", serif; }
+.pin .seal { display: block; margin-top: 0.3rem; font: 500 0.6875rem / 1.2 var(--mono); color: var(--lime); }
+.pin.refused .seal { color: var(--card); }
+.pin.refused s { color: var(--chalk-dim); text-decoration-color: var(--card); }
+.pin .card-chip { margin-left: auto; }
+.tag-chip { position: absolute; left: 0; top: 0; padding: 0.15rem 0.45rem; border-left: 3px solid var(--team); background: rgba(6, 20, 31, 0.8); font: 600 0.8125rem / 1.2 var(--body); white-space: nowrap; will-change: transform; }
+.tag-chip b { font: 800 0.95rem / 1 var(--display); color: var(--team); margin-right: 0.3rem; }
+
+.goal-banner { position: absolute; left: 50%; top: 38%; translate: -50% -50%; text-align: center; pointer-events: none; }
+.goal-banner strong { display: block; font: 900 clamp(4rem, 12vw, 9rem) / 0.85 var(--display); letter-spacing: 0.02em; color: var(--chalk); text-shadow: 0 0 40px var(--team), 0 0 2px var(--team); }
+.goal-banner span { font: 700 clamp(1.1rem, 2.4vw, 1.8rem) / 1.1 var(--display); color: var(--team); text-shadow: 0 0 10px var(--navy-deep), 0 0 3px var(--navy-deep); }
+
+/* ---------- the slate: whose eyes, which match ---------- */
+.slate { grid-column: 1 / -1; grid-row: 1; align-self: center; justify-self: center; z-index: 2; width: min(64rem, 100%); padding: clamp(1.25rem, 3vw, 2.25rem); background: var(--glass); border: 1px solid var(--chalk-faint); border-radius: 6px; backdrop-filter: blur(8px); }
+.slate-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1rem 2rem; }
+.slate-crest { width: clamp(6rem, 14vw, 10rem); height: auto; overflow: visible; filter: drop-shadow(0 0 24px rgba(184, 245, 61, 0.35)); }
+.slate-crest .feather use { fill: var(--lime); }
+.slate-crest .critic use { fill: var(--gold); }
+.slate-mark { margin: 0; font: 900 clamp(4rem, 10vw, 7.5rem) / 0.85 var(--display); }
+.slate-promise { margin: 0.5rem 0 0.6rem; font: 700 clamp(1.3rem, 2.8vw, 2rem) / 1 var(--display); color: var(--gold); }
+.slate-how { max-width: 52ch; margin: 0; color: var(--chalk-dim); }
+.setup { margin-top: 1.5rem; }
+.pick-lens { margin: 0; padding: 0; border: 0; }
+.pick-lens legend { margin-bottom: 0.5rem; font: 800 1.15rem / 1 var(--display); color: var(--gold); }
+.lens-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+.lens-card { position: relative; display: grid; gap: 0.25rem; padding: 0.8rem 0.9rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: rgba(6, 20, 31, 0.6); cursor: pointer; }
+.lens-card input { position: absolute; opacity: 0; }
+.lens-card b { font: 800 1.5rem / 1 var(--display); }
+.lens-card span { font-size: 0.875rem; color: var(--chalk-dim); }
+.lens-card:has(input:checked) { border-color: var(--lens); box-shadow: inset 0 0 0 1px var(--lens), 0 0 28px -14px var(--lens); }
+.lens-card:has(input:checked) b { color: var(--lens); }
+.lens-card:has(input:focus-visible) { outline: 2px solid var(--lime); outline-offset: 2px; }
+.setup-row { display: flex; flex-wrap: wrap; align-items: end; gap: 0.6rem 1rem; margin-top: 1rem; }
+.setup-row label { display: grid; gap: 0.15rem; font-size: 0.75rem; color: var(--chalk-dim); }
+.setup-row select { padding: 0.4rem 0.5rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: var(--navy-raised); font-size: 0.9375rem; max-width: 15rem; }
+.setup-row .check { display: flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; }
+.check input { accent-color: var(--lime); width: 1rem; height: 1rem; }
+.go { padding: 0.55rem 1.2rem; border: 0; border-radius: 4px; background: var(--lime); color: var(--navy-deep); font-weight: 600; cursor: pointer; }
+.go:disabled { opacity: 0.5; cursor: progress; }
+.slate .go { margin-left: auto; }
+.fine { margin: 1rem 0 0; font-size: 0.75rem; color: var(--chalk-dim); }
+
+/* ---------- the deck: lens, camera, layers, a question ---------- */
+.deck { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; padding: 0.6rem 1.75rem 1.1rem; }
+.lenses { display: flex; border: 1px solid var(--chalk-faint); border-radius: 4px; overflow: hidden; }
+.lenses button { padding: 0.45rem 0.95rem; border: 0; background: transparent; color: var(--chalk-dim); font: 700 1rem / 1 var(--display); cursor: pointer; }
+.lenses button + button { border-left: 1px solid var(--chalk-faint); }
+.lenses button[aria-pressed="true"] { background: var(--accent); color: var(--navy-deep); }
+.lenses kbd { margin-left: 0.35rem; font: 400 0.6875rem var(--mono); opacity: 0.7; }
+.deck-button { padding: 0.45rem 0.8rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: transparent; font-size: 0.875rem; color: var(--chalk-dim); cursor: pointer; }
+.deck-button:hover, .deck-button[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); }
+.ask { display: flex; gap: 0.5rem; flex: 1 1 22rem; }
+.ask input { flex: 1; min-width: 0; padding: 0.5rem 0.7rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: rgba(6, 20, 31, 0.8); }
+.ask input::placeholder { color: var(--chalk-dim); opacity: 0.75; }
+.layers { position: absolute; bottom: calc(100% + 0.25rem); left: 1.75rem; z-index: 4; width: min(30rem, calc(100vw - 3.5rem)); margin: 0; padding: 0.9rem 1rem; background: rgba(6, 20, 31, 0.95); border: 1px solid var(--accent); border-radius: 4px; }
+.layers legend { float: left; width: 100%; margin-bottom: 0.5rem; font-size: 0.8125rem; color: var(--chalk-dim); }
+.layer-list { clear: both; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem 1rem; margin-bottom: 0.75rem; }
+.layer-list label { display: flex; align-items: center; gap: 0.45rem; font-size: 0.875rem; }
+.layer-list input { accent-color: var(--lime); }
+
+/* ---------- motion: the goal, and nothing else that moves on its own ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .slate-crest .feather { animation: fan 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i) * 90ms + 150ms); }
+  .goal-banner:not([hidden]) { animation: goal 2.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .pin { transition: opacity 0.35s; }
+  .bug-live[data-on="true"]::before { animation: live 1.6s ease-in-out infinite; }
+}
+@keyframes fan { from { transform: rotate(0deg) scale(0.2); opacity: 0; } to { transform: rotate(var(--r)) scale(1); opacity: 1; } }
+@keyframes goal { 0% { opacity: 0; scale: 1.6; } 12% { opacity: 1; scale: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes live { 50% { opacity: 0.35; } }
+
+@media (max-width: 64rem) {
+  /* A phone scrolls: the field first, then the log and the readouts at their own height. */
+  html, body { height: auto; }
+  body { overflow: auto; grid-template-rows: auto auto auto; }
+  .stage { min-height: auto; }
+  .rail { max-height: 70vh; }
+  .stage { grid-template-columns: minmax(0, 1fr); grid-template-areas: "field" "log" "read"; padding: 0.5rem 1rem; }
+  .field-box { height: min(62vw, 70vh); }
+  body[data-state="slate"] .field-box { height: auto; min-height: 0; }
+  .top, .deck { padding-inline: 1rem; }
+  .bug { margin-inline: 0; order: 3; }
+  .lens-cards { grid-template-columns: minmax(0, 1fr); }
+  .slate-head { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .slate-how { margin-inline: auto; }
+  .layers { left: 1rem; }
+  .pin { max-width: 14rem; font-size: 0.8125rem; }
+}
+@media (max-width: 40rem) {
+  /* On a phone the pin keeps its headline and its seal; the whole line is in the log below. */
+  .pin p { display: none; }
+  .bug { flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.6rem; max-width: 100%; padding-inline: 0.7rem; }
+  .bug-team { font-size: 1.3rem; }
+  .bug-score { font-size: 1.7rem; min-width: 3.5ch; }
+}
