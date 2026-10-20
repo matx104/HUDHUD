@@ -27,7 +27,7 @@ Counterattacks, the high press and the ref's call. Live in `court/localizer.py` 
 | HIGH PRESS | اونچا دباؤ | ضغط عالٍ | ✅ |
 | REF'S CALL | ریفری کا فیصلہ | قرار الحكم | ✅ |
 
-## Awaiting review: words that mark a question as about betting (added by Claude, 2026-10-20)
+## Words that mark a question as about betting (added by Claude, signed off by the Monarch 2026-10-20)
 
 Roadmap principle 8: a question about bets, odds or gambling gets fixed words that steer away from
 gambling, before any model reads it (`court/ask.py`, `BETTING`). These words are never shown; they
@@ -36,11 +36,11 @@ catch an ordinary football question, and add any word a fan would use that is mi
 
 | Language | Word | Meaning | Your call |
 |---|---|---|---|
-| Urdu | جوا، جوئے | gambling (jua) | |
-| Urdu | سٹہ، سٹے | betting (satta) | |
-| Arabic | مراهنة، مراهنات (any word starting مراهن) | betting (murahana) | |
-| Arabic | رهان | a bet (rihan) | |
-| Arabic | قمار | gambling (qimar) | |
+| Urdu | جوا، جوئے | gambling (jua) |✅ |
+| Urdu | سٹہ، سٹے | betting (satta) |✅ |
+| Arabic | مراهنة، مراهنات (any word starting مراهن) | betting (murahana) |✅ |
+| Arabic | رهان | a bet (rihan) |✅ |
+| Arabic | قمار | gambling (qimar) |✅ |
 
 ## Live lines from one match (seed 21, translated by gpt-4.1-mini on Foundry)
 

@@ -808,7 +808,8 @@ def beyond_the_data(question: str) -> bool:
 
 # Betting: HUDHUD never predicts a result, never gives odds and never helps anyone bet (roadmap,
 # principle 8). A question about bets, odds or gambling gets fixed words that steer away from it,
-# from code, before any model is asked. Urdu: jua (gambling), satta (betting). Arabic: murahana,
+# from code, before any model is asked. The Urdu and Arabic words were signed off by the owner on
+# 2026-10-20 (docs/review/ur-ar.md). Urdu: jua (gambling), satta (betting). Arabic: murahana,
 # rihan (betting), qimar (gambling). Whole words only, so "jawabi hamla" (a counter-attack) and
 # "burhan" (proof) pass.
 BETTING = re.compile(
