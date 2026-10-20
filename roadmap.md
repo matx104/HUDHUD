@@ -56,7 +56,7 @@ Real-time advice to the referee team.
 - **Prediction:** flashpoint risk (a challenge likely to escalate, a game heading out of control), so officials can act before the incident instead of reviewing it afterwards.
 - **The strictness spectrum:** per competition, published in advance and applied consistently.
 - **Talking to the crowd:** scripted announcements for the stadium screen and PA, and explanations in the app, in the fan's language.
-- **Audit:** every recommendation is kept with its evidence for post-match referee assessment and league review.
+- **Audit:** every recommendation is kept with its evidence for post-match referee assessment and league review, in a ledger chained by hashes (live since 2026-10-20, ADR 0013), with each match's seal published to a public log so no one can rewrite a decision's record afterwards.
 - **Pilot path:** simulation and esports first, then grassroots and academy football, then lower-tier professional trials, and, once each stage has proven itself, the top professional leagues and the biggest international tournaments. Every trial runs inside the competition's protocol and with the approval of the game's law-making body. Bias audits and transparency reports are part of the product, not an afterthought.
 
 ## HUD²: the official, seen

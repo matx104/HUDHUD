@@ -174,6 +174,24 @@ def main() -> int:
                 f"{held['receipt']['screened_by'] or 'nothing'}",
             )
         check(*a2a(base, headers))
+        # The match ledger: a block a minute, sealed at full time, and the file the page would
+        # download verifies here, its events generated again from the seed (court.ledger).
+        from court.ledger import verify
+
+        with get(f"{base}api/sessions/{session}/ledger", headers) as response:
+            exported = json.load(response)
+        verdict = verify(exported)
+        blocks = kinds.count("block")
+        check(
+            verdict.ok
+            and blocks > 90
+            # The full-time seal is in the chain; the question after full time extended it.
+            and events[-1][1].get("ledger", {}).get("seal")
+            in {b["hash"] for b in exported["blocks"]},
+            f"the ledger: {blocks} blocks streamed, {verdict.entries} entries and "
+            f"{verdict.events_regenerated} regenerated events verified, "
+            f"seal {exported['head'][:16]}",
+        )
         end = events[-1][1]
         print(f"   {end['stats']}  cost ${end['cost_usd']:.4f}  {end.get('audit', '')}")
     print(f"\n{'all good' if not failures else f'{len(failures)} failed'}")
