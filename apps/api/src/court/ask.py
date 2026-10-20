@@ -112,7 +112,7 @@ MOMENTS: dict[str, Callable[[MatchEvent], bool]] = {
     "fouls": lambda e: isinstance(e, Tackle) and e.outcome == "foul",
 }
 
-Cannot = Literal["", "beyond_data", "not_yet", "off_topic", "unsupported"]
+Cannot = Literal["", "beyond_data", "not_yet", "off_topic", "unsupported", "betting"]
 # The fixed replies: the data's limits in the product's words, never a model's.
 CANNOT = {
     "beyond_data": "The match events can't tell that. They record the ball: passes, shots, "
@@ -123,6 +123,9 @@ CANNOT = {
     "or a player's shots, xG, passes or fouls, or the biggest chance.",
     "instruction": "That reads as an instruction to the model, not a question about the match, so "
     "no model was given it. Ask about the match itself.",
+    "betting": "I don't predict results, give odds or help with betting: I only tell you what has "
+    "already happened in the match. Enjoy the football, not the odds. If betting is causing harm "
+    "to you or someone close to you, free and confidential support is there to help.",
 }
 REFUSED = (
     "I couldn't prove an answer to that: the Critic refused every draft. The refusals show why."
@@ -136,7 +139,8 @@ class Draft(BaseModel):
     facts: list[str] = Field(description="The id of every fact the answer uses, such as f1")
     cannot: Cannot = Field(
         description="Why the events can't answer: beyond_data (what event data can't see), "
-        "not_yet (it hasn't happened), off_topic (not about this match); empty when answered",
+        "not_yet (it hasn't happened), off_topic (not about this match), betting (odds, bets or "
+        "gambling); empty when answered",
     )
 
     @classmethod
@@ -650,6 +654,22 @@ def beyond_the_data(question: str) -> bool:
     return LIMITS.search(question) is not None
 
 
+# Betting: HUDHUD never predicts a result, never gives odds and never helps anyone bet (roadmap,
+# principle 8). A question about bets, odds or gambling gets fixed words that steer away from it,
+# from code, before any model is asked. Urdu: jua (gambling), satta (betting). Arabic: murahana,
+# rihan (betting), qimar (gambling). Whole words only, so "jawabi hamla" (a counter-attack) and
+# "burhan" (proof) pass.
+BETTING = re.compile(
+    r"\b(?:bet|bets|betting|bettor|odds|wager\w*|bookie\w*|bookmaker\w*|sportsbook\w*|"
+    r"accumulator|acca|parlay\w*|gambl\w*|جوا|جوئے|سٹہ|سٹے|مراهن\w*|رهان|قمار)\b",
+    re.IGNORECASE,
+)
+
+
+def about_betting(question: str) -> bool:
+    return BETTING.search(question) is not None
+
+
 # Translates a verified answer: (the answer's id, its text) -> (the translation, the model), or
 # None when it can't be checked. The Localizer's, in the studio.
 Translate = Callable[[str, str], Awaitable[tuple[str, str] | None]]
@@ -677,6 +697,8 @@ async def ask(
     refused: list[RefusedDraft] = []
     feedback: list[str] = []
     attempt, verdict, used = 0, None, []
+    if about_betting(question):
+        return held_back(question, tools, "betting")
     if beyond_the_data(question):
         return held_back(question, tools, "beyond_data")
     for attempt in range(1, MAX_ATTEMPTS + 1):
@@ -728,8 +750,8 @@ async def ask(
 
 
 def held_back(question: str, tools: MatchTools, why: str, *, screened_by: str = "") -> Answer:
-    """Fixed words, with no answerer asked: for what event data can't see, or a question the
-    shield flagged (court.shield)."""
+    """Fixed words, with no answerer asked: for betting, for what event data can't see, or a
+    question the shield flagged (court.shield)."""
     answer = _answer(tools, question, "cannot", CANNOT[why], 0, "none", time.perf_counter(), None)
     receipt = answer.receipt.model_copy(update={"screened_by": screened_by})
     return answer.model_copy(update={"receipt": receipt})

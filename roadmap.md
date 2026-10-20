@@ -19,6 +19,7 @@ An official that watches every moment of the match and judges calls in a blink, 
 5. **Explain to everyone.** The referee gets the reasoning, the broadcast gets the evidence, and the crowd gets the call in its own language.
 6. **Never go dark.** When something fails, the system degrades, announces it and recovers, as the Orchestrator does today.
 7. **Add, never take away.** The game keeps its flow, its drama and its people. Nothing HUDHUD does may slow a restart, mute a celebration or stand between the referee and the players; it earns its place only by adding understanding.
+8. **Never a betting tool.** HUDHUD tells what has happened, never what will: no predicted results, scores or next goals, no odds, and no help to anyone placing a bet. Asked about bets or odds, it says so in fixed words, before any model reads the question, and steers away from gambling. Set by the Monarch, 2026-10-20.
 
 ## Stage 1 — The court of claims (the hackathon, Oct 17–27, 2026) · IN PROGRESS
 
@@ -86,6 +87,10 @@ Everything above has to reach people's eyes. HUD² is how: one match, each viewe
 | Orchestrator: retries, degrades, recovers | Meets the latency budget and never goes silent |
 | Evidence chain | Decision audit trail |
 | HUD²: one screen, three lenses | Each viewer's own lens: glasses, then contact lenses |
+
+## Read along the way
+
+- **BETER, *eFootball performance report* (September 2026)**, [the report](https://mcusercontent.com/1b3a0f97e12c025cc5319cfad/files/f9932d28-0382-d927-d234-b625b699f0d6/BETER_eFootball_Performance_Report1_World_Cup_2026.pdf). A supplier's report to betting operators on esports football during a major international tournament in 2026. What I took from it: big tournaments bring newcomers, and more than half of them stayed, so HUD²'s fan lens explains in plain words; the experience of a match matters as much as the match ("not simply about delivering more matches... making every match a better experience"), the case for HUD²; interest runs before, between and after matches and through the night, which supports the recap and questions after full time, in Urdu and Arabic. Because the report is about betting, it also settled principle 8. Its figures are the supplier's own, with no method behind them: I took ideas from it, not evidence.
 
 ## Open questions and risks
 

@@ -125,7 +125,9 @@ def ask_instructions() -> str:
         "events "
         "can't answer it (feelings, injuries, the weather, what anyone said, a player's fitness), "
         "leave the text empty and set cannot to beyond_data; for what hasn't happened yet (who "
-        "will win, the next goal), not_yet; for a question not about this match, off_topic."
+        "will win, the next goal), not_yet; for a question not about this match, off_topic. "
+        "Never predict a result or a score, never give or discuss odds, and never help anyone "
+        "bet: for a question about bets, odds or gambling, set cannot to betting."
     )
 
 

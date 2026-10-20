@@ -1,6 +1,7 @@
 # Urdu and Arabic: for the owner's review
 
-> Status: **signed off by the Monarch for production, 2026-10-18.** The headline words and the
+> Status: **signed off by the Monarch for production, 2026-10-18;** the three newer headline words
+> (COUNTER, HIGH PRESS, REF'S CALL) **signed off 2026-10-20.** The headline words and the
 > translator's instructions are final; change them only with the Monarch.
 > How to review: mark each line ✅ (good), or write the better wording beside it. The fixed
 > headline words go into `court/localizer.py` (`LABELS`, `ON_TOP`); the translated lines are
@@ -16,17 +17,30 @@
 | GREAT PASS | شاندار پاس | تمريرة رائعة | |
 | on top (after a team code) | حاوی | يسيطر | |
 
-## Awaiting review: three new headline words (proposed by Claude, 2026-10-19)
+## Three newer headline words (proposed by Claude 2026-10-19, signed off by the Monarch 2026-10-20)
 
-Counterattacks, the high press and the ref's call are new kinds of moment. Until these are signed off, their
-headlines stay in English in the Urdu and Arabic studio (`court/localizer.py` leaves them out of
-`LABELS`; a test allows exactly these three). Mark each ✅ or write the better wording.
+Counterattacks, the high press and the ref's call. Live in `court/localizer.py` (`LABELS`).
 
-| English | Urdu (proposed) | Arabic (proposed) | Your call |
+| English | Urdu | Arabic | Your call |
 |---|---|---|---|
-| COUNTER | جوابی حملہ | هجمة مرتدة | |
-| HIGH PRESS | اونچا دباؤ | ضغط عالٍ | |
-| REF'S CALL | ریفری کا فیصلہ | قرار الحكم | |
+| COUNTER | جوابی حملہ | هجمة مرتدة | ✅ |
+| HIGH PRESS | اونچا دباؤ | ضغط عالٍ | ✅ |
+| REF'S CALL | ریفری کا فیصلہ | قرار الحكم | ✅ |
+
+## Awaiting review: words that mark a question as about betting (added by Claude, 2026-10-20)
+
+Roadmap principle 8: a question about bets, odds or gambling gets fixed words that steer away from
+gambling, before any model reads it (`court/ask.py`, `BETTING`). These words are never shown; they
+only decide which questions are held back. Whole words only. Mark each ✅, cross out any that would
+catch an ordinary football question, and add any word a fan would use that is missing.
+
+| Language | Word | Meaning | Your call |
+|---|---|---|---|
+| Urdu | جوا، جوئے | gambling (jua) | |
+| Urdu | سٹہ، سٹے | betting (satta) | |
+| Arabic | مراهنة، مراهنات (any word starting مراهن) | betting (murahana) | |
+| Arabic | رهان | a bet (rihan) | |
+| Arabic | قمار | gambling (qimar) | |
 
 ## Live lines from one match (seed 21, translated by gpt-4.1-mini on Foundry)
 

@@ -24,6 +24,9 @@
 - **What the events can't answer gets fixed words.** The model may only say why it can't
   (beyond the data, not yet happened, off topic); the words shown are the product's, never the
   model's.
+- **Never a betting tool** (added 2026-10-20, roadmap principle 8). A question about bets, odds or
+  gambling, in English, Urdu or Arabic, is held back by code before any model reads it, and gets
+  fixed words that steer away from gambling. The model is told the same, should one slip past.
 - **Never go dark.** Offline, or when the models fail, a rule-based answerer handles the common
   questions through the same tools and the same Critic.
 

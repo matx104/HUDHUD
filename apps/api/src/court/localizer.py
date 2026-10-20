@@ -34,21 +34,28 @@ TTL_S = {
 
 
 # The headline's label in each language, replacing the English one before " · ". Signed off by the
-# owner for production, 2026-10-18 (docs/review/ur-ar.md): change them only with the owner.
-# COUNTER, HIGH PRESS and REF'S CALL (2026-10-19) await that review: their headlines stay English.
-AWAITING_REVIEW = ("COUNTER", "HIGH PRESS", "REF'S CALL")
+# owner for production (docs/review/ur-ar.md): the first four on 2026-10-18; COUNTER, HIGH PRESS and
+# REF'S CALL on 2026-10-20. Change them only with the owner. A new kind's label waits here, its
+# headline in English, until the owner signs it off.
+AWAITING_REVIEW: tuple[str, ...] = ()
 LABELS = {
     "ur": {
         "GOAL": "گول",
         "BIG CHANCE": "سنہری موقع",
         "MOMENTUM": "میچ پر گرفت",
         "GREAT PASS": "شاندار پاس",
+        "COUNTER": "جوابی حملہ",
+        "HIGH PRESS": "اونچا دباؤ",
+        "REF'S CALL": "ریفری کا فیصلہ",
     },
     "ar": {
         "GOAL": "هدف",
         "BIG CHANCE": "فرصة خطيرة",
         "MOMENTUM": "السيطرة",
         "GREAT PASS": "تمريرة رائعة",
+        "COUNTER": "هجمة مرتدة",
+        "HIGH PRESS": "ضغط عالٍ",
+        "REF'S CALL": "قرار الحكم",
     },
 }
 ON_TOP = {"ur": "حاوی", "ar": "يسيطر"}

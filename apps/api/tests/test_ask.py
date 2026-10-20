@@ -13,6 +13,7 @@ from court.ask import (
     Draft,
     MatchTools,
     RuleAnswerer,
+    about_betting,
     ask,
 )
 from court.contracts import AlertKind, Assertion, Claim, RejectionCode
@@ -275,3 +276,25 @@ def test_which_chance_was_biggest_is_a_fact_of_its_own(at_70):
     shots = [tools.facts[f["id"]] for f in facts[:-1]]
     biggest = max(shots, key=lambda f: f.assertions[0].value)
     assert tools.facts[top["id"]].citations == biggest.citations
+
+
+def test_betting_gets_fixed_words_that_steer_away_before_any_model_is_asked(at_70):
+    class Never:
+        async def answer(self, question, tools, feedback):
+            raise AssertionError("no model should be asked")
+
+    for question in (
+        "What are the odds on Saltmarsh Rovers winning?",
+        "Should I bet on the next goal?",
+        "Is this a good game for an accumulator?",
+        "اس میچ پر سٹہ لگاؤں؟",  # Urdu: should I bet on this match?
+        "ما هي أفضل مراهنة الآن؟",  # Arabic: what is the best bet now?
+    ):
+        reply = answer(at_70, question, Never())
+        assert reply.status == "cannot" and reply.text == CANNOT["betting"], question
+        assert reply.receipt.writer == "none" and reply.facts == ()
+    assert "not the odds" in CANNOT["betting"]
+    # Whole words only: a counter-attack in Urdu ("jawabi hamla") is football, not "jua".
+    assert answer(at_70, "Who has had more shots?").status == "verified"
+    assert about_betting("کس ٹیم کے جوابی حملے زیادہ تھے؟") is False
+    assert about_betting("Who has the better chances?") is False

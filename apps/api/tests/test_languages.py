@@ -87,12 +87,16 @@ async def test_without_a_model_the_lines_stay_english_under_local_headlines(swin
     )
     cues = [o for o in outputs if isinstance(o, Cue)]
     assert cues and all(c.lang == "en" for c in cues)
-    reviewed = {"هدف", "فرصة خطيرة", "السيطرة", "تمريرة رائعة"}
-    # New kinds wait for the owner's review in English (docs/review/ur-ar.md), and only those.
-    assert all(c.headline.split(" · ")[0] in reviewed | set(AWAITING_REVIEW) for c in cues)
-    assert not set(AWAITING_REVIEW) & set(LABELS["ar"]) and not set(AWAITING_REVIEW) & set(
-        LABELS["ur"]
+    # Every headline in the owner's signed-off words (docs/review/ur-ar.md); a new kind waits in
+    # English, and only while it awaits that review.
+    assert all(
+        c.headline.split(" · ")[0] in set(LABELS["ar"].values()) | set(AWAITING_REVIEW)
+        for c in cues
     )
+    assert {"هجمة مرتدة", "ضغط عالٍ", "قرار الحكم"} <= {c.headline.split(" · ")[0] for c in cues}
+    for lang in ("ar", "ur"):
+        assert not set(AWAITING_REVIEW) & set(LABELS[lang])
+        assert set(LABELS[lang]) == set(LABELS["ar"])
 
 
 async def test_a_name_must_survive_translation_as_written():
