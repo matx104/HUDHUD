@@ -55,11 +55,102 @@
   if (window.REALISM) drawRealism(window.REALISM);
   if (window.FOUNDRY_EVAL) drawFoundryEval(window.FOUNDRY_EVAL);
   if (window.ASK_EVAL) drawAskEval(window.ASK_EVAL);
+  startDemos();
+  hooks.ledger = ledgerPage;
   placeEmblems();
   startProgress();
   startMenu();
   startReveals();
   startRouter();
+
+  // The demos: the studio's own pages replaying a match recorded from it (demo/, written by
+  // scripts/site_demo.py). A demo starts only when asked, and stops when its chapter is left, so
+  // nothing replays in the background.
+  function startDemos() {
+    const SOURCES = {
+      hud: (lens) => `demo/hud.html?lens=${lens}&view=stand&autostart=1`,
+      ask: () => `demo/ask.html?autostart=1&q=${encodeURIComponent("Who has completed the most passes?")}`,
+    };
+    const TITLES = { hud: "HUD², replaying a match recorded from the studio", ask: "Ask the match, on a match recorded from the studio" };
+    for (const demo of $$("[data-demo]")) {
+      const kind = demo.dataset.demo;
+      const frame = $("[data-demo-frame]", demo);
+      const still = [...frame.children];
+      const lens = () => $("[data-demo-lens][aria-pressed='true']", demo)?.dataset.demoLens ?? "commentator";
+      const play = () => {
+        const iframe = Object.assign(el("iframe"), { src: SOURCES[kind](lens()), title: TITLES[kind] });
+        frame.replaceChildren(iframe);
+        frame.classList.add("is-playing");
+      };
+      $("[data-demo-start]", demo).addEventListener("click", play);
+      for (const button of $$("[data-demo-lens]", demo)) {
+        button.addEventListener("click", () => {
+          for (const b of $$("[data-demo-lens]", demo)) b.setAttribute("aria-pressed", String(b === button));
+          play();
+        });
+      }
+      document.addEventListener("page:change", (e) => {
+        if (e.detail.page === demo.closest("[data-page]").dataset.page || !frame.classList.contains("is-playing")) return;
+        frame.replaceChildren(...still);
+        frame.classList.remove("is-playing");
+      });
+    }
+  }
+
+  // The match ledger's chapter: a real match's ledger (demo/ledger.json), its first and last blocks
+  // drawn, and every hash in it checked by this browser on request (demo/ledger-core.js, the
+  // studio's own checker). Loaded once, the first time the chapter opens.
+  let ledgerLoad = null;
+  function ledgerPage() {
+    if (ledgerLoad || !window.Ledger) return;
+    ledgerLoad = fetch("demo/ledger.json").then((r) => r.json());
+    const short = (h) => `${h.slice(0, 10)}…`;
+    const squares = $("[data-ledger-squares]");
+    const result = $("[data-ledger-result]");
+    ledgerLoad.then((ledger) => {
+      const blocks = ledger.blocks;
+      const shown = [blocks[0], blocks[1], null, blocks.at(-1)];
+      $("[data-ledger-blocks]").replaceChildren(...shown.map((b) => {
+        const item = el("li", b ? "block" : "block gap");
+        if (!b) {
+          item.append(el("span", "", `${blocks.length - 3} more blocks, each naming the one before`));
+          return item;
+        }
+        const head = el("p", "block-head");
+        head.append(el("strong", "", `Block ${b.height}`), el("span", "", b.minute.split(":")[0]));
+        const facts = el("dl");
+        for (const [label, value] of [["Entries", String(b.count)], ["Merkle root", short(b.root)], ["Names the block before", b.height ? short(b.prev) : "none, it's first"], ["Its hash", short(b.hash)]]) {
+          facts.append(el("dt", "", label), el("dd", "", value));
+        }
+        item.append(head, facts);
+        return item;
+      }));
+      squares.replaceChildren(...blocks.map(() => el("li")));
+    });
+
+    const check = async (ledger, forged) => {
+      const boxes = [...squares.children];
+      boxes.forEach((b) => delete b.dataset.ok);
+      result.className = "verify-result";
+      result.textContent = "Checking every hash in this browser…";
+      const outcome = await window.Ledger.verifyLedger(ledger, (b, ok) => { if (boxes[b.height]) boxes[b.height].dataset.ok = String(ok); });
+      result.className = `verify-result ${outcome.ok ? "good" : "bad"}`;
+      result.textContent = outcome.ok
+        ? `Verified in your browser: ${outcome.blocks} blocks and ${outcome.entries.toLocaleString("en-GB")} entries, every hash recomputed. The seal is ${ledger.head.slice(0, 16)}…. Nothing has changed.`
+        : `Caught: ${forged}. Block ${outcome.brokenAt}'s entries no longer match the root it was sealed with, and every block after it hangs on that block's hash.`;
+    };
+    $("[data-ledger-verify]").addEventListener("click", async () => check(await ledgerLoad));
+    $("[data-ledger-tamper]").addEventListener("click", async () => {
+      const forged = structuredClone(await ledgerLoad);
+      const block = forged.blocks.find((b) => b.entries.some((e) => e.kind === "cue"));
+      const entry = block.entries.find((e) => e.kind === "cue");
+      const cue = JSON.parse(entry.text);
+      const before = cue.text;
+      cue.text = cue.text.replace(/\d+(\.\d+)?/, (n) => String(Number(n) + 1));
+      entry.text = JSON.stringify(cue);
+      await check(forged, `one number changed in the line that aired at ${cue.minute} ("${before.slice(0, 60)}…")`);
+    });
+  }
 
   // Every chapter heading gets the crest in its centre circle (the not-found page doesn't).
   function placeEmblems() {
@@ -139,7 +230,7 @@
       table.append(row);
     }
     const note = el("p", "eval-note", `${r.writer} answered ${r.questions} questions about unseen matches, at 30', 70' and full time; ${r.judge} judged, out of 5. Median ${r.median_s} s an answer, $${r.cost_usd} for the run.`);
-    $("[data-ask-eval]")?.append(table, note);
+    $$("[data-ask-eval]").forEach((n) => n.append(table.cloneNode(true), note.cloneNode(true)));
   }
 
   // How real is the synthetic football: the verdict in words, then goals a match as paired bars.
@@ -456,7 +547,7 @@
     const set = (open) => {
       panel.hidden = !open;
       button.setAttribute("aria-expanded", String(open));
-      label.textContent = open ? "Close" : "Chapters";
+      label.textContent = open ? "Close" : "Team sheet";
       document.body.classList.toggle("menu-open", open);
     };
     button.addEventListener("click", () => {
@@ -491,11 +582,146 @@
     }
   }
 
+  // The team sheet: every chapter by its shirt number, menu group and position (index.html's
+  // data-shirt, data-group, data-role). It builds the nav's five menus, the full menu as a 4-3-3
+  // on a pitch with the bench beside it, the home page's sheet, and each page's number.
+  function teamSheet(story, staff) {
+    const GROUPS = [["match", "The match"], ["play", "The play"], ["data", "The data"], ["season", "The season"], ["club", "The club"]];
+    // Where each of the starting eleven stands: x across, y up the pitch (the attack at the top).
+    const SPOTS = { 1: [50, 90], 2: [86, 68], 3: [62, 72], 4: [38, 72], 5: [14, 68], 6: [50, 50], 7: [78, 44], 8: [22, 44], 9: [50, 18], 10: [80, 24], 11: [20, 24] };
+    const shirtOf = (s) => Number(s.dataset.shirt ?? 0);
+    const row = (page, cls) => {
+      const link = Object.assign(el("a", cls), { href: `#/${page.dataset.page}` });
+      const no = el("span", "shirt-no", shirtOf(page) ? String(shirtOf(page)) : "");
+      const who = el("span", "who");
+      who.append(el("strong", "", page.dataset.title), el("small", "", page.dataset.role ?? ""));
+      link.append(no, who, el("span", "what", page.dataset.summary ?? ""));
+      return link;
+    };
+
+    // Each page's number, from its shirt, and its place in the side.
+    for (const page of story) {
+      const no = $(".chapter-no", page);
+      if (!no) continue;
+      no.textContent = String(shirtOf(page)).padStart(2, "0");
+      const line = el("p", "shirt-line", `Number ${shirtOf(page)}, ${(page.dataset.role ?? "").toLowerCase()}`);
+      no.after(line);
+    }
+
+    // The nav: five menus, each a team sheet of its chapters.
+    const nav = $("[data-sheet-nav]");
+    const code = $("[data-repo-link]", nav);
+    nav.replaceChildren();
+    const menus = [];
+    for (const [key, label] of GROUPS) {
+      const pages = [...story, ...staff].filter((s) => s.dataset.group === key);
+      if (!pages.length) continue;
+      const menu = el("div", "sheet-menu");
+      const button = Object.assign(el("button", "sheet-button"), { type: "button" });
+      button.append(el("span", "", label), el("small", "", String(pages.length)));
+      const panel = el("div", "sheet-panel");
+      panel.id = `sheet-${key}`;
+      panel.hidden = true;
+      button.setAttribute("aria-expanded", "false");
+      button.setAttribute("aria-controls", panel.id);
+      const head = el("p", "sheet-head");
+      head.append(el("span", "", label), el("span", "", "Team sheet"));
+      const list = el("ol", "sheet-rows");
+      list.append(...pages.map((page) => {
+        const item = el("li");
+        item.append(row(page, ""));
+        return item;
+      }));
+      panel.append(head, list);
+      menu.append(button, panel);
+      nav.append(menu);
+      menus.push([button, panel]);
+      button.addEventListener("click", () => {
+        const open = button.getAttribute("aria-expanded") !== "true";
+        for (const [b, p] of menus) { b.setAttribute("aria-expanded", "false"); p.hidden = true; }
+        button.setAttribute("aria-expanded", String(open));
+        panel.hidden = !open;
+      });
+    }
+    if (code) nav.append(code);
+    const closeAll = () => menus.forEach(([b, p]) => { b.setAttribute("aria-expanded", "false"); p.hidden = true; });
+    document.addEventListener("click", (e) => { if (!e.target.closest(".sheet-menu")) closeAll(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      const open = menus.find(([b]) => b.getAttribute("aria-expanded") === "true");
+      closeAll();
+      open?.[0].focus();
+    });
+    window.addEventListener("hashchange", closeAll);
+
+    // The full menu: the starting eleven in a 4-3-3 on a pitch, and the bench beside it.
+    const formation = $("[data-formation]");
+    const pitch = el("div", "formation-pitch");
+    const lines = svg("svg", { viewBox: "0 0 68 105", class: "formation-lines", "aria-hidden": "true", preserveAspectRatio: "none" });
+    for (const [tag, attrs] of [
+      ["rect", { x: 0.5, y: 0.5, width: 67, height: 104 }],
+      ["line", { x1: 0, y1: 52.5, x2: 68, y2: 52.5 }],
+      ["circle", { cx: 34, cy: 52.5, r: 9.15 }],
+      ["rect", { x: 13.84, y: 0.5, width: 40.32, height: 16.5 }],
+      ["rect", { x: 13.84, y: 88, width: 40.32, height: 16.5 }],
+      ["rect", { x: 24.84, y: 0.5, width: 18.32, height: 5.5 }],
+      ["rect", { x: 24.84, y: 99, width: 18.32, height: 5.5 }],
+    ]) lines.append(svg(tag, attrs));
+    pitch.append(lines, el("p", "formation-shape", "4-3-3"));
+    const starters = el("ol", "starters");
+    starters.setAttribute("aria-label", "The starting eleven");
+    const bench = el("ol", "bench");
+    bench.setAttribute("aria-label", "The bench");
+    for (const page of story) {
+      const n = shirtOf(page);
+      const item = el("li");
+      if (SPOTS[n]) {
+        const link = Object.assign(el("a", "player"), { href: `#/${page.dataset.page}` });
+        link.style.setProperty("--x", `${SPOTS[n][0]}%`);
+        link.style.setProperty("--y", `${SPOTS[n][1]}%`);
+        link.append(el("span", "shirt-no", String(n)), el("strong", "", page.dataset.title));
+        link.title = `${page.dataset.role}: ${page.dataset.summary}`;
+        item.append(link);
+        starters.append(item);
+      } else {
+        item.append(row(page, "bench-row"));
+        bench.append(item);
+      }
+    }
+    for (const page of staff) {
+      const item = el("li");
+      item.append(row(page, "bench-row staff"));
+      bench.append(item);
+    }
+    pitch.append(starters);
+    const side = el("div", "formation-bench");
+    side.append(el("h2", "", "The bench"), bench);
+    formation.append(pitch, side);
+
+    // The home page: the sheet in two columns, the starting eleven and the substitutes.
+    const index = $("[data-chapter-index]");
+    const cols = el("div", "sheet-cols");
+    for (const [title, pages] of [["Starting eleven", story.filter((s) => shirtOf(s) <= 11)], ["Substitutes", story.filter((s) => shirtOf(s) > 11)]]) {
+      const col = el("section");
+      const list = el("ol", "sheet-rows");
+      list.append(...pages.map((page) => {
+        const item = el("li");
+        item.append(row(page, ""));
+        return item;
+      }));
+      col.append(el("h3", "", title), list);
+      cols.append(col);
+    }
+    index.replaceWith(cols);
+  }
+
   function startRouter() {
     const sections = $$("[data-page]");
     const missing = $('[data-page="missing"]');
     // Aside pages (the control room) can be visited but stay out of the chapters and the pager.
-    const story = sections.filter((s) => s !== missing && !("aside" in s.dataset));
+    // The chapters in shirt-number order: a starting eleven (1-11), then the bench (12 on).
+    const shirt = (s) => Number(s.dataset.shirt ?? 99);
+    const story = sections.filter((s) => s !== missing && !("aside" in s.dataset)).sort((a, b) => shirt(a) - shirt(b));
     const keys = sections.filter((s) => s !== missing).map((s) => s.dataset.page).filter(Boolean);
     const pager = $("[data-pager]");
     const sting = $(".sting");
@@ -510,13 +736,28 @@
       return item;
     };
     $("[data-chapter-menu]").append(...story.map(chapter));
-    $("[data-chapter-index]").append(...story.slice(1).map((page, i) => chapter(page, i + 1)));
+    teamSheet(story, sections.filter((s) => "aside" in s.dataset));
 
     const pagerLink = (page, cls, label) => {
       const link = Object.assign(el("a", cls), { href: `#/${page.dataset.page}` });
       link.append(el("span", "", label), el("strong", "", page.dataset.title));
       return link;
     };
+
+    // The next chapter, as the fourth official's board shows a change: this one off, the next on.
+    function substitution(off, on) {
+      const link = Object.assign(el("a", "sub-board"), { href: `#/${on.dataset.page}` });
+      link.setAttribute("aria-label", `Next chapter: ${on.dataset.title}`);
+      const number = (page, cls, word) => {
+        const side = el("span", `sub-${cls}`);
+        side.append(el("b", "", String(shirt(page)).padStart(2, "0")), el("small", "", word));
+        return side;
+      };
+      const board = el("span", "sub-led");
+      board.append(number(off, "off", "off"), number(on, "on", "on"));
+      link.append(board, el("strong", "", on.dataset.title));
+      return link;
+    }
 
     function swap(target, first) {
       current?.classList.remove("is-current", "is-entering");
@@ -533,8 +774,8 @@
 
       pager.replaceChildren();
       const i = story.indexOf(target);
-      if (i > 0) pager.append(pagerLink(story[i - 1], "prev", "Previous"));
-      if (i >= 0 && i < story.length - 1) pager.append(pagerLink(story[i + 1], "next", "Next"));
+      if (i > 0) pager.append(pagerLink(story[i - 1], "prev", "Back"));
+      if (i >= 0 && i < story.length - 1) pager.append(substitution(target, story[i + 1]));
 
       if (!first) {
         window.scrollTo(0, 0);

@@ -93,28 +93,30 @@
         <span class="countdown-label" data-countdown-label>Closes in</span>
         <span class="countdown-clock" data-countdown-clock>--</span>
       </div>
-      <nav class="nav" aria-label="Main">
+      <!-- The team sheet: five menus, each chapter by its shirt number and position (site.js) -->
+      <nav class="sheet-nav" aria-label="Main" data-sheet-nav>
         <a href="#/about">About</a>
-        <a href="#/problem">Problem</a>
-        <a href="#/goal">Goal</a>
         <a href="#/how">How it works</a>
-        <a href="#/why">Why</a>
+        <a href="#/hud">HUD²</a>
+        <a href="#/ask">Ask the match</a>
+        <a href="#/ledger">The ledger</a>
         <a href="#/log">Build log</a>
         <a href="#/roadmap">Roadmap</a>
         <a href="#/who">Who</a>
-        <a href="#/control">Control room</a>
         <a data-repo-link data-when-repo="public" href="#">Code</a>
       </nav>
       <button class="menu-button" type="button" aria-expanded="false" aria-controls="chapters">
-        <span class="menu-icon" aria-hidden="true"></span><span data-menu-label>Chapters</span>
+        <span class="menu-icon" aria-hidden="true"></span><span data-menu-label>Team sheet</span>
       </button>
     </div>
     <span class="progress" aria-hidden="true" data-progress></span>
   </header>
 
+  <!-- The full menu: the chapters as a starting eleven in a 4-3-3, and the bench (site.js) -->
   <div class="chapters" id="chapters" hidden>
     <nav class="chapters-inner wrap" aria-label="Chapters">
-      <ol class="chapters-list" data-chapter-menu></ol>
+      <div class="formation" data-formation></div>
+      <ol class="chapters-list" data-chapter-menu hidden></ol>
     </nav>
   </div>
 
@@ -150,7 +152,7 @@
   <main id="main" tabindex="-1">
 
     <!-- ============ KICK-OFF ============ -->
-    <section class="page page-home" data-page="" data-title="Kick-off" data-summary="Every call comes with its evidence" aria-labelledby="home-title">
+    <section class="page page-home" data-page="" data-shirt="1" data-group="match" data-role="Goalkeeper" data-title="Kick-off" data-summary="Every call comes with its evidence" aria-labelledby="home-title">
       <div class="hero">
         <div class="hero-inner wrap">
           <div class="hero-copy">
@@ -200,14 +202,23 @@
         </div>
       </div>
 
+      <div class="front-three wrap" data-reveal>
+        <h2>The front three</h2>
+        <ol class="front-cards">
+          <li><a href="#/hud"><img src="assets/screens/hud-referee.webp" alt="" loading="lazy" width="1600" height="758"><span class="shirt">9</span><strong>HUD²</strong><span>The match through the referee's, the commentator's or the fan's lens.</span></a></li>
+          <li><a href="#/ask"><img src="assets/screens/ask.webp" alt="" loading="lazy" width="1600" height="758"><span class="shirt">10</span><strong>Ask the match</strong><span>Any question, answered from the events, checked and sealed.</span></a></li>
+          <li><a href="#/ledger"><img src="assets/screens/studio-ledger.webp" alt="" loading="lazy" width="1600" height="315"><span class="shirt">11</span><strong>The match ledger</strong><span>A match's history chained by hashes: change a byte and it shows.</span></a></li>
+        </ol>
+      </div>
+
       <div class="home-chapters wrap" data-reveal>
-        <h2>The whole story, chapter by chapter</h2>
+        <h2>The team sheet</h2>
         <ol class="chapter-index" data-chapter-index></ol>
       </div>
     </section>
 
     <!-- ============ IN PLAIN WORDS ============ -->
-    <section class="page wrap" data-page="about" data-title="In plain words" data-summary="What this is, why, and the hackathon behind it" aria-labelledby="about-title">
+    <section class="page wrap" data-page="about" data-shirt="2" data-group="match" data-role="Right back" data-title="In plain words" data-summary="What this is, why, and the hackathon behind it" aria-labelledby="about-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">01</span>
         <h1 id="about-title" tabindex="-1">AI football commentary that shows its working</h1>
@@ -251,7 +262,7 @@
     </section>
 
     <!-- ============ THE PROBLEM ============ -->
-    <section class="page wrap" data-page="problem" data-title="The problem" data-summary="Fluent AI commentary that can't prove what it says" aria-labelledby="problem-title">
+    <section class="page wrap" data-page="problem" data-shirt="3" data-group="match" data-role="Centre back" data-title="The problem" data-summary="Fluent AI commentary that can't prove what it says" aria-labelledby="problem-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">02</span>
         <h1 id="problem-title" tabindex="-1">AI can talk about football. It can't prove what it says.</h1>
@@ -291,7 +302,7 @@
     </section>
 
     <!-- ============ THE GOAL ============ -->
-    <section class="page wrap" data-page="goal" data-title="The goal" data-summary="Six awards, one engineer, built to win them all" aria-labelledby="goal-title">
+    <section class="page wrap" data-page="goal" data-shirt="5" data-group="match" data-role="Left back" data-title="The goal" data-summary="Six awards, one engineer, built to win them all" aria-labelledby="goal-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">03</span>
         <h1 id="goal-title" tabindex="-1">Built to win every award.</h1>
@@ -358,7 +369,7 @@
     </section>
 
     <!-- ============ HOW IT WORKS ============ -->
-    <section class="page wrap" data-page="how" data-title="How it works" data-summary="Five agents, a hot path and a warm path" aria-labelledby="how-title">
+    <section class="page wrap" data-page="how" data-shirt="6" data-group="play" data-role="Holding midfield" data-title="How it works" data-summary="Five agents, a hot path and a warm path" aria-labelledby="how-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">04</span>
         <h1 id="how-title" tabindex="-1">How a claim gets on air</h1>
@@ -488,7 +499,7 @@
     </section>
 
     <!-- ============ RECOVERY ============ -->
-    <section class="page wrap" data-page="recovery" data-title="When an agent fails" data-summary="The broadcast never goes dark" aria-labelledby="recovery-title">
+    <section class="page wrap" data-page="recovery" data-shirt="7" data-group="play" data-role="Midfield" data-title="When an agent fails" data-summary="The broadcast never goes dark" aria-labelledby="recovery-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">05</span>
         <h1 id="recovery-title" tabindex="-1">When an agent fails, the broadcast keeps going</h1>
@@ -509,7 +520,7 @@
     </section>
 
     <!-- ============ DATA ============ -->
-    <section class="page wrap" data-page="data" data-title="Synthetic by design" data-summary="Invented clubs, real volumes, every match reproducible" aria-labelledby="data-title">
+    <section class="page wrap" data-page="data" data-shirt="8" data-group="data" data-role="Midfield" data-title="Synthetic by design" data-summary="Invented clubs, real volumes, every match reproducible" aria-labelledby="data-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">06</span>
         <h1 id="data-title" tabindex="-1">Synthetic by design</h1>
@@ -538,8 +549,161 @@
       </section>
     </section>
 
+    <!-- ============ HUD² (number 9: the headline act) ============ -->
+    <section class="page wrap" data-page="hud" data-shirt="9" data-group="play" data-role="Centre forward" data-title="HUD²" data-summary="One match, through the referee's, the commentator's or the fan's lens" aria-labelledby="hud-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">09</span>
+        <h1 id="hud-title" tabindex="-1">HUD², the match through your lens</h1>
+        <p class="lede">One heads-up screen, three ways to see the same match. Every action is drawn where it happened, and every line the Critic checked is pinned to the events it cites.</p>
+      </header>
+
+      <div class="demo" data-demo="hud" data-reveal>
+        <div class="demo-bar" role="group" aria-label="Whose eyes">
+          <button type="button" data-demo-lens="referee" aria-pressed="false">The referee</button>
+          <button type="button" data-demo-lens="commentator" aria-pressed="true">The commentator</button>
+          <button type="button" data-demo-lens="fan" aria-pressed="false">The fan</button>
+        </div>
+        <div class="demo-frame demo-wide" data-demo-frame>
+          <img src="assets/screens/hud-commentator.webp" alt="HUD² through the commentator's lens: the pitch in perspective, two checked lines pinned where they happened, a refused draft struck in red, the last five minutes in numbers." loading="lazy" width="1600" height="758">
+          <button class="demo-start" type="button" data-demo-start>Play the recorded match</button>
+        </div>
+        <p class="demo-note">A match recorded from the live studio on October 20, replayed by the studio's own code. The lines, the refusals and the ledger are real; the studio itself is private.</p>
+      </div>
+
+      <ul class="lens-cards">
+        <li data-reveal><h2>The referee</h2><p>Every foul, with its distance from the goal the fouling side defends; the pressing; and the zones a likely call is read against at the competition's strictness: the penalty area, the goal-chance zone and the line of a promising attack. This lens shows the least. A referee's eyes belong on the players.</p></li>
+        <li data-reveal><h2>The commentator</h2><p>Who's on the ball, by number and name, the passes and the shots as they happen, and the last five minutes against the match so far, both sides on one bar. Every number is counted by the code the Critic checks with.</p></li>
+        <li data-reveal><h2>The fan</h2><p>Who's on top, where each side has played lately, the chances so far, and plain words for anyone new to football. Any lens can ask the match a question.</p></li>
+      </ul>
+
+      <h2 class="section-title" data-reveal>Every lens, as it looks</h2>
+      <div class="shots" data-reveal>
+        <figure><img src="assets/screens/hud-referee.webp" alt="The referee's lens at 54': the penalty's likely call pinned at the foul with a yellow card, the goal-chance zones shaded at both ends." loading="lazy" width="1600" height="758"><figcaption>The referee, at the penalty: the call pinned at the foul, 14 m out, inside the area.</figcaption></figure>
+        <figure><img src="assets/screens/hud-fan.webp" alt="The fan's lens: who's on top, the chances so far, and a plain-words explainer for the moment that just happened." loading="lazy" width="1600" height="758"><figcaption>The fan: who's on top, and plain words for what just happened.</figcaption></figure>
+        <figure><img src="assets/screens/hud-above.webp" alt="The commentator's lens from above, like a tactics board, with the goals pinned at both ends." loading="lazy" width="1600" height="758"><figcaption>From above, like a tactics board.</figcaption></figure>
+        <figure class="phone"><img src="assets/screens/hud-phone.webp" alt="HUD² on a phone: the pitch, one compact pin, and the checked lines below." loading="lazy" width="390" height="844"><figcaption>On a phone.</figcaption></figure>
+      </div>
+
+      <h2 class="section-title" data-reveal>Where it goes</h2>
+      <ol class="road" data-reveal>
+        <li><strong>Today, a screen.</strong> Built, and live in the studio.</li>
+        <li><strong>Next, glasses.</strong> The same lenses, worn, with the marks on the real pitch. That needs cameras that see where the ball and every player are.</li>
+        <li><strong>Then, contact lenses.</strong> As the hardware arrives.</li>
+        <li><strong>Further out, neural interfaces.</strong> Only with consent, and only once they're proven safe.</li>
+      </ol>
+      <p class="section-lede" data-reveal>On any device the law stays the same: a word passed the Critic, and a mark is an event that happened. <a href="#/roadmap">The whole road</a>.</p>
+    </section>
+
+    <!-- ============ ASK THE MATCH (number 10: the playmaker) ============ -->
+    <section class="page wrap" data-page="ask" data-shirt="10" data-group="play" data-role="Playmaker" data-title="Ask the match" data-summary="Any question about the match, answered from its events, checked and sealed" aria-labelledby="ask-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">10</span>
+        <h1 id="ask-title" tabindex="-1">Ask the match</h1>
+        <p class="lede">Type a question or say it, in English, Urdu or Arabic. Code counts every number from the match's events, the Critic checks the answer before you see it, and the answer is sealed into the match's ledger, so you can check it was never changed.</p>
+      </header>
+
+      <div class="demo" data-demo="ask" data-reveal>
+        <div class="demo-frame demo-wide" data-demo-frame>
+          <img src="assets/screens/ask.webp" alt="Ask the match: a conversation with the match, each answer checked by the Critic, sealed in a block and verified in the browser; a question about odds gets fixed words that steer away from betting." loading="lazy" width="1600" height="758">
+          <button class="demo-start" type="button" data-demo-start>Ask the recorded match</button>
+        </div>
+        <p class="demo-note">The recorded match answers the ten questions asked of it in the live studio, with their real answers and proofs; tap one, then verify it. The live studio answers anything.</p>
+      </div>
+
+      <div class="two-lists">
+        <section data-reveal>
+          <h2>It answers</h2>
+          <ul>
+            <li>The score, who scored and when, the biggest chance.</li>
+            <li>Who has the most of anything: passes, shots, tackles, goals. Ties name everyone level.</li>
+            <li>A player, a side, one half or the last few minutes.</li>
+            <li>Follow-ups: "and Brackenfield?" knows what you just asked.</li>
+          </ul>
+        </section>
+        <section data-reveal>
+          <h2>It won't, and says so</h2>
+          <ul>
+            <li>What event data can't see: an injury, a mood, the weather, what anyone said.</li>
+            <li>What hasn't happened yet: who will win, the next goal.</li>
+            <li>Betting: no predictions, no odds, no help to bet. Fixed words that steer away from gambling, before any model reads the question.</li>
+            <li>An instruction dressed as a question: Prompt Shields hold it back.</li>
+          </ul>
+        </section>
+      </div>
+
+      <h2 class="section-title" data-reveal>How an answer stays honest</h2>
+      <ol class="flow" data-reveal>
+        <li><strong>Screened first.</strong> Prompt Shields (Azure AI Content Safety) read the question before any model does. Code holds back what the events can't answer.</li>
+        <li><strong>Counted by code.</strong> The model gets numbers only by calling counting tools. Each result is a fact with an id.</li>
+        <li><strong>Checked by the Critic.</strong> Every count is recomputed, every number and every player name checked. A draft that fails goes back with the reasons.</li>
+        <li><strong>Sealed.</strong> The answer goes into the match ledger. Its proof checks in your browser.</li>
+      </ol>
+
+      <h2 class="section-title" data-reveal>Measured on matches it had never seen</h2>
+      <div class="eval" data-ask-eval data-reveal></div>
+    </section>
+
+    <!-- ============ THE MATCH LEDGER (number 11) ============ -->
+    <section class="page wrap" data-page="ledger" data-shirt="11" data-group="play" data-role="Winger" data-title="The match ledger" data-summary="A match's history, chained by hashes: change a byte and it shows" aria-labelledby="ledger-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">11</span>
+        <h1 id="ledger-title" tabindex="-1">The match ledger</h1>
+        <p class="lede">A blockchain's integrity, without a blockchain. Every event, line, refusal and answer of a match is hashed and sealed, minute by minute, into blocks that each name the one before. Change one byte anywhere and it shows.</p>
+      </header>
+
+      <ol class="blocks" data-ledger-blocks aria-label="The recorded match's first and last blocks" data-reveal></ol>
+
+      <div class="verify" data-reveal>
+        <h2>Check a real match, in your browser</h2>
+        <p>The ledger of the match recorded from the live studio: 1,815 events and every line, refusal and answer. Your browser recomputes every hash itself, with nothing taken on trust.</p>
+        <div class="verify-actions">
+          <button type="button" class="button" data-ledger-verify>Verify the whole match</button>
+          <button type="button" class="button button-quiet" data-ledger-tamper>Change one line, then verify</button>
+          <a class="button button-quiet" href="demo/ledger.json" download="hudhud-ledger-seed-21.json">Download the ledger</a>
+        </div>
+        <ol class="squares" data-ledger-squares aria-hidden="true"></ol>
+        <p class="verify-result" data-ledger-result aria-live="polite"></p>
+      </div>
+
+      <h2 class="section-title" data-reveal>What makes it hold</h2>
+      <ul class="principles">
+        <li data-reveal><strong>Every entry hashed.</strong> The match itself, every event, every line that aired, every claim the Critic refused, every answer, and the recap. SHA-256, over one canonical form.</li>
+        <li data-reveal><strong>A block a minute.</strong> Each minute's entries are sealed by a Merkle root, built the way Certificate Transparency builds its logs (RFC 6962).</li>
+        <li data-reveal><strong>Each block names the one before.</strong> Change an entry and its block's root changes, so its hash, so every block after it.</li>
+        <li data-reveal><strong>One seal.</strong> The last block's hash stands for the whole match. Copies are kept apart from the ledger, in the audit trail on Azure Cosmos DB and in the trace.</li>
+        <li data-reveal><strong>Anyone can check.</strong> In a browser, or offline with <code>python -m court verify</code>, which also generates the synthetic match again from its seed: the ledger must hold exactly those events.</li>
+        <li data-reveal><strong>One answer, a few hundred bytes.</strong> Each answer's proof is its Merkle path and the blocks on to the seal (RFC 9162). The Ask page checks it in the browser.</li>
+        <li data-reveal><strong>No coin, no mining, no betting.</strong> Nothing to buy, nothing to trade. It's there to keep the record honest.</li>
+      </ul>
+
+      <h2 class="section-title" data-reveal>What it proves, and what it doesn't</h2>
+      <p class="section-lede" data-reveal>It proves the history hasn't changed since it was sealed, and that the events are the ones the seed generates. It adds nothing a line didn't already prove, and a studio that lied while recording would seal its lie: the copies of the seal kept elsewhere make that harder, not impossible. Publishing each match's seal to a public log is the next step.</p>
+    </section>
+
+    <!-- ============ THE SCREENS (a substitute: every screen, recorded) ============ -->
+    <section class="page wrap" data-page="screens" data-shirt="13" data-group="play" data-role="Substitute" data-title="The screens" data-summary="Every screen, recorded from the live studio, and replays you can play" aria-labelledby="screens-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">13</span>
+        <h1 id="screens-title" tabindex="-1">Every screen</h1>
+        <p class="lede">The studio is private, so here it is: every screen recorded from it on October 20, and replays that run its own code in your browser.</p>
+      </header>
+      <div class="replays" data-reveal>
+        <a class="button" href="demo/studio.html?autostart=1" target="_blank" rel="noopener">Replay the studio</a>
+        <a class="button button-quiet" href="demo/hud.html?lens=referee&amp;autostart=1" target="_blank" rel="noopener">Replay HUD²</a>
+        <a class="button button-quiet" href="demo/ask.html?autostart=1" target="_blank" rel="noopener">Ask the recorded match</a>
+      </div>
+      <div class="shots shots-all" data-reveal>
+        <figure><img src="assets/screens/studio-live.webp" alt="The studio, live at 56': the score, the shot map, the match ledger growing a block a minute, checked lines on air, Ask the match, and the Critic's desk with a refused claim." loading="lazy" width="1600" height="758"><figcaption>The studio, live: lines on air with their receipts, the Critic's desk, the ledger growing.</figcaption></figure>
+        <figure><img src="assets/screens/studio-ledger.webp" alt="The match ledger at full time: 111 blocks in a chain, all green, verified in the browser." loading="lazy" width="1600" height="315"><figcaption>At full time, the ledger verified in the browser: every block green.</figcaption></figure>
+        <figure><img src="assets/screens/hud-referee.webp" alt="HUD² through the referee's lens, at the penalty." loading="lazy" width="1600" height="758"><figcaption>HUD², the referee's lens.</figcaption></figure>
+        <figure><img src="assets/screens/hud-commentator.webp" alt="HUD² through the commentator's lens, with a refusal pinned where it was aimed." loading="lazy" width="1600" height="758"><figcaption>HUD², the commentator's lens.</figcaption></figure>
+        <figure><img src="assets/screens/hud-fan.webp" alt="HUD² through the fan's lens." loading="lazy" width="1600" height="758"><figcaption>HUD², the fan's lens.</figcaption></figure>
+        <figure><img src="assets/screens/ask.webp" alt="Ask the match, a conversation with the match." loading="lazy" width="1600" height="758"><figcaption>Ask the match: each answer checked, sealed and verified.</figcaption></figure>
+      </div>
+    </section>
+
     <!-- ============ LIMITS ============ -->
-    <section class="page wrap" data-page="limits" data-title="What this can't tell you" data-summary="The limits, stated plainly" aria-labelledby="limits-title">
+    <section class="page wrap" data-page="limits" data-shirt="12" data-group="data" data-role="Substitute" data-title="What this can't tell you" data-summary="The limits, stated plainly" aria-labelledby="limits-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">07</span>
         <h1 id="limits-title" tabindex="-1">What this data can't tell you</h1>
@@ -563,7 +727,7 @@
     </section>
 
     <!-- ============ WHY ============ -->
-    <section class="page wrap" data-page="why" data-title="Why it matters" data-summary="Trust is the product" aria-labelledby="why-title">
+    <section class="page wrap" data-page="why" data-shirt="4" data-group="match" data-role="Centre back" data-title="Why it matters" data-summary="Trust is the product" aria-labelledby="why-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">08</span>
         <h1 id="why-title" tabindex="-1">Trust is the product</h1>
@@ -585,7 +749,7 @@
     </section>
 
     <!-- ============ BUILD LOG ============ -->
-    <section class="page wrap" data-page="log" data-title="Build log" data-summary="What runs today, and what's next" aria-labelledby="log-title">
+    <section class="page wrap" data-page="log" data-shirt="14" data-group="season" data-role="Substitute" data-title="Build log" data-summary="What runs today, and what's next" aria-labelledby="log-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">09</span>
         <h1 id="log-title" tabindex="-1">What runs today, and what's next</h1>
@@ -655,7 +819,7 @@
     </section>
 
     <!-- ============ ROADMAP ============ -->
-    <section class="page wrap" data-page="roadmap" data-title="Onwards & upwards" data-summary="From checking claims to an AI fourth official" aria-labelledby="roadmap-title">
+    <section class="page wrap" data-page="roadmap" data-shirt="15" data-group="season" data-role="Substitute" data-title="Onwards & upwards" data-summary="From checking claims to an AI fourth official" aria-labelledby="roadmap-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">10</span>
         <h1 id="roadmap-title" tabindex="-1">Onwards &amp; upwards</h1>
@@ -735,7 +899,7 @@
 
     <!-- ============ THE NAME ============ -->
     <!-- Non-English strings (lang="ur", lang="ar") are marked data-owner-review: the owner signs them off. -->
-    <section class="page name wrap" data-page="name" data-title="The name" data-summary="The messenger who came back with proof" aria-labelledby="name-title">
+    <section class="page name wrap" data-page="name" data-shirt="16" data-group="club" data-role="Substitute" data-title="The name" data-summary="The messenger who came back with proof" aria-labelledby="name-title">
       <div class="name-head">
         <div class="name-copy">
           <p class="nastaliq" lang="ur" dir="rtl" data-owner-review>ہدہد</p>
@@ -803,7 +967,7 @@
     </section>
 
     <!-- ============ WHO ============ -->
-    <section class="page wrap" data-page="who" data-title="Who's building it" data-summary="One engineer, from Karachi" aria-labelledby="who-title">
+    <section class="page wrap" data-page="who" data-shirt="17" data-group="club" data-role="Substitute" data-title="Who's building it" data-summary="One engineer, from Karachi" aria-labelledby="who-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">12</span>
         <h1 id="who-title" tabindex="-1">Built by one engineer, from Karachi</h1>
@@ -858,7 +1022,7 @@
     </section>
 
     <!-- ============ CREDITS ============ -->
-    <section class="page wrap" data-page="credits" data-title="Credits" data-summary="The data, people and tools this stands on" aria-labelledby="credits-title">
+    <section class="page wrap" data-page="credits" data-shirt="18" data-group="club" data-role="Substitute" data-title="Credits" data-summary="The data, people and tools this stands on" aria-labelledby="credits-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">13</span>
         <h1 id="credits-title" tabindex="-1">Credits</h1>
@@ -883,6 +1047,8 @@
             <dd>A Microsoft Reactor session presented by Brian Benz, October 14, 2026. Three ideas from it are on the build log: a receipt on every answer, letting evaluation pick the model, and saying plainly what the data can't tell you.</dd>
             <dt><a href="https://mcusercontent.com/1b3a0f97e12c025cc5319cfad/files/f9932d28-0382-d927-d234-b625b699f0d6/BETER_eFootball_Performance_Report1_World_Cup_2026.pdf">eFootball performance report</a></dt>
             <dd>A report by BETER, September 2026, on esports football during a major international tournament, written for betting operators. Three ideas from it are in HUD² and the roadmap: big tournaments bring newcomers, so the fan's lens explains in plain words; the experience of a match matters as much as the match; and interest runs before, between and after matches. Because it is about betting, it also settled a principle: <span data-product-name></span> never predicts, never shows odds, and discourages gambling. Its figures are the supplier's own: I took ideas from it, not evidence.</dd>
+            <dt><a href="https://www.rfc-editor.org/rfc/rfc9162">Certificate Transparency (RFC 6962 and RFC 9162)</a></dt>
+            <dd>The IETF's design for logs no one can quietly rewrite. The match ledger builds its Merkle trees and checks its proofs exactly as these specify.</dd>
             <dt><a href="https://github.com/microsoft/insidethegamehackathon">Inside the Game hackathon repository</a></dt>
             <dd>Microsoft's official rules and guides for the hackathon.</dd>
           </dl>
@@ -955,7 +1121,7 @@
     </section>
 
     <!-- ============ CONTROL ROOM (the owner's shortcuts; not a chapter) ============ -->
-    <section class="page wrap" data-page="control" data-aside data-title="Control room" data-summary="The owner's shortcuts into Azure, and the proof for everyone" aria-labelledby="control-title">
+    <section class="page wrap" data-page="control" data-aside data-group="club" data-role="Staff" data-title="Control room" data-summary="The owner's shortcuts into Azure, and the proof for everyone" aria-labelledby="control-title">
       <header class="page-head">
         <h1 id="control-title" tabindex="-1">Control room</h1>
         <p class="lede">Shortcuts to the project's own addresses, and into the Azure and Cloudflare accounts that run <span data-product-name></span>: what it costs, the budget, the app's health, the AI models at work and their logs, and the wall in front of the studio. I use them while I build and while I record the demo.</p>
@@ -1024,6 +1190,7 @@
   <script src="data/realism.js"></script>
   <script src="data/foundry_eval.js"></script>
   <script src="data/ask_eval.js"></script>
+  <script src="demo/ledger-core.js"></script>
   <script src="assets/router.js"></script>
   <script src="assets/site.js"></script>
   <script src="assets/field.js"></script>
