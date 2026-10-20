@@ -31,6 +31,7 @@ sign-in through `_azure.py`. "Read-only" means a script changes nothing in Azure
 | `scripts/studio-power on\|off\|status` | Keeps the live studio warm (one replica), lets it sleep when idle, or shows which. Keep it **on** from Oct 26 through Nov 10 | **changes the app** | on: about $5 a month |
 | `make control-room` (`scripts/control_room.py`) | Deploys the HUDHUD workbook and writes the portal links to `site/data/ops.js`, the owner's shortcuts on the site's Control room page (IDs only; the email-based directory name is never used) | **updates the workbook** | free |
 | `make site-data` (`scripts/site_sample.py`) | Regenerates the showcase site's sample claim and match from a real offline run | none | free |
+| `scripts/director.py` | Drives the demo video on one clock (docs/video.md): opens each take in a kiosk browser ahead of its cut, clicks on the beats, starts and stops OBS over obs-websocket, and prompts the voiceover line by line. `--signin` once, then a rehearsal, then `--record`; `--frames DIR` saves each shot | starts and stops an OBS recording | about two cents of models a take |
 | `scripts/site_demo.py` | Records one match from the live studio (its stream, its ledger, ten questions with their answers and proofs) and copies the studio's pages into `site/demo/` with a replay shim, for the site's live demos. `--copy-only` refreshes the pages alone | read-only (writes audit records) | a few cents of models |
 
 ## Plumbing

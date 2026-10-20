@@ -22,42 +22,55 @@ description. The Monarch records and narrates; everything on screen is live, not
   Drive throttles a file that many people stream at once, so for LinkedIn upload the video to the
   post itself as well: native video plays inline there and reaches more people than a link.
 
-## Before recording (10 minutes)
+## How it's recorded: the director
 
-1. `scripts/studio-power on`: the studio warm, no cold start mid-take.
-2. `make doctor`: all checks green. `make smoke`: the live studio streams a match.
-3. Sign in to the Azure portal in the recording browser, for the control-room shots.
-4. Sign in to the studio (studio.hudhud.com.pk: a code to your email), then open the takes from
-   the showcase site's Control room page (`#/control`, "The live studio"): **Take: the whole
-   story**, then **Take: HUD², the referee** (seed 21 from 50', 30 times live, models, stress test
-   on: the penalty's call comes about 8 seconds in), then **Take: Urdu** and **Take: Arabic** (seed
-   21 from 54', 30 times live, models, stress test on). Each starts the moment it opens.
-5. Browser window 1920×1080, zoom 100–110%, dark OS theme. Close everything else. Do not disturb on.
-6. Record with OBS (or any recorder) at 1080p, 30 fps; record voice separately if you prefer, and
-   lay it over.
+`scripts/director.py` drives the whole video on one clock, so every beat lands on its line and a
+retake is the same take. It opens each take in its own tab a few seconds before its cut (so its
+match is already running), brings it to the front on its second, clicks on the beats, starts and
+stops OBS, and shows the line to say now, with a countdown to the next, in its terminal. The
+browser is Chromium in kiosk mode (no tabs, no address bar), opened from WSL, so it shows on the
+Windows desktop for OBS to capture. The studio is reached with the Access service token, added only
+to the studio's own requests. The model narrates at its own pace, so the off-air beat waits for the
+first line aired on the Scout's facts alone before going back on air.
 
-**Take: the whole story** (Control room, "The live studio") starts seed 21 at 45', 60 times live,
-narrated by the Foundry models, stress test on, Saltmarsh Rovers as your club, Adem Rosmere as your
-player, xG as your one number, the referee at standard. Tick **Hear the commentary** before it
-starts. In about 50 seconds it gives: big chances (48', 53', 73'), the ref's call on the penalty
-(54'), two goals (55', 56'), momentum swings (62', 78'), the high press (66', 77', 86') and a
-second ref's call (90'); the stress test corrupts about one draft in four, so the Critic's desk
-gets red cards. At full time the recap is offered, and Ask the match stays open.
+**Once:**
+
+1. OBS: **Tools → WebSocket Server Settings** → enable (port 4455) → **Show Connect Info** → copy
+   the password. In a WSL terminal (yours, not Claude's), so it's never typed into a chat:
+   `mkdir -p ~/.config/obs-studio-mcp && read -rs -p 'OBS password: ' p && printf '{"password": "%s"}\n' "$p" > ~/.config/obs-studio-mcp/credentials.json && chmod 600 ~/.config/obs-studio-mcp/credentials.json`
+2. Windows PowerShell, as administrator, so WSL can reach OBS (WSL's NAT network is 172.27.240.0/20):
+   `New-NetFirewallRule -DisplayName "OBS WebSocket from WSL" -Direction Inbound -Protocol TCP -LocalPort 4455 -RemoteAddress 172.27.240.0/20 -Action Allow`
+3. OBS: one scene with a **Display Capture** of the monitor the browser opens on, **Mic/Aux** and
+   **Desktop Audio** (the Urdu and Arabic voice). Settings → Video: 1920×1080, 30 fps; Output →
+   Recording: MP4 (or MKV, remuxed after).
+4. The OBS MCP server (obs-studio-mcp 0.5.1, MIT) is registered for Claude Code as `obs`
+   (`~/.local/bin/obs-studio-mcp`, which finds the Windows host itself): run `/mcp` to connect it.
+   Claude then checks the scene, the framing (`screenshot_source`) and the audio levels.
+5. `.venv/bin/python scripts/director.py --signin`: sign in to the Azure portal in the window
+   (yourself), check what the portal's top bar shows, and close it. The profile keeps the sign-in.
+
+**Each take:** `scripts/studio-power on` (the studio warm, no cold start mid-take), then `make doctor`
+and `make smoke`; Do Not Disturb on. Then
+`.venv/bin/python scripts/director.py` rehearses (nothing recorded), and
+`.venv/bin/python scripts/director.py --record` records: OBS starts half a second before the first
+frame and stops at 1:50. `--frames DIR` saves each shot as it looks two seconds in, to check a
+rehearsal. Each take costs about two cents of models.
 
 ## The shots
 
-Spoken pace: about 2.4 words a second. The voiceover below is about 255 words.
+Spoken pace: about 2.4 words a second. The director prints each line as its shot begins.
 
-| Time | On screen | Do | Say |
+| Time | On screen | The director does | Say |
 |---|---|---|---|
-| 0:00–0:10 | Showcase site: the crest and the wordmark, then "In plain words" | Scroll slowly | "AI can commentate a football match. The trouble is, it sounds just as sure when it's wrong. HUDHUD checks every line against the match before it airs." |
-| 0:10–0:34 | **Take: the whole story**, voice on | Let it run from 45' | "This is my studio, on Azure Container Apps. A model on Microsoft Foundry writes each line from facts my code computed, and Azure AI Speech reads it aloud. I made it mine: my club's moments come first, my player gets a live card, and xG ticks for both sides. Every cue carries its evidence and a receipt." |
-| 0:34–0:50 | **Take: HUD², the referee** (from 50'): the ref's call at 54' pinned at the foul, the Critic's lock closing on it; a refused draft struck in red where it was aimed | Point at the yellow card on the pin; then at the next refusal (the stress test makes about one in four) | "HUD², the referee's lens. A foul in the box: likely a penalty and a yellow, read from the Law and recomputed by the Critic, pinned where it happened. A draft that cited an event yet to happen: refused, struck on the spot." |
-| 0:50–1:04 | "Take the narrator off air", then back | Press at about 70'; again after the 73' cue | "Now I take the narrator off air. The Orchestrator keeps the broadcast going on the Scout's own facts, says so, and brings commentary back when the narrator returns." |
-| 1:04–1:14 | **Take: Urdu**, voice on; then **Take: Arabic** | Let one line be spoken in each | "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not add a number or change a name." |
-| 1:14–1:24 | Full time: "Read the recap", then Ask the match: "Who has been the better side, by the numbers?" | Open the recap; then tap the question and open "What the tools counted" | "At full time the match writes its recap and answers my questions, every number checked by the Critic first." |
-| 1:24–1:46 | Control room: the workbook; Foundry's tracing and its evaluation run; the studio's sign-in | Scroll the tiles; open the evaluation | "Five agents on Microsoft Agent Framework. Models chosen by evaluation and judged again by Foundry's own evaluators. Every call traced in Foundry and Application Insights, every claim in an audit trail on Cosmos DB, and the studio private behind its own wall. The Critic is an MCP tool for any assistant and an A2A agent for any agent." |
-| 1:46–1:52 | Showcase home, the crest | Hold | "HUDHUD. Built by one engineer. Every call comes with its evidence." |
+| 0:00–0:09 | The showcase site: the crest, then the front three | Scrolls to the front three at 0:04 | "AI can commentate a football match. The trouble is, it sounds just as sure when it's wrong. HUDHUD checks every line against the match before it airs." |
+| 0:09–0:31 | The studio: seed 21 from 40', 60× live, models, your club and player, xG | Opened at 0:01; the Critic's desk at 0:21, back up at 0:28 | "This is my studio, live on Azure Container Apps. A model on Microsoft Foundry writes each line from facts my code computed. Every line carries its evidence and a receipt, and the Critic's desk shows what it refused, and why." |
+| 0:31–0:47 | HUD², the referee's lens: the penalty's call (54') pinned at the foul | Opened at 0:21; the commentator's lens at 0:41, the fan's at 0:44 | "HUD², the referee's lens. A foul in the box: likely a penalty and a yellow, read from the Law and recomputed by the Critic, pinned where it happened. Commentators and fans get lenses of their own." |
+| 0:47–1:00 | The studio again | Off air at 0:49; back on once a facts-only line airs | "Now I take the narrator off air. The broadcast keeps going on the Scout's own facts, says so, and brings the commentary back." |
+| 1:00–1:12 | Urdu, then Arabic (from 54', voice on) | Voice ticked before each cut | "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not add a number or change a name." |
+| 1:12–1:26 | Ask the match: the whole match, the model's checked answer | Verifies the answer at 1:14; asks about the odds at 1:18 | "Ask the match anything, typed or out loud. Code counts every number, the Critic checks the answer, and it's sealed in the match's ledger, so your browser can verify it. And it never helps anyone bet." |
+| 1:26–1:40 | Azure: the control-room workbook, then every model call | Opened 12 s ahead (the portal is slow) | "Five agents on Microsoft Agent Framework. Models chosen by evaluation and judged by Foundry's own evaluators. Every call traced, every claim kept on Cosmos DB, and the Critic open to any assistant over MCP and any agent over A2A." |
+| 1:40–1:44 | The site's match ledger, verified in the browser | Verify at 1:41 | (the line above runs on) |
+| 1:44–1:50 | The site's team sheet: the chapters in formation | Opens it at 1:45 | "HUDHUD. Built by one engineer. Every call comes with its evidence." |
 
 ## The description (the video's page, and the submission)
 
@@ -68,7 +81,8 @@ Spoken pace: about 2.4 words a second. The voiceover below is about 255 words.
 > DB, traces in Application Insights, and the Critic as an MCP server and an A2A agent. Viewers ask
 > the match questions, typed or out loud, and every answer is checked the same way. HUD² shows the
 > match through the referee's, the commentator's or the fan's lens, every checked line pinned where
-> it happened. English, Urdu and Arabic.
+> it happened. Every match keeps a ledger chained by hashes, so its history can't be quietly
+> changed. It never predicts a result or shows odds. English, Urdu and Arabic.
 > Every club, player and match is invented; synthetic data only.
 >
 > About it: https://hudhud.com.pk/
