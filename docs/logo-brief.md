@@ -1,9 +1,17 @@
 # The logo brief — mark v2, handoff to a designing agent
 
-> Status: the concept below is **chosen and shipped** (commit `b6a615a`, 2026-10-21), but the owner
-> judges the executed artwork below the quality bar. This file carries the idea, logic and
-> reasoning so a fresh agent can re-execute the same concept at higher craft. The concept stands;
-> the drawing is what gets replaced.
+> Status: **superseded by mark v3 (2026-10-22), shipped.** The re-draw this brief asked for was
+> executed and owner-approved: the classic Telstar in HUDHUD colours (white hexagons,
+> pitch-green pentagons, navy seams) projected from 26° above the pole so a pentagon sits at the
+> ball's bottom; the feathers — redrawn, connected, rooted in that bottom pentagon with every tip
+> at the ball's rim — a gold reticle on the root, the Signal's wide ring (r 104) framing the
+> badge. Candidates and the decision live in `kit/logo-preview.html`; the decision log in
+> `brand.md`. What follows is the original v2 brief, kept for the record.
+
+> Status (v2, 2026-10-21): the concept below is **chosen and shipped** (commit `b6a615a`,
+> 2026-10-21), but the owner judges the executed artwork below the quality bar. This file carries
+> the idea, logic and reasoning so a fresh agent can re-execute the same concept at higher craft.
+> The concept stands; the drawing is what gets replaced.
 
 ## 1. What the mark must say
 

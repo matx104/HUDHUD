@@ -79,38 +79,28 @@
     <div class="top-inner wrap">
       <a class="brand" href="#/">
         <svg class="brand-crest crest-art" viewBox="0 0 240 240" aria-hidden="true">
-          <g stroke="#F4F1E8" stroke-width="2.4" fill="none" opacity="0.85">
-            <circle cx="120" cy="134" r="78" stroke-dasharray="9 8"/>
-            <line x1="32" y1="134" x2="40" y2="134"/>
-            <line x1="200" y1="134" x2="208" y2="134"/>
-          </g>
-          <g clip-path="url(#ballClip)">
-            <circle cx="120" cy="134" r="60" fill="#0E2940" stroke="#F4F1E8" stroke-width="1.8"/>
-            <g fill="none" stroke="#F4F1E8" stroke-width="2.2" stroke-linejoin="round">
-              <path d="M120 178 L106.7 187.7 L111.8 203.3 L128.2 203.3 L133.3 187.7 Z"/>
-              <path d="M85 142 L73.6 150.3 L77.9 163.7 L92.1 163.7 L96.4 150.3 Z"/>
-              <path d="M155 142 L143.6 150.3 L147.9 163.7 L162.1 163.7 L166.4 150.3 Z"/>
-              <path d="M68 114 L56.6 122.3 L60.9 135.7 L75.1 135.7 L79.4 122.3 Z"/>
-              <path d="M152 114 L140.6 122.3 L144.9 135.7 L159.1 135.7 L163.4 122.3 Z"/>
-              <path d="M107 186 Q98 168 96.5 152"/>
-              <path d="M133 186 Q142 168 143.5 152"/>
-              <path d="M74 150 Q74 142 75 136"/>
-              <path d="M166 150 Q166 142 165 136"/>
-              <path d="M112 203 Q116 208 120 208"/>
-              <path d="M128 203 Q124 208 120 208"/>
-              <path d="M57 124 Q52 128 49 133"/>
-              <path d="M183 124 Q188 128 191 133"/>
+          <g fill="none" stroke="#F4F1E8">
+            <circle cx="120" cy="120" r="104" stroke-width="1.5" stroke-opacity=".4"/>
+            <g stroke-width="2.2" stroke-opacity=".85" stroke-linecap="round">
+              <line x1="6" y1="120" x2="16" y2="120"/>
+              <line x1="224" y1="120" x2="234" y2="120"/>
             </g>
           </g>
-          <g transform="translate(120 134)">
-            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
-            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
-            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
-            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
-            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+          <g clip-path="url(#ballClip)">
+            <circle cx="120" cy="120" r="60" fill="#F4F1E8"/>
+            <use href="#t-seams" fill="none" stroke="#0A1F2E" stroke-width="1.4" stroke-opacity=".55"/>
+            <g fill="#1E7B45">
+              <use href="#t-root"/><use href="#t-top"/><use href="#t-left"/><use href="#t-right"/>
+            </g>
           </g>
-          <circle cx="120" cy="134" r="11" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.5"/>
-          <circle cx="120" cy="134" r="2.6" fill="#C9A227"/>
+          <g transform="translate(120 156)" fill="#B8F53D" stroke="#0A1F2E" stroke-width="2" stroke-linejoin="round">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#p78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#p78"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#p112"/></g>
+          </g>
+          <use href="#lensRoot"/>
         </svg>
         <span class="brand-name" data-product-name></span>
       </a>
@@ -150,10 +140,26 @@
   <!-- Feather shapes, the ball and the agents' glyphs for every crest on the page -->
   <svg class="sprite" aria-hidden="true">
     <defs>
-      <path id="f78" d="M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z"/>
-      <path id="f96" d="M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z"/>
-      <path id="f112" d="M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z"/>
-      <clipPath id="ballClip"><circle cx="120" cy="134" r="60"/></clipPath>
+      <path id="p78" d="M0 0C4.2-19.5 11-42 7.6-56Q0-74-7.6-56C-11-42-4.2-19.5 0 0Z"/>
+      <path id="p96" d="M0 0C4.8-22.5 13-49 9-67.5Q0-89-9-67.5C-13-49-4.8-22.5 0 0Z"/>
+      <path id="p112" d="M0 0C5-24 13.5-51.5 9.6-74.5Q0-95-9.6-74.5C-13.5-51.5-5-24 0 0Z"/>
+      <!-- the classic ball, projected: a Telstar seen from 26° above the pole, one pentagon at the bottom -->
+      <path id="t-root" d="M107.9 167.5 L132.1 167.5 L139.6 149.2 L120 137.9 L100.4 149.2 Z"/>
+      <path id="t-top" d="M100.4 101 L120 113.8 L139.6 101 L132.1 80.3 L107.9 80.3 Z"/>
+      <path id="t-left" d="M68.7 141.9 L80.8 136.4 L80.8 112.3 L68.7 102.9 L61.2 121.2 Z"/>
+      <path id="t-right" d="M159.2 136.4 L171.3 141.9 L178.8 121.2 L171.3 102.9 L159.2 112.3 Z"/>
+      <path id="t-seams" d="M132.1 80.3 Q120 76.7 107.9 80.3 M132.1 80.3 Q137.3 88 139.6 101 M132.1 80.3 Q139.8 71.5 144.2 70.9 M107.9 167.5 Q100.2 174.9 95.8 173 M107.9 167.5 Q102.7 161.9 100.4 149.2 M107.9 167.5 Q120 171.9 132.1 167.5 M95.8 70.9 Q82.8 72.6 76.2 82.2 M95.8 70.9 Q100.2 71.5 107.9 80.3 M95.8 70.9 Q100.2 61.3 107.9 61.5 M76.2 82.2 Q68.1 90 68.7 102.9 M107.9 80.3 Q102.7 88 100.4 101 M132.1 61.5 Q120 56.1 107.9 61.5 M132.1 61.5 Q139.8 61.3 144.2 70.9 M178.8 121.2 Q180.1 111.3 171.3 102.9 M178.8 121.2 Q180.1 132.6 171.3 141.9 M163.8 160.2 Q157.2 170.9 144.2 173 M163.8 160.2 Q171.9 153.9 171.3 141.9 M139.6 149.2 Q130.7 145.7 120 137.9 M139.6 149.2 Q137.3 161.9 132.1 167.5 M139.6 149.2 Q152.1 144.9 159.2 136.4 M80.8 112.3 Q77.2 124.8 80.8 136.4 M80.8 112.3 Q70.6 106.5 68.7 102.9 M80.8 112.3 Q87.9 105.4 100.4 101 M120 113.8 Q130.7 106.2 139.6 101 M120 113.8 Q120 126.4 120 137.9 M120 113.8 Q109.3 106.2 100.4 101 M61.2 121.2 Q59.9 132.6 68.7 141.9 M61.2 121.2 Q59.9 111.3 68.7 102.9 M144.2 173 Q139.8 174.9 132.1 167.5 M80.8 136.4 Q70.6 140.9 68.7 141.9 M80.8 136.4 Q87.9 144.9 100.4 149.2 M139.6 101 Q152.1 105.4 159.2 112.3 M163.8 82.2 Q171.9 90 171.3 102.9 M163.8 82.2 Q157.2 72.6 144.2 70.9 M95.8 173 Q82.8 170.9 76.2 160.2 M171.3 102.9 Q169.4 106.5 159.2 112.3 M120 137.9 Q109.3 145.7 100.4 149.2 M68.7 141.9 Q68.1 153.9 76.2 160.2 M159.2 112.3 Q162.8 124.8 159.2 136.4 M171.3 141.9 Q169.4 140.9 159.2 136.4"/>
+      <clipPath id="ballClip"><circle cx="120" cy="120" r="60"/></clipPath>
+      <g id="lensRoot">
+        <circle cx="120" cy="154" r="10.5" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.2"/>
+        <g stroke="#C9A227" stroke-width="1.5" stroke-linecap="round">
+          <line x1="120" y1="146.8" x2="120" y2="150.4"/>
+          <line x1="120" y1="157.6" x2="120" y2="161.2"/>
+          <line x1="112.8" y1="154" x2="116.4" y2="154"/>
+          <line x1="123.6" y1="154" x2="127.2" y2="154"/>
+        </g>
+        <circle cx="120" cy="154" r="2" fill="#C9A227"/>
+      </g>
       <!-- the agents, as glyphs: eye, pen, check, globe, hub-and-spokes -->
       <g id="gScout" fill="none" stroke="#0A1F2E" stroke-width="1.9" stroke-linecap="round">
         <path d="M-6.5 0 Q0 -5.2 6.5 0 Q0 5.2 -6.5 0 Z"/>
@@ -187,12 +193,12 @@
         <circle class="ring ring-run" cx="120" cy="104" r="116"/>
         <line class="ring" x1="0" y1="104" x2="10" y2="104"/>
         <line class="ring" x1="230" y1="104" x2="240" y2="104"/>
-        <g transform="translate(120 150)">
-            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
-            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
-            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
-            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
-            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+          <g transform="translate(120 150)">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#p78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#p78"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#p112"/></g>
           </g>
       </svg>
     </div>
@@ -208,38 +214,28 @@
             <p class="live"><span class="live-dot" aria-hidden="true"></span>Running on a synthetic match, right now</p>
             <h1 id="home-title" class="lockup" tabindex="-1">
               <svg class="lockup-crest crest-art" viewBox="0 0 240 240" aria-hidden="true">
-          <g stroke="#F4F1E8" stroke-width="2.4" fill="none" opacity="0.85">
-            <circle cx="120" cy="134" r="78" stroke-dasharray="9 8"/>
-            <line x1="32" y1="134" x2="40" y2="134"/>
-            <line x1="200" y1="134" x2="208" y2="134"/>
-          </g>
-          <g clip-path="url(#ballClip)">
-            <circle cx="120" cy="134" r="60" fill="#0E2940" stroke="#F4F1E8" stroke-width="1.8"/>
-            <g fill="none" stroke="#F4F1E8" stroke-width="2.2" stroke-linejoin="round">
-              <path d="M120 178 L106.7 187.7 L111.8 203.3 L128.2 203.3 L133.3 187.7 Z"/>
-              <path d="M85 142 L73.6 150.3 L77.9 163.7 L92.1 163.7 L96.4 150.3 Z"/>
-              <path d="M155 142 L143.6 150.3 L147.9 163.7 L162.1 163.7 L166.4 150.3 Z"/>
-              <path d="M68 114 L56.6 122.3 L60.9 135.7 L75.1 135.7 L79.4 122.3 Z"/>
-              <path d="M152 114 L140.6 122.3 L144.9 135.7 L159.1 135.7 L163.4 122.3 Z"/>
-              <path d="M107 186 Q98 168 96.5 152"/>
-              <path d="M133 186 Q142 168 143.5 152"/>
-              <path d="M74 150 Q74 142 75 136"/>
-              <path d="M166 150 Q166 142 165 136"/>
-              <path d="M112 203 Q116 208 120 208"/>
-              <path d="M128 203 Q124 208 120 208"/>
-              <path d="M57 124 Q52 128 49 133"/>
-              <path d="M183 124 Q188 128 191 133"/>
+          <g fill="none" stroke="#F4F1E8">
+            <circle cx="120" cy="120" r="104" stroke-width="1.5" stroke-opacity=".4"/>
+            <g stroke-width="2.2" stroke-opacity=".85" stroke-linecap="round">
+              <line x1="6" y1="120" x2="16" y2="120"/>
+              <line x1="224" y1="120" x2="234" y2="120"/>
             </g>
           </g>
-          <g transform="translate(120 134)">
-            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
-            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
-            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
-            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
-            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+          <g clip-path="url(#ballClip)">
+            <circle cx="120" cy="120" r="60" fill="#F4F1E8"/>
+            <use href="#t-seams" fill="none" stroke="#0A1F2E" stroke-width="1.4" stroke-opacity=".55"/>
+            <g fill="#1E7B45">
+              <use href="#t-root"/><use href="#t-top"/><use href="#t-left"/><use href="#t-right"/>
+            </g>
           </g>
-          <circle cx="120" cy="134" r="11" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.5"/>
-          <circle cx="120" cy="134" r="2.6" fill="#C9A227"/>
+          <g transform="translate(120 156)" fill="#B8F53D" stroke="#0A1F2E" stroke-width="2" stroke-linejoin="round">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#p78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#p78"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#p112"/></g>
+          </g>
+          <use href="#lensRoot"/>
               </svg>
               <span class="lockup-word" data-product-name></span>
             </h1>
@@ -1474,12 +1470,12 @@
 
       <div class="north-star" data-reveal>
         <svg class="star-crest crest-art" viewBox="36 12 168 168" aria-hidden="true">
-          <g transform="translate(120 150)">
-            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
-            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
-            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
-            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
-            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+        <g transform="translate(120 150)">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#p78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#p78"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#p112"/></g>
           </g>
         </svg>
         <div>
@@ -1554,52 +1550,40 @@
           <p class="lede"><span data-product-name></span> is the hoopoe's name. The bird carries news through some of the oldest stories in those languages, and in the best known, no one acts on its news until it has been checked.</p>
         </div>
         <figure class="crest">
-          <svg class="crest-art" viewBox="-30 0 300 264" role="img" aria-labelledby="crest-caption">
+          <svg class="crest-art" viewBox="-44 -12 332 304" role="img" aria-labelledby="crest-caption">
             <defs>
-              <clipPath id="ballClipName"><circle cx="120" cy="150" r="60"/></clipPath>
+              <clipPath id="ballClipName"><circle cx="120" cy="120" r="60"/></clipPath>
             </defs>
-            <g stroke="#F4F1E8" stroke-width="2.4" fill="none" opacity="0.85">
-              <circle cx="120" cy="150" r="78" stroke-dasharray="9 8"/>
-              <line x1="32" y1="150" x2="40" y2="150"/>
-              <line x1="200" y1="150" x2="208" y2="150"/>
-            </g>
-            <g clip-path="url(#ballClipName)">
-              <circle cx="120" cy="150" r="60" fill="#0E2940" stroke="#F4F1E8" stroke-width="1.8"/>
-              <g fill="none" stroke="#F4F1E8" stroke-width="2.2" stroke-linejoin="round">
-                <path d="M120 194 L106.7 203.7 L111.8 219.3 L128.2 219.3 L133.3 203.7 Z"/>
-                <path d="M85 158 L73.6 166.3 L77.9 179.7 L92.1 179.7 L96.4 166.3 Z"/>
-                <path d="M155 158 L143.6 166.3 L147.9 179.7 L162.1 179.7 L166.4 166.3 Z"/>
-                <path d="M68 130 L56.6 138.3 L60.9 151.7 L75.1 151.7 L79.4 138.3 Z"/>
-                <path d="M152 130 L140.6 138.3 L144.9 151.7 L159.1 151.7 L163.4 138.3 Z"/>
-                <path d="M107 202 Q98 184 96.5 168"/>
-                <path d="M133 202 Q142 184 143.5 168"/>
-                <path d="M74 166 Q74 158 75 152"/>
-                <path d="M166 166 Q166 158 165 152"/>
-                <path d="M112 219 Q116 224 120 224"/>
-                <path d="M128 219 Q124 224 120 224"/>
-                <path d="M57 140 Q52 144 49 149"/>
-                <path d="M183 140 Q188 144 191 149"/>
+            <g fill="none" stroke="#F4F1E8">
+              <circle cx="120" cy="120" r="104" stroke-width="1.5" stroke-opacity=".4"/>
+              <g stroke-width="2.2" stroke-opacity=".85" stroke-linecap="round">
+                <line x1="6" y1="120" x2="16" y2="120"/>
+                <line x1="224" y1="120" x2="234" y2="120"/>
               </g>
             </g>
-            <g transform="translate(120 150)">
-              <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/><use href="#gScout" transform="translate(0 -56)"/></g>
-              <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/><use href="#gNarrator" transform="translate(0 -70)"/></g>
-              <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/><use href="#gCritic" transform="translate(0 -82)"/></g>
-              <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/><use href="#gLocalizer" transform="translate(0 -70)"/></g>
-              <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/><use href="#gOrchestrator" transform="translate(0 -56)"/></g>
+            <g clip-path="url(#ballClipName)">
+              <circle cx="120" cy="120" r="60" fill="#F4F1E8"/>
+              <use href="#t-seams" fill="none" stroke="#0A1F2E" stroke-width="1.4" stroke-opacity=".55"/>
+              <g fill="#1E7B45"><use href="#t-root"/><use href="#t-top"/><use href="#t-left"/><use href="#t-right"/></g>
             </g>
-            <circle cx="120" cy="150" r="11" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.5"/>
-            <circle cx="120" cy="150" r="2.6" fill="#C9A227"/>
+            <g transform="translate(120 156)" fill="#B8F53D" stroke="#0A1F2E" stroke-width="2" stroke-linejoin="round">
+              <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#p78"/><use href="#gScout" transform="translate(0 -46)"/></g>
+              <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#p96"/><use href="#gNarrator" transform="translate(0 -56)"/></g>
+              <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#p96"/><use href="#gLocalizer" transform="translate(0 -56)"/></g>
+              <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#p78"/><use href="#gOrchestrator" transform="translate(0 -46)"/></g>
+              <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#p112"/><use href="#gCritic" transform="translate(0 -66)"/></g>
+            </g>
+            <use href="#lensRoot"/>
             <g class="crest-labels" aria-hidden="true">
-              <text x="52" y="102" text-anchor="end">Scout</text>
-              <text x="76" y="58" text-anchor="end">Narrator</text>
-              <text x="120" y="30" class="label-critic">Critic</text>
-              <text x="164" y="58" text-anchor="start">Localizer</text>
-              <text x="188" y="102" text-anchor="start">Orchestrator</text>
+              <text x="46" y="196" text-anchor="end">Scout</text>
+              <text x="12" y="88" text-anchor="end">Narrator</text>
+              <text x="120" y="0" class="label-critic">Critic</text>
+              <text x="228" y="88" text-anchor="start">Localizer</text>
+              <text x="194" y="196" text-anchor="start">Orchestrator</text>
             </g>
             <text class="crest-mark" x="120" y="252" aria-hidden="true" data-product-mark></text>
           </svg>
-          <figcaption id="crest-caption">The mark: the crest printed on the match ball, the scope locked on the root of the tail where every claim is checked — one feather per agent, the Critic's in gold at the centre.</figcaption>
+          <figcaption id="crest-caption">The mark: the crest printed on the match ball — white hexagons, pitch-green pentagons, one pentagon at the bottom where the tail roots — the five feathers reaching to the ball's rim, the Critic's in gold at the centre, and the scope locked on the root of the tail, where every claim is checked.</figcaption>
         </figure>
       </div>
 
@@ -1836,38 +1820,28 @@
       <nav class="pager" aria-label="Previous and next chapter" data-pager></nav>
       <div class="foot-brand">
             <svg class="foot-crest crest-art" viewBox="0 0 240 240" aria-hidden="true">
-          <g stroke="#F4F1E8" stroke-width="2.4" fill="none" opacity="0.85">
-            <circle cx="120" cy="134" r="78" stroke-dasharray="9 8"/>
-            <line x1="32" y1="134" x2="40" y2="134"/>
-            <line x1="200" y1="134" x2="208" y2="134"/>
-          </g>
-          <g clip-path="url(#ballClip)">
-            <circle cx="120" cy="134" r="60" fill="#0E2940" stroke="#F4F1E8" stroke-width="1.8"/>
-            <g fill="none" stroke="#F4F1E8" stroke-width="2.2" stroke-linejoin="round">
-              <path d="M120 178 L106.7 187.7 L111.8 203.3 L128.2 203.3 L133.3 187.7 Z"/>
-              <path d="M85 142 L73.6 150.3 L77.9 163.7 L92.1 163.7 L96.4 150.3 Z"/>
-              <path d="M155 142 L143.6 150.3 L147.9 163.7 L162.1 163.7 L166.4 150.3 Z"/>
-              <path d="M68 114 L56.6 122.3 L60.9 135.7 L75.1 135.7 L79.4 122.3 Z"/>
-              <path d="M152 114 L140.6 122.3 L144.9 135.7 L159.1 135.7 L163.4 122.3 Z"/>
-              <path d="M107 186 Q98 168 96.5 152"/>
-              <path d="M133 186 Q142 168 143.5 152"/>
-              <path d="M74 150 Q74 142 75 136"/>
-              <path d="M166 150 Q166 142 165 136"/>
-              <path d="M112 203 Q116 208 120 208"/>
-              <path d="M128 203 Q124 208 120 208"/>
-              <path d="M57 124 Q52 128 49 133"/>
-              <path d="M183 124 Q188 128 191 133"/>
+          <g fill="none" stroke="#F4F1E8">
+            <circle cx="120" cy="120" r="104" stroke-width="1.5" stroke-opacity=".4"/>
+            <g stroke-width="2.2" stroke-opacity=".85" stroke-linecap="round">
+              <line x1="6" y1="120" x2="16" y2="120"/>
+              <line x1="224" y1="120" x2="234" y2="120"/>
             </g>
           </g>
-          <g transform="translate(120 134)">
-            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#f78"/></g>
-            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#f96"/></g>
-            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#f112"/></g>
-            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#f96"/></g>
-            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#f78"/></g>
+          <g clip-path="url(#ballClip)">
+            <circle cx="120" cy="120" r="60" fill="#F4F1E8"/>
+            <use href="#t-seams" fill="none" stroke="#0A1F2E" stroke-width="1.4" stroke-opacity=".55"/>
+            <g fill="#1E7B45">
+              <use href="#t-root"/><use href="#t-top"/><use href="#t-left"/><use href="#t-right"/>
+            </g>
           </g>
-          <circle cx="120" cy="134" r="11" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.5"/>
-          <circle cx="120" cy="134" r="2.6" fill="#C9A227"/>
+          <g transform="translate(120 156)" fill="#B8F53D" stroke="#0A1F2E" stroke-width="2" stroke-linejoin="round">
+            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#p78"/></g>
+            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#p96"/></g>
+            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#p78"/></g>
+            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#p112"/></g>
+          </g>
+          <use href="#lensRoot"/>
             </svg>
         <p><strong class="foot-word" data-product-name></strong><span>Every call comes with its evidence.</span></p>
       </div>
