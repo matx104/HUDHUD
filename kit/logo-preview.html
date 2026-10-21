@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HUDHUD — mark v3, three candidates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --navy: #0A1F2E; --navy-deep: #06141F; --navy-raised: #0F2A3D; --ball: #0E2940;
+    --chalk: #F4F1E8; --chalk-dim: rgba(244,241,232,.7); --chalk-faint: rgba(244,241,232,.15);
+    --lime: #B8F53D; --gold: #C9A227;
+    --display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+    --body: "Hanken Grotesk", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: radial-gradient(60rem 40rem at 0% 0%, rgba(184,245,61,.05), transparent 60%), var(--navy); color: var(--chalk); font: 400 1rem/1.6 var(--body); padding: 3rem 1.5rem 6rem; }
+  .wrap { width: min(100%, 72rem); margin-inline: auto; }
+  h1 { font: 900 clamp(2.2rem, 5vw, 3.6rem)/0.95 var(--display); margin: 0 0 .5rem; }
+  h2 { font: 800 1.6rem/1.1 var(--display); margin: 0; }
+  .lede { color: var(--chalk-dim); max-width: 60ch; }
+  .tag { font: 500 .78rem/1 var(--mono); color: var(--gold); letter-spacing: .06em; }
+  section.candidate { margin-top: 3.5rem; padding: 1.75rem; border: 1px solid var(--chalk-faint); border-radius: 12px; background: rgba(15,42,61,.35); }
+  section.candidate.today { background: transparent; border-style: dashed; }
+  .cand-head { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .cand-head p { margin: 0; color: var(--chalk-dim); max-width: 58ch; }
+  .sizes { display: flex; align-items: flex-end; gap: 2.25rem; flex-wrap: wrap; }
+  .size { display: grid; gap: .5rem; justify-items: center; }
+  .size span { font: 500 .72rem/1 var(--mono); color: var(--chalk-dim); }
+  .tile { background: var(--navy); border-radius: 22%; }
+  .row { display: flex; align-items: center; gap: 2.5rem; flex-wrap: wrap; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px dashed var(--chalk-faint); }
+  .row h3 { font: 700 1rem/1 var(--body); margin: 0 0 .75rem; color: var(--gold); letter-spacing: .04em; }
+  header.mock { display: flex; align-items: center; gap: .7rem; padding: .8rem 1.1rem; background: rgba(10,31,46,.9); border: 1px solid var(--chalk-faint); border-radius: 8px; }
+  header.mock .word { font: 900 2.1rem/1 var(--display); letter-spacing: .02em; }
+  header.mock .live { margin-left: auto; font: 500 .75rem/1 var(--mono); color: var(--lime); }
+  footer.page { margin-top: 4rem; color: var(--chalk-dim); font-size: .9rem; max-width: 70ch; }
+  svg { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Mark v3 — the same concept, redrawn</h1>
+<p class="lede">Three craft candidates for the same brief: the hoopoe crest printed on a football, a scope locked on the root of the tail. What changed underneath: the seams are a real truncated-icosahedron projection seen from the pole (no more guessed pentagons), the scope is calmer, the lens is a proper reticle, and every mark is judged below at 260 / 96 / 48 / 24 px — the sizes it actually lives at.</p>
+
+<!-- the shared library: feathers, balls, lenses -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="f78" d="M0 0C5.2-23.4 13-46.8 10.4-66.3Q0-81.9-10.4-66.3C-13-46.8-5.2-23.4 0 0Z"/>
+    <path id="f96" d="M0 0C5.2-28.8 13-57.6 10.4-81.6Q0-100.8-10.4-81.6C-13-57.6-5.2-28.8 0 0Z"/>
+    <path id="f112" d="M0 0C5.6-33.6 14-67.2 11.2-95.2Q0-117.6-11.2-95.2C-14-67.2-5.6-33.6 0 0Z"/>
+    <!-- refined feathers: slimmer, tips held inside the scope (v3) -->
+    <path id="r78" d="M0 0C4.2-22 10.4-45 8-64Q0-76.5-8-64C-10.4-45-4.2-22 0 0Z"/>
+    <path id="r96" d="M0 0C4.6-26 11.4-51 8.8-72Q0-86.5-8.8-72C-11.4-51-4.6-26 0 0Z"/>
+    <path id="r112" d="M0 0C4.9-30 12.2-60 9.4-84Q0-101-9.4-84C-12.2-60-4.9-30 0 0Z"/>
+
+    <clipPath id="ball240"><circle cx="120" cy="120" r="60"/></clipPath>
+
+    <!-- the projected telstar: pole pentagon, radiating seams, the flower ring, far hints -->
+    <path id="seam-pentagon" d="M107.9 103.3 Q120 101.8 132.1 103.3 Q137.3 114.4 139.6 126.4 Q130.7 134.7 120 140.6 Q109.3 134.7 100.4 126.4 Q102.7 114.4 107.9 103.3 Z"/>
+    <path id="seam-spokes" d="M100.4 126.4 Q87.9 130.4 80.8 132.7 M107.9 103.3 Q100.2 92.7 95.8 86.7 M120 140.6 Q120 153.8 120 161.2 M132.1 103.3 Q139.8 92.7 144.2 86.7 M139.6 126.4 Q152.1 130.4 159.2 132.7"/>
+    <path id="seam-flower" d="M107.9 70 Q120 65.4 132.1 70 Q139.8 74.5 144.2 86.7 Q157.2 87.1 163.8 93 Q171.9 103.1 171.3 116.1 Q169.4 124.8 159.2 132.7 Q162.8 145.2 159.2 153.3 Q152.1 164.2 139.6 167.6 Q130.7 168.5 120 161.2 Q109.3 168.5 100.4 167.6 Q87.9 164.2 80.8 153.3 Q77.2 145.2 80.8 132.7 Q70.6 124.8 68.7 116.1 Q68.1 103.1 76.2 93 Q82.8 87.1 95.8 86.7 Q100.2 74.5 107.9 70 Z"/>
+    <path id="seam-far" d="M76.2 93 Q72.1 83.6 76.2 80.3 M107.9 70 Q100.2 63.2 95.8 66.1 M132.1 70 Q139.8 63.2 144.2 66.1 M139.6 167.6 Q137.3 177.6 132.1 177.9 M80.8 153.3 Q70.6 154.3 68.7 149.4"/>
+
+    <!-- the fan, original and refined; the Critic's centre feather stays gold -->
+    <g id="fan">
+      <g class="feather" transform="rotate(-52)"><use href="#f78"/></g>
+      <g class="feather" transform="rotate(-26)"><use href="#f96"/></g>
+      <g class="feather"><use href="#f112" fill="var(--gold)"/></g>
+      <g class="feather" transform="rotate(26)"><use href="#f96"/></g>
+      <g class="feather" transform="rotate(52)"><use href="#f78"/></g>
+    </g>
+    <g id="fan-refined">
+      <g transform="rotate(-52)"><use href="#r78"/></g>
+      <g transform="rotate(-26)"><use href="#r96"/></g>
+      <g><use href="#r112" fill="var(--gold)"/></g>
+      <g transform="rotate(26)"><use href="#r96"/></g>
+      <g transform="rotate(52)"><use href="#r78"/></g>
+    </g>
+
+    <!-- the ball at three detail levels -->
+    <g id="ball-full">
+      <g clip-path="url(#ball240)">
+        <circle cx="120" cy="120" r="60" fill="var(--ball)" stroke="var(--chalk)" stroke-width="2" stroke-opacity=".9"/>
+        <use href="#seam-pentagon" fill="var(--navy-deep)"/>
+        <g fill="none" stroke="var(--chalk)">
+          <use href="#seam-pentagon" stroke-width="2"/>
+          <use href="#seam-spokes" stroke-width="2"/>
+          <use href="#seam-flower" stroke-width="2"/>
+          <use href="#seam-far" stroke-width="1.5" stroke-opacity=".45"/>
+        </g>
+      </g>
+    </g>
+    <g id="ball-mid">
+      <g clip-path="url(#ball240)">
+        <circle cx="120" cy="120" r="60" fill="var(--ball)" stroke="var(--chalk)" stroke-width="2" stroke-opacity=".9"/>
+        <use href="#seam-pentagon" fill="var(--navy-deep)"/>
+        <g fill="none" stroke="var(--chalk)">
+          <use href="#seam-pentagon" stroke-width="2.2"/>
+          <use href="#seam-spokes" stroke-width="2.2"/>
+        </g>
+      </g>
+    </g>
+    <g id="ball-fav">
+      <g clip-path="url(#ball240)">
+        <circle cx="120" cy="120" r="60" fill="var(--ball)" stroke="var(--chalk)" stroke-width="2.5" stroke-opacity=".9"/>
+        <use href="#seam-pentagon" fill="var(--navy-deep)" stroke="var(--chalk)" stroke-width="2.5" stroke-linejoin="round"/>
+      </g>
+    </g>
+
+    <!-- lenses -->
+    <g id="lens-aperture">
+      <circle cx="120" cy="120" r="10.5" fill="var(--navy)" stroke="var(--gold)" stroke-width="2.2"/>
+      <g stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round">
+        <line x1="120" y1="112.8" x2="120" y2="116.4"/><line x1="120" y1="123.6" x2="120" y2="127.2"/>
+        <line x1="112.8" y1="120" x2="116.4" y2="120"/><line x1="123.6" y1="120" x2="127.2" y2="120"/>
+      </g>
+      <circle cx="120" cy="120" r="2" fill="var(--gold)"/>
+    </g>
+    <g id="lens-dot">
+      <circle cx="120" cy="120" r="10.5" fill="var(--navy)" stroke="var(--gold)" stroke-width="2.2"/>
+      <circle cx="120" cy="120" r="2.6" fill="var(--gold)"/>
+    </g>
+    <g id="lens-fav">
+      <circle cx="120" cy="120" r="9" fill="var(--navy)" stroke="var(--gold)" stroke-width="2.8"/>
+      <circle cx="120" cy="120" r="2.6" fill="var(--gold)"/>
+    </g>
+
+    <!-- scopes -->
+    <g id="scope-ring">
+      <circle cx="120" cy="120" r="72" fill="none" stroke="var(--chalk)" stroke-width="1.5" stroke-opacity=".4"/>
+      <g stroke="var(--chalk)" stroke-width="2.4" stroke-opacity=".85" stroke-linecap="round">
+        <line x1="44" y1="120" x2="52" y2="120"/><line x1="188" y1="120" x2="196" y2="120"/>
+      </g>
+    </g>
+    <g id="scope-sweep">
+      <path d="M101.4 50.5 A72 72 0 1 1 50.5 101.4" fill="none" stroke="var(--chalk)" stroke-width="2" stroke-opacity=".8" stroke-linecap="round"/>
+      <circle cx="101.4" cy="50.5" r="2.8" fill="var(--gold)"/>
+      <circle cx="50.5" cy="101.4" r="2.8" fill="var(--gold)"/>
+    </g>
+    <g id="scope-wide">
+      <circle cx="120" cy="120" r="113" fill="none" stroke="var(--chalk)" stroke-width="1.5" stroke-opacity=".4"/>
+      <g stroke="var(--chalk)" stroke-width="2.2" stroke-opacity=".85" stroke-linecap="round">
+        <line x1="4" y1="120" x2="12" y2="120"/><line x1="228" y1="120" x2="236" y2="120"/>
+      </g>
+    </g>
+
+    <!-- ============ the candidates ============ -->
+    <symbol id="v1" viewBox="0 0 240 240">
+      <use href="#scope-ring"/>
+      <use href="#ball-full"/>
+      <g transform="translate(120 120)" fill="var(--lime)">
+        <use href="#fan"/>
+      </g>
+      <use href="#lens-aperture"/>
+    </symbol>
+    <symbol id="v1s" viewBox="0 0 240 240">
+      <use href="#ball-mid"/>
+      <g transform="translate(120 120)">
+        <use href="#fan" fill="var(--lime)"/>
+      </g>
+      <use href="#lens-fav"/>
+    </symbol>
+    <symbol id="v2" viewBox="0 0 240 240">
+      <use href="#scope-sweep"/>
+      <use href="#ball-full"/>
+      <g transform="translate(120 120)">
+        <use href="#fan" fill="var(--lime)"/>
+      </g>
+      <use href="#lens-dot"/>
+    </symbol>
+    <symbol id="v2s" viewBox="0 0 240 240">
+      <use href="#ball-mid"/>
+      <g transform="translate(120 120)">
+        <use href="#fan" fill="var(--lime)"/>
+      </g>
+      <use href="#lens-fav"/>
+    </symbol>
+    <symbol id="v3" viewBox="0 0 240 240">
+      <use href="#scope-wide"/>
+      <use href="#ball-full"/>
+      <g transform="translate(120 120)">
+        <use href="#fan-refined" fill="var(--lime)"/>
+      </g>
+      <use href="#lens-aperture"/>
+    </symbol>
+    <symbol id="v3s" viewBox="0 0 240 240">
+      <use href="#ball-mid"/>
+      <g transform="translate(120 120)">
+        <use href="#fan-refined" fill="var(--lime)"/>
+      </g>
+      <use href="#lens-fav"/>
+    </symbol>
+    <!-- today's mark, for the side-by-side -->
+    <symbol id="v0" viewBox="0 0 240 240">
+      <g stroke="#F4F1E8" stroke-width="2.4" fill="none" opacity="0.85">
+        <circle cx="120" cy="134" r="78" stroke-dasharray="9 8"/>
+        <line x1="32" y1="134" x2="40" y2="134"/><line x1="200" y1="134" x2="208" y2="134"/>
+      </g>
+      <g clip-path="url(#ballClip0)"><circle cx="120" cy="134" r="60" fill="#0E2940" stroke="#F4F1E8" stroke-width="1.8"/>
+        <g fill="none" stroke="#F4F1E8" stroke-width="2.2" stroke-linejoin="round">
+          <path d="M120 178 L106.7 187.7 L111.8 203.3 L128.2 203.3 L133.3 187.7 Z"/>
+          <path d="M85 142 L73.6 150.3 L77.9 163.7 L92.1 163.7 L96.4 150.3 Z"/>
+          <path d="M155 142 L143.6 150.3 L147.9 163.7 L162.1 163.7 L166.4 150.3 Z"/>
+          <path d="M68 114 L56.6 122.3 L60.9 135.7 L75.1 135.7 L79.4 122.3 Z"/>
+          <path d="M152 114 L140.6 122.3 L144.9 135.7 L159.1 135.7 L163.4 122.3 Z"/>
+          <path d="M107 186 Q98 168 96.5 152"/><path d="M133 186 Q142 168 143.5 152"/>
+          <path d="M74 150 Q74 142 75 136"/><path d="M166 150 Q166 142 165 136"/>
+          <path d="M112 203 Q116 208 120 208"/><path d="M128 203 Q124 208 120 208"/>
+          <path d="M57 124 Q52 128 49 133"/><path d="M183 124 Q188 128 191 133"/>
+        </g>
+      </g>
+      <g transform="translate(120 134)" fill="#B8F53D">
+        <use href="#f78" transform="rotate(-52)"/><use href="#f96" transform="rotate(-26)"/>
+        <use href="#f112" fill="#C9A227"/>
+        <use href="#f96" transform="rotate(26)"/><use href="#f78" transform="rotate(52)"/>
+      </g>
+      <circle cx="120" cy="134" r="11" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.5"/>
+      <circle cx="120" cy="134" r="2.6" fill="#C9A227"/>
+      <defs><clipPath id="ballClip0"><circle cx="120" cy="134" r="60"/></clipPath></defs>
+    </symbol>
+  </defs>
+</svg>
+
+<section class="candidate today">
+  <div class="cand-head"><span class="tag">TODAY</span><h2>The shipped mark (v2)</h2><p>The baseline: guessed pentagons, the busy dashed ring, the disc-and-dot lens — what falls short.</p></div>
+  <div class="sizes">
+    <div class="size"><svg width="260" height="260"><use href="#v0"/></svg><span>260</span></div>
+    <div class="size"><svg width="96" height="96"><use href="#v0"/></svg><span>96</span></div>
+    <div class="size"><svg width="48" height="48"><use href="#v0"/></svg><span>48</span></div>
+    <div class="size"><svg width="24" height="24"><use href="#v0"/></svg><span>24</span></div>
+  </div>
+</section>
+
+<section class="candidate">
+  <div class="cand-head"><span class="tag">CANDIDATE 1 · APERTURE</span><h2>Calm and ordered</h2><p>The full projected seam network — pentagon, spokes, flower ring, far hints — under a quiet solid ring with east–west ticks, and a true reticle lens: gold aperture ring, fine crosshair, gold heart. Feathers exactly as they are.</p></div>
+  <div class="sizes">
+    <div class="size"><svg width="260" height="260"><use href="#v1"/></svg><span>260</span></div>
+    <div class="size"><svg width="96" height="96"><use href="#v1"/></svg><span>96</span></div>
+    <div class="size"><svg width="48" height="48"><use href="#v1s"/></svg><span>48 · small detail</span></div>
+    <div class="size"><svg width="24" height="24"><use href="#v1s"/></svg><span>24 · small detail</span></div>
+    <div class="size"><svg class="tile" width="48" height="48"><use href="#v1s"/></svg><span>favicon</span></div>
+  </div>
+  <div class="row"><h3>IN SITU</h3>
+    <header class="mock"><svg width="44" height="44"><use href="#v1"/></svg><span class="word">HUDHUD</span><span class="live">● EVERY CALL COMES WITH ITS EVIDENCE</span></header>
+  </div>
+</section>
+
+<section class="candidate">
+  <div class="cand-head"><span class="tag">CANDIDATE 2 · SWEEP</span><h2>The lock-on</h2><p>The scope becomes a 300° sweep with a gap at the upper-left and gold end dots — a lock that is closing on the root of the tail. Minimal: no ring to compete with the seams, just the arc, the ball, the fan, a dot lens.</p></div>
+  <div class="sizes">
+    <div class="size"><svg width="260" height="260"><use href="#v2"/></svg><span>260</span></div>
+    <div class="size"><svg width="96" height="96"><use href="#v2"/></svg><span>96</span></div>
+    <div class="size"><svg width="48" height="48"><use href="#v2s"/></svg><span>48 · small detail</span></div>
+    <div class="size"><svg width="24" height="24"><use href="#v2s"/></svg><span>24 · small detail</span></div>
+    <div class="size"><svg class="tile" width="48" height="48"><use href="#v2s"/></svg><span>favicon</span></div>
+  </div>
+  <div class="row"><h3>IN SITU</h3>
+    <header class="mock"><svg width="44" height="44"><use href="#v2"/></svg><span class="word">HUDHUD</span><span class="live">● EVERY CALL COMES WITH ITS EVIDENCE</span></header>
+  </div>
+</section>
+
+<section class="candidate">
+  <div class="cand-head"><span class="tag">CANDIDATE 3 · SIGNAL</span><h2>The badge</h2><p>The scope widened to encircle the whole crest — the broadcast sphere — with refined feathers, slimmer and held inside the ring, so nothing pierces it. Reads as an emblem: club-badge authority with the analysis story inside.</p></div>
+  <div class="sizes">
+    <div class="size"><svg width="260" height="260"><use href="#v3"/></svg><span>260</span></div>
+    <div class="size"><svg width="96" height="96"><use href="#v3"/></svg><span>96</span></div>
+    <div class="size"><svg width="48" height="48"><use href="#v3s"/></svg><span>48 · small detail</span></div>
+    <div class="size"><svg width="24" height="24"><use href="#v3s"/></svg><span>24 · small detail</span></div>
+    <div class="size"><svg class="tile" width="48" height="48"><use href="#v3s"/></svg><span>favicon</span></div>
+  </div>
+  <div class="row"><h3>IN SITU</h3>
+    <header class="mock"><svg width="44" height="44"><use href="#v3"/></svg><span class="word">HUDHUD</span><span class="live">● EVERY CALL COMES WITH ITS EVIDENCE</span></header>
+  </div>
+</section>
+
+<footer class="page">
+  <p>Every candidate keeps the concept and the palette: lime feathers, the Critic's gold at the centre and in the lens, chalk seams on the raised navy ball. Candidates 1 and 2 keep the current feather paths untouched; candidate 3 refines them (slimmer, tips held inside the ring). The "small detail" versions drop to pentagon + spokes for 48 px and below — the two-level rule from the brief. Pick a candidate (or mix: one scope with another lens, v3's feathers under the v1 scope) and it gets finished across every surface: the site's inline crests, the favicon, the studio slates, icons, og.png and the media kit.</p>
+</footer>
+
+</div>
+</body>
+</html>
