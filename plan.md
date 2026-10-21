@@ -67,7 +67,7 @@
 ## Phase 5 — Submit (Oct 27)
 
 - [ ] Submit on Innovation Studio by **evening PKT** (deadline = Oct 28 ~11:59 AM PKT; never deadline-day heroics)
-- [ ] Pitch text: what was built, Microsoft/Azure stack used, problem solved — one paragraph, no fluff
+- [ ] Pitch text: what was built, Microsoft/Azure stack used, problem solved — one paragraph, no fluff — **drafted 2026-10-21:** `docs/submission.md` (title, tagline, category, pitch, links, testing instructions, the owner's checklist); the owner reviews and pastes it
 - **Done when:** confirmation screenshot in #pl-hackathon.
 
 ## Decisions from the official rules (settled 2026-10-18)

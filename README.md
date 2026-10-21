@@ -109,6 +109,7 @@ scripts/edge                           # the Cloudflare Worker in front of it (d
 - **projects.md** — the reusable arsenal: existing projects → patterns → which idea they feed
 - **awards.md** — the six prize lanes: official per-member packages, FMV, sweep math
 - **goals.md** — the Grand Slam doctrine: all-six declaration, award→feature build contract, public-intention language, kill criteria
+- **docs/submission.md** — the submission's text, ready to paste: pitch, links, testing instructions, the last checklist
 - **roadmap.md** — Onwards & Upwards: the stages beyond the hackathon, from evidence-checked commentary to an AI fourth official that advises the referee
 
 ## Studying the tape
