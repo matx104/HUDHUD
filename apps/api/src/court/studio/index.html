@@ -169,7 +169,13 @@
     </section>
 
     <section class="feed" aria-labelledby="feed-title">
-      <h2 id="feed-title">On air</h2>
+      <div class="feed-head">
+        <h2 id="feed-title">On air</h2>
+        <div class="order" role="group" aria-label="Order the lines">
+          <button type="button" data-order="latest" aria-pressed="true">Latest</button>
+          <button type="button" data-order="biggest" aria-pressed="false">Biggest</button>
+        </div>
+      </div>
       <p class="hint" data-feed-hint>Every line that airs carries its evidence and its receipt.</p>
       <ol class="cues" role="log" aria-live="polite" data-cues></ol>
     </section>

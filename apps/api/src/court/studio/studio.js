@@ -509,13 +509,37 @@
     if (c.players?.length) item.append(tags(c.players));
     item.append(evidence);
     if (c.receipt) item.append(receipt(c.receipt));
-    cues.prepend(item);
+    post(item, c.priority);
     said.set(c.id, item);
     onAir = c;
     say(c);
     tally.checked += c.receipt?.numbers_checked ?? 0;
     tally.cost += c.receipt?.cost_usd ?? 0;
     drawTally();
+  }
+
+  // The feed in two orders: the latest line first (a log, as it aired), or the biggest moments
+  // first, by each cue's priority: the Scout's severity, lifted for the viewer's club or player.
+  let posted = 0;
+  let biggest = false;
+  function post(node, priority = -1) {
+    node.dataset.n = String(++posted);
+    node.dataset.priority = String(priority);
+    cues.prepend(node);
+    if (biggest) arrange();
+  }
+
+  function arrange() {
+    const by = (a, b) => (biggest ? b.dataset.priority - a.dataset.priority : 0) || b.dataset.n - a.dataset.n;
+    cues.replaceChildren(...[...cues.children].sort(by));
+  }
+
+  for (const button of document.querySelectorAll("[data-order]")) {
+    button.addEventListener("click", () => {
+      biggest = button.dataset.order === "biggest";
+      for (const b of document.querySelectorAll("[data-order]")) b.setAttribute("aria-pressed", String(b === button));
+      arrange();
+    });
   }
 
   hear.addEventListener("change", () => { if (hear.checked && onAir) say(onAir); });
@@ -614,7 +638,7 @@
       Object.assign(el("a", "button-link", "Read the recap"), { href: url, target: "_blank", rel: "noopener" }),
       Object.assign(el("a", "button-link quiet", "Download it"), { href: url, download: name }),
     );
-    cues.prepend(box);
+    post(box);
   }
 
   // ---------- the match ledger ----------
@@ -705,7 +729,7 @@
 
   function notice(text, good = false) {
     const item = el("li", `notice${good ? " good" : ""}`, text);
-    cues.prepend(item);
+    post(item);
   }
 
   function setLevel(level, text) {
