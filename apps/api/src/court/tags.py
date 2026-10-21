@@ -20,7 +20,7 @@ HARD_PASS = 40  # pass difficulty out of 100, as for the Scout's great pass
 
 def player_tags(cue: Cue, state: MatchState) -> tuple[PlayerTag, ...]:
     cited = [e for e in (state.get(i) for i in cue.evidence) if e is not None]
-    if cue.kind in (AlertKind.MOMENTUM_SWING, AlertKind.HIGH_PRESS):
+    if cue.kind in (AlertKind.MOMENTUM_SWING, AlertKind.HIGH_PRESS, AlertKind.END_TO_END):
         # A spell has many hands: tag the two players behind most of the cited actions.
         counts = Counter(_actor(e, state) for e in cited)
         return tuple(_tag(state, pid, "involved", ()) for pid, _ in counts.most_common(2) if pid)

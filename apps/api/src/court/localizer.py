@@ -29,6 +29,7 @@ TTL_S = {
     AlertKind.GREAT_PASS: 8.0,
     AlertKind.COUNTER: 9.0,
     AlertKind.HIGH_PRESS: 9.0,
+    AlertKind.END_TO_END: 9.0,
     AlertKind.REF_CALL: 10.0,
 }
 
@@ -37,7 +38,7 @@ TTL_S = {
 # owner for production (docs/review/ur-ar.md): the first four on 2026-10-18; COUNTER, HIGH PRESS and
 # REF'S CALL on 2026-10-20. Change them only with the owner. A new kind's label waits here, its
 # headline in English, until the owner signs it off.
-AWAITING_REVIEW: tuple[str, ...] = ()
+AWAITING_REVIEW: tuple[str, ...] = ("END TO END",)  # proposed 2026-10-21, docs/review/ur-ar.md
 LABELS = {
     "ur": {
         "GOAL": "گول",
@@ -176,6 +177,10 @@ class Localizer:
         elif alert.kind is AlertKind.HIGH_PRESS:
             headline = f"HIGH PRESS · {team.short_name}"
             text = f"{team.name}: {m['wins']:.0f} ball wins in the attacking third."
+        elif alert.kind is AlertKind.END_TO_END:
+            headline = f"END TO END · {meta.home.short_name} v {meta.away.short_name}"
+            changes = m["wins"] + m["opp_wins"]
+            text = f"The ball has changed hands {changes:.0f} times, with shots at both ends."
         elif alert.kind is AlertKind.REF_CALL and alert.call is not None:
             restart, card = call_words(alert.call)
             headline = f"REF'S CALL · {team.short_name}"

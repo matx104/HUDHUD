@@ -19,6 +19,12 @@ Two moments from how the ball is won back. A counterattack: a side wins the ball
 and has a shot away within COUNTER_MAX_S, in the same possession (about 0.65 a match on seeds
 0-59). The high press: a side wins the ball in the attacking third PRESS_WINS times inside
 PRESS_WINDOW_S (about 1.9 a match), told against how often it pressed there.
+
+Control or chaos: in a settled match the ball changes hands about 7 times in five minutes of open
+play (seeds 0-59, sd 2.8). When it changes hands END_TO_END_WINS times or more inside
+END_TO_END_WINDOW_S, the top tenth of five-minute spells, and both sides have had a shot in it,
+the match has broken open (about 0.5 a match, in 26 of 60). Called on the shot that completes it,
+never on a goal: the goal is the news.
 """
 
 from match_events import (
@@ -62,6 +68,9 @@ HALFWAY_X = 52.5
 COUNTER_MAX_S = 15.0  # from winning the ball to the shot
 PRESS_WINS = 4  # wins in the attacking third...
 PRESS_WINDOW_S = 600.0  # ...inside ten minutes of one half; then ten minutes' quiet for that side
+END_TO_END_WINS = 11  # the ball won off the opponent, by either side...
+END_TO_END_WINDOW_S = 300.0  # ...inside five minutes, with a shot at each end...
+END_TO_END_COOLDOWN_S = 600.0  # ...then ten minutes' quiet
 
 
 class Scout:
@@ -92,12 +101,14 @@ class Scout:
         self._won: PossessionChange | None = None  # the ball win the current possession began with
         self._high_wins: dict[Side, list[PossessionChange]] = {side: [] for side in Side}
         self._last_press = dict.fromkeys(Side, float("-inf"))
+        self._last_open = float("-inf")
 
     def observe(self, event: MatchEvent, state: MatchState) -> list[Alert]:
         if isinstance(event, PeriodStart):
             self._last_swing = None
             self._held = dict.fromkeys(Side, 0)
             self._high_wins = {side: [] for side in Side}
+            self._last_open = float("-inf")
             self._next_check_t = event.t + self.window_s / 2
             return []
         alerts = []
@@ -109,6 +120,8 @@ class Scout:
             alerts.append(self._foul(event, decision))
         if isinstance(event, Shot):
             alerts.extend(self._shot(event, state))
+            if event.outcome is not ShotOutcome.GOAL and (open_ := self._end_to_end(event, state)):
+                alerts.append(open_)
         if isinstance(event, Pass | Shot) and event.t >= self._next_check_t:
             self._next_check_t = event.t + self.check_every_s
             if swing := self._momentum(event, state):
@@ -216,6 +229,39 @@ class Scout:
             metrics={
                 "wins": compute("high_ball_wins", win.team, events),
                 "pressures": compute("high_pressures", win.team, events),
+                "window_s": round(window.end_t - window.start_t),
+            },
+        )
+
+    def _end_to_end(self, shot: Shot, state: MatchState) -> Alert | None:
+        """The match broken open: the ball changing hands again and again, chances at both ends."""
+        start = max(state.period_start_t, shot.t - END_TO_END_WINDOW_S)
+        if shot.t - start < 0.8 * END_TO_END_WINDOW_S or shot.t - self._last_open < (
+            END_TO_END_COOLDOWN_S
+        ):
+            return None
+        window = Window(period=shot.period, start_t=start, end_t=shot.t)
+        events = list(state.in_window(window))
+        wins = [e for e in events if is_ball_win(e)]
+        shots = [e for e in events if isinstance(e, Shot)]
+        if len(wins) < END_TO_END_WINS or {s.team for s in shots} != set(Side):
+            return None
+        self._last_open = shot.t
+        opp = shot.team.other()
+        return self._alert(
+            kind=AlertKind.END_TO_END,
+            team=shot.team,
+            period=shot.period,
+            t=shot.t,
+            as_of_seq=shot.seq,
+            severity=round(min(1.0, 0.35 + 0.02 * len(wins)), 2),
+            evidence=tuple(e.id for e in sorted([*wins, *shots], key=lambda e: e.seq)),
+            window=window,
+            metrics={
+                "wins": compute("ball_wins", shot.team, events),
+                "opp_wins": compute("ball_wins", opp, events),
+                "shots": compute("shots", shot.team, events),
+                "opp_shots": compute("shots", opp, events),
                 "window_s": round(window.end_t - window.start_t),
             },
         )

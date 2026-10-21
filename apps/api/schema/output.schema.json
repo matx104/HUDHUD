@@ -8,6 +8,7 @@
         "great_pass",
         "counter",
         "high_press",
+        "end_to_end",
         "ref_call",
         "recap",
         "answer"
@@ -44,6 +45,7 @@
             "final_third_passes",
             "high_ball_wins",
             "high_pressures",
+            "ball_wins",
             "tackles_won",
             "fouls",
             "shot_speed",

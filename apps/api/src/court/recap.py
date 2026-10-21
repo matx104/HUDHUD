@@ -220,10 +220,11 @@ def _numbers(meta: MatchMeta, events: Sequence[MatchEvent], whistle: PeriodEnd, 
 MOMENT_ORDER = {
     AlertKind.MOMENTUM_SWING: 0,
     AlertKind.HIGH_PRESS: 1,
-    AlertKind.COUNTER: 2,
-    AlertKind.GREAT_PASS: 3,
-    AlertKind.BIG_CHANCE: 4,
-    AlertKind.REF_CALL: 5,
+    AlertKind.END_TO_END: 2,
+    AlertKind.COUNTER: 3,
+    AlertKind.GREAT_PASS: 4,
+    AlertKind.BIG_CHANCE: 5,
+    AlertKind.REF_CALL: 6,
 }
 MOST_MOMENTS = 8
 

@@ -23,6 +23,7 @@ class AlertKind(StrEnum):
     GREAT_PASS = "great_pass"
     COUNTER = "counter"  # the ball won in a side's own half, a shot within seconds
     HIGH_PRESS = "high_press"  # the ball won back in the attacking third, again and again
+    END_TO_END = "end_to_end"  # the ball changing hands again and again, shots at both ends
     REF_CALL = "ref_call"  # a foul that matters, and the referee's likely decision (court.referee)
     RECAP = "recap"  # a line of the post-match recap (court.recap), never a live alert
     ANSWER = "answer"  # a viewer's question, answered from the events (court.ask), never an alert
@@ -63,6 +64,7 @@ Metric = Literal[
     "final_third_passes",
     "high_ball_wins",  # the ball won (tackle or interception) in the attacking third
     "high_pressures",  # pressures on the ball in the attacking third
+    "ball_wins",  # the ball won off the opponent (tackle or interception), anywhere
     "tackles_won",
     "fouls",  # fouls committed: tackles that were fouls
     # Per-event metrics (the assertion names its event_id), all as broadcast integers:

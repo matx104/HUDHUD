@@ -23,7 +23,7 @@
     ungrounded_name: "Names a player its evidence isn't about",
     no_rule: "No rule yet for checking this kind of claim",
   };
-  const KIND = { goal: "Goal", big_chance: "Big chance", momentum_swing: "Momentum", great_pass: "Great pass", counter: "Counter-attack", high_press: "High press", ref_call: "The ref's call" };
+  const KIND = { goal: "Goal", big_chance: "Big chance", momentum_swing: "Momentum", great_pass: "Great pass", counter: "Counter-attack", high_press: "High press", end_to_end: "End to end", ref_call: "The ref's call" };
   const LENS_COLOR = { referee: "#C9A227", commentator: "#B8F53D", fan: "#F4F1E8" };
   const COLORS = { chalk: "244, 241, 232", lime: "184, 245, 61", gold: "201, 162, 39", card: "242, 92, 84" };
   const LIFE = { pin: 9, refused: 6, answer: 14, lock: 8, pass: 6, pressure: 5, foul: 12, shot: 4 };
@@ -525,6 +525,24 @@
     return el("p", "", "The numbers arrive with the first minute played.");
   }
 
+  // Control or chaos: how often the ball changed hands in the last five minutes, on a scale from a
+  // settled match to the Scout's mark for one broken open.
+  function tempo(t) {
+    const word = t.changes >= t.broken ? "Broken open" : t.changes > t.settled + 1 ? "Stretched" : "Settled";
+    const row = el("div", "tempo");
+    const bar = el("div", "tempo-bar");
+    const fill = el("span");
+    fill.style.width = `${Math.min(100, Math.round((100 * t.changes) / (t.broken + 4)))}%`;
+    bar.append(fill);
+    row.append(
+      el("span", "duel-label", "Control or chaos"),
+      el("b", "", word),
+      bar,
+      el("p", "from", `The ball changed hands ${t.changes} ${t.changes === 1 ? "time" : "times"} in open play. A settled match: about ${t.settled}. Broken open: ${t.broken} or more, with a shot at each end.`),
+    );
+    return row;
+  }
+
   function commentatorRead(p) {
     const out = [el("h2", "", "The last five minutes")];
     if (S.onBall) {
@@ -534,6 +552,7 @@
       out.push(el("p", "", "Last on the ball"), ball);
     }
     if (!p) return [...out, waiting()];
+    if (p.tempo) out.push(tempo(p.tempo));
     out.push(
       duel("Passes", "passes", p.recent),
       duel("Shots", "shots", p.recent),

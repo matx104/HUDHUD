@@ -43,7 +43,9 @@ from .referee import (
     Profile,
     distance_to_goal,
 )
+from .scout import END_TO_END_WINS
 
+SETTLED_CHANGES = 7  # the ball won off the opponent in five minutes of a typical match (seeds 0-59)
 WINDOW_S = 300.0  # the pulse's recent stretch: the last five minutes of the half
 PULSE_METRICS = (
     "shots",
@@ -54,6 +56,7 @@ PULSE_METRICS = (
     "box_entries",
     "high_pressures",
     "high_ball_wins",
+    "ball_wins",
     "tackles_won",
     "fouls",
     "goals",
@@ -132,6 +135,10 @@ def pulse(events: Iterable[MatchEvent], now_t: float, period: int) -> dict[str, 
     passes = {side: out["recent"][side.value]["passes"] for side in Side}
     total = sum(passes.values())
     out["share"] = {s.value: round(100 * passes[s] / total) if total else None for s in Side}
+    # Control or chaos: how often the ball changed hands lately, against a settled match's rate
+    # and the Scout's mark for a match broken open (court.scout).
+    changes = sum(out["recent"][s.value]["ball_wins"] for s in Side)
+    out["tempo"] = {"changes": changes, "settled": SETTLED_CHANGES, "broken": END_TO_END_WINS}
     return out
 
 

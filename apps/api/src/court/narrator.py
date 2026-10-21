@@ -106,6 +106,7 @@ class TemplateNarrator:
             AlertKind.GREAT_PASS: self._great_pass,
             AlertKind.COUNTER: self._counter,
             AlertKind.HIGH_PRESS: self._high_press,
+            AlertKind.END_TO_END: self._end_to_end,
             AlertKind.REF_CALL: self._ref_call,
         }[alert.kind]
         headline, text, assertions, figures = compose(alert, state, metrics)
@@ -244,6 +245,29 @@ class TemplateNarrator:
         )
         return f"HIGH PRESS · {team.short_name}", text, assertions, {"minutes": minutes}
 
+    def _end_to_end(self, alert: Alert, state: MatchState, m: dict[str, float]):
+        meta = state.meta
+        team, opp = meta.team(alert.team), meta.team(alert.team.other())
+        minutes = max(1, round(m["window_s"] / 60))
+        span = "minute" if minutes == 1 else f"{minutes} minutes"
+        changes = m["wins"] + m["opp_wins"]
+        # The first sentence stands alone: casual mode airs only that.
+        text = (
+            f"The match has broken open: the ball has changed hands {changes:.0f} times in the "
+            f"last {span}, with chances at both ends. {team.name} have won it back "
+            f"{_count(m['wins'], 'time')} and had {_count(m['shots'], 'shot')}, {opp.name} "
+            f"{_count(m['opp_wins'], 'time')} and {_count(m['opp_shots'], 'shot')}."
+        )
+        w, side, other = alert.window, alert.team, alert.team.other()
+        assertions = (
+            Assertion(metric="ball_wins", team=side, value=m["wins"], window=w),
+            Assertion(metric="ball_wins", team=other, value=m["opp_wins"], window=w),
+            Assertion(metric="shots", team=side, value=m["shots"], window=w),
+            Assertion(metric="shots", team=other, value=m["opp_shots"], window=w),
+        )
+        headline = f"END TO END · {meta.home.short_name} v {meta.away.short_name}"
+        return headline, text, assertions, {"minutes": minutes, "changes": changes}
+
     def _momentum(self, alert: Alert, state: MatchState, m: dict[str, float]):
         team, opp = state.meta.team(alert.team), state.meta.team(alert.team.other())
         minutes = max(1, round(m["window_s"] / 60))
@@ -306,7 +330,7 @@ class TemplateNarrator:
             metrics["final_third"] += 3
         elif alert.kind is AlertKind.GREAT_PASS:
             metrics["pass_difficulty"] += 15
-        elif alert.kind is AlertKind.HIGH_PRESS:
+        elif alert.kind in (AlertKind.HIGH_PRESS, AlertKind.END_TO_END):
             metrics["wins"] += 2
         else:
             metrics["xg"] += 0.25

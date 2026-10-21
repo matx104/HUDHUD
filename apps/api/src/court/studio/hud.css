@@ -96,6 +96,10 @@ body[data-state="slate"] .stage { grid-template-columns: minmax(0, 1fr); grid-te
 .duel b:last-child { text-align: right; }
 .duel-bar { display: flex; height: 0.4rem; border-radius: 1px; overflow: hidden; background: var(--chalk-faint); }
 .duel-bar span { background: var(--team); transition: flex-grow 0.6s ease; }
+.tempo { display: grid; gap: 0.2rem; margin: 0.9rem 0 0.8rem; }
+.tempo b { font: 800 1.1rem / 1 var(--display); }
+.tempo-bar { height: 0.4rem; border-radius: 1px; overflow: hidden; background: var(--chalk-faint); }
+.tempo-bar span { display: block; height: 100%; background: var(--chalk); transition: width 0.6s ease; }
 .big-pair { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.6rem; }
 .big-pair div { display: grid; }
 .big-pair div:last-child { text-align: right; }

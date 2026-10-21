@@ -24,6 +24,7 @@ from match_events import (
     PossessionChange,
     Shot,
     ShotOutcome,
+    Side,
     Tackle,
 )
 
@@ -146,6 +147,30 @@ def press_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
     return None
 
 
+END_TO_END_MIN_WINS = 11  # the Scout's END_TO_END_WINS
+
+
+def end_to_end_rule(claim: Claim, cited: Sequence[MatchEvent]) -> str | None:
+    """A match broken open stands on the ball changing hands and the chances at both ends: every
+    cited event is a ball win or a shot inside the stretch the claim describes, there are enough
+    ball wins, and each side has a shot among them."""
+    windows = [a.window for a in claim.assertions if a.window is not None]
+    if not windows:
+        return "an end-to-end claim must say which stretch of play it covers"
+    spell = max(windows, key=lambda w: w.end_t)
+    for event in cited:
+        if not (is_ball_win(event) or isinstance(event, Shot)):
+            return f"{event.id} is neither the ball won back nor a shot"
+        if not spell.start_t <= event.t <= spell.end_t:
+            return f"{event.id} came before the stretch the claim describes"
+    wins = sum(map(is_ball_win, cited))
+    if wins < END_TO_END_MIN_WINS:
+        return f"end to end needs {END_TO_END_MIN_WINS} ball wins; the claim cites {wins}"
+    if {e.team for e in cited if isinstance(e, Shot)} != set(Side):
+        return "end to end needs a shot from each side"
+    return None
+
+
 def ref_rule(profile: Profile) -> EvidenceRule:
     """The referee's likely call, recomputed from the cited foul under the competition's profile
     (court.referee). The claim must cite the foul, carry the same decision, and say it in words."""
@@ -215,6 +240,7 @@ EVIDENCE_RULES: Mapping[AlertKind, EvidenceRule] = {
     AlertKind.GREAT_PASS: great_pass_rule,
     AlertKind.COUNTER: counter_rule,
     AlertKind.HIGH_PRESS: press_rule,
+    AlertKind.END_TO_END: end_to_end_rule,
     AlertKind.REF_CALL: ref_rule("standard"),
     AlertKind.RECAP: recap_rule,
     AlertKind.ANSWER: answer_rule,

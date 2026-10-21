@@ -27,6 +27,16 @@ Counterattacks, the high press and the ref's call. Live in `court/localizer.py` 
 | HIGH PRESS | اونچا دباؤ | ضغط عالٍ | ✅ |
 | REF'S CALL | ریفری کا فیصلہ | قرار الحكم | ✅ |
 
+## One newer headline word (proposed by Claude 2026-10-21, awaiting the Monarch)
+
+A match broken open: the ball changing hands again and again, with a shot at each end (the
+Scout's control-or-chaos call). Until it is signed off, the headline airs in English under every
+language (`court/localizer.py`, `AWAITING_REVIEW`); once ✅, it moves into `LABELS`.
+
+| English | Urdu | Arabic | Your call |
+|---|---|---|---|
+| END TO END | دو طرفہ حملے (attacks both ways) | كرّ وفرّ (attack and fall back) | |
+
 ## Words that mark a question as about betting (added by Claude, signed off by the Monarch 2026-10-20)
 
 Roadmap principle 8: a question about bets, odds or gambling gets fixed words that steer away from

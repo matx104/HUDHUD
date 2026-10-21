@@ -55,6 +55,7 @@
     great_pass: "A pass few players would complete, judged by how hard it was before it was played.",
     counter: "The ball won back in a side's own half, and a shot within seconds, before the other side could get back.",
     high_press: "Winning the ball back close to the other side's goal, again and again.",
+    end_to_end: "Neither side can keep the ball: it keeps changing hands, and both have had a shot. The opposite of a side in control.",
     ref_call: "What the Laws of the Game likely give for that foul. Event data sees where a foul happened, not how hard it was, so it always says likely.",
   };
 

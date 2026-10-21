@@ -106,6 +106,8 @@ def compute(
         return sum(isinstance(e, Pass) and e.outcome is PassOutcome.COMPLETE for e in mine)
     if metric == "final_third_passes":
         return sum(is_final_third_pass(e) for e in mine)
+    if metric == "ball_wins":
+        return sum(is_ball_win(e) for e in mine)
     if metric == "high_ball_wins":
         return sum(is_high_ball_win(e) for e in mine)
     if metric == "high_pressures":

@@ -44,6 +44,7 @@ KIND = {
     AlertKind.GREAT_PASS: "great pass",
     AlertKind.COUNTER: "counterattack",
     AlertKind.HIGH_PRESS: "high press winning the ball back",
+    AlertKind.END_TO_END: "end-to-end spell, the ball changing hands and chances at both ends",
     AlertKind.REF_CALL: "foul, and the referee's likely call",
 }
 
