@@ -14,4 +14,19 @@ docker build -q -t "$image" "$here"
 docker push -q "$image"
 "$here/scripts/az" containerapp update -n hudhud-studio -g rg-hudhud --image "$image" \
   --query "properties.latestRevisionName" -o tsv
-echo "live at https://$("$here/scripts/az" containerapp show -n hudhud-studio -g rg-hudhud --query properties.configuration.ingress.fqdn -o tsv)/"
+fqdn="$("$here/scripts/az" containerapp show -n hudhud-studio -g rg-hudhud --query properties.configuration.ingress.fqdn -o tsv)"
+echo "live at https://$fqdn/"
+# Cloudflare keeps the studio's files for hours, under the studio's address and under the Azure one
+# the edge fetches them from: both purged, so viewers get the code just shipped.
+studio="$(grep -o 'studioUrl: "[^"]*"' "$here/site/config.js" | cut -d'"' -f2 | sed 's#/$##')"
+files=""
+for file in "$here"/apps/api/src/court/studio/*.js "$here"/apps/api/src/court/studio/*.css; do
+  name="$(basename "$file")"
+  files="$files\"https://$fqdn/static/$name\",\"$studio/static/$name\","
+done
+if command -v cf >/dev/null; then
+  cf cache purge -z hudhud.com.pk -f --body "{\"files\": [${files%,}]}" >/dev/null
+  echo "edge cache purged: the studio's files"
+else
+  echo "cf not found: purge the studio's files from Cloudflare's cache by hand" >&2
+fi
