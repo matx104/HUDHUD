@@ -621,6 +621,26 @@ pre {
   .shotmap.is-live .goal-ring { animation: ring 0.7s var(--ease-out) both; animation-delay: calc(var(--i) * 70ms + 200ms); }
   .north-star .star-crest { animation: glow 4s ease-in-out infinite; }
   .head-emblem .ring-run { animation: orbit 90s linear infinite; }
+
+  /* the scenes run while their scene is on screen, and stand complete otherwise */
+  .scene.is-live .g-lower { animation: gap-lower 0.7s var(--ease-out) both; }
+  .scene.is-live .g-tick { animation: pop 0.4s ease-out both; animation-delay: calc(var(--i) * 0.15s + 0.6s); }
+  .scene.is-live .g-count { animation: arrive 0.5s ease-out 1.6s both; }
+  .scene.is-live .g-ring { stroke-dasharray: 120; animation: draw 0.8s ease-out 1.9s both; }
+  .scene.is-live .g-seven { animation: seven-flip 0.6s steps(1) 1.9s both; }
+  .scene.is-live .g-no { animation: pop 0.5s var(--ease-out) 2.4s both; }
+
+  .scene.is-live .scn-dot { animation: scn-travel 1.8s linear infinite; animation-delay: var(--t, 0s); }
+  .scene.is-live .scn-edge--red { animation: march 1.2s linear infinite; }
+
+  .scene.is-live .m-leaf, .scene.is-live .m-node { animation: pop 0.45s var(--ease-out) both; animation-delay: calc(var(--i) * 0.3s + 0.2s); }
+  .scene.is-live .m-root { animation: ring 0.7s var(--ease-out) 1.9s both; }
+  .scene.is-live .m-path-edge { stroke-dasharray: 420; --dash: 420; animation: draw 1s ease-out 2.3s both; }
+
+  .scene.is-live .sd, .scene.is-live .sd-goal { animation: pop 0.45s var(--ease-out) both; animation-delay: calc(var(--i) * 0.3s + 0.4s); }
+  .scene.is-live .sd-ring { animation: ring 0.7s var(--ease-out) both; animation-delay: calc(var(--i) * 0.3s + 0.6s); }
+
+  .scene.is-live .r-ball { animation: climb 9s var(--ease-out) infinite; }
 }
 @media (prefers-reduced-motion: reduce) {
   .d-packets, .sig-head { display: none; }
@@ -643,6 +663,24 @@ pre {
 @keyframes pop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
 @keyframes ring { 0% { opacity: 0; transform: scale(0.4); } 60% { opacity: 1; transform: scale(1.6); } 100% { opacity: 1; transform: scale(1); } }
 @keyframes glow { 50% { filter: drop-shadow(0 0 40px rgba(201, 162, 39, 0.7)); } }
+/* the scenes' keyframes: broadcast caption, hash ring, packets, proofs, the road */
+@keyframes gap-lower { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
+@keyframes draw { from { stroke-dashoffset: var(--dash, 120); } to { stroke-dashoffset: 0; } }
+@keyframes seven-flip { from { fill: var(--navy); } to { fill: var(--card); } }
+@keyframes scn-travel {
+  0% { opacity: 0; transform: none; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx, 60px), var(--dy, 0px)); }
+}
+@keyframes march { to { stroke-dashoffset: -11; } }
+@keyframes climb {
+  0%, 16% { transform: translate(135px, 218px); }
+  22%, 38% { transform: translate(365px, 153px); }
+  44%, 60% { transform: translate(595px, 88px); }
+  66%, 86% { transform: translate(825px, 23px); }
+  92%, 100% { transform: translate(825px, 23px) scale(0.9); opacity: 0.5; }
+}
 
 /* ---------- build log ---------- */
 .log-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
@@ -907,6 +945,153 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
 .replays { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; }
 .shots-all { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
+/* ---------- explained: eight scenes, moving only while on screen ---------- */
+.scene { margin: 0 0 clamp(2.5rem, 6vw, 4rem); }
+.scene-screen {
+  padding: clamp(1rem, 3vw, 1.75rem);
+  background: linear-gradient(160deg, var(--navy-raised), var(--navy-deep));
+  border: 1px solid var(--chalk-faint); border-radius: 10px;
+}
+.scene-scroll { overflow-x: auto; padding-bottom: 0.25rem; }
+.scene-scroll svg { display: block; width: 100%; min-width: 46rem; height: auto; }
+.scene-controls { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.9rem; }
+.scene-copy {
+  display: grid; grid-template-columns: minmax(10rem, 17rem) minmax(0, 3fr);
+  gap: 0.4rem 2.5rem; padding-top: 1.1rem; margin-top: 1.1rem; border-top: 1px solid var(--chalk-faint);
+}
+.scene-copy h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+.scene-copy p:not(.scene-tag) { grid-column: 2; color: var(--chalk-dim); }
+.scene-copy a { color: var(--lime); }
+.scene-tag { grid-column: 1 / -1; font: 500 0.8125rem / 1 var(--mono); color: var(--gold); letter-spacing: 0.05em; }
+.story-note { margin-bottom: clamp(2rem, 5vw, 3rem); padding-left: 1rem; border-left: 3px solid var(--gold); }
+.story-end { margin-top: clamp(2rem, 5vw, 3rem); }
+
+/* the scenes' shared pieces: boxes, chips, labels, edges. Colours ride on
+   inheritance from the svg element, so one class on a text node is enough. */
+.scene-scroll svg { fill: var(--chalk); font: 400 13px var(--body); }
+.scn-t { font: 800 21px var(--display); fill: var(--chalk); text-anchor: middle; }
+.scn-t--start { text-anchor: start; }
+.scn-t--lime { fill: var(--lime); }
+.scn-t--gold { fill: var(--gold); }
+.scn-s { font-size: 12px; fill: var(--chalk-dim); text-anchor: middle; }
+.scn-s--start { text-anchor: start; }
+.scn-lbl { font: 500 12px var(--mono); fill: var(--chalk-dim); letter-spacing: 0.05em; }
+.scn-lbl--lime { fill: var(--lime); }
+.scn-lbl--gold { fill: var(--gold); }
+.scn-lbl--red { fill: var(--card); }
+.scn-box { fill: var(--navy-raised); stroke: var(--chalk-faint); stroke-width: 1.5; }
+.scn-box--lime { stroke: rgba(184, 245, 61, 0.6); }
+.scn-box--gold { stroke: rgba(201, 162, 39, 0.65); }
+.scn-tv { fill: var(--navy-deep); }
+.scn-edge { fill: none; stroke: var(--chalk-dim); stroke-width: 2; }
+.scn-edge--gold { stroke: var(--gold); }
+.scn-edge--red { stroke: var(--card); stroke-dasharray: 6 5; }
+.scn-chip { fill: rgba(244, 241, 232, 0.05); stroke: var(--chalk-faint); stroke-width: 1.5; }
+.scn-chip--lime { stroke: rgba(184, 245, 61, 0.55); fill: rgba(184, 245, 61, 0.07); }
+.scn-chip--gold { stroke: rgba(201, 162, 39, 0.65); fill: rgba(201, 162, 39, 0.08); }
+.scn-chip--red { stroke: rgba(242, 92, 84, 0.7); fill: rgba(242, 92, 84, 0.08); }
+.scn-chipt { font: 500 15px var(--mono); fill: var(--chalk); }
+.scn-chipt--lime { fill: var(--lime); }
+.scn-chipt--gold { fill: var(--gold); }
+.scn-chipt--red { fill: var(--card); }
+.scn-chipt--dim { fill: var(--chalk-dim); font-size: 12px; }
+.scn-mono-t { font: 500 15px var(--mono); fill: var(--chalk); }
+.scn-dot { opacity: 0; }
+.scn-refuse { letter-spacing: 0.02em; }
+
+/* scene 1, the gap: a caption nobody checked, and the recount */
+.g-lower-t { font: 700 20px var(--mono); fill: var(--navy); }
+.g-lower-s { font-size: 16px; }
+.g-seven { font: 800 27px var(--mono); fill: var(--card); }
+.g-ring { fill: none; stroke: var(--card); stroke-width: 3; }
+.g-tick { fill: rgba(184, 245, 61, 0.2); stroke: rgba(184, 245, 61, 0.8); stroke-width: 2; }
+.g-tick-off { fill: none; stroke: var(--chalk-faint); stroke-dasharray: 3 4; }
+.g-count { font: 800 60px var(--display); fill: var(--gold); text-anchor: end; }
+.g-no { font: 800 46px var(--display); fill: var(--card); text-anchor: middle; }
+
+/* scene 3, the hash: the changed state sits on top and swaps in. The minute's
+   digit is a tspan, so it swaps by display (a hidden tspan must not take room);
+   the chips crossfade by opacity. */
+.h-t-bad { display: none; fill: var(--card); }
+.scene[data-scene="hash"].is-tampered .h-t-bad { display: inline; }
+.scene[data-scene="hash"].is-tampered .h-t-ok { display: none; }
+.h-v-bad { fill: var(--card); }
+.h-v-ok, .h-v-bad { transition: opacity 0.2s; }
+.scene:not(.is-tampered) .h-v-bad { opacity: 0; }
+.scene[data-scene="hash"].is-tampered .h-v-ok { opacity: 0; }
+.h-pencil { opacity: 1; transition: opacity 0.3s; }
+.scene[data-scene="hash"]:not(.is-tampered) .h-pencil { opacity: 0.3; }
+
+/* scene 4, the chain: the cascade, each step after the one it breaks */
+.c-old, .c-new { transition: opacity 0.25s; }
+.c-new { opacity: 0; }
+.scene[data-scene="chain"].is-tampered .c-new { opacity: 1; }
+.scene[data-scene="chain"].is-tampered .c-old { opacity: 0; }
+.c-brk { transition: fill 0.3s, stroke 0.3s, opacity 0.25s; }
+.scene[data-scene="chain"].is-tampered text.c-brk { fill: var(--card); transition-delay: var(--d, 0s); }
+.scene[data-scene="chain"].is-tampered rect.c-brk { fill: rgba(242, 92, 84, 0.45); stroke: var(--card); transition-delay: var(--d, 0s); }
+.c-neq { opacity: 0; transition: opacity 0.3s; }
+.scene[data-scene="chain"].is-tampered .c-neq { opacity: 1; transition-delay: var(--d, 0s); }
+.c-pencil { opacity: 0.45; transition: opacity 0.3s, transform 0.3s; }
+.scene[data-scene="chain"].is-tampered .c-pencil { opacity: 1; transform: translate(322px, 226px) rotate(-8deg); }
+.c-frame, .c-frame--gold, .c-sealword { transition: stroke 0.3s, fill 0.3s; }
+.scene[data-scene="chain"].is-tampered .c-frame--gold { stroke: rgba(242, 92, 84, 0.75); transition-delay: 1.4s; }
+.scene[data-scene="chain"].is-tampered .c-sealword { fill: var(--card); transition-delay: 1.4s; }
+.c-entry { fill: rgba(244, 241, 232, 0.2); stroke: var(--chalk-faint); stroke-width: 1; }
+.c-min { fill: var(--navy-deep); stroke: var(--chalk-faint); stroke-width: 1; }
+.c-div { stroke: var(--chalk-faint); stroke-width: 1; }
+
+/* scene 5, the merkle root: the branch that is a proof */
+.m-leaf--care { stroke: var(--gold); fill: rgba(201, 162, 39, 0.12); }
+.m-path-edge { fill: none; stroke: var(--gold); stroke-width: 3; }
+
+/* scene 7, the seed */
+.sd-pitch { fill: rgba(30, 123, 69, 0.18); stroke: var(--chalk-faint); stroke-width: 1.5; }
+.sd-line { stroke: rgba(244, 241, 232, 0.22); stroke-width: 1.5; }
+.sd { fill: rgba(184, 245, 61, 0.15); stroke: var(--lime); stroke-width: 2; }
+.sd-goal { fill: var(--lime); }
+.sd-ring { fill: none; stroke: var(--gold); stroke-width: 2; }
+.sd-seed { font: 800 44px var(--display); fill: var(--lime); }
+
+/* scene 8, the road: the ball rests on today's step until the scene wakes */
+.r-t { font: 800 24px var(--display); fill: var(--chalk); }
+.r-t--lime { fill: var(--lime); }
+.r-t--gold { fill: var(--gold); }
+.r-star-t { font: 800 26px var(--display); fill: var(--gold); }
+.r-ground { stroke: var(--chalk-faint); }
+.r-ball { fill: var(--chalk); stroke: var(--navy-deep); stroke-width: 2; transform: translate(135px, 218px); }
+
+/* ---------- the challenge: the ask, the rules, the rewards ---------- */
+.challenge-ask {
+  margin: 0 0 clamp(2.5rem, 6vw, 4rem); padding: 1.5rem 1.75rem;
+  border-left: 4px solid var(--lime); background: rgba(184, 245, 61, 0.07); border-radius: 0 6px 6px 0;
+}
+.challenge-ask p { font: 700 clamp(1.25rem, 2.4vw, 1.75rem) / 1.35 var(--display); }
+.challenge-ask footer { margin-top: 0.75rem; font-size: 0.9375rem; color: var(--chalk-dim); }
+.flow-five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.pillars { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; }
+.pillars li { padding: 1rem; border: 1px solid var(--chalk-faint); border-radius: 6px; background: var(--navy-raised); }
+.pillars .pct { font: 800 2.25rem / 1 var(--display); color: var(--gold); }
+.pillars strong { display: block; margin-top: 0.4rem; font: 700 1.15rem / 1.15 var(--display); color: var(--chalk); }
+.pillars p { margin-top: 0.4rem; font-size: 0.875rem; color: var(--chalk-dim); }
+.prizes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+.prize {
+  display: grid; gap: 0.6rem; align-content: start; padding: 1.35rem 1.25rem;
+  border: 1px solid var(--chalk-faint); border-radius: 10px; background: var(--navy-raised);
+}
+.prize[data-tier="grand"] {
+  border-color: rgba(201, 162, 39, 0.6);
+  background: radial-gradient(24rem 12rem at 0% 0%, rgba(201, 162, 39, 0.12), transparent 70%), var(--navy-raised);
+}
+.prize-tier { font: 500 0.8125rem / 1.3 var(--mono); color: var(--lime); letter-spacing: 0.05em; }
+.prize[data-tier="grand"] .prize-tier { color: var(--gold); }
+.prize-cash { font: 800 clamp(2.25rem, 4vw, 3rem) / 1 var(--display); color: var(--chalk); }
+.prize-cash span { display: block; font: 500 0.8125rem / 1.4 var(--mono); color: var(--chalk-dim); }
+.prize-extras { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; font-size: 0.9375rem; color: var(--chalk-dim); }
+.prize-extras li { position: relative; padding-left: 1.1rem; }
+.prize-extras li::before { content: "+"; position: absolute; left: 0; color: var(--lime); font-weight: 600; }
+.prize-for { font-size: 0.875rem; color: var(--chalk-dim); padding-top: 0.6rem; border-top: 1px solid var(--chalk-faint); }
+
 /* ---------- layout breakpoints ---------- */
 @media (max-width: 82rem) {
   .sheet-nav { display: none; }
@@ -937,6 +1122,10 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
   .control, .shot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .doctor-list { columns: 1; }
   .receipt { position: relative; top: auto; max-width: 26rem; }
+  .pillars, .flow-five { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .prizes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .scene-copy { grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
+  .scene-copy p:not(.scene-tag) { grid-column: 1; }
 }
 @media (max-width: 48rem) {
   .countdown-head { display: none; }
@@ -945,6 +1134,7 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
 @media (max-width: 34rem) {
   .chapter-index, .projects, .principles, .stairs, .timeline, .official { grid-template-columns: minmax(0, 1fr); }
   .sheet-cols, .front-cards, .lens-cards, .flow, .road, .blocks, .shots, .two-lists { grid-template-columns: minmax(0, 1fr); }
+  .pillars, .flow-five, .prizes { grid-template-columns: minmax(0, 1fr); }
   .shots .phone { grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); }
   .player { width: 5.5rem; }
   .player .shirt-no { width: 2.1rem; height: 2.1rem; font-size: 1.05rem; }

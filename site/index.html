@@ -122,11 +122,13 @@
       <nav class="sheet-nav" aria-label="Main" data-sheet-nav>
         <a href="#/about">About</a>
         <a href="#/how">How it works</a>
+        <a href="#/explained">Explained</a>
         <a href="#/hud">HUD²</a>
         <a href="#/ask">Ask the match</a>
         <a href="#/ledger">The ledger</a>
         <a href="#/log">Build log</a>
         <a href="#/roadmap">Roadmap</a>
+        <a href="#/challenge">The challenge</a>
         <a href="#/who">Who</a>
         <a data-repo-link data-when-repo="public" href="#">Code</a>
       </nav>
@@ -245,6 +247,7 @@
             <p class="lede">AI agents commentate a live football match. Before any line goes to air, a Critic agent checks it against the raw match events. If a claim can't be proven, it's rewritten or dropped.</p>
             <div class="actions">
               <a class="button" href="#/problem">Start with the problem</a>
+              <a class="button button-quiet" href="#/explained">New here? The ideas, animated</a>
               <a class="button button-quiet" href="#/how">See how it works</a>
             </div>
             <p class="video-note" data-video-link>The 110-second demo video is coming soon.</p>
@@ -308,7 +311,7 @@
         </section>
         <section data-reveal>
           <h2>The hackathon</h2>
-          <p><span data-product-name></span> is my entry to <strong>Inside the Game: Developer Hackathon</strong>, run by Microsoft with the Premier League from October 6 to 27, 2026. Developers around the world build AI that turns football-realistic, synthetic match data into insight, commentary and recaps, using Microsoft's AI and cloud tools. Judging runs to November 10, and winners are announced on November 20.</p>
+          <p><span data-product-name></span> is my entry to <strong>Inside the Game: Developer Hackathon</strong>, run by Microsoft with the Premier League from October 6 to 27, 2026. Developers around the world build AI that turns football-realistic, synthetic match data into insight, commentary and recaps, using Microsoft's AI and cloud tools. Judging runs to November 10, and winners are announced on November 20. The full brief — the ask, the requirements, the judging pillars and every reward — is on <a href="#/challenge">the challenge page</a>.</p>
           <p>Every club, player and match here is invented, as the rules require. <span data-product-name></span> is an independent entry: it isn't affiliated with or endorsed by Microsoft or the Premier League.</p>
         </section>
         <section data-reveal>
@@ -438,6 +441,176 @@
         <span>Beyond the hackathon</span>
         <strong>The road to an AI fourth official</strong>
       </a>
+
+      <p class="aside" data-reveal>The challenge's full brief — the five stages, the hard requirements, the judging pillars and every reward with its amounts — is on <a href="#/challenge">the challenge page</a>.</p>
+    </section>
+
+    <!-- ============ THE CHALLENGE ============ -->
+    <section class="page wrap" data-page="challenge" data-shirt="20" data-group="season" data-role="Substitute" data-title="The challenge" data-summary="The hackathon, its rules and its rewards, in the open" aria-labelledby="challenge-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">15</span>
+        <h1 id="challenge-title" tabindex="-1">The challenge this is built for</h1>
+        <p class="lede">Inside the Game: a developer hackathon run by Microsoft with the Premier League, October 6–27, 2026, hosted on Microsoft's Innovation Studio. Build AI that turns synthetic, football-realistic match data into intelligence, narratives, recaps and personal experiences. This page sets the challenge out in the open: what it asks, what it requires, how it's judged, what it rewards — and how this entry answers.</p>
+      </header>
+
+      <dl class="stats" data-reveal>
+        <div><dt>Prize pool</dt><dd>$50,000</dd></div>
+        <div><dt>Prize lanes</dt><dd>6</dd></div>
+        <div><dt>Judging pillars</dt><dd>5 × 20%</dd></div>
+        <div><dt>Build window</dt><dd>Oct 6–27</dd></div>
+      </dl>
+
+      <div class="countdown countdown-big" data-countdown role="timer" aria-labelledby="challenge-clock-label" data-reveal>
+        <p class="countdown-label" id="challenge-clock-label" data-countdown-label>Submissions close in</p>
+        <p class="countdown-clock" data-countdown-clock>--</p>
+        <p class="countdown-when" data-countdown-when></p>
+      </div>
+
+      <h2 class="section-title" data-reveal>The ask, in the organisers' own words</h2>
+      <blockquote class="challenge-ask" data-reveal>
+        <p>“Build an AI-powered solution that transforms synthetic, football-realistic data into explainable match intelligence, real-time narratives, automated recaps, and personalized experiences — for fans, studios, broadcasters, and streaming platforms.”</p>
+        <footer>The challenge brief, Inside the Game: Developer Hackathon, October 2026</footer>
+      </blockquote>
+      <p class="section-lede" data-reveal>Four things to build — intelligence, narratives, recaps, personal experiences — for four audiences. And one law underneath them, also from the brief:</p>
+      <blockquote class="pledge" data-reveal>
+        <p>“A project that only generates metrics has no audience, and a solution that only personalizes has nothing to personalize.”</p>
+      </blockquote>
+
+      <h2 class="section-title" data-reveal>The brief's spine: one pipeline, five stages</h2>
+      <ol class="flow flow-five" data-reveal>
+        <li><strong>Ingest</strong> the match's events as they happen: passes, shots, tackles, pressures, possession changes, match metadata.</li>
+        <li><strong>Interpret</strong> them into football statistics, patterns and context.</li>
+        <li><strong>Explain</strong> why a moment matters, not only that it happened: control or chaos, tactical pressure, game rhythm.</li>
+        <li><strong>Render</strong> insight that sits on screen beside the match: timed, machine-readable, ready for synchronized overlays on a live feed.</li>
+        <li><strong>Personalize</strong> — the analyst and the casual fan get two genuinely different experiences: custom modes, favourite clubs and players, player focus, one metric to follow.</li>
+      </ol>
+
+      <h2 class="section-title" data-reveal>What a submission must do</h2>
+      <div class="two-lists">
+        <section data-reveal>
+          <h2>Hard requirements</h2>
+          <ul>
+            <li>Run on synthetic, football-realistic data only — no real Premier League match data (rules §4.7).</li>
+            <li>Be new code in a new repository; patterns may be reused, old repos may not.</li>
+            <li>Carry a demo video under two minutes, at a public URL, showing the project working; judges needn't watch past 2:00. No third-party trademarks, no unlicensed music.</li>
+            <li>Make the GitHub repository public at submission — an entry isn't considered otherwise.</li>
+            <li>Stay reachable for the judges, free and without restriction, through the judging period to November 10 (§4.8); a private demo provides credentials.</li>
+            <li>Install and run consistently, and work as shown in the video (§4.3).</li>
+            <li>Be the entrant's own work, with the pitch, video and test instructions in English (§4.9).</li>
+          </ul>
+        </section>
+        <section data-reveal>
+          <h2>What the strongest entries leverage</h2>
+          <ul>
+            <li>GitHub, and GitHub Copilot — this build uses Copilot's agent mode, working from the repo's own evidence rules.</li>
+            <li>Microsoft Foundry and Azure AI Services.</li>
+            <li>Microsoft Agent Framework, A2A and the Azure MCP Server — the agentic-design pillar asks explicitly for sophisticated orchestration, MCP integration or multi-agent collaboration.</li>
+            <li>Microsoft Fabric and Azure's data and analytics services.</li>
+            <li>Azure cloud-native services: Container Apps, AKS, Functions, event-driven and resilient by design.</li>
+          </ul>
+        </section>
+      </div>
+
+      <h2 class="section-title" data-reveal>How it's judged</h2>
+      <p class="section-lede" data-reveal>Two stages: a pass/fail screen — does it fit the theme and apply the required technologies — then five pillars, each worth a fifth of the score.</p>
+      <ol class="pillars" data-reveal>
+        <li><span class="pct">20%</span><strong>Technological implementation</strong><p>Quality practices, effective use of the hero technologies, well-structured and maintainable code.</p></li>
+        <li><span class="pct">20%</span><strong>Agentic design &amp; innovation</strong><p>Creative agent patterns, sophisticated orchestration and multi-agent collaboration, novel implementations.</p></li>
+        <li><span class="pct">20%</span><strong>Real-world impact</strong><p>A significant problem, production readiness, impact on developers, businesses and users.</p></li>
+        <li><span class="pct">20%</span><strong>User experience</strong><p>Intuitive to use, clear value in the demo, a balanced frontend and backend.</p></li>
+        <li><span class="pct">20%</span><strong>Adherence to category</strong><p>Compliance with the chosen prize category's description.</p></li>
+      </ol>
+
+      <h2 class="section-title" data-reveal>The calendar</h2>
+      <ol class="timeline" data-reveal>
+        <li data-status="done" data-reveal><time>Sep 29</time><strong>Registration opens</strong><span>On Microsoft's Innovation Studio.</span></li>
+        <li data-status="done" data-reveal><time>Oct 6</time><strong>Hacking begins</strong><span>Submissions open the same day.</span></li>
+        <li data-status="done" data-reveal><time>Oct 20</time><strong>Registration closes</strong><span>12:00 PM Pacific.</span></li>
+        <li data-status="progress" data-reveal><time>Oct 27</time><strong>Submissions close</strong><span>11:59 PM Pacific; judging begins 9:00 AM. This entry submits on the 27th, Karachi time, with a buffer.</span></li>
+        <li data-status="planned" data-reveal><time>Oct 27–Nov 10</time><strong>Judging</strong><span>The live demo must stay up and free to use (§4.8).</span></li>
+        <li data-status="planned" data-reveal><time>Nov 20</time><strong>Winners announced</strong><span>The top six projects are notified by November 10.</span></li>
+      </ol>
+
+      <h2 class="section-title" data-reveal>The rewards</h2>
+      <p class="section-lede" data-reveal>A $50,000 pool across six lanes. Cash ships as e-gift cards (§8.3), split equally between a team's members; one winning team a lane; a project may take at most one grand prize and one category prize (§4.2, §8). Amounts as published in the official rules and awards register, October 2026.</p>
+      <ol class="prizes">
+        <li class="prize" data-tier="grand" data-reveal>
+          <p class="prize-tier">Grand prize · first place</p>
+          <p class="prize-cash">~$4,000 <span>cash, per member</span></p>
+          <ul class="prize-extras">
+            <li>a digital ticket to a Premier League match (~$1,000)</li>
+            <li>a $50 club-store voucher</li>
+            <li>a feature in social promotion</li>
+          </ul>
+          <p class="prize-for">For the most complete and compelling solution: innovative use of the Microsoft AI stack, explainable intelligence, engaging narratives, contextual insight, accessible and personal experiences.</p>
+        </li>
+        <li class="prize" data-tier="grand" data-reveal>
+          <p class="prize-tier">Grand prize · second place</p>
+          <p class="prize-cash">~$2,500 <span>cash, per member</span></p>
+          <ul class="prize-extras">
+            <li>a digital ticket to a Premier League match (~$1,000)</li>
+            <li>a $50 club-store voucher</li>
+            <li>a feature in social promotion</li>
+          </ul>
+          <p class="prize-for">Judged against the same bar as first place: the whole build stands behind whichever place the judges give.</p>
+        </li>
+        <li class="prize" data-reveal>
+          <p class="prize-tier">Best use of Microsoft Foundry</p>
+          <p class="prize-cash">~$1,500 <span>cash, per member</span></p>
+          <ul class="prize-extras">
+            <li>a $50 club-store voucher</li>
+            <li>a feature in social promotion</li>
+          </ul>
+          <p class="prize-for">For the most effective leverage of Foundry: development, orchestration and management of AI-powered solutions — scalable AI “difficult to achieve through traditional approaches alone.”</p>
+        </li>
+        <li class="prize" data-reveal>
+          <p class="prize-tier">Best multi-agent orchestration</p>
+          <p class="prize-cash">~$1,500 <span>cash, per member</span></p>
+          <ul class="prize-extras">
+            <li>a $50 club-store voucher</li>
+            <li>a feature in social promotion</li>
+          </ul>
+          <p class="prize-for">For purposeful multi-agent collaboration: distinct roles, shared state, effective handoffs, recovery from failures — an end-to-end outcome no single agent could achieve.</p>
+        </li>
+        <li class="prize" data-reveal>
+          <p class="prize-tier">Best enterprise solution</p>
+          <p class="prize-cash">~$1,500 <span>cash, per member</span></p>
+          <ul class="prize-extras">
+            <li>a $50 club-store voucher</li>
+            <li>a feature in social promotion</li>
+          </ul>
+          <p class="prize-for">For enterprise-deployment readiness and long-term business impact: a clear path to adoption, reliability, transparency, production controls.</p>
+        </li>
+        <li class="prize" data-reveal>
+          <p class="prize-tier">Best Azure cloud-native integration</p>
+          <p class="prize-cash">~$1,500 <span>cash, per member</span></p>
+          <ul class="prize-extras">
+            <li>a $50 club-store voucher</li>
+            <li>a feature in social promotion</li>
+          </ul>
+          <p class="prize-for">For Azure's cloud-native services — Container Apps, AKS, Functions, event-driven and resilient by design — with operational excellence.</p>
+        </li>
+      </ol>
+      <p class="aside" data-reveal>This entry is a solo build: whatever it wins lands undivided. Which lanes it aims at, feature by feature, is on <a href="#/goal">the goal page</a>.</p>
+
+      <h2 class="section-title" data-reveal>How this entry answers</h2>
+      <ul class="adopt">
+        <li data-reveal><h3>Ingest</h3><p>The event stream contract: a committed JSON Schema, and the seeded synthetic generator that makes the football-realistic data itself — the brief's data-innovation pillar, taken literally.</p></li>
+        <li data-reveal><h3>Interpret</h3><p>The Scout: deterministic counting code on the hot path, no model, sub-millisecond — goals, big chances, great passes, breaks, the high press, momentum, the ref's call.</p></li>
+        <li data-reveal><h3>Explain</h3><p>The Narrator writes from a fact sheet; the Critic recomputes every number from the events and refuses what it can't prove. Why a moment matters, with the evidence on screen.</p></li>
+        <li data-reveal><h3>Render</h3><p>Timed, prioritised JSON cues with evidence, receipt and player tags — a JSON Schema contract a broadcast graphics system can build against — and HUD²'s on-screen lenses.</p></li>
+        <li data-reveal><h3>Personalize</h3><p>HUD²'s three lenses, Ask the match, a club, a player or one number to follow, casual or analyst — in English, Urdu and Arabic, spoken as well as written.</p></li>
+        <li data-reveal><h3>And recap</h3><p>At full time the match writes its own recap, every line through the Critic first, as a page that prints to PDF.</p></li>
+      </ul>
+
+      <h2 class="section-title" data-reveal>The official record</h2>
+      <ul class="official">
+        <li data-reveal><a href="https://innovationstudio.microsoft.com/hackathons/insidethegamedeveloperhackathon/home"><strong>The hackathon</strong><span>Microsoft Innovation Studio: the challenge, the dates, the gallery of entries</span></a></li>
+        <li data-reveal><a href="https://github.com/microsoft/insidethegamehackathon/blob/main/OFFICIAL%20RULES.md"><strong>Official rules</strong><span>Every requirement and prize clause cited on this page</span></a></li>
+        <li data-reveal><a href="https://github.com/microsoft/insidethegamehackathon"><strong>Hackathon repository</strong><span>Guides, resource playlists, the code of conduct</span></a></li>
+        <li data-reveal><a href="https://developer.microsoft.com/en-us/reactor/series/S-1709/"><strong>Microsoft Reactor series</strong><span>The hackathon's live sessions for builders</span></a></li>
+      </ul>
+      <p class="aside" data-reveal><span data-product-name></span> is an independent entry and isn't affiliated with or endorsed by Microsoft or the Premier League. Every club, player and match on this site is invented, as the rules require. Prize figures are quoted from the official rules and awards register; winners are announced November 20, 2026.</p>
     </section>
 
     <!-- ============ HOW IT WORKS ============ -->
@@ -588,8 +761,407 @@
         <li data-state="degraded" data-reveal><strong>Detection only</strong><span>Cues keep airing, marked unverified</span></li>
         <li data-state="full" data-reveal><strong>Recovered</strong><span>Announced on air, verification resumes</span></li>
       </ol>
-      <p class="aside" data-reveal>A test knocks the Narrator out four times in a row mid-match and checks that the cues never stop. In the studio a switch takes the narrator off air mid-match and puts it back, and the demo video does it on camera.</p>
-    </section>
+	      <p class="aside" data-reveal>A test knocks the Narrator out four times in a row mid-match and checks that the cues never stop. In the studio a switch takes the narrator off air mid-match and puts it back, and the demo video does it on camera.</p>
+	    </section>
+
+    <!-- ============ EXPLAINED: THE IDEAS, ANIMATED (the story for new readers) ============ -->
+    <section class="page wrap" data-page="explained" data-shirt="19" data-group="play" data-role="Substitute" data-title="Explained" data-summary="The gap, the law and the hash chain, in eight animated scenes" aria-labelledby="explained-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">14</span>
+        <h1 id="explained-title" tabindex="-1">The ideas, animated</h1>
+        <p class="lede">New here? This is the whole project in eight moving scenes: the gap in AI commentary, the law this build follows, and the hashing that keeps a match's history honest — hash chains and Merkle roots, the same structures behind Certificate Transparency — ending with where it all goes. No prior knowledge needed; every scene explains itself.</p>
+      </header>
+
+      <p class="aside story-note" data-reveal>Each scene moves while it's on screen, and two of them break on purpose, at your button. Prefer less motion? The site honours your reduced-motion setting: every scene stands still, complete.</p>
+
+      <!-- Scene 1: the gap -->
+	      <figure class="scene" data-scene="gap" data-reveal>
+	        <div class="scene-screen">
+	          <div class="scene-scroll">
+	          <svg viewBox="0 0 960 320" role="img" aria-labelledby="scn-gap-t">
+	            <title id="scn-gap-t">A broadcast caption claims seven shots on target; a recount of the match events finds six. Nobody checked the model's line before it aired.</title>
+	            <text class="scn-lbl scn-lbl--red" x="50" y="30">WHAT THE MODEL SAID, UNCHECKED</text>
+	            <text class="scn-lbl scn-lbl--lime" x="650" y="30">WHAT THE EVENTS SAY</text>
+	            <rect class="scn-box scn-tv" x="50" y="48" width="560" height="232" rx="10"/>
+	            <g class="g-lower">
+	              <rect x="70" y="224" width="440" height="44" rx="4" fill="var(--lime)"/>
+	              <text x="90" y="253" class="g-lower-t">DORSE ·</text>
+	              <text x="192" y="255" class="g-seven">7</text>
+	              <text x="222" y="253" class="g-lower-t g-lower-s">SHOTS ON TARGET</text>
+	              <ellipse class="g-ring" cx="200" cy="246" rx="17" ry="23"/>
+	            </g>
+	            <rect class="scn-box" x="650" y="48" width="260" height="232" rx="8"/>
+	            <text class="scn-lbl" x="670" y="82">recounted, one by one</text>
+	            <g class="g-ticks">
+	              <rect class="g-tick" style="--i:0" x="670" y="100" width="20" height="20"/>
+	              <rect class="g-tick" style="--i:1" x="700" y="100" width="20" height="20"/>
+	              <rect class="g-tick" style="--i:2" x="730" y="100" width="20" height="20"/>
+	              <rect class="g-tick" style="--i:3" x="760" y="100" width="20" height="20"/>
+	              <rect class="g-tick" style="--i:4" x="790" y="100" width="20" height="20"/>
+	              <rect class="g-tick g-tick-off" style="--i:5" x="820" y="100" width="20" height="20"/>
+	            </g>
+	            <text class="g-count" x="880" y="200">6</text>
+	            <text class="scn-lbl" x="670" y="256">6, counted from the events.</text>
+	            <text class="g-no" x="612" y="205">≠</text>
+	          </svg>
+	          </div>
+	        </div>
+	        <figcaption class="scene-copy">
+	          <p class="scene-tag">Scene 1 · the gap</p>
+	          <h2>Nobody was checking</h2>
+	          <p>A language model writes fluent lines at broadcast speed, and sounds just as sure when it's wrong. Here the caption says seven shots on target; the events, recounted, say six. On a live broadcast the wrong line reaches every viewer before anyone can check it, and one wrong number costs the broadcast its trust. That gap is what this project is built to close. <a href="#/problem">The problem, in full</a>.</p>
+	        </figcaption>
+	      </figure>
+
+	      <!-- Scene 2: the law -->
+	      <figure class="scene" data-scene="law" data-reveal>
+	        <div class="scene-screen">
+	          <div class="scene-scroll">
+	          <svg viewBox="0 0 960 340" role="img" aria-labelledby="scn-law-t">
+	            <title id="scn-law-t">A pipeline: events stream into code that counts, producing a fact sheet; a model writes from the facts; the Critic recomputes every number and airs the line or refuses it back for a rewrite.</title>
+	            <g class="scn-edges">
+	              <path class="scn-edge" d="M170 72H236" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M410 72H476" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M630 72H706" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M800 104V226" marker-end="url(#arrow)"/>
+	              <path class="scn-edge scn-edge--gold" d="M710 262H650" marker-end="url(#arrow)"/>
+	              <path class="scn-edge scn-edge--red" d="M702 244 C646 244 646 100 700 98" marker-end="url(#arrow)"/>
+	            </g>
+	            <circle class="scn-dot scn-dot--lime" style="--dx:64px" cx="174" cy="72" r="4.5"/>
+	            <circle class="scn-dot scn-dot--lime" style="--dx:64px; --t:.3s" cx="414" cy="72" r="4.5"/>
+	            <circle class="scn-dot scn-dot--lime" style="--dx:72px; --t:.6s" cx="634" cy="72" r="5"/>
+	            <circle class="scn-dot scn-dot--gold" style="--dx:-58px; --t:1s" cx="706" cy="262" r="5"/>
+	            <g><rect class="scn-box" x="20" y="40" width="150" height="64" rx="10"/><text class="scn-t" x="95" y="68">Match events</text><text class="scn-s" x="95" y="88">the raw stream</text></g>
+	            <g><rect class="scn-box" x="240" y="40" width="170" height="64" rx="10"/><text class="scn-t" x="325" y="68">Code counts</text><text class="scn-s" x="325" y="88">deterministic, sub-ms</text></g>
+	            <g><rect class="scn-box" x="480" y="40" width="150" height="64" rx="10"/><text class="scn-t" x="555" y="68">Fact sheet</text><text class="scn-s" x="555" y="88">each fact has an id</text></g>
+	            <g><rect class="scn-box" x="710" y="40" width="180" height="64" rx="10"/><text class="scn-t" x="800" y="68">Model writes</text><text class="scn-s" x="800" y="88">cites every number</text></g>
+	            <g><rect class="scn-box scn-box--gold" x="710" y="230" width="180" height="64" rx="10"/><text class="scn-t scn-t--gold" x="800" y="258">Critic</text><text class="scn-s" x="800" y="278">recomputes each one</text></g>
+	            <g><rect class="scn-box scn-box--lime" x="460" y="230" width="180" height="64" rx="10"/><text class="scn-t scn-t--lime" x="550" y="258">Airs</text><text class="scn-s" x="550" y="278">evidence + receipt</text></g>
+	            <text class="scn-lbl scn-lbl--gold" x="680" y="252" text-anchor="middle">verified</text>
+	            <text class="scn-lbl scn-lbl--red scn-refuse" transform="rotate(-90 664 190)" x="664" y="190" text-anchor="middle">refused, with reasons</text>
+	            <text class="scn-lbl scn-lbl--lime" x="550" y="320" text-anchor="middle">to the broadcast, timed and checked</text>
+	          </svg>
+	          </div>
+	        </div>
+	        <figcaption class="scene-copy">
+	          <p class="scene-tag">Scene 2 · the law</p>
+	          <h2>Code counts, models write</h2>
+	          <p>Every number a line may state is computed by deterministic code straight from the events; the model never does the arithmetic. It writes from a fact sheet, citing the fact behind every number, and then the Critic recomputes each number from the raw events with the same formulas. Proven: the line airs with its evidence and a receipt for what it cost. Not proven: it goes back with the reasons, and a line that never passes never airs. <a href="#/how">The whole pipeline</a>.</p>
+	        </figcaption>
+	      </figure>
+
+	      <!-- Scene 3: the hash -->
+	      <figure class="scene is-tampered" data-scene="hash" data-reveal>
+	        <div class="scene-screen">
+	          <div class="scene-scroll">
+	          <svg viewBox="0 0 960 390" role="img" aria-labelledby="scn-hash-t">
+	            <title id="scn-hash-t">Two nearly identical entries pass through SHA-256. Identical bytes give the same hash; change one digit, from 56 to 57 minutes, and the whole hash changes, completely.</title>
+	            <g>
+	              <rect class="scn-box" x="30" y="30" width="280" height="130" rx="8"/>
+	              <text class="scn-lbl" x="50" y="58">THE LINE THAT AIRED · 56'</text>
+	              <text class="scn-mono-t" x="50" y="95">GOAL · Arholm (Rosmere)</text>
+	              <rect x="50" y="112" width="240" height="8" fill="var(--chalk-faint)"/>
+	              <rect x="50" y="130" width="170" height="8" fill="var(--chalk-faint)"/>
+	              <path class="scn-edge" d="M310 95H366" marker-end="url(#arrow)"/>
+	              <rect class="scn-box scn-box--gold" x="370" y="30" width="170" height="130" rx="8"/>
+	              <text class="scn-t scn-t--gold" x="455" y="95" text-anchor="middle">SHA-256</text>
+	              <text class="scn-s" x="455" y="120" text-anchor="middle">one canonical form</text>
+	              <path class="scn-edge" d="M540 95H606" marker-end="url(#arrow)"/>
+	              <rect class="scn-chip scn-chip--lime" x="610" y="65" width="320" height="60" rx="8"/>
+	              <text class="scn-chipt scn-chipt--lime" x="630" y="102">e8b1…77ac</text>
+	            </g>
+	            <g>
+	              <g class="h-pencil" transform="translate(150 212) rotate(-18)">
+	                <rect x="0" y="0" width="52" height="10" rx="2" fill="var(--chalk)"/>
+	                <path d="M52 0 L64 5 L52 10 Z" fill="var(--chalk)"/>
+	                <rect x="0" y="0" width="7" height="10" fill="var(--card)"/>
+	              </g>
+	              <text class="scn-lbl scn-lbl--red" x="240" y="206">one digit changed</text>
+	              <rect class="scn-box" x="30" y="230" width="280" height="130" rx="8"/>
+	              <text class="scn-lbl" x="50" y="258">THE SAME LINE · <tspan class="h-t-ok">56'</tspan><tspan class="h-t-bad">57'</tspan></text>
+	              <text class="scn-mono-t" x="50" y="295">GOAL · Arholm (Rosmere)</text>
+	              <rect x="50" y="312" width="240" height="8" fill="var(--chalk-faint)"/>
+	              <rect x="50" y="330" width="170" height="8" fill="var(--chalk-faint)"/>
+	              <path class="scn-edge" d="M310 295H366" marker-end="url(#arrow)"/>
+	              <rect class="scn-box scn-box--gold" x="370" y="230" width="170" height="130" rx="8"/>
+	              <text class="scn-t scn-t--gold" x="455" y="295" text-anchor="middle">SHA-256</text>
+	              <text class="scn-s" x="455" y="320" text-anchor="middle">one canonical form</text>
+	              <path class="scn-edge" d="M540 295H606" marker-end="url(#arrow)"/>
+	              <rect class="scn-chip scn-chip--lime" x="610" y="265" width="320" height="60" rx="8"/>
+	              <text class="scn-chipt scn-chipt--lime h-v-ok" x="630" y="302">e8b1…77ac</text>
+	              <rect class="scn-chip scn-chip--red h-v-bad" x="610" y="265" width="320" height="60" rx="8"/>
+	              <text class="scn-chipt scn-chipt--red h-v-bad" x="630" y="302">4c0e…93b1</text>
+	              <text class="scn-lbl scn-lbl--red h-v-bad" x="630" y="348">every digit changed</text>
+	            </g>
+	          </svg>
+	          </div>
+	        </div>
+	        <div class="scene-controls">
+	          <button type="button" class="button" data-scene-toggle data-label-intact="Change one digit" data-label-broken="Change it back">Change one digit</button>
+	        </div>
+	        <figcaption class="scene-copy">
+	          <p class="scene-tag">Scene 3 · the hash</p>
+	          <h2>A hash is a fingerprint</h2>
+	          <p>Before anything goes into the ledger, each entry is written as JSON in one canonical form and hashed with SHA-256. Same bytes in, same hash out, always. Change one digit anywhere and the whole fingerprint changes, completely and unpredictably — there is no way to change an entry and choose a hash that still matches. That one-wayness is the entire trick. Press the button and watch one digit end a fingerprint.</p>
+	        </figcaption>
+	      </figure>
+
+	      <!-- Scene 4: the chain -->
+	      <figure class="scene" data-scene="chain" data-reveal>
+	        <div class="scene-screen">
+	          <div class="scene-scroll">
+	          <svg viewBox="0 0 960 400" role="img" aria-labelledby="scn-chain-t">
+	            <title id="scn-chain-t">Four blocks in a chain, each holding a minute's entries, a Merkle root and the previous block's hash. Change one entry in block 13 and its root and hash change, so block 14 no longer names it: the break runs to the seal.</title>
+	            <text class="scn-lbl scn-lbl--gold c-sealword" x="859" y="78" text-anchor="middle">★ THE MATCH'S SEAL</text>
+	            <g class="scn-edges">
+	              <path class="scn-edge" d="M212 236H262" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M460 236H510" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M708 236H758" marker-end="url(#arrow)"/>
+	            </g>
+	            <text class="scn-lbl" x="237" y="226" text-anchor="middle">names</text>
+	            <text class="scn-lbl" x="485" y="226" text-anchor="middle">names</text>
+	            <text class="scn-lbl" x="733" y="226" text-anchor="middle">names</text>
+	            <g class="c-neq" style="--d:.8s"><circle cx="514" cy="236" r="15" fill="var(--navy-deep)" stroke="var(--card)" stroke-width="2"/><text class="scn-chipt scn-chipt--red" x="514" y="242" text-anchor="middle">≠</text></g>
+	            <g class="c-neq" style="--d:1.1s"><circle cx="762" cy="236" r="15" fill="var(--navy-deep)" stroke="var(--card)" stroke-width="2"/><text class="scn-chipt scn-chipt--red" x="762" y="242" text-anchor="middle">≠</text></g>
+	            <g class="c-pencil" transform="translate(322 226) rotate(-18)">
+	              <rect x="0" y="0" width="52" height="10" rx="2" fill="var(--chalk)"/>
+	              <path d="M52 0 L64 5 L52 10 Z" fill="var(--chalk)"/>
+	              <rect x="0" y="0" width="7" height="10" fill="var(--card)"/>
+	            </g>
+	            <g transform="translate(20 100)">
+	              <rect class="scn-box c-frame" width="190" height="272" rx="10"/>
+	              <text class="scn-t scn-t--start" x="16" y="36">Block 12</text>
+	              <rect class="c-min" x="130" y="14" width="46" height="24" rx="12"/><text class="scn-chipt" x="153" y="31" text-anchor="middle">33'</text>
+	              <text class="scn-lbl" x="16" y="70">names the one before</text>
+	              <rect class="scn-chip" x="16" y="78" width="158" height="26" rx="4"/><text class="scn-chipt scn-chipt--dim" x="26" y="96">— none, it's first</text>
+	              <text class="scn-lbl" x="16" y="134">this minute's entries</text>
+	              <rect class="c-entry" x="16" y="142" width="16" height="16"/><rect class="c-entry" x="40" y="142" width="16" height="16"/><rect class="c-entry" x="64" y="142" width="16" height="16"/><rect class="c-entry" x="88" y="142" width="16" height="16"/>
+	              <text class="scn-lbl" x="16" y="190">Merkle root</text>
+	              <rect class="scn-chip" x="16" y="198" width="158" height="26" rx="4"/><text class="scn-chipt" x="26" y="216">d20c…</text>
+	              <line class="c-div" x1="16" y1="240" x2="174" y2="240"/>
+	              <rect class="scn-chip scn-chip--lime" x="16" y="248" width="158" height="32" rx="6"/><text class="scn-chipt scn-chipt--lime c-hash" x="26" y="270">a41f…</text>
+	            </g>
+	            <g transform="translate(268 100)">
+	              <rect class="scn-box c-frame" width="190" height="272" rx="10"/>
+	              <text class="scn-t scn-t--start" x="16" y="36">Block 13</text>
+	              <rect class="c-min" x="130" y="14" width="46" height="24" rx="12"/><text class="scn-chipt" x="153" y="31" text-anchor="middle">34'</text>
+	              <text class="scn-lbl" x="16" y="70">names the one before</text>
+	              <rect class="scn-chip" x="16" y="78" width="158" height="26" rx="4"/><text class="scn-chipt" x="26" y="96">a41f…</text>
+	              <text class="scn-lbl" x="16" y="134">this minute's entries</text>
+	              <rect class="c-entry" x="16" y="142" width="16" height="16"/><rect class="c-entry c-brk" style="--d:0s" x="40" y="142" width="16" height="16"/><rect class="c-entry" x="64" y="142" width="16" height="16"/><rect class="c-entry" x="88" y="142" width="16" height="16"/>
+	              <text class="scn-lbl" x="16" y="190">Merkle root</text>
+	              <rect class="scn-chip" x="16" y="198" width="158" height="26" rx="4"/>
+	              <text class="scn-chipt c-root c-old" x="26" y="216">f6b4…</text>
+	              <text class="scn-chipt scn-chipt--red c-root c-new c-brk" style="--d:.25s" x="26" y="216">2e9b…</text>
+	              <line class="c-div" x1="16" y1="240" x2="174" y2="240"/>
+	              <rect class="scn-chip scn-chip--lime" x="16" y="248" width="158" height="32" rx="6"/>
+	              <text class="scn-chipt scn-chipt--lime c-hash c-old" x="26" y="270">8ce2…</text>
+	              <text class="scn-chipt scn-chipt--red c-hash c-new c-brk" style="--d:.5s" x="26" y="270">77c5…</text>
+	            </g>
+	            <g transform="translate(516 100)">
+	              <rect class="scn-box c-frame" width="190" height="272" rx="10"/>
+	              <text class="scn-t scn-t--start" x="16" y="36">Block 14</text>
+	              <rect class="c-min" x="130" y="14" width="46" height="24" rx="12"/><text class="scn-chipt" x="153" y="31" text-anchor="middle">35'</text>
+	              <text class="scn-lbl" x="16" y="70">names the one before</text>
+	              <rect class="scn-chip" x="16" y="78" width="158" height="26" rx="4"/><text class="scn-chipt c-brk" style="--d:.8s" x="26" y="96">8ce2…</text>
+	              <text class="scn-lbl" x="16" y="134">this minute's entries</text>
+	              <rect class="c-entry" x="16" y="142" width="16" height="16"/><rect class="c-entry" x="40" y="142" width="16" height="16"/><rect class="c-entry" x="64" y="142" width="16" height="16"/><rect class="c-entry" x="88" y="142" width="16" height="16"/>
+	              <text class="scn-lbl" x="16" y="190">Merkle root</text>
+	              <rect class="scn-chip" x="16" y="198" width="158" height="26" rx="4"/><text class="scn-chipt" x="26" y="216">9a31…</text>
+	              <line class="c-div" x1="16" y1="240" x2="174" y2="240"/>
+	              <rect class="scn-chip scn-chip--lime" x="16" y="248" width="158" height="32" rx="6"/><text class="scn-chipt scn-chipt--lime c-hash c-brk" style="--d:1.1s" x="26" y="270">5d07…</text>
+	            </g>
+	            <g transform="translate(764 100)">
+	              <rect class="scn-box c-frame c-frame--gold" width="190" height="272" rx="10"/>
+	              <text class="scn-t scn-t--gold scn-t--start" x="16" y="36">Block 15</text>
+	              <rect class="c-min" x="130" y="14" width="46" height="24" rx="12"/><text class="scn-chipt" x="153" y="31" text-anchor="middle">36'</text>
+	              <text class="scn-lbl" x="16" y="70">names the one before</text>
+	              <rect class="scn-chip" x="16" y="78" width="158" height="26" rx="4"/><text class="scn-chipt c-brk" style="--d:1.1s" x="26" y="96">5d07…</text>
+	              <text class="scn-lbl" x="16" y="134">this minute's entries</text>
+	              <rect class="c-entry" x="16" y="142" width="16" height="16"/><rect class="c-entry" x="40" y="142" width="16" height="16"/><rect class="c-entry" x="64" y="142" width="16" height="16"/><rect class="c-entry" x="88" y="142" width="16" height="16"/>
+	              <text class="scn-lbl" x="16" y="190">Merkle root</text>
+	              <rect class="scn-chip" x="16" y="198" width="158" height="26" rx="4"/><text class="scn-chipt" x="26" y="216">c8e0…</text>
+	              <line class="c-div" x1="16" y1="240" x2="174" y2="240"/>
+	              <rect class="scn-chip scn-chip--gold" x="16" y="248" width="158" height="32" rx="6"/><text class="scn-chipt scn-chipt--gold c-hash c-brk" style="--d:1.4s" x="26" y="270">f3aa…</text>
+	            </g>
+	          </svg>
+	          </div>
+	        </div>
+	        <div class="scene-controls">
+	          <button type="button" class="button" data-scene-toggle data-label-intact="Change one entry in block 13" data-label-broken="Restore it">Change one entry in block 13</button>
+	        </div>
+	        <figcaption class="scene-copy">
+	          <p class="scene-tag">Scene 4 · the chain</p>
+	          <h2>Each block names the one before</h2>
+	          <p>The match is sealed a minute at a time. A block holds that minute's entries, hashed into a Merkle root, and the previous block's hash; its own hash is taken over all of that. So every block stands on the one before it, back to the first, and the last block's hash — the seal — stands for the whole match. Change one entry anywhere and its block's root changes, so its hash changes, so the next block no longer names it: the break runs all the way to the seal, and anyone can see it. That is hash chaining. Press the button and break block 13.</p>
+	        </figcaption>
+	      </figure>
+
+	      <!-- Scene 5: the Merkle root -->
+	      <figure class="scene" data-scene="merkle" data-reveal>
+	        <div class="scene-screen">
+	          <div class="scene-scroll">
+	          <svg viewBox="0 0 960 430" role="img" aria-labelledby="scn-mkle-t">
+	            <title id="scn-mkle-t">Four entries hashed in pairs into two nodes, then into one Merkle root, which seals the minute's block. One entry's branch to the root lights up: that branch is its proof.</title>
+	            <g class="scn-edges">
+	              <path class="scn-edge" d="M105 340 L195 263" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M285 340 L195 263"/>
+	              <path class="scn-edge" d="M465 340 L555 263" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M645 340 L555 263"/>
+	              <path class="scn-edge" d="M195 215 L330 147" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M555 215 L420 147"/>
+	              <path class="scn-edge scn-edge--gold" d="M460 119 L786 175" marker-end="url(#arrow)"/>
+	            </g>
+	            <g class="m-path">
+	              <path class="m-path-edge" d="M465 340 L555 263"/>
+	              <path class="m-path-edge" d="M555 215 L420 147"/>
+	            </g>
+	            <rect class="scn-chip m-leaf" style="--i:0" x="30" y="340" width="150" height="44" rx="6"/><text class="scn-chipt" x="105" y="368" text-anchor="middle">line · 33'</text>
+	            <rect class="scn-chip m-leaf" style="--i:1" x="210" y="340" width="150" height="44" rx="6"/><text class="scn-chipt" x="285" y="368" text-anchor="middle">refusal · 33'</text>
+	            <rect class="scn-chip m-leaf m-leaf--care" style="--i:2" x="390" y="340" width="150" height="44" rx="6"/><text class="scn-chipt" x="465" y="368" text-anchor="middle">line · 34'</text>
+	            <rect class="scn-chip m-leaf" style="--i:3" x="570" y="340" width="150" height="44" rx="6"/><text class="scn-chipt" x="645" y="368" text-anchor="middle">event · 34'</text>
+	            <rect class="scn-chip m-node" style="--i:4" x="120" y="215" width="150" height="44" rx="6"/><text class="scn-chipt" x="195" y="243" text-anchor="middle">hash of pair 1</text>
+	            <rect class="scn-chip m-node" style="--i:5" x="480" y="215" width="150" height="44" rx="6"/><text class="scn-chipt" x="555" y="243" text-anchor="middle">hash of pair 2</text>
+	            <rect class="scn-chip scn-chip--gold m-root" style="--i:6" x="290" y="95" width="170" height="48" rx="6"/><text class="scn-chipt scn-chipt--gold" x="375" y="126" text-anchor="middle">the Merkle root</text>
+	            <rect class="scn-box" x="790" y="130" width="150" height="120" rx="8"/>
+	            <text class="scn-t" x="865" y="162" text-anchor="middle">Block 34'</text>
+	            <text class="scn-chipt" x="865" y="192" text-anchor="middle">root f0c1…</text>
+	            <text class="scn-chipt" x="865" y="216" text-anchor="middle">prev a41f…</text>
+	            <text class="scn-chipt scn-chipt--lime" x="865" y="240" text-anchor="middle">hash 5d07…</text>
+	            <text class="scn-lbl scn-lbl--gold" x="465" y="410" text-anchor="middle">the line you're checking — its branch up to the root is its whole proof</text>
+	          </svg>
+	          </div>
+	        </div>
+	        <figcaption class="scene-copy">
+	          <p class="scene-tag">Scene 5 · the root</p>
+	          <h2>A minute, sealed by a Merkle root</h2>
+	          <p>A block doesn't hash its entries in one long line; it builds a Merkle tree, the way Certificate Transparency builds its logs (RFC 6962): entries hashed in pairs, pairs of pairs, up to a single root, and that root goes in the block's header. To prove that the one line you care about is really in the match, you need only its branch up to the root and the block headers on to the seal — a few hundred bytes, checked in your browser without trusting the studio.</p>
+	        </figcaption>
+	      </figure>
+
+	      <!-- Scene 6: the seal, kept apart -->
+	      <figure class="scene" data-scene="seal" data-reveal>
+	        <div class="scene-screen">
+	          <div class="scene-scroll">
+	          <svg viewBox="0 0 960 320" role="img" aria-labelledby="scn-seal-t">
+	            <title id="scn-seal-t">The match's seal, the last block's hash, with copies kept in the Cosmos DB audit trail and the Application Insights trace, and recomputed by the viewer's browser.</title>
+	            <g class="scn-edges">
+	              <path class="scn-edge" d="M340 135 C460 120 470 63 556 63" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M340 160H556" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M340 185 C460 200 470 257 556 257" marker-end="url(#arrow)"/>
+	            </g>
+	            <circle class="scn-dot scn-dot--gold" style="--dx:200px; --dy:-70px" cx="350" cy="150" r="4.5"/>
+	            <circle class="scn-dot scn-dot--gold" style="--dx:200px; --dy:0px; --t:.5s" cx="350" cy="160" r="4.5"/>
+	            <circle class="scn-dot scn-dot--gold" style="--dx:200px; --dy:70px; --t:1s" cx="350" cy="170" r="4.5"/>
+	            <rect class="scn-box scn-box--gold" x="40" y="110" width="300" height="100" rx="10"/>
+	            <text class="scn-t scn-t--gold" x="190" y="150" text-anchor="middle">the match's seal</text>
+	            <text class="scn-chipt scn-chipt--gold" x="190" y="180" text-anchor="middle">8f3a…e9c2</text>
+	            <text class="scn-s" x="190" y="200" text-anchor="middle">the last block's hash</text>
+	            <g><rect class="scn-box" x="560" y="25" width="370" height="76" rx="8"/><text class="scn-t scn-t--start" x="585" y="58">Azure Cosmos DB</text><text class="scn-s scn-s--start" x="585" y="80">the audit trail keeps a copy</text><text class="scn-chipt scn-chipt--lime" x="900" y="58" text-anchor="end">✓</text></g>
+	            <g><rect class="scn-box" x="560" y="122" width="370" height="76" rx="8"/><text class="scn-t scn-t--start" x="585" y="155">Application Insights</text><text class="scn-s scn-s--start" x="585" y="177">the trace keeps a copy</text><text class="scn-chipt scn-chipt--lime" x="900" y="155" text-anchor="end">✓</text></g>
+	            <g><rect class="scn-box scn-box--lime" x="560" y="219" width="370" height="76" rx="8"/><text class="scn-t scn-t--lime scn-t--start" x="585" y="252">Your browser</text><text class="scn-s scn-s--start" x="585" y="274">recomputes every hash itself</text><text class="scn-chipt scn-chipt--lime" x="900" y="252" text-anchor="end">✓</text></g>
+	          </svg>
+	          </div>
+	        </div>
+	        <figcaption class="scene-copy">
+	          <p class="scene-tag">Scene 6 · the seal</p>
+	          <h2>One seal, kept apart from the ledger</h2>
+	          <p>The last block's hash stands for the whole match, and copies of it live where the ledger doesn't: in the audit trail on Azure Cosmos DB and in the trace in Application Insights. Anyone can recompute every hash from the ledger alone — in the browser, or offline with <code>python -m court verify</code>, which also replays the match from its seed and demands the ledger hold exactly those events. <a href="#/ledger">Verify a real match yourself</a>.</p>
+	        </figcaption>
+	      </figure>
+
+	      <!-- Scene 7: the seed -->
+	      <figure class="scene" data-scene="seed" data-reveal>
+	        <div class="scene-screen">
+	          <div class="scene-scroll">
+	          <svg viewBox="0 0 960 340" role="img" aria-labelledby="scn-seed-t">
+	            <title id="scn-seed-t">One seed number fed to the generator produces a match; fed the same seed again, it replays the same match, event for event.</title>
+	            <g class="scn-edges">
+	              <path class="scn-edge" d="M150 170H206" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M420 150 C465 150 465 91 506 91" marker-end="url(#arrow)"/>
+	              <path class="scn-edge" d="M420 190 C465 190 465 249 506 249" marker-end="url(#arrow)"/>
+	              <path class="scn-edge scn-edge--red" d="M510 320 H330 V218" marker-end="url(#arrow)"/>
+	            </g>
+	            <text class="scn-lbl scn-lbl--red" x="530" y="312">the same seed, again</text>
+	            <rect class="scn-chip scn-chip--lime" x="40" y="128" width="110" height="84" rx="8"/>
+	            <text class="scn-lbl" x="95" y="158" text-anchor="middle">seed</text>
+	            <text class="sd-seed" x="95" y="198" text-anchor="middle">21</text>
+	            <rect class="scn-box" x="210" y="128" width="210" height="84" rx="8"/>
+	            <text class="scn-t" x="315" y="168" text-anchor="middle">the generator</text>
+	            <text class="scn-s" x="315" y="192" text-anchor="middle">invented clubs, real volumes</text>
+	            <text class="scn-lbl scn-lbl--lime" x="510" y="28">FIRST RUN</text>
+	            <rect class="sd-pitch" x="510" y="36" width="410" height="110" rx="6"/>
+	            <line class="sd-line" x1="715" y1="36" x2="715" y2="146"/>
+	            <g class="sd-shots">
+	              <circle class="sd" style="--i:0" cx="585" cy="85" r="7"/>
+	              <circle class="sd" style="--i:1" cx="668" cy="62" r="7"/>
+	              <circle class="sd" style="--i:2" cx="760" cy="100" r="7"/>
+	              <circle class="sd" style="--i:3" cx="845" cy="75" r="7"/>
+	              <circle class="sd-goal" style="--i:4" cx="880" cy="91" r="9"/>
+	              <circle class="sd-ring" style="--i:4" cx="880" cy="91" r="14"/>
+	            </g>
+	            <text class="scn-lbl scn-lbl--lime" x="510" y="182">THE REPLAY</text>
+	            <rect class="sd-pitch" x="510" y="194" width="410" height="110" rx="6"/>
+	            <line class="sd-line" x1="715" y1="194" x2="715" y2="304"/>
+	            <g class="sd-shots">
+	              <circle class="sd" style="--i:0" cx="585" cy="243" r="7"/>
+	              <circle class="sd" style="--i:1" cx="668" cy="220" r="7"/>
+	              <circle class="sd" style="--i:2" cx="760" cy="258" r="7"/>
+	              <circle class="sd" style="--i:3" cx="845" cy="233" r="7"/>
+	              <circle class="sd-goal" style="--i:4" cx="880" cy="249" r="9"/>
+	              <circle class="sd-ring" style="--i:4" cx="880" cy="249" r="14"/>
+	            </g>
+	          </svg>
+	          </div>
+	        </div>
+	        <figcaption class="scene-copy">
+	          <p class="scene-tag">Scene 7 · the seed</p>
+	          <h2>Same seed, same match</h2>
+	          <p>The rules of this hackathon allow no real match data, so every club, player and match here is invented by a generator, calibrated so its scorelines sit close to real football. Feed it the same seed and it replays the same match, to the event — which is why every number on this site can be checked by anyone, and why the ledger can be held to the seed's own events. <a href="#/data">How real is the synthetic football</a>.</p>
+	        </figcaption>
+	      </figure>
+
+	      <!-- Scene 8: the road -->
+	      <figure class="scene" data-scene="road" data-reveal>
+	        <div class="scene-screen">
+	          <div class="scene-scroll">
+	          <svg viewBox="0 0 960 350" role="img" aria-labelledby="scn-road-t">
+	            <title id="scn-road-t">Four rising steps: the court of claims, live today; the decision explainer; perception from cameras; and the north star, an AI fourth official that advises the referee.</title>
+	            <path class="scn-edge r-ground" d="M30 338H926" marker-end="url(#arrow)"/>
+	            <text class="scn-lbl" x="32" y="328">after the hackathon</text>
+	            <rect class="scn-box scn-box--lime" x="30" y="230" width="210" height="90" rx="8"/>
+	            <text class="r-t r-t--lime" x="135" y="268" text-anchor="middle">The court</text>
+	            <text class="scn-s" x="135" y="290" text-anchor="middle">live today</text>
+	            <rect class="scn-box" x="260" y="165" width="210" height="155" rx="8"/>
+	            <text class="r-t" x="365" y="228" text-anchor="middle">The decision</text>
+	            <text class="r-t" x="365" y="254" text-anchor="middle">explainer</text>
+	            <text class="scn-s" x="365" y="278" text-anchor="middle">the call, explained</text>
+	            <rect class="scn-box" x="490" y="100" width="210" height="220" rx="8"/>
+	            <text class="r-t" x="595" y="180" text-anchor="middle">Perception</text>
+	            <text class="scn-s" x="595" y="204" text-anchor="middle">the Scout gets eyes:</text>
+	            <text class="scn-s" x="595" y="224" text-anchor="middle">every call cites its frames</text>
+	            <rect class="scn-box scn-box--gold r-star" x="720" y="35" width="210" height="285" rx="8"/>
+	            <text class="r-star-t" x="825" y="80" text-anchor="middle">★</text>
+	            <text class="r-t r-t--gold" x="825" y="130" text-anchor="middle">The fourth</text>
+	            <text class="r-t r-t--gold" x="825" y="156" text-anchor="middle">official</text>
+	            <text class="scn-s" x="825" y="180" text-anchor="middle">advises; explains;</text>
+	            <text class="scn-s" x="825" y="200" text-anchor="middle">the human decides</text>
+	            <circle class="r-ball" r="9" cx="0" cy="0"/>
+	          </svg>
+	          </div>
+	        </div>
+	        <figcaption class="scene-copy">
+	          <p class="scene-tag">Scene 8 · the road</p>
+	          <h2>Where this goes</h2>
+	          <p>The hackathon is stage one: commentary that proves every claim. Next, the decision explainer — when the referee makes a call, the evidence and the Law it rests on, explained to the crowd and the viewers in their language. Then perception: fouls read from cameras, every prediction citing its frames. The north star is an AI fourth official that advises the referee team, faster than a video review takes today, and explains every decision to the whole stadium. It advises. The human decides. <a href="#/roadmap">The whole road</a>.</p>
+	        </figcaption>
+	      </figure>
+
+	      <div class="actions story-end" data-reveal>
+	        <a class="button" href="#/ledger">See it on a real match: verify the ledger</a>
+	        <a class="button button-quiet" href="#/problem">Start the story from the problem</a>
+	      </div>
+	    </section>
 
     <!-- ============ DATA ============ -->
     <section class="page wrap" data-page="data" data-shirt="8" data-group="data" data-role="Midfield" data-title="Synthetic by design" data-summary="Invented clubs, real volumes, every match reproducible" aria-labelledby="data-title">
@@ -747,6 +1319,7 @@
         <li data-reveal><strong>One answer, a few hundred bytes.</strong> Each answer's proof is its Merkle path and the blocks on to the seal (RFC 9162). The Ask page checks it in the browser.</li>
         <li data-reveal><strong>No coin, no mining, no betting.</strong> Nothing to buy, nothing to trade. It's there to keep the record honest.</li>
       </ul>
+      <p class="aside" data-reveal>New to hash chains and Merkle roots? <a href="#/explained">Watch them explained in eight animated scenes</a> — including what happens when you change one entry on purpose.</p>
 
       <h2 class="section-title" data-reveal>What it proves, and what it doesn't</h2>
       <p class="section-lede" data-reveal>It proves the history hasn't changed since it was sealed, and that the events are the ones the seed generates. It adds nothing a line didn't already prove, and a studio that lied while recording would seal its lie: the copies of the seal kept elsewhere make that harder, not impossible. Publishing each match's seal to a public log is the next step.</p>
@@ -1318,6 +1891,7 @@
   <script src="data/foundry_eval.js"></script>
   <script src="data/ask_eval.js"></script>
   <script src="demo/ledger-core.js"></script>
+  <script src="assets/story.js"></script>
   <script src="assets/router.js"></script>
   <script src="assets/site.js"></script>
   <script src="assets/field.js"></script>
