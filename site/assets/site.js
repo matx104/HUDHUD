@@ -56,6 +56,7 @@
   if (window.FOUNDRY_EVAL) drawFoundryEval(window.FOUNDRY_EVAL);
   if (window.ASK_EVAL) drawAskEval(window.ASK_EVAL);
   startDemos();
+  startFront();
   hooks.ledger = ledgerPage;
   placeEmblems();
   startProgress();
@@ -93,6 +94,20 @@
         if (e.detail.page === demo.closest("[data-page]").dataset.page || !frame.classList.contains("is-playing")) return;
         frame.replaceChildren(...still);
         frame.classList.remove("is-playing");
+      });
+    }
+  }
+
+  // The front three on the home page: one card in the spotlight, the other two
+  // blurred and waiting. Picking a blurred one brings it forward (the first pick
+  // only); picking the spotlighted one opens its chapter like any link.
+  function startFront() {
+    const cards = $$("[data-front] a");
+    for (const card of cards) {
+      card.addEventListener("click", (e) => {
+        if (card.dataset.active === "true") return;
+        e.preventDefault();
+        for (const other of cards) other.dataset.active = String(other === card);
       });
     }
   }

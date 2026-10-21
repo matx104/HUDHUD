@@ -160,6 +160,22 @@
         </g>
         <circle cx="120" cy="154" r="2" fill="#C9A227"/>
       </g>
+      <g id="badgeMark">
+        <g clip-path="url(#ballClip)">
+          <circle cx="120" cy="120" r="60" fill="#F4F1E8"/>
+          <use href="#t-seams" fill="none" stroke="#0A1F2E" stroke-width="1.4" stroke-opacity=".55"/>
+          <g fill="#1E7B45"><use href="#t-root"/><use href="#t-top"/><use href="#t-left"/><use href="#t-right"/></g>
+        </g>
+        <g transform="translate(120 156)" fill="#B8F53D" stroke="#0A1F2E" stroke-width="2" stroke-linejoin="round">
+          <use href="#p78" transform="rotate(-52)"/>
+          <use href="#p96" transform="rotate(-26)"/>
+          <use href="#p96" transform="rotate(26)"/>
+          <use href="#p78" transform="rotate(52)"/>
+          <use href="#p112" fill="#C9A227"/>
+        </g>
+        <circle cx="120" cy="154" r="10.5" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.5"/>
+        <circle cx="120" cy="154" r="2.6" fill="#C9A227"/>
+      </g>
       <!-- the agents, as glyphs: eye, pen, check, globe, hub-and-spokes -->
       <g id="gScout" fill="none" stroke="#0A1F2E" stroke-width="1.9" stroke-linecap="round">
         <path d="M-6.5 0 Q0 -5.2 6.5 0 Q0 5.2 -6.5 0 Z"/>
@@ -189,17 +205,23 @@
   <template id="head-emblem">
     <div class="head-emblem" aria-hidden="true">
       <svg class="crest-art" viewBox="0 0 240 240">
-        <circle class="ring" cx="120" cy="104" r="104"/>
-        <circle class="ring ring-run" cx="120" cy="104" r="116"/>
-        <line class="ring" x1="0" y1="104" x2="10" y2="104"/>
-        <line class="ring" x1="230" y1="104" x2="240" y2="104"/>
-          <g transform="translate(120 150)">
+        <circle class="ring" cx="120" cy="120" r="112"/>
+        <circle class="ring ring-run" cx="120" cy="120" r="122"/>
+        <line class="ring" x1="0" y1="120" x2="10" y2="120"/>
+        <line class="ring" x1="230" y1="120" x2="240" y2="120"/>
+        <g clip-path="url(#ballClip)">
+          <circle cx="120" cy="120" r="60" fill="#F4F1E8"/>
+          <use href="#t-seams" fill="none" stroke="#0A1F2E" stroke-width="1.4" stroke-opacity=".55"/>
+          <g fill="#1E7B45"><use href="#t-root"/><use href="#t-top"/><use href="#t-left"/><use href="#t-right"/></g>
+        </g>
+        <g transform="translate(120 156)" stroke="#0A1F2E" stroke-width="2" stroke-linejoin="round">
             <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#p78"/></g>
             <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#p96"/></g>
             <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#p96"/></g>
             <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#p78"/></g>
             <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#p112"/></g>
           </g>
+          <use href="#lensRoot"/>
       </svg>
     </div>
   </template>
@@ -275,10 +297,11 @@
 
       <div class="front-three wrap" data-reveal>
         <h2>The front three</h2>
-        <ol class="front-cards">
-          <li><a href="#/hud"><img src="assets/screens/hud-referee.webp" alt="" loading="lazy" width="1600" height="758"><span class="shirt">9</span><strong>HUD²</strong><span>The match through the referee's, the commentator's or the fan's lens.</span></a></li>
-          <li><a href="#/ask"><img src="assets/screens/ask.webp" alt="" loading="lazy" width="1600" height="758"><span class="shirt">10</span><strong>Ask the match</strong><span>Any question, answered from the events, checked and sealed.</span></a></li>
-          <li><a href="#/ledger"><img src="assets/screens/studio-ledger.webp" alt="" loading="lazy" width="1600" height="315"><span class="shirt">11</span><strong>The match ledger</strong><span>A match's history chained by hashes: change a byte and it shows.</span></a></li>
+        <p class="front-note">One in the spotlight; pick a blurred one to bring it forward, pick it again to open its chapter.</p>
+        <ol class="front-cards" data-front>
+          <li><a class="card-hud" data-active="true" href="#/hud"><img src="assets/screens/hud-referee.webp" alt="" loading="lazy" width="1600" height="758"><span class="shirt">9</span><strong>HUD²</strong><span>The match through the referee's, the commentator's or the fan's lens.</span></a></li>
+          <li><a class="card-ask" href="#/ask"><img src="assets/screens/ask.webp" alt="" loading="lazy" width="1600" height="758"><span class="shirt">10</span><strong>Ask the match</strong><span>Any question, answered from the events, checked and sealed.</span></a></li>
+          <li><a class="card-ledger" href="#/ledger"><img src="assets/screens/studio-ledger.webp" alt="" loading="lazy" width="1600" height="315"><span class="shirt">11</span><strong>The match ledger</strong><span>A match's history chained by hashes: change a byte and it shows.</span></a></li>
         </ol>
       </div>
 
@@ -1469,14 +1492,8 @@
       </header>
 
       <div class="north-star" data-reveal>
-        <svg class="star-crest crest-art" viewBox="36 12 168 168" aria-hidden="true">
-        <g transform="translate(120 150)">
-            <g class="feather" style="--r:-52deg; --i:0" transform="rotate(-52)"><use href="#p78"/></g>
-            <g class="feather" style="--r:-26deg; --i:1" transform="rotate(-26)"><use href="#p96"/></g>
-            <g class="feather" style="--r:26deg; --i:3" transform="rotate(26)"><use href="#p96"/></g>
-            <g class="feather" style="--r:52deg; --i:4" transform="rotate(52)"><use href="#p78"/></g>
-            <g class="feather feather-critic" style="--r:0deg; --i:2"><use href="#p112"/></g>
-          </g>
+        <svg class="star-crest crest-art" viewBox="44 44 152 152" aria-hidden="true">
+          <use href="#badgeMark"/>
         </svg>
         <div>
           <h2>The north star: the fourth official</h2>
