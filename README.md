@@ -3,9 +3,72 @@
 > Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
 > AI match intelligence on synthetic football-realistic data. **Solo build.**
 
-**Status:** live. **The studio** runs on Azure Container Apps (commentary written by gpt-4.1-mini on Microsoft Foundry, every number checked by the Critic before it airs) at https://studio.hudhud.com.pk/, private behind Cloudflare Access; the demo video shows it, and `make studio-offline` runs the same studio on any machine, no Azure needed. Showcase site: https://hudhud.com.pk/ . Media kit (the video, screenshots and brand): https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y . Audit trail on Azure Cosmos DB, traces in Application Insights, 179 tests on every push (167 Python, 12 for the site).
+**Status:** live. **The studio** runs on Azure Container Apps (commentary written by gpt-4.1-mini on Microsoft Foundry, every number checked by the Critic before it airs) at https://studio.hudhud.com.pk/, private behind Cloudflare Access; the demo video shows it, and `make studio-offline` runs the same studio on any machine, no Azure needed. Showcase site: https://hudhud.com.pk/ . Media kit (the video, screenshots and brand): https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y . Audit trail on Azure Cosmos DB, traces in Application Insights, 273 tests on every push (247 Python, 26 for the site and the studio).
 
 **What it does:** the Scout flags goals, big chances, great passes, counterattacks, a high press paying off, swings in momentum, a match broken open end to end (control or chaos, also live on HUD²) and fouls with a card or a penalty in them (the ref's call, read from Law 12 at the competition's strictness); the Narrator writes the line; the Critic recomputes every number from the raw events and refuses what it can't prove; the Localizer airs it in English, Urdu or Arabic, on screen and spoken by Azure AI Speech. Viewers make it theirs (a club, a player, one number to follow), and at full time the match writes its own recap, every line checked by the Critic ([a sample](https://hudhud.com.pk/recap/seed-21.html)). Ask the match a question, live or after full time, in the studio or on its own page (`/ask`): who has the most of anything, a player, a side, a half, and follow-ups like "and Brackenfield?". The model calls the Scout's counting tools for every number it states, the Critic checks the answer before it shows, and each answer is sealed in the match ledger with a proof the browser checks (ADR 0010). With the voice on, a question can be asked out loud in English, Urdu or Arabic, and the answer is read back (`docs/ask-eval.md` measures the answers on unseen matches). The Critic also serves other agents over A2A, at `/a2a/` on the studio (ADR 0011), beside its MCP server. HUD², at `/hud` on the studio, shows the same match on one heads-up screen through the referee's, the commentator's or the fan's lens: every action drawn where it happened, every checked line pinned to the events it cites, and each viewer's own choice of layers (ADR 0012). Every match keeps a ledger: every event, line, refusal and answer, sealed minute by minute into blocks chained by hashes (Merkle roots as in Certificate Transparency, RFC 6962), so a changed byte shows; the studio verifies it in the browser, and `python -m court verify` offline (ADR 0013). It never predicts a result, never shows odds and won't help anyone bet: a question about bets or odds gets fixed words that steer away from gambling, before any model reads it (roadmap, principle 8). What it can't tell you is stated plainly on the site, and the generator's scorelines are checked against real results (`docs/realism.md`). The output stream has a JSON Schema (`apps/api/schema/`), the model calls show in Foundry's own tracing, and Foundry's evaluators judge the lines that aired (`docs/foundry-eval.md`).
+
+## The pitch
+
+Football broadcasts run on numbers, and more and more of the words around them will be written by
+AI. A model that invents a statistic on air costs a broadcaster its credibility in one line.
+**HUDHUD is AI match commentary that proves every claim before it airs.** Five agents work a live
+synthetic match: the Scout detects what matters, the Narrator writes the line on Microsoft Foundry,
+the Critic recomputes every number from the raw events and refuses what it can't prove, the
+Localizer airs it in English, Urdu or Arabic, and the Orchestrator keeps the broadcast on air when a
+model fails. Every line carries the events it stands on and a receipt (who wrote it, what it cost,
+what was checked), and every match is sealed in a ledger chained by hashes. It is built on Microsoft
+Agent Framework, Microsoft Foundry (gpt-4.1-mini, gpt-5-mini, Foundry's evaluators and tracing),
+Azure Container Apps, Azure AI Speech, Azure Cosmos DB, Application Insights, an MCP server and an
+A2A agent, with GitHub Copilot agent mode and the Azure MCP Server in the build.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  gen["Synthetic match generator<br/>(seeded, hidden ground truth)"] -->|events| orch
+
+  subgraph court["The court (Microsoft Agent Framework)"]
+    orch["Orchestrator<br/>retries, degrades, recovers"] --> state["Match state"]
+    state --> scout["Scout<br/>hot path: no model, sub-ms"]
+    scout -->|"Alert + evidence"| narr["Narrator"]
+    narr -->|"Claim: text, citations,<br/>assertions"| critic{"Critic<br/>recomputes every number"}
+    critic -->|refused: reasons| narr
+    critic -->|"refused a third time"| spiked["Spiked, shown with why"]
+    critic -->|verified| loc["Localizer<br/>EN · UR · AR, casual · analyst"]
+    orch -.->|"warm path down"| detect["Detection-only cues<br/>(the Scout's facts, cited)"]
+  end
+
+  narr <-->|"write the line"| foundry[("Microsoft Foundry<br/>gpt-4.1-mini · gpt-5-mini")]
+  loc <-->|translate| foundry
+  loc --> cues["Cue stream (SSE, JSON Schema)"]
+  detect --> cues
+  cues --> studio["Studio"] & hud["HUD²: three lenses"] & ask["Ask the match"]
+  cues --> speech["Azure AI Speech"]
+  cues --> ledger["Match ledger<br/>(Merkle roots, hash chain)"]
+  cues --> cosmos[("Azure Cosmos DB<br/>audit trail")]
+  court -.->|traces| insights["Application Insights<br/>+ Foundry tracing"]
+  critic <-->|"verify_claim, match_stats"| mcp["MCP server · A2A agent<br/>(other assistants and agents)"]
+```
+
+The **hot path** sees every event and never waits on anything slow; the **warm path** runs each
+alert through Narrator → Critic → Localizer as an Agent Framework workflow, with a rewrite edge
+back to the Narrator. When the warm path fails, the Orchestrator announces it, airs the Scout's own
+computed facts, still cited, and announces the recovery (ADR 0001). It all runs as one container on
+Azure Container Apps, signed in to every Azure service with one managed identity and no keys
+(`docs/azure.md`).
+
+## The evidence law
+
+- **Code counts, models write.** Every number a line may state is computed by code from the
+  events; the model gets a fact sheet, never the raw arithmetic (ADR 0003).
+- **No evidence, no air.** Each claim cites the events it stands on, and the Critic recomputes each
+  number from those events and refuses any it can't prove, on screen with the reason.
+- **Fail closed, never go dark.** A refused line is rewritten at most twice, then spiked; a failed model
+  drops the broadcast to the Scout's facts, never to silence.
+- **Say what it can't tell.** Synthetic clubs and players, no video, a measured momentum
+  precision: the limits are stated on the site and in the studio.
+- **Never a betting tool.** No predicted results, no odds; a betting question gets fixed words
+  before any model reads it.
 
 ## Quickstart
 
