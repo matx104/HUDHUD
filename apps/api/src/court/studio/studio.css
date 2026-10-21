@@ -66,7 +66,7 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .slate::before, .slate::after { content: ""; position: absolute; pointer-events: none; }
 .slate::before { inset: 1rem; border: 1px solid rgba(244, 241, 232, 0.07); border-radius: 6px; background: linear-gradient(90deg, transparent calc(50% - 0.5px), rgba(244, 241, 232, 0.06) 0 calc(50% + 0.5px), transparent 0); }
 .slate::after { left: 50%; top: 50%; width: 11rem; height: 11rem; margin: -5.5rem; border: 1px solid rgba(244, 241, 232, 0.06); border-radius: 50%; }
-.slate-crest { position: relative; width: clamp(8rem, 20vw, 15rem); height: auto; overflow: visible; filter: drop-shadow(0 0 28px rgba(184, 245, 61, 0.35)); }
+.slate-crest { position: relative; width: clamp(9rem, 22vw, 16.5rem); height: auto; overflow: visible; filter: drop-shadow(0 0 28px rgba(184, 245, 61, 0.35)); }
 .slate-crest .feather use { fill: var(--lime); }
 .slate-crest .critic use { fill: var(--gold); }
 .slate-copy { position: relative; }

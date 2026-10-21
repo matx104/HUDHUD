@@ -160,7 +160,7 @@ body[data-state="slate"] .stage { grid-template-columns: minmax(0, 1fr); grid-te
 /* ---------- the slate: whose eyes, which match ---------- */
 .slate { grid-column: 1 / -1; grid-row: 1; align-self: center; justify-self: center; z-index: 2; width: min(64rem, 100%); padding: clamp(1.25rem, 3vw, 2.25rem); background: var(--glass); border: 1px solid var(--chalk-faint); border-radius: 6px; backdrop-filter: blur(8px); }
 .slate-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1rem 2rem; }
-.slate-crest { width: clamp(6rem, 14vw, 10rem); height: auto; overflow: visible; filter: drop-shadow(0 0 24px rgba(184, 245, 61, 0.35)); }
+.slate-crest { width: clamp(7rem, 16vw, 11rem); height: auto; overflow: visible; filter: drop-shadow(0 0 24px rgba(184, 245, 61, 0.35)); }
 .slate-crest .feather use { fill: var(--lime); }
 .slate-crest .critic use { fill: var(--gold); }
 .slate-mark { margin: 0; font: 900 clamp(4rem, 10vw, 7.5rem) / 0.85 var(--display); }

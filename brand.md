@@ -27,6 +27,7 @@
 2. **The guide, Attar's *Conference of the Birds*.** The hoopoe (once Solomon's messenger) leads the birds to the Simurgh; thirty arrive and *si murgh* = "thirty birds". Agents that together see the whole match; the Orchestrator leads.
 3. **Heads-up display.** HUD = the broadcast overlay layer = what the product emits.
 4. **Five feathers.** The crest fans like a broadcast signal: one feather per agent, the Critic's gold at the centre. Two beats, hud-hud, like a chant from the stands.
+5. **The ball and the scope (mark v2).** The crest prints on the football — the feathers spring from the ball like they spring from the hoopoe's head — and a scope (dashed lock-ring, E/W ticks) centres on the root of the tail, where all five agents meet and every claim is checked; a small gold lens caps the root. The agents' glyphs (Scout's eye, Narrator's pen, Critic's check, Localizer's globe, Orchestrator's hub) appear only in the large name-page lockup, never in the small mark: at favicon size they turn to noise.
 
 **Kin myths** (supporting, never the anchor): Odin's ravens Huginn and Muninn, Noah's dove and the olive leaf, Hermes the messenger.
 
@@ -59,3 +60,4 @@
 
 - 2026-10-16 — Arabic/Persian/Urdu/Turkish/Greek/Latin roots opened into scope. Repo born as `pl-hackathon` (placeholder). GAFFR/ISNAAD families excluded — variations taken on the domains that matter. Final name gates on solution shape + domain purchase.
 - 2026-10-17 — Folklore round (Arabic/Persian/Urdu roots, global myth parallels). **HUDHUD chosen by the Monarch.** Wordmark HUDHUD, monogram HUD²; HUDX/HUD-2 rejected. Story anchored on Surah An-Naml, then Attar. Every `hudhud.*` on .com/.dev/.app/.xyz is taken; domain candidates in project-names.md §H.
+- 2026-10-21 — **Mark v2** (builds on the crest, removes nothing): the crest on the football, the scope on the root of the tail, the gold lens at the convergence. Variant A (no per-feather icons) is the mark everywhere it appears small — favicon, header, hero, footer, studio/HUD/ask slates, social card, thumbnail, brand sheet; the agents' glyphs ride only the name-page figure. Favicon, icons (192/512/180), og.png and the Drive media kit regenerated the same day.
