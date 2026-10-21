@@ -43,6 +43,7 @@
   let voiceSession = null;
   let queue = [];
   let speaking = false;
+  let onAir = null; // the last line aired: turning the voice on reads it, rather than waiting for the next
   let tally = { refused: 0, checked: 0, cost: 0 };
   // Ask the match: kept after full time, so the whole match can be asked about.
   const askForm = $("[data-ask-form]");
@@ -216,6 +217,7 @@
     suggest(data);
     queue = [];
     said.clear();
+    onAir = null;
     teams = { home: data.home, away: data.away };
     for (const side of ["home", "away"]) {
       const node = $(`[data-${side}]`);
@@ -509,11 +511,14 @@
     if (c.receipt) item.append(receipt(c.receipt));
     cues.prepend(item);
     said.set(c.id, item);
+    onAir = c;
     say(c);
     tally.checked += c.receipt?.numbers_checked ?? 0;
     tally.cost += c.receipt?.cost_usd ?? 0;
     drawTally();
   }
+
+  hear.addEventListener("change", () => { if (hear.checked && onAir) say(onAir); });
 
   // A line is spoken only by its cue's id: the server reads exactly what aired, never free text.
   function say(c, always = false) {
