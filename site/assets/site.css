@@ -1071,6 +1071,37 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
 .r-ground { stroke: var(--chalk-faint); }
 .r-ball { fill: var(--chalk); stroke: var(--navy-deep); stroke-width: 2; transform: translate(135px, 218px); }
 
+/* ---------- the deliverables report: for the judges, first ---------- */
+.judge-box {
+  display: grid; gap: 0.9rem; margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid rgba(184, 245, 61, 0.35); border-radius: 10px;
+  background: linear-gradient(120deg, rgba(184, 245, 61, 0.08), transparent 60%), var(--navy-raised);
+}
+.judge-box h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); }
+.judge-box p { color: var(--chalk-dim); max-width: 72ch; }
+.judge-box code { color: var(--lime); }
+.report-rows { list-style: none; margin: 0 0 clamp(2.5rem, 6vw, 4rem); padding: 0; }
+.report-row {
+  display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  gap: 0.75rem clamp(1.5rem, 4vw, 3.5rem); padding-block: 1.6rem; border-top: 1px solid var(--chalk-faint);
+}
+.report-row:last-child { border-bottom: 1px solid var(--chalk-faint); }
+.report-need .chip { margin-bottom: 0.6rem; }
+.report-need h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+.report-ask { margin-top: 0.5rem; font-size: 0.9375rem; color: var(--chalk-dim); font-style: italic; }
+.report-facts { margin: 0; display: grid; gap: 0.9rem; }
+.report-facts div { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 0.25rem 1rem; }
+.report-facts dt { font: 500 0.8125rem / 1.5 var(--mono); color: var(--lime); letter-spacing: 0.05em; }
+.report-facts div:nth-child(2) dt { color: var(--chalk-dim); }
+.report-facts div:nth-child(3) dt { color: var(--gold); }
+.report-facts dd { margin: 0; color: var(--chalk-dim); font-size: 0.9375rem; }
+.report-facts dd a { color: var(--lime); }
+.report-checks { list-style: none; margin: 0 0 clamp(2.5rem, 6vw, 4rem); padding: 0; display: grid; gap: 0.9rem; }
+.report-checks li { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 1rem; align-items: start; }
+.report-checks .chip { justify-self: start; }
+.report-checks strong { color: var(--chalk); }
+.report-checks div { color: var(--chalk-dim); font-size: 0.9375rem; }
+
 /* ---------- the challenge: the ask, the rules, the rewards ---------- */
 .challenge-ask {
   margin: 0 0 clamp(2.5rem, 6vw, 4rem); padding: 1.5rem 1.75rem;
@@ -1135,6 +1166,8 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
   .receipt { position: relative; top: auto; max-width: 26rem; }
   .pillars, .flow-five { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .prizes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .report-row { grid-template-columns: minmax(0, 1fr); }
+  .report-checks li { grid-template-columns: minmax(0, 1fr); }
   .scene-copy { grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
   .scene-copy p:not(.scene-tag) { grid-column: 1; }
 }

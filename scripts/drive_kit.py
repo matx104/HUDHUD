@@ -179,6 +179,7 @@ def build(info: dict, folder_url: str) -> None:
     render(
         fields,
         [
+            ("deliverables.html", OUT / "Deliverables report.pdf"),
             ("read-me.html", OUT / "Read me.pdf"),
             ("brand-sheet.html", OUT / BRAND / "Brand sheet.pdf"),
             ("thumbnail.html", OUT / BRAND / "video-thumbnail-1280x720.png"),

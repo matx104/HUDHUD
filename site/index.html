@@ -119,6 +119,7 @@
         <a href="#/log">Build log</a>
         <a href="#/roadmap">Roadmap</a>
         <a href="#/challenge">The challenge</a>
+        <a href="#/report">Deliverables</a>
         <a href="#/who">Who</a>
         <a data-repo-link data-when-repo="public" href="#">Code</a>
       </nav>
@@ -629,7 +630,161 @@
         <li data-reveal><a href="https://github.com/microsoft/insidethegamehackathon"><strong>Hackathon repository</strong><span>Guides, resource playlists, the code of conduct</span></a></li>
         <li data-reveal><a href="https://developer.microsoft.com/en-us/reactor/series/S-1709/"><strong>Microsoft Reactor series</strong><span>The hackathon's live sessions for builders</span></a></li>
       </ul>
-      <p class="aside" data-reveal><span data-product-name></span> is an independent entry and isn't affiliated with or endorsed by Microsoft or the Premier League. Every club, player and match on this site is invented, as the rules require. Prize figures are quoted from the official rules and awards register; winners are announced November 20, 2026.</p>
+      <p class="aside" data-reveal><span data-product-name></span> is an independent entry and isn't affiliated with or endorsed by Microsoft or the Premier League. Every club, player and match on this site is invented, as the rules require. Prize figures are quoted from the official rules and awards register; winners are announced November 20, 2026. Every ask on this page, delivered and linked to its evidence: <a href="#/report">the deliverables report</a>.</p>
+    </section>
+
+    <!-- ============ DELIVERABLES: THE REPORT ============ -->
+    <section class="page wrap" data-page="report" data-shirt="21" data-group="season" data-role="Substitute" data-title="Deliverables" data-summary="What was needed, what was delivered, how, and what's next" aria-labelledby="report-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">16</span>
+        <h1 id="report-title" tabindex="-1">What was needed, what was delivered</h1>
+        <p class="lede">The deliverables report. Every ask of the challenge, row by row: what the brief required, what shipped, how it works underneath, and where that feature goes next. Nothing here is promised — it is live, on synthetic matches, and linked to its evidence.</p>
+      </header>
+
+      <div class="judge-box" data-reveal>
+        <h2>For the judges, first</h2>
+        <p>Everything checkable in one place. This report ships as a PDF inside the media kit — one click below — beside the 110-second video, the screenshots and the brand. The studio runs on any machine with <code>make studio-offline</code>, no Azure needed; the live studio's credentials are in the testing instructions.</p>
+        <div class="actions">
+          <a class="button" data-kit-link hidden href="#">Download the judges' pack</a>
+          <a class="button button-quiet" data-video-link hidden href="#">Watch the 110-second demo</a>
+          <a class="button button-quiet" data-repo-link data-when-repo="public" href="#">The code on GitHub</a>
+        </div>
+      </div>
+
+      <dl class="stats" data-reveal>
+        <div><dt>Asks answered</dt><dd>8 / 8</dd></div>
+        <div><dt>Hard requirements</dt><dd>7 / 7</dd></div>
+        <div><dt>Tests on every push</dt><dd>273</dd></div>
+        <div><dt>Demo video</dt><dd>109.1 s</dd></div>
+      </dl>
+
+      <ol class="report-rows">
+        <li class="report-row" data-reveal>
+          <div class="report-need">
+            <span class="chip" data-status="done">Delivered</span>
+            <h2>Explainable match intelligence</h2>
+            <p class="report-ask">The ask: not “AI says X dominated”, but why — with event evidence.</p>
+          </div>
+          <dl class="report-facts">
+            <div><dt>Delivered</dt><dd>The Scout flags the moments that matter — goals, big chances, great passes, counterattacks, a high press paying off, momentum swings, control or chaos, the ref's call — and every line that airs carries the events it stands on, each number recomputed by the Critic before it airs. <a href="#/how">How a claim gets on air</a>.</dd></div>
+            <div><dt>How</dt><dd>Code counts, models write: deterministic detection on a sub-millisecond hot path; the Narrator drafts from a fact sheet on Foundry; the Critic recomputes every number from the raw events and refuses what it can't prove, on screen, with the reason.</dd></div>
+            <div><dt>Next</dt><dd>The decision explainer — the referee's call explained with the Law it rests on — then perception: fouls read from camera angles, every prediction citing its frames. <a href="#/roadmap">The road</a>.</dd></div>
+          </dl>
+        </li>
+        <li class="report-row" data-reveal>
+          <div class="report-need">
+            <span class="chip" data-status="done">Delivered</span>
+            <h2>Real-time narratives</h2>
+            <p class="report-ask">The ask: live during the match, not only after it.</p>
+          </div>
+          <dl class="report-facts">
+            <div><dt>Delivered</dt><dd>A live cue stream, start to finish: alert to air in about 1.3 seconds, every cue timed and prioritised. When the Narrator was knocked out mid-match in tests, the broadcast dropped to the Scout's cited facts, said so on air, and announced the recovery — the feed never went dark. <a href="#/recovery">When an agent fails</a>.</dd></div>
+            <div><dt>How</dt><dd>The hot path sees every event and never waits on a model; each alert runs Narrator → Critic → Localizer as a Microsoft Agent Framework workflow with a rewrite edge, supervised by an Orchestrator that degrades and recovers by design.</dd></div>
+            <div><dt>Next</dt><dd>The same cue contract behind a broadcaster's own graphics system, and multi-match coverage from one deployment.</dd></div>
+          </dl>
+        </li>
+        <li class="report-row" data-reveal>
+          <div class="report-need">
+            <span class="chip" data-status="done">Delivered</span>
+            <h2>Automated recaps</h2>
+            <p class="report-ask">The ask: the 90-minute story writes itself.</p>
+          </div>
+          <dl class="report-facts">
+            <div><dt>Delivered</dt><dd>At full time the match writes its own recap — the result, every goal, both sides' numbers, the moments that aired — every line through the Critic first, whole-match numbers counted to the final whistle and cited. Reads as a page, prints to PDF: <a href="recap/seed-21.html">seed 21's recap</a>.</dd></div>
+            <div><dt>How</dt><dd>One rule lifted at full time — the checker may look back over the whole match — with the same evidence law as the live lines. Standout players are counted from their own events and marked counted, not checked: said plainly. <a href="#/limits">The limits</a>.</dd></div>
+            <div><dt>Next</dt><dd>Richer recaps — a momentum timeline, player cards — and a recap assembled per viewer, in their language and their club's colours.</dd></div>
+          </dl>
+        </li>
+        <li class="report-row" data-reveal>
+          <div class="report-need">
+            <span class="chip" data-status="done">Delivered</span>
+            <h2>Personalized experiences</h2>
+            <p class="report-ask">The ask: the analyst and the casual fan as two genuinely different experiences — custom modes, favourite clubs and players, player focus, one metric.</p>
+          </div>
+          <dl class="report-facts">
+            <div><dt>Delivered</dt><dd><a href="#/hud">HUD²'s three lenses</a> — referee, commentator, fan — <a href="#/ask">Ask the match</a>, a club, a player or one number to follow, casual or analyst modes. Emphasis changes; the facts never do.</dd></div>
+            <div><dt>How</dt><dd>Personalisation is a layer over verified cues: the viewer's choice reorders and colours what airs, and the Critic checks every viewer's line the same way it checks the broadcast's.</dd></div>
+            <div><dt>Next</dt><dd>HUD² worn — the same lenses on glasses, with the marks on the real pitch — as the hardware allows.</dd></div>
+          </dl>
+        </li>
+        <li class="report-row" data-reveal>
+          <div class="report-need">
+            <span class="chip" data-status="done">Delivered</span>
+            <h2>Multi-language storytelling</h2>
+            <p class="report-ask">The ask: insight for fans around the world, in multiple languages.</p>
+          </div>
+          <dl class="report-facts">
+            <div><dt>Delivered</dt><dd>Every verified line airs in English, Urdu or Arabic — on screen and spoken aloud by Azure AI Speech. A question can be asked out loud in any of the three, and the answer comes back checked, in the same language.</dd></div>
+            <div><dt>How</dt><dd>The Localizer translates under the same law: no number the checked line doesn't state, every name kept as written. A translation that breaks either airs the English instead.</dd></div>
+            <div><dt>Next</dt><dd>More languages ride the same rail — the law doesn't change, only the voice.</dd></div>
+          </dl>
+        </li>
+        <li class="report-row" data-reveal>
+          <div class="report-need">
+            <span class="chip" data-status="done">Delivered</span>
+            <h2>Data innovation</h2>
+            <p class="report-ask">The ask: synthetic, football-realistic data only (rules §4.7) — and the brief invites creating and extending it.</p>
+          </div>
+          <dl class="report-facts">
+            <div><dt>Delivered</dt><dd>A seeded synthetic match generator — invented clubs and players, real-match volumes — with a committed JSON Schema stream contract and hidden ground truth for measuring the Scout. A published realism check sets its scorelines against 7,559 real internationals. The same seed replays the same match, so every number on this site is reproducible. <a href="#/data">How real is it</a>.</dd></div>
+            <div><dt>How</dt><dd>Calibration over 100 seeds; realism scored against a public-domain record of real results, used only as a benchmark; the generator's limits stated plainly.</dd></div>
+            <div><dt>Next</dt><dd>Richer event types and playing styles in the generator, and the audit trail mirrored into Microsoft Fabric's OneLake for SQL and Power BI — weighed for this build and deferred to stay inside the free tier. <a href="#/log">The build log</a>.</dd></div>
+          </dl>
+        </li>
+        <li class="report-row" data-reveal>
+          <div class="report-need">
+            <span class="chip" data-status="done">Delivered</span>
+            <h2>Ask the match anything</h2>
+            <p class="report-ask">The ask, in the grand-prize lane's own words: ask the match anything, and get a checked answer.</p>
+          </div>
+          <dl class="report-facts">
+            <div><dt>Delivered</dt><dd>Any question, live or after full time, in three languages, typed or spoken: the model must call counting tools for every number it states, the Critic recomputes each one before the answer shows, and every answer is sealed into the <a href="#/ledger">match ledger</a> with a proof the browser checks. What the events can't answer gets fixed words — including a fixed steer away from betting.</dd></div>
+            <div><dt>How</dt><dd>Function calling on Foundry; each count returns as a fact with an id, the answer names its facts, code builds the claim. Measured on unseen matches, Foundry's judges scored the answers 5.0 of 5 after the first run called for one fix.</dd></div>
+            <div><dt>Next</dt><dd>Questions answered over a whole season of ledgers, each answer cited to the exact block that sealed it.</dd></div>
+          </dl>
+        </li>
+        <li class="report-row" data-reveal>
+          <div class="report-need">
+            <span class="chip" data-status="done">Delivered</span>
+            <h2>Recovery from failure</h2>
+            <p class="report-ask">The ask, from the multi-agent lane: recovery from failures — an end-to-end outcome no single agent could achieve.</p>
+          </div>
+          <dl class="report-facts">
+            <div><dt>Delivered</dt><dd>Five agents, distinct roles, shared match state. A test knocks the Narrator out four times in a row mid-match and the cues never stop; the studio's off-air switch does it on camera. The Critic also serves other assistants over MCP and other agents over A2A.</dd></div>
+            <div><dt>How</dt><dd>The Orchestrator retries once, falls back to detection-only cues marked unverified, and announces recovery on air. The Critic itself runs no model, so its verdicts are computed and can't be talked round.</dd></div>
+            <div><dt>Next</dt><dd>The Critic as a shared court: the same checks opened to other broadcasters' agents, as a peer.</dd></div>
+          </dl>
+        </li>
+      </ol>
+
+      <h2 class="section-title" data-reveal>The hard requirements, met</h2>
+      <ol class="report-checks" data-reveal>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Synthetic data only (§4.7).</strong> Every club, player and match is generated by this repo's own seeded generator; no real match data anywhere. <a href="#/data">See the data</a>.</div></li>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>New code, new repository.</strong> Built October 18–27, 2026, for this entry alone; patterns carried over, no old repos.</div></li>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Demo video under 2:00.</strong> Recorded at 109.1 seconds, at a public URL, showing the project functioning — no third-party trademarks, no licensed music.</div></li>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Public repository at submission.</strong> Private until the showcase is final; one config flag flips every Code link on this site.</div></li>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Free judge access through November 10 (§4.8).</strong> The studio runs behind Cloudflare Access with credentials in the testing instructions — and <code>make studio-offline</code> runs the same studio on any machine, no Azure needed at all.</div></li>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Installs and runs consistently (§4.3).</strong> One <code>make setup</code>; 273 tests on every push; a 36-point doctor and a smoke script that streams a whole match and checks every part.</div></li>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>The entrant's own work, in English (§4.9).</strong> A solo build; the pitch, video and test instructions in English — Urdu and Arabic are outputs, on purpose.</div></li>
+      </ol>
+
+      <h2 class="section-title" data-reveal>The hero technologies, in the build</h2>
+      <ul class="adopt">
+        <li data-reveal><h3>GitHub + Copilot agent mode</h3><p>In the build daily, working from the repository's own evidence rules, so it follows the same law the agents do.</p></li>
+        <li data-reveal><h3>Microsoft Foundry + Azure AI</h3><p>gpt-4.1-mini writes the lines, gpt-5-mini backs it up; Foundry's evaluators judged what aired (groundedness 4.84 of 5) and every call is traced with its tokens and its cost.</p></li>
+        <li data-reveal><h3>Agent Framework, A2A + Azure MCP</h3><p>The warm path is an Agent Framework workflow; the Critic serves assistants over MCP (six read-only tools) and other agents over A2A, with no model inside.</p></li>
+        <li data-reveal><h3>Azure data and analytics</h3><p>The audit trail on Cosmos DB's free tier, every cue and refusal kept 90 days; Microsoft Fabric weighed for the analytics and deferred — recorded above, in Data innovation's next.</p></li>
+        <li data-reveal><h3>Azure cloud-native</h3><p>One image on Container Apps with a managed identity and no keys; Application Insights traces every agent step; liveness and readiness probes watch it; a read-only doctor checks the whole of it.</p></li>
+      </ul>
+
+      <blockquote class="pledge" data-reveal>
+        <p>Every row above names its evidence. The road from here — the decision explainer, perception, the fourth official — is written down, gate by gate.</p>
+      </blockquote>
+      <div class="actions" data-reveal>
+        <a class="button" href="#/roadmap">Onwards &amp; upwards</a>
+        <a class="button button-quiet" href="#/challenge">Reread the challenge</a>
+        <a class="button button-quiet" href="#/goal">The six lanes, feature by feature</a>
+      </div>
     </section>
 
     <!-- ============ HOW IT WORKS ============ -->

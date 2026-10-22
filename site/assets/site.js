@@ -341,7 +341,9 @@
       $$("[data-studio-link]").forEach((n) => { n.href = site.studioUrl; n.hidden = false; });
     }
     $$("[data-kit-link]").forEach((n) => { n.href = site.kitUrl ?? "#"; n.hidden = !site.kitUrl; });
-    const note = $("[data-video-link]");
+    // The demo video: anchors with data-video-link fill and appear once it has a public URL.
+    $$("a[data-video-link]").forEach((n) => { n.href = site.videoUrl ?? "#"; n.hidden = !site.videoUrl; });
+    const note = $(".video-note");
     if (site.videoUrl && note) {
       $(".page-home .actions").append(Object.assign(el("a", "button button-quiet", "Watch the 110-second demo"), { href: site.videoUrl }));
       note.remove();

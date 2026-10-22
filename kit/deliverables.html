@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{name}}: the deliverables report</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="kit.css">
+  <style>
+    .stats { display: flex; gap: 10mm; margin: 4mm 0 6mm; }
+    .stats div { flex: 1; border-top: 1.2mm solid var(--lime); padding-top: 2mm; }
+    .stats dt { font-size: 8pt; color: var(--chalk-dim); }
+    .stats dd { margin: 1mm 0 0; font: 800 20pt/1 var(--display); }
+    .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.6mm; }
+    .checks li { display: grid; grid-template-columns: 14mm minmax(0, 1fr); gap: 3mm; }
+    .checks .ok { font: 500 7.5pt/1 var(--mono); color: var(--navy); background: var(--lime); border-radius: 999px; padding: 1.2mm 2.5mm; justify-self: start; margin-top: .6mm; }
+    .checks strong { color: var(--chalk); }
+    .row { border-top: .4mm solid var(--chalk-faint); padding-top: 3.5mm; margin-top: 3.5mm; break-inside: avoid; }
+    .row h3 { font-size: 13pt; }
+    .row .ask { font-size: 8.5pt; color: var(--chalk-dim); font-style: italic; margin: .8mm 0 2mm; }
+    .facts { margin: 0; display: grid; gap: 1.6mm; }
+    .facts div { display: grid; grid-template-columns: 17mm minmax(0, 1fr); gap: 3mm; }
+    .facts dt { font: 500 7.5pt/1.6 var(--mono); letter-spacing: .05em; }
+    .facts div:nth-child(1) dt { color: var(--lime); }
+    .facts div:nth-child(2) dt { color: var(--chalk-dim); }
+    .facts div:nth-child(3) dt { color: var(--gold); }
+    .facts dd { margin: 0; color: var(--chalk-dim); font-size: 8.8pt; }
+    .foot { margin-top: auto; border-top: .4mm solid var(--chalk-faint); padding-top: 3mm; display: flex; justify-content: space-between; gap: 6mm; font: 400 8pt/1.5 var(--mono); color: var(--chalk-dim); }
+    .foot b { color: var(--chalk); font-weight: 500; }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <path id="p78" d="M0 0C4.2-19.5 11-42 7.6-56Q0-74-7.6-56C-11-42-4.2-19.5 0 0Z"/>
+      <path id="p96" d="M0 0C4.8-22.5 13-49 9-67.5Q0-89-9-67.5C-13-49-4.8-22.5 0 0Z"/>
+      <path id="p112" d="M0 0C5-24 13.5-51.5 9.6-74.5Q0-95-9.6-74.5C-13.5-51.5-5-24 0 0Z"/>
+      <path id="t-root" d="M107.9 167.5 L132.1 167.5 L139.6 149.2 L120 137.9 L100.4 149.2 Z"/>
+      <path id="t-top" d="M100.4 101 L120 113.8 L139.6 101 L132.1 80.3 L107.9 80.3 Z"/>
+      <path id="t-left" d="M68.7 141.9 L80.8 136.4 L80.8 112.3 L68.7 102.9 L61.2 121.2 Z"/>
+      <path id="t-right" d="M159.2 136.4 L171.3 141.9 L178.8 121.2 L171.3 102.9 L159.2 112.3 Z"/>
+      <path id="t-seams" d="M132.1 80.3 Q120 76.7 107.9 80.3 M132.1 80.3 Q137.3 88 139.6 101 M132.1 80.3 Q139.8 71.5 144.2 70.9 M107.9 167.5 Q100.2 174.9 95.8 173 M107.9 167.5 Q102.7 161.9 100.4 149.2 M107.9 167.5 Q120 171.9 132.1 167.5 M95.8 70.9 Q82.8 72.6 76.2 82.2 M95.8 70.9 Q100.2 71.5 107.9 80.3 M95.8 70.9 Q100.2 61.3 107.9 61.5 M76.2 82.2 Q68.1 90 68.7 102.9 M107.9 80.3 Q102.7 88 100.4 101 M132.1 61.5 Q120 56.1 107.9 61.5 M132.1 61.5 Q139.8 61.3 144.2 70.9 M178.8 121.2 Q180.1 111.3 171.3 102.9 M178.8 121.2 Q180.1 132.6 171.3 141.9 M163.8 160.2 Q157.2 170.9 144.2 173 M163.8 160.2 Q171.9 153.9 171.3 141.9 M139.6 149.2 Q130.7 145.7 120 137.9 M139.6 149.2 Q137.3 161.9 132.1 167.5 M139.6 149.2 Q152.1 144.9 159.2 136.4 M80.8 112.3 Q77.2 124.8 80.8 136.4 M80.8 112.3 Q70.6 106.5 68.7 102.9 M80.8 112.3 Q87.9 105.4 100.4 101 M120 113.8 Q130.7 106.2 139.6 101 M120 113.8 Q120 126.4 120 137.9 M120 113.8 Q109.3 106.2 100.4 101 M61.2 121.2 Q59.9 132.6 68.7 141.9 M61.2 121.2 Q59.9 111.3 68.7 102.9 M144.2 173 Q139.8 174.9 132.1 167.5 M80.8 136.4 Q70.6 140.9 68.7 141.9 M80.8 136.4 Q87.9 144.9 100.4 149.2 M139.6 101 Q152.1 105.4 159.2 112.3 M163.8 82.2 Q171.9 90 171.3 102.9 M163.8 82.2 Q157.2 72.6 144.2 70.9 M95.8 173 Q82.8 170.9 76.2 160.2 M171.3 102.9 Q169.4 106.5 159.2 112.3 M120 137.9 Q109.3 145.7 100.4 149.2 M68.7 141.9 Q68.1 153.9 76.2 160.2 M159.2 112.3 Q162.8 124.8 159.2 136.4 M171.3 141.9 Q169.4 140.9 159.2 136.4"/>
+      <clipPath id="ballCut"><circle cx="120" cy="120" r="60"/></clipPath>
+      <g id="badge">
+        <g clip-path="url(#ballCut)">
+          <circle cx="120" cy="120" r="60" fill="#F4F1E8"/>
+          <use href="#t-seams" fill="none" stroke="#0A1F2E" stroke-width="1.4" stroke-opacity=".55"/>
+          <g fill="#1E7B45"><use href="#t-root"/><use href="#t-top"/><use href="#t-left"/><use href="#t-right"/></g>
+        </g>
+        <g transform="translate(120 156)" fill="#B8F53D" stroke="#0A1F2E" stroke-width="2" stroke-linejoin="round">
+          <use href="#p78" transform="rotate(-52)"/>
+          <use href="#p96" transform="rotate(-26)"/>
+          <use href="#p96" transform="rotate(26)"/>
+          <use href="#p78" transform="rotate(52)"/>
+          <use href="#p112" fill="#C9A227"/>
+        </g>
+        <circle cx="120" cy="154" r="10.5" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.5"/>
+        <circle cx="120" cy="154" r="2.6" fill="#C9A227"/>
+      </g>
+    </defs>
+  </svg>
+
+  <section class="sheet">
+    <header class="mast">
+      <svg viewBox="24 24 192 192" aria-hidden="true"><use href="#badge"/></svg>
+      <div>
+        <div class="word">{{name}}</div>
+        <div class="promise">The deliverables report</div>
+      </div>
+      <div class="when">Inside the Game: Developer Hackathon<br>Microsoft × Premier League, October 2026<br>{{date}}</div>
+    </header>
+    <h1>What was needed, what was delivered</h1>
+    <p class="lede">Every ask of the challenge, row by row: what the brief required, what shipped, how it works underneath, and where that feature goes next. Nothing here is promised — it is live, on synthetic matches, and named with its evidence on the showcase site.</p>
+    <dl class="stats">
+      <div><dt>Asks answered</dt><dd>8 / 8</dd></div>
+      <div><dt>Hard requirements</dt><dd>7 / 7</dd></div>
+      <div><dt>Tests on every push</dt><dd>273</dd></div>
+      <div><dt>Demo video</dt><dd>109.1 s</dd></div>
+    </dl>
+    <h2>The hard requirements, met</h2>
+    <ul class="checks">
+      <li><span class="ok">MET</span><div><strong>Synthetic data only (§4.7).</strong> Every club, player and match is generated by this entry's own seeded generator.</div></li>
+      <li><span class="ok">MET</span><div><strong>New code, new repository.</strong> Built October 18–27, 2026, for this entry alone.</div></li>
+      <li><span class="ok">MET</span><div><strong>Demo video under 2:00.</strong> Recorded at 109.1 seconds, at a public URL — no third-party trademarks, no licensed music.</div></li>
+      <li><span class="ok">MET</span><div><strong>Public repository at submission.</strong> {{repo}}</div></li>
+      <li><span class="ok">MET</span><div><strong>Free judge access through November 10 (§4.8).</strong> The studio runs behind Cloudflare Access with credentials in the testing instructions — and <strong>make studio-offline</strong> runs the same studio on any machine, no Azure needed.</div></li>
+      <li><span class="ok">MET</span><div><strong>Installs and runs consistently (§4.3).</strong> One make setup; 273 tests on every push; a 36-point doctor and a smoke script.</div></li>
+      <li><span class="ok">MET</span><div><strong>The entrant's own work, in English (§4.9).</strong> A solo build; pitch, video and test instructions in English.</div></li>
+    </ul>
+    <div class="foot"><span><b>{{site}}</b> — every claim linked to its evidence</span><span>Deliverables report · 1 / 4</span></div>
+  </section>
+
+  <section class="sheet">
+    <h2>The asks, answered — I</h2>
+    <div class="row">
+      <h3>Explainable match intelligence</h3>
+      <p class="ask">The ask: not "AI says X dominated", but why — with event evidence.</p>
+      <dl class="facts">
+        <div><dt>Delivered</dt><dd>The Scout flags the moments that matter; every line that airs carries the events it stands on, each number recomputed by the Critic before it airs.</dd></div>
+        <div><dt>How</dt><dd>Code counts, models write: deterministic detection on a sub-millisecond hot path; the Narrator drafts from a fact sheet on Foundry; the Critic refuses what it can't prove, on screen, with the reason.</dd></div>
+        <div><dt>Next</dt><dd>The decision explainer — the referee's call explained with the Law it rests on — then fouls read from camera angles, every prediction citing its frames.</dd></div>
+      </dl>
+    </div>
+    <div class="row">
+      <h3>Real-time narratives</h3>
+      <p class="ask">The ask: live during the match, not only after it.</p>
+      <dl class="facts">
+        <div><dt>Delivered</dt><dd>A live cue stream, start to finish: alert to air in about 1.3 seconds. With the Narrator knocked out mid-match in tests, the broadcast aired the Scout's cited facts, said so, and announced the recovery — never dark.</dd></div>
+        <div><dt>How</dt><dd>The hot path never waits on a model; each alert runs Narrator → Critic → Localizer as a Microsoft Agent Framework workflow with a rewrite edge and an orchestrator-supervised fallback.</dd></div>
+        <div><dt>Next</dt><dd>The same cue contract behind a broadcaster's own graphics system; multi-match coverage from one deployment.</dd></div>
+      </dl>
+    </div>
+    <div class="row">
+      <h3>Automated recaps</h3>
+      <p class="ask">The ask: the 90-minute story writes itself.</p>
+      <dl class="facts">
+        <div><dt>Delivered</dt><dd>At full time the match writes its own recap — result, goals, both sides' numbers — every line through the Critic first, as a page that prints to PDF (a sample ships in this kit).</dd></div>
+        <div><dt>How</dt><dd>One rule lifted at full time — the checker may look back over the whole match — with the same evidence law as the live lines.</dd></div>
+        <div><dt>Next</dt><dd>A momentum timeline and player cards; a recap assembled per viewer, in their language and their club's colours.</dd></div>
+      </dl>
+    </div>
+    <div class="row">
+      <h3>Personalized experiences</h3>
+      <p class="ask">The ask: the analyst and the casual fan as two genuinely different experiences.</p>
+      <dl class="facts">
+        <div><dt>Delivered</dt><dd>HUD²'s three lenses — referee, commentator, fan — Ask the match, a club, a player or one number to follow, casual or analyst modes. Emphasis changes; the facts never do.</dd></div>
+        <div><dt>How</dt><dd>Personalisation is a layer over verified cues: the viewer's choice reorders and colours what airs, and the Critic checks every viewer's line the same way.</dd></div>
+        <div><dt>Next</dt><dd>HUD² worn — the same lenses on glasses, marks on the real pitch — as the hardware allows.</dd></div>
+      </dl>
+    </div>
+    <div class="foot"><span><b>{{site}}</b></span><span>Deliverables report · 2 / 4</span></div>
+  </section>
+
+  <section class="sheet">
+    <h2>The asks, answered — II</h2>
+    <div class="row">
+      <h3>Multi-language storytelling</h3>
+      <p class="ask">The ask: insight for fans around the world, in multiple languages.</p>
+      <dl class="facts">
+        <div><dt>Delivered</dt><dd>Every verified line airs in English, Urdu or Arabic — on screen and spoken by Azure AI Speech. Questions asked out loud in any of the three come back checked, in the same language.</dd></div>
+        <div><dt>How</dt><dd>The Localizer translates under the same law: no number the checked line doesn't state, every name kept as written. A breaking translation airs the English instead.</dd></div>
+        <div><dt>Next</dt><dd>More languages ride the same rail — the law doesn't change, only the voice.</dd></div>
+      </dl>
+    </div>
+    <div class="row">
+      <h3>Data innovation</h3>
+      <p class="ask">The ask: synthetic, football-realistic data only (§4.7) — created and extended.</p>
+      <dl class="facts">
+        <div><dt>Delivered</dt><dd>A seeded synthetic generator — invented clubs, real-match volumes — with a committed JSON Schema contract, hidden ground truth, and a published realism check against 7,559 real internationals. Same seed, same match: every number reproducible.</dd></div>
+        <div><dt>How</dt><dd>Calibration over 100 seeds; realism scored against a public-domain results record, used only as a benchmark; the limits stated plainly.</dd></div>
+        <div><dt>Next</dt><dd>Richer event types and playing styles; the audit trail mirrored into Microsoft Fabric's OneLake — weighed and deferred to stay inside the free tier.</dd></div>
+      </dl>
+    </div>
+    <div class="row">
+      <h3>Ask the match anything</h3>
+      <p class="ask">The ask, in the grand-prize lane's own words: ask the match anything, and get a checked answer.</p>
+      <dl class="facts">
+        <div><dt>Delivered</dt><dd>Any question, live or after full time, in three languages, typed or spoken: the model must call counting tools for every number, the Critic recomputes each one, and every answer is sealed into the match ledger with a proof the browser checks.</dd></div>
+        <div><dt>How</dt><dd>Function calling on Foundry; each count a fact with an id; Foundry's judges scored the answers 5.0 of 5 on unseen matches after the first run's fix.</dd></div>
+        <div><dt>Next</dt><dd>Questions over a whole season of ledgers, each answer cited to the exact block that sealed it.</dd></div>
+      </dl>
+    </div>
+    <div class="row">
+      <h3>Recovery from failure</h3>
+      <p class="ask">The ask, from the multi-agent lane: recovery from failures — an outcome no single agent could achieve.</p>
+      <dl class="facts">
+        <div><dt>Delivered</dt><dd>Five agents, distinct roles, shared match state. A test knocks the Narrator out four times in a row mid-match and the cues never stop; the studio's off-air switch does it on camera. The Critic serves assistants over MCP and agents over A2A.</dd></div>
+        <div><dt>How</dt><dd>The Orchestrator retries once, falls back to detection-only cues marked unverified, and announces recovery on air. The Critic runs no model, so its verdicts are computed and can't be talked round.</dd></div>
+        <div><dt>Next</dt><dd>The Critic as a shared court: the same checks opened to other broadcasters' agents.</dd></div>
+      </dl>
+    </div>
+    <div class="foot"><span><b>{{site}}</b></span><span>Deliverables report · 3 / 4</span></div>
+  </section>
+
+  <section class="sheet">
+    <h2>The hero technologies, in the build</h2>
+    <p class="dim" style="margin-bottom:4mm">Named by the challenge, weighed by the judges, live in this entry:</p>
+    <div class="row" style="border-top:none; padding-top:0; margin-top:0">
+      <dl class="facts">
+        <div><dt>GitHub</dt><dd>Copilot agent mode in the build daily, working from the repository's own evidence rules, so it follows the same law the agents do.</dd></div>
+        <div><dt>Foundry</dt><dd>gpt-4.1-mini writes the lines, gpt-5-mini backs it up; Foundry's evaluators judged what aired (groundedness 4.84 of 5); every call traced with its tokens and its cost.</dd></div>
+        <div><dt>Agents</dt><dd>The warm path is a Microsoft Agent Framework workflow; the Critic serves assistants over MCP (six read-only tools) and other agents over A2A, with no model inside.</dd></div>
+        <div><dt>Azure data</dt><dd>The audit trail on Cosmos DB's free tier, kept 90 days; Microsoft Fabric weighed for the analytics and deferred — recorded in Data innovation's next.</dd></div>
+        <div><dt>Cloud-native</dt><dd>One image on Container Apps with a managed identity and no keys; Application Insights traces every agent step; a read-only doctor checks the whole of it.</dd></div>
+      </dl>
+    </div>
+    <p style="font: 700 13pt/1.3 var(--display); color: var(--gold); max-width: 150mm; margin-top: 6mm;">Every row names its evidence. The road from here — the decision explainer, perception, the fourth official — is written down, gate by gate.</p>
+    <div class="foot">
+      <span><b>{{site}}</b><br>showcase · evidence · the studio</span>
+      <span>video 109.1 s · 273 tests<br>repo: {{repo}}</span>
+      <span>media kit<br>{{folder}}</span>
+    </div>
+  </section>
+</body>
+</html>
