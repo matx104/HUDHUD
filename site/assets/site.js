@@ -671,6 +671,26 @@
     });
     window.addEventListener("hashchange", closeAll);
 
+    // The universal footer: the same five groups as the header's menus, one column each,
+    // built from the same team sheet so the footer can never drift from the chapters.
+    const footNav = $("[data-foot-nav]");
+    if (footNav) {
+      for (const [key, label] of GROUPS) {
+        const pages = [...story, ...staff].filter((s) => s.dataset.group === key);
+        if (!pages.length) continue;
+        const col = el("div", "foot-col");
+        col.append(el("h3", "", label));
+        const list = el("ul");
+        for (const page of pages) {
+          const item = el("li");
+          item.append(Object.assign(el("a"), { href: `#/${page.dataset.page}`, textContent: page.dataset.title }));
+          list.append(item);
+        }
+        col.append(list);
+        footNav.append(col);
+      }
+    }
+
     // The full menu: the starting eleven in a 4-3-3 on a pitch, and the bench beside it.
     const formation = $("[data-formation]");
     const pitch = el("div", "formation-pitch");

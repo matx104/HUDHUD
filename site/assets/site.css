@@ -571,6 +571,23 @@ pre {
 
 /* ---------- footer and pager ---------- */
 .foot { border-top: 1px solid var(--chalk-faint); padding-block: 2rem 3rem; }
+.foot-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 2rem clamp(2rem, 5vw, 4rem); margin-bottom: 2rem; }
+.foot-brand { display: flex; align-items: center; gap: 1rem; }
+.foot-crest { flex: none; width: 3.5rem; height: auto; overflow: visible; }
+.foot-brand p { display: grid; gap: 0.3rem; }
+.foot-word { font: 900 2.25rem / 0.9 var(--display); letter-spacing: 0.02em; }
+.foot-brand span { font: 700 1.125rem / 1 var(--display); color: var(--gold); }
+.foot-law { margin-top: 0.75rem; font-size: 0.875rem; color: var(--chalk-dim); max-width: 30ch; }
+.foot-nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.5rem; align-content: start; }
+.foot-col h3 { font: 800 1rem / 1 var(--display); color: var(--gold); letter-spacing: 0.03em; margin-bottom: 0.6rem; }
+.foot-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+.foot-col a { font-size: 0.875rem; color: var(--chalk-dim); text-decoration: none; }
+.foot-col a:hover, .foot-col a[aria-current="page"] { color: var(--lime); }
+.foot-bar { display: flex; flex-wrap: wrap; gap: 0.75rem 2.5rem; align-items: baseline; justify-content: space-between; border-top: 1px solid var(--chalk-faint); padding-top: 1.25rem; }
+.foot-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; font-size: 0.875rem; }
+.foot-links a { color: var(--chalk-dim); }
+.foot-links a:hover { color: var(--lime); }
+.foot-bar .credit { margin: 0; font-size: 0.8125rem; max-width: 62ch; }
 .pager { display: flex; gap: 1rem; justify-content: space-between; margin-bottom: 2rem; }
 .pager:empty { display: none; }
 .pager a { display: grid; gap: 0.15rem; max-width: 48%; text-decoration: none; }
@@ -1168,6 +1185,8 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
   .prizes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .report-row { grid-template-columns: minmax(0, 1fr); }
   .report-checks li { grid-template-columns: minmax(0, 1fr); }
+  .foot-grid { grid-template-columns: minmax(0, 1fr); }
+  .foot-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .scene-copy { grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
   .scene-copy p:not(.scene-tag) { grid-column: 1; }
 }
@@ -1179,6 +1198,8 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
   .chapter-index, .projects, .principles, .stairs, .timeline, .official { grid-template-columns: minmax(0, 1fr); }
   .sheet-cols, .front-cards, .lens-cards, .flow, .road, .blocks, .shots, .two-lists { grid-template-columns: minmax(0, 1fr); }
   .pillars, .flow-five, .prizes { grid-template-columns: minmax(0, 1fr); }
+  .foot-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .foot-bar { flex-direction: column; }
   .shots .phone { grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); }
   .player { width: 5.5rem; }
   .player .shirt-no { width: 2.1rem; height: 2.1rem; font-size: 1.05rem; }
