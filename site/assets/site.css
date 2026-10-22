@@ -841,6 +841,9 @@ pre {
 .player:hover .shirt-no, .player:focus-visible .shirt-no { background: var(--lime); transform: scale(1.08); }
 .player[aria-current="page"] .shirt-no { background: var(--gold); }
 .formation-bench h2 { margin-bottom: 1rem; font-size: clamp(1.75rem, 3vw, 2.5rem); }
+.formation-bench .bench-reserves-head { margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px dashed var(--chalk-faint); font-size: clamp(1.4rem, 2.4vw, 2rem); color: var(--chalk-dim); }
+.bench-reserves .bench-row .shirt-no { border-style: dashed; }
+.bench-reserves .bench-row strong { color: var(--chalk-dim); }
 .bench { list-style: none; margin: 0; padding: 0; }
 .bench li { border-top: 1px solid var(--chalk-faint); }
 .bench-row { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.1rem 1rem; align-items: center; padding: 0.75rem 0; text-decoration: none; }
@@ -856,8 +859,8 @@ pre {
 .bench-row .what { font-size: 0.875rem; color: var(--chalk-dim); }
 .bench-row:hover strong, .bench-row[aria-current="page"] strong { color: var(--lime); }
 
-/* The home page's sheet: the starting eleven and the substitutes */
-.sheet-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 3rem; }
+/* The home page's sheet: the starting eleven, the substitutes, the reserves */
+.sheet-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem 2.5rem; }
 .sheet-cols h3 { margin-bottom: 0.5rem; font-size: 1.5rem; color: var(--gold); }
 .sheet-cols .sheet-rows li { border-top: 1px solid var(--chalk-faint); }
 .sheet-cols .sheet-rows a { padding: 0.7rem 0; }
@@ -865,6 +868,9 @@ pre {
 .sheet-cols .what { color: var(--chalk-dim); opacity: 1; }
 .sheet-cols .who small { color: var(--chalk-dim); }
 .sheet-cols a:hover strong { color: var(--lime); }
+/* the reserves: one step further from the pitch — dashed shirts, dimmer rows */
+.sheet-cols section:last-child .shirt-no { border-style: dashed; }
+.sheet-cols section:last-child .what { opacity: 0.75; }
 
 /* Each chapter's number, as a shirt's: and its place in the side */
 .shirt-line { margin-top: -0.6rem; font: 500 0.8125rem / 1 var(--mono); color: var(--lime); }

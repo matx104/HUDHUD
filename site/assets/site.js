@@ -691,7 +691,7 @@
       }
     }
 
-    // The full menu: the starting eleven in a 4-3-3 on a pitch, and the bench beside it.
+    // The full menu: the starting eleven in a 4-3-3 on a pitch, the bench and the reserves beside it.
     const formation = $("[data-formation]");
     const pitch = el("div", "formation-pitch");
     const lines = svg("svg", { viewBox: "0 0 68 105", class: "formation-lines", "aria-hidden": "true", preserveAspectRatio: "none" });
@@ -709,6 +709,8 @@
     starters.setAttribute("aria-label", "The starting eleven");
     const bench = el("ol", "bench");
     bench.setAttribute("aria-label", "The bench");
+    const reserves = el("ol", "bench bench-reserves");
+    reserves.setAttribute("aria-label", "The reserves");
     for (const page of story) {
       const n = shirtOf(page);
       const item = el("li");
@@ -720,6 +722,9 @@
         link.title = `${page.dataset.role}: ${page.dataset.summary}`;
         item.append(link);
         starters.append(item);
+      } else if (page.dataset.tier === "reserve") {
+        item.append(row(page, "bench-row reserve"));
+        reserves.append(item);
       } else {
         item.append(row(page, "bench-row"));
         bench.append(item);
@@ -732,13 +737,18 @@
     }
     pitch.append(starters);
     const side = el("div", "formation-bench");
-    side.append(el("h2", "", "The bench"), bench);
+    side.append(el("h2", "", "The bench"), bench, el("h2", "bench-reserves-head", "The reserves"), reserves);
     formation.append(pitch, side);
 
-    // The home page: the sheet in two columns, the starting eleven and the substitutes.
+    // The home page: the sheet in three columns — the starting eleven, the substitutes, the reserves.
     const index = $("[data-chapter-index]");
     const cols = el("div", "sheet-cols");
-    for (const [title, pages] of [["Starting eleven", story.filter((s) => shirtOf(s) <= 11)], ["Substitutes", story.filter((s) => shirtOf(s) > 11)]]) {
+    const tiers = [
+      ["Starting eleven", story.filter((s) => shirtOf(s) <= 11)],
+      ["Substitutes", story.filter((s) => shirtOf(s) > 11 && s.dataset.tier !== "reserve")],
+      ["Reserves", story.filter((s) => s.dataset.tier === "reserve")],
+    ];
+    for (const [title, pages] of tiers.filter(([, pages]) => pages.length)) {
       const col = el("section");
       const list = el("ol", "sheet-rows");
       list.append(...pages.map((page) => {
