@@ -1094,6 +1094,49 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
 .r-ground { stroke: var(--chalk-faint); }
 .r-ball { fill: var(--chalk); stroke: var(--navy-deep); stroke-width: 2; transform: translate(135px, 218px); }
 
+/* ---------- the kit: the builder's shirt, home and away ---------- */
+.kit {
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 3fr);
+  gap: 2rem 2.5rem; align-items: center; margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--chalk-faint); border-radius: 12px;
+  background: var(--navy-raised);
+}
+.kit-copy h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); margin-bottom: 0.75rem; }
+.kit-copy p { color: var(--chalk-dim); }
+.kit-copy strong { color: var(--chalk); }
+.kit-shirt { margin: 0; display: grid; gap: 0.6rem; }
+.kit-shirt svg { width: 100%; max-width: 17rem; justify-self: center; filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.45)); }
+.kit-shirt figcaption { display: grid; gap: 0.15rem; text-align: center; }
+.kit-shirt figcaption strong { font: 800 1.25rem / 1.1 var(--display); }
+.kit-shirt figcaption span { font-size: 0.8125rem; color: var(--chalk-dim); }
+.kit text { text-anchor: middle; }
+.kit .js-sigil { font: 500 13px var(--mono); }
+.kit .js-club { font: 800 26px var(--display); letter-spacing: 0.14em; }
+.kit .js-name { font: 700 15px var(--display); letter-spacing: 0.3em; }
+.kit .js-number { font: 900 62px / 1 var(--display); }
+/* home: obsidian body, emerald regalia, the crown in gold */
+.kit-home .js-body { fill: #0A0A0A; stroke: rgba(63, 200, 128, 0.4); stroke-width: 1.5; }
+.kit-home .js-scales path { fill: none; stroke: #3FC880; stroke-width: 1.4; opacity: 0.45; }
+.kit-home .js-collar, .kit-home .js-cuff, .kit-home .js-hem { fill: none; stroke: #3FC880; stroke-width: 7; stroke-linecap: round; }
+.kit-home .js-hem { fill: rgba(63, 200, 128, 0.18); stroke: none; }
+.kit-home .js-crest path:first-child { fill: #124A2C; stroke: #3FC880; stroke-width: 1.5; }
+.kit-home .js-crest path:last-child { fill: #C9A227; }
+.kit-home .js-sigil { fill: #3FC880; }
+.kit-home .js-club { fill: #3FC880; }
+.kit-home .js-name { fill: var(--chalk-dim); }
+.kit-home .js-number { fill: var(--chalk); }
+/* away: night-match chalk, emerald sash, obsidian regalia */
+.kit-away .js-body { fill: #F4F1E8; stroke: rgba(10, 10, 10, 0.35); stroke-width: 1.5; }
+.kit-away .js-sash { fill: #1E7B45; }
+.kit-away .js-collar, .kit-away .js-cuff { fill: none; stroke: #0A0A0A; stroke-width: 7; stroke-linecap: round; }
+.kit-away .js-hem { fill: rgba(10, 10, 10, 0.12); stroke: none; }
+.kit-away .js-crest path:first-child { fill: #F4F1E8; stroke: #0A0A0A; stroke-width: 1.5; }
+.kit-away .js-crest path:last-child { fill: #C9A227; }
+.kit-away .js-sigil { fill: #0A0A0A; }
+.kit-away .js-club { fill: #0A0A0A; }
+.kit-away .js-name { fill: #F4F1E8; }
+.kit-away .js-number { fill: #124A2C; }
+
 /* ---------- the deliverables report: for the judges, first ---------- */
 .judge-box {
   display: grid; gap: 0.9rem; margin-bottom: clamp(2.5rem, 6vw, 4rem);
@@ -1193,6 +1236,8 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
   .report-checks li { grid-template-columns: minmax(0, 1fr); }
   .foot-grid { grid-template-columns: minmax(0, 1fr); }
   .foot-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .kit { grid-template-columns: minmax(0, 1fr); }
+  .kit-shirt svg { max-width: 15rem; }
   .scene-copy { grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
   .scene-copy p:not(.scene-tag) { grid-column: 1; }
 }
