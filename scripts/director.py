@@ -50,7 +50,7 @@ OBS_SECRET = Path.home() / ".config" / "obs-studio-mcp" / "credentials.json"
 OPS = ROOT / "site" / "data" / "ops.js"
 STUDIO = STUDIO_URL.rstrip("/")
 SITE = SITE_URL.rstrip("/")
-LENGTH = 110.0  # seconds: under two minutes, hard (task.md)
+LENGTH = 104.0  # seconds: under two minutes, hard (task.md)
 BLANK = "data:text/html,<body style='background:%2306141F'>"  # the site's navy, between shots
 
 Action = Callable[["Tab"], Awaitable[None]]
@@ -210,24 +210,14 @@ def shots() -> list[Shot]:
         Shot(
             86,
             "Azure",
-            "Five agents on Microsoft Agent Framework. Models chosen by evaluation and judged by "
-            "Foundry's own evaluators. Every call traced, every claim kept on Cosmos DB, and the "
-            "Critic open to any assistant over MCP and any agent over A2A.",
+            "Five agents on Microsoft Agent Framework, models chosen by evaluation and judged "
+            "by Foundry's own evaluators. Every call traced, every claim kept on Cosmos DB.",
             url=portal("HUDHUD control room"),
             warm=45,  # a background tab doesn't draw the portal's workbook; queries need their time
             hide=ACCOUNT,
         ),
         Shot(
             93,
-            "every model call",
-            "",
-            url=portal("Every model call"),
-            warm=45,
-            ready=[lambda t: t.press("Escape")],  # Logs opens its queries hub over the query
-            hide=ACCOUNT,
-        ),
-        Shot(
-            98,
             "the ledger",
             "",
             url=f"{SITE}/#/ledger",
@@ -236,7 +226,7 @@ def shots() -> list[Shot]:
             actions=[(1, lambda t: t.click("[data-ledger-verify]"))],
         ),
         Shot(
-            105,
+            99,
             "the team sheet",
             "HUDHUD. Built by one engineer. Every call comes with its evidence.",
             url=f"{SITE}/#/",

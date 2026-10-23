@@ -1,208 +1,211 @@
 {
-  "version": "Notebook/1.0",
-  "items": [
-    {
-      "type": 1,
-      "name": "intro",
-      "content": {
-        "json": "# HUDHUD control room\nEvery match the court narrates, as Application Insights saw it: what aired, what the Critic refused and why, what the models cost, and anything that went wrong. Synthetic matches only."
-      }
-    },
-    {
-      "type": 9,
-      "name": "parameters",
-      "content": {
-        "version": "KqlParameterItem/1.0",
-        "style": "pills",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "parameters": [
-          {
-            "id": "7b1f3d2e-hudhud-timerange",
-            "version": "KqlParameterItem/1.0",
-            "name": "TimeRange",
-            "label": "Time range",
-            "type": 4,
-            "isRequired": true,
-            "value": {
-              "durationMs": 86400000
-            },
-            "typeSettings": {
-              "selectableValues": [
-                {
-                  "durationMs": 3600000
-                },
-                {
-                  "durationMs": 14400000
-                },
-                {
-                  "durationMs": 86400000
-                },
-                {
-                  "durationMs": 604800000
-                },
-                {
-                  "durationMs": 2592000000
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": 3,
-      "name": "headline",
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "let m = requests | where name == \"match\" | extend cost = todouble(customDimensions[\"hudhud.cost_usd\"]);\nlet a = dependencies | where name startswith \"alert \" | extend outcome = tostring(customDimensions[\"hudhud.outcome\"]), refused = toint(customDimensions[\"hudhud.rejections\"]), checked = toint(customDimensions[\"hudhud.numbers_checked\"]), air_ms = todouble(customDimensions[\"hudhud.latency_ms\"]);\nunion\n  (m | summarize Value = tostring(count()) | extend Metric = \"Matches\", Order = 1),\n  (a | summarize Value = tostring(countif(outcome == \"verified\")) | extend Metric = \"Cues verified and aired\", Order = 2),\n  (a | summarize Value = tostring(sum(refused)) | extend Metric = \"Claims the Critic refused\", Order = 3),\n  (a | summarize Value = tostring(countif(outcome != \"verified\")) | extend Metric = \"Alerts not aired as verified\", Order = 4),\n  (a | summarize Value = tostring(sum(checked)) | extend Metric = \"Numbers the Critic checked\", Order = 5),\n  (a | where outcome == \"verified\" and isnotnull(air_ms) | summarize Value = strcat(tostring(round(percentile(air_ms, 50) / 1000, 1)), \" s\") | extend Metric = \"Alert to air (median)\", Order = 6),\n  (m | summarize Value = strcat(\"$\", tostring(round(sum(cost), 4))) | extend Metric = \"Model cost\", Order = 7),\n  (m | where cost > 0 | summarize Value = strcat(\"$\", tostring(round(avg(cost), 4))) | extend Metric = \"Cost per model-narrated match\", Order = 8)\n| order by Order asc\n| project Metric, Value",
-        "size": 4,
-        "title": "The match day so far",
-        "timeContextFromParameter": "TimeRange",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "visualization": "tiles",
-        "tileSettings": {
-          "titleContent": {
-            "columnMatch": "Metric",
-            "formatter": 1
-          },
-          "leftContent": {
-            "columnMatch": "Value",
-            "formatter": 1
-          },
-          "showBorder": false
+ "version": "Notebook/1.0",
+ "items": [
+  {
+   "type": 1,
+   "name": "intro",
+   "content": {
+    "json": "# HUDHUD control room\nEvery match the court narrates, as Application Insights saw it: what aired, what the Critic refused and why, what the models cost, and anything that went wrong. Synthetic matches only."
+   }
+  },
+  {
+   "type": 9,
+   "name": "parameters",
+   "content": {
+    "version": "KqlParameterItem/1.0",
+    "style": "pills",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "parameters": [
+     {
+      "id": "7b1f3d2e-hudhud-timerange",
+      "version": "KqlParameterItem/1.0",
+      "name": "TimeRange",
+      "label": "Time range",
+      "type": 4,
+      "isRequired": true,
+      "value": {
+       "durationMs": 1296000000
+      },
+      "typeSettings": {
+       "selectableValues": [
+        {
+         "durationMs": 3600000
+        },
+        {
+         "durationMs": 14400000
+        },
+        {
+         "durationMs": 86400000
+        },
+        {
+         "durationMs": 604800000
+        },
+        {
+         "durationMs": 2592000000
+        },
+        {
+         "durationMs": 1296000000
         }
+       ]
       }
-    },
-    {
-      "type": 3,
-      "name": "outcomes",
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "dependencies | where name startswith \"alert \"\n| summarize Alerts = count() by Outcome = tostring(customDimensions[\"hudhud.outcome\"])",
-        "size": 0,
-        "title": "What became of each alert",
-        "timeContextFromParameter": "TimeRange",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "visualization": "piechart"
-      },
-      "customWidth": "50"
-    },
-    {
-      "type": 3,
-      "name": "reasons",
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "dependencies | where name startswith \"alert \"\n| mv-expand code = split(tostring(customDimensions[\"hudhud.rejection_codes\"]), \",\") to typeof(string)\n| where isnotempty(code)\n| summarize Alerts = count() by Reason = code\n| order by Alerts desc",
-        "size": 0,
-        "title": "Why the Critic refused claims",
-        "timeContextFromParameter": "TimeRange",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "visualization": "barchart",
-        "noDataMessage": "The Critic refused nothing in this range."
-      },
-      "customWidth": "50"
-    },
-    {
-      "type": 3,
-      "name": "kinds",
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "dependencies | where name startswith \"alert \"\n| summarize Alerts = count() by Kind = tostring(customDimensions[\"hudhud.alert.kind\"]), Outcome = tostring(customDimensions[\"hudhud.outcome\"])",
-        "size": 0,
-        "title": "Alerts by kind and outcome",
-        "timeContextFromParameter": "TimeRange",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "visualization": "barchart"
-      },
-      "customWidth": "50"
-    },
-    {
-      "type": 3,
-      "name": "cost",
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "requests | where name == \"match\"\n| where isnotempty(customDimensions[\"hudhud.cost_usd\"])\n| project timestamp, Match = strcat(tostring(customDimensions[\"hudhud.match_id\"]), \" at \", format_datetime(timestamp, \"HH:mm\")), [\"Cost (USD)\"] = todouble(customDimensions[\"hudhud.cost_usd\"])\n| order by timestamp asc\n| project Match, [\"Cost (USD)\"]",
-        "size": 0,
-        "title": "Model cost per match",
-        "timeContextFromParameter": "TimeRange",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "visualization": "barchart"
-      },
-      "customWidth": "50"
-    },
-    {
-      "type": 3,
-      "name": "models",
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "dependencies\n| where name startswith \"chat \"\n| extend model = tostring(customDimensions[\"gen_ai.request.model\"])\n| summarize Calls = count(),\n    [\"p50 latency (s)\"] = round(percentile(duration, 50) / 1000, 2),\n    [\"p95 latency (s)\"] = round(percentile(duration, 95) / 1000, 2),\n    [\"Input tokens\"] = sum(toint(customDimensions[\"gen_ai.usage.input_tokens\"])),\n    [\"Output tokens\"] = sum(toint(customDimensions[\"gen_ai.usage.output_tokens\"])),\n    [\"Of which reasoning\"] = sum(toint(customDimensions[\"gen_ai.usage.reasoning.output_tokens\"])),\n    Failures = countif(success == false)\n  by Model = model",
-        "size": 0,
-        "title": "The models at work",
-        "timeContextFromParameter": "TimeRange",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "visualization": "table"
-      }
-    },
-    {
-      "type": 3,
-      "name": "latency",
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "dependencies\n| where name startswith \"chat \"\n| summarize [\"p50 (ms)\"] = percentile(duration, 50), [\"p95 (ms)\"] = percentile(duration, 95) by bin(timestamp, 5m)",
-        "size": 0,
-        "title": "Model latency",
-        "timeContextFromParameter": "TimeRange",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "visualization": "timechart"
-      },
-      "customWidth": "50"
-    },
-    {
-      "type": 3,
-      "name": "audit",
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "dependencies\n| where name has \"upsert_item\"\n| summarize Writes = count(), [\"p95 (ms)\"] = round(percentile(duration, 95), 0), Failures = countif(success == false) by bin(timestamp, 5m)",
-        "size": 0,
-        "title": "The audit trail (Cosmos DB writes)",
-        "timeContextFromParameter": "TimeRange",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "visualization": "timechart"
-      },
-      "customWidth": "50"
-    },
-    {
-      "type": 1,
-      "name": "trouble-intro",
-      "content": {
-        "json": "## What went wrong\nAlerts that didn't air as verified, a backup model taking over, and any failed call. An empty table means nothing went wrong."
-      }
-    },
-    {
-      "type": 3,
-      "name": "trouble",
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "union\n  (dependencies | where name startswith \"alert \" | where tostring(customDimensions[\"hudhud.outcome\"]) != \"verified\"\n    | project timestamp, What = strcat(\"Alert \", tostring(customDimensions[\"hudhud.alert.id\"]), \": \", tostring(customDimensions[\"hudhud.outcome\"])), Detail = tostring(customDimensions[\"hudhud.rejection_codes\"]), operation_Id),\n  (requests | where name == \"match\" | where toint(customDimensions[\"hudhud.handovers\"]) > 0\n    | project timestamp, What = \"The backup model took over\", Detail = strcat(tostring(customDimensions[\"hudhud.handovers\"]), \" handovers\"), operation_Id),\n  (dependencies | where success == false and target != \"169.254.169.254\"  // the VM metadata probe, off Azure\n    | project timestamp, What = strcat(\"Failed: \", name), Detail = tostring(resultCode), operation_Id)\n| order by timestamp desc",
-        "size": 0,
-        "title": "",
-        "timeContextFromParameter": "TimeRange",
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "visualization": "table",
-        "noDataMessage": "Nothing went wrong in this range."
-      }
+     }
+    ]
+   }
+  },
+  {
+   "type": 3,
+   "name": "headline",
+   "content": {
+    "version": "KqlItem/1.0",
+    "query": "let m = requests | where name == \"match\" | extend cost = todouble(customDimensions[\"hudhud.cost_usd\"]);\nlet a = dependencies | where name startswith \"alert \" | extend outcome = tostring(customDimensions[\"hudhud.outcome\"]), refused = toint(customDimensions[\"hudhud.rejections\"]), checked = toint(customDimensions[\"hudhud.numbers_checked\"]), air_ms = todouble(customDimensions[\"hudhud.latency_ms\"]);\nunion\n  (m | summarize Value = tostring(count()) | extend Metric = \"Matches\", Order = 1),\n  (a | summarize Value = tostring(countif(outcome == \"verified\")) | extend Metric = \"Cues verified and aired\", Order = 2),\n  (a | summarize Value = tostring(sum(refused)) | extend Metric = \"Claims the Critic refused\", Order = 3),\n  (a | summarize Value = tostring(countif(outcome != \"verified\")) | extend Metric = \"Alerts not aired as verified\", Order = 4),\n  (a | summarize Value = tostring(sum(checked)) | extend Metric = \"Numbers the Critic checked\", Order = 5),\n  (a | where outcome == \"verified\" and isnotnull(air_ms) | summarize Value = strcat(tostring(round(percentile(air_ms, 50) / 1000, 1)), \" s\") | extend Metric = \"Alert to air (median)\", Order = 6),\n  (m | summarize Value = strcat(\"$\", tostring(round(sum(cost), 4))) | extend Metric = \"Model cost\", Order = 7),\n  (m | where cost > 0 | summarize Value = strcat(\"$\", tostring(round(avg(cost), 4))) | extend Metric = \"Cost per model-narrated match\", Order = 8)\n| order by Order asc\n| project Metric, Value",
+    "size": 4,
+    "title": "The match day so far",
+    "timeContextFromParameter": "TimeRange",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "visualization": "tiles",
+    "tileSettings": {
+     "titleContent": {
+      "columnMatch": "Metric",
+      "formatter": 1
+     },
+     "leftContent": {
+      "columnMatch": "Value",
+      "formatter": 1
+     },
+     "showBorder": false
     }
-  ],
-  "isLocked": false,
-  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+   }
+  },
+  {
+   "type": 3,
+   "name": "outcomes",
+   "content": {
+    "version": "KqlItem/1.0",
+    "query": "dependencies | where name startswith \"alert \"\n| summarize Alerts = count() by Outcome = tostring(customDimensions[\"hudhud.outcome\"])",
+    "size": 0,
+    "title": "What became of each alert",
+    "timeContextFromParameter": "TimeRange",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "visualization": "piechart"
+   },
+   "customWidth": "50"
+  },
+  {
+   "type": 3,
+   "name": "reasons",
+   "content": {
+    "version": "KqlItem/1.0",
+    "query": "dependencies | where name startswith \"alert \"\n| mv-expand code = split(tostring(customDimensions[\"hudhud.rejection_codes\"]), \",\") to typeof(string)\n| where isnotempty(code)\n| summarize Alerts = count() by Reason = code\n| order by Alerts desc",
+    "size": 0,
+    "title": "Why the Critic refused claims",
+    "timeContextFromParameter": "TimeRange",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "visualization": "barchart",
+    "noDataMessage": "The Critic refused nothing in this range."
+   },
+   "customWidth": "50"
+  },
+  {
+   "type": 3,
+   "name": "kinds",
+   "content": {
+    "version": "KqlItem/1.0",
+    "query": "dependencies | where name startswith \"alert \"\n| summarize Alerts = count() by Kind = tostring(customDimensions[\"hudhud.alert.kind\"]), Outcome = tostring(customDimensions[\"hudhud.outcome\"])",
+    "size": 0,
+    "title": "Alerts by kind and outcome",
+    "timeContextFromParameter": "TimeRange",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "visualization": "barchart"
+   },
+   "customWidth": "50"
+  },
+  {
+   "type": 3,
+   "name": "cost",
+   "content": {
+    "version": "KqlItem/1.0",
+    "query": "requests | where name == \"match\"\n| where isnotempty(customDimensions[\"hudhud.cost_usd\"])\n| project timestamp, Match = strcat(tostring(customDimensions[\"hudhud.match_id\"]), \" at \", format_datetime(timestamp, \"HH:mm\")), [\"Cost (USD)\"] = todouble(customDimensions[\"hudhud.cost_usd\"])\n| order by timestamp asc\n| project Match, [\"Cost (USD)\"]",
+    "size": 0,
+    "title": "Model cost per match",
+    "timeContextFromParameter": "TimeRange",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "visualization": "barchart"
+   },
+   "customWidth": "50"
+  },
+  {
+   "type": 3,
+   "name": "models",
+   "content": {
+    "version": "KqlItem/1.0",
+    "query": "dependencies\n| where name startswith \"chat \"\n| extend model = tostring(customDimensions[\"gen_ai.request.model\"])\n| summarize Calls = count(),\n    [\"p50 latency (s)\"] = round(percentile(duration, 50) / 1000, 2),\n    [\"p95 latency (s)\"] = round(percentile(duration, 95) / 1000, 2),\n    [\"Input tokens\"] = sum(toint(customDimensions[\"gen_ai.usage.input_tokens\"])),\n    [\"Output tokens\"] = sum(toint(customDimensions[\"gen_ai.usage.output_tokens\"])),\n    [\"Of which reasoning\"] = sum(toint(customDimensions[\"gen_ai.usage.reasoning.output_tokens\"])),\n    Failures = countif(success == false)\n  by Model = model",
+    "size": 0,
+    "title": "The models at work",
+    "timeContextFromParameter": "TimeRange",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "visualization": "table"
+   }
+  },
+  {
+   "type": 3,
+   "name": "latency",
+   "content": {
+    "version": "KqlItem/1.0",
+    "query": "dependencies\n| where name startswith \"chat \"\n| summarize [\"p50 (ms)\"] = percentile(duration, 50), [\"p95 (ms)\"] = percentile(duration, 95) by bin(timestamp, 5m)",
+    "size": 0,
+    "title": "Model latency",
+    "timeContextFromParameter": "TimeRange",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "visualization": "timechart"
+   },
+   "customWidth": "50"
+  },
+  {
+   "type": 3,
+   "name": "audit",
+   "content": {
+    "version": "KqlItem/1.0",
+    "query": "dependencies\n| where name has \"upsert_item\"\n| summarize Writes = count(), [\"p95 (ms)\"] = round(percentile(duration, 95), 0), Failures = countif(success == false) by bin(timestamp, 5m)",
+    "size": 0,
+    "title": "The audit trail (Cosmos DB writes)",
+    "timeContextFromParameter": "TimeRange",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "visualization": "timechart"
+   },
+   "customWidth": "50"
+  },
+  {
+   "type": 1,
+   "name": "trouble-intro",
+   "content": {
+    "json": "## What went wrong\nAlerts that didn't air as verified, a backup model taking over, and any failed call. An empty table means nothing went wrong."
+   }
+  },
+  {
+   "type": 3,
+   "name": "trouble",
+   "content": {
+    "version": "KqlItem/1.0",
+    "query": "union\n  (dependencies | where name startswith \"alert \" | where tostring(customDimensions[\"hudhud.outcome\"]) != \"verified\"\n    | project timestamp, What = strcat(\"Alert \", tostring(customDimensions[\"hudhud.alert.id\"]), \": \", tostring(customDimensions[\"hudhud.outcome\"])), Detail = tostring(customDimensions[\"hudhud.rejection_codes\"]), operation_Id),\n  (requests | where name == \"match\" | where toint(customDimensions[\"hudhud.handovers\"]) > 0\n    | project timestamp, What = \"The backup model took over\", Detail = strcat(tostring(customDimensions[\"hudhud.handovers\"]), \" handovers\"), operation_Id),\n  (dependencies | where success == false and target != \"169.254.169.254\"  // the VM metadata probe, off Azure\n    | project timestamp, What = strcat(\"Failed: \", name), Detail = tostring(resultCode), operation_Id)\n| order by timestamp desc",
+    "size": 0,
+    "title": "",
+    "timeContextFromParameter": "TimeRange",
+    "queryType": 0,
+    "resourceType": "microsoft.insights/components",
+    "visualization": "table",
+    "noDataMessage": "Nothing went wrong in this range."
+   }
+  }
+ ],
+ "isLocked": false,
+ "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

@@ -51,7 +51,6 @@ TITLES = {
     "Arabic": "Arabic, on screen and spoken",
     "ask the match": "Ask the match: checked, sealed, verified in your browser",
     "Azure": "The control room on Azure",
-    "every model call": "Every model call, traced",
     "the ledger": "The match ledger, checked in your browser",
     "the team sheet": "hudhud.com.pk",
 }
