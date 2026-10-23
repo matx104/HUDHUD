@@ -135,7 +135,7 @@ def shots() -> list[Shot]:
             url=studio(
                 **match, start=44, speed=60, lang="en", club="home", player="h09", metric="xg"
             ),
-            preroll=20,  # behind the site's shot: lines on air, the desk already refusing, at the cut
+            preroll=20,  # lines on air and the desk already refusing at the cut
             data="[data-cues] .cue",  # a line on air before the cut, not a quiet feed
             actions=[(12, lambda t: scroll_to(t, ".desk")), (19, scroll_top)],
         ),
@@ -147,7 +147,7 @@ def shots() -> list[Shot]:
             "and fans get lenses of their own.",
             url=studio("hud", **match, lens="referee", start=50, speed=30, view="stand"),
             preroll=15,  # the penalty's call (54') is on screen while the line describes it
-            actions=[  # pins freeze in a background tab: wait for the call on camera, then the lenses
+            actions=[  # pins freeze in a background tab: the call is waited for on camera
                 (1.5, lambda t: t.wait_for("[data-pins] > *", timeout=8)),
                 (10, lambda t: t.press("2")),
                 (13, lambda t: t.press("3")),
@@ -662,7 +662,9 @@ async def take(
         # The wait can't hold the cut up (it lives inside the preroll), but it is logged if missed.
         if s.data:
             try:
-                await tab.wait_for(s.data, timeout=max(0.5, started + s.at - time.monotonic() - 0.3))
+                await tab.wait_for(
+                    s.data, timeout=max(0.5, started + s.at - time.monotonic() - 0.3)
+                )
             except TimeoutError:
                 print(f"\n  ! {s.name}: no data for {s.data} at its cut", flush=True)
         # what happens before the cut runs on its own: a page slow to answer can't hold the cut up

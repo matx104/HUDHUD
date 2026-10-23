@@ -12,7 +12,22 @@ image="hudhudstudio.azurecr.io/studio:$(git -C "$here" rev-parse --short HEAD)"
 "$here/scripts/az" acr login -n hudhudstudio >/dev/null
 docker build -q -t "$image" "$here"
 docker push -q "$image"
+# az containerapp update clears env and secrets it isn't told again: every ship repeats them,
+# or the court's telemetry (and the wall behind Prompt Shields) quietly disappears.
+connection="$("$here/scripts/az" monitor app-insights component show --app hudhud-insights -g rg-hudhud --query connectionString -o tsv)"
+speech_id="$("$here/scripts/az" cognitiveservices account show -n hudhud-foundry -g rg-hudhud --query id -o tsv)"
+"$here/scripts/az" containerapp secret set -n hudhud-studio -g rg-hudhud \
+  --secrets "app-insights=$connection" >/dev/null
 "$here/scripts/az" containerapp update -n hudhud-studio -g rg-hudhud --image "$image" \
+  --set-env-vars \
+    "APPLICATIONINSIGHTS_CONNECTION_STRING=secretref:app-insights" \
+    "STUDIO_PUBLIC_URL=https://studio.hudhud.com.pk/" \
+    "FOUNDRY_PROJECT_ENDPOINT=https://hudhud-foundry.services.ai.azure.com/api/projects/hudhud" \
+    "FOUNDRY_MODELS=gpt-4.1-mini,gpt-5-mini" \
+    "COSMOS_ENDPOINT=https://hudhud-audit.documents.azure.com:443/" \
+    "SPEECH_REGION=uaenorth" \
+    "SPEECH_RESOURCE_ID=$speech_id" \
+    "CONTENT_SAFETY_ENDPOINT=https://hudhud-foundry.cognitiveservices.azure.com/" \
   --query "properties.latestRevisionName" -o tsv
 fqdn="$("$here/scripts/az" containerapp show -n hudhud-studio -g rg-hudhud --query properties.configuration.ingress.fqdn -o tsv)"
 echo "live at https://$fqdn/"

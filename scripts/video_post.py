@@ -290,7 +290,9 @@ def render(
     for line in lines:
         inputs += ["-i", str(line.audio)]
         delay = round((line.start - start) * 1000)
-        chain.append(f"[{count}:a]volume=2.2,aformat=channel_layouts=stereo,adelay={delay}|{delay}[a{count}]")
+        chain.append(
+            f"[{count}:a]volume=2.2,aformat=channel_layouts=stereo,adelay={delay}|{delay}[a{count}]"
+        )
         voices.append(f"[a{count}]")
         count += 1
     chain.append(f"{''.join(voices)}amix=inputs={len(voices)}:normalize=0,asplit[vo][key]")
