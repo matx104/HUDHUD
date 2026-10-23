@@ -227,10 +227,10 @@ def shots() -> list[Shot]:
             url=portal("HUDHUD control room"),
             warm=45,  # a background tab doesn't draw the portal's workbook; queries need their time
             hide=ACCOUNT,
-            actions=[  # the workbook, section by section: tiles, alerts, refusals, cost, models
-                (2, page_down),
-                (5.5, page_down),
-                (8.5, page_down),
+            actions=[  # the workbook, section by section — the portal scrolls by keyboard
+                (2, lambda t: t.press("PageDown")),
+                (5.5, lambda t: t.press("PageDown")),
+                (8.5, lambda t: t.press("PageDown")),
             ],
         ),
         Shot(
@@ -322,6 +322,8 @@ KEYS = {
     "3": ("Digit3", 51, "3"),
     "Enter": ("Enter", 13, "\r"),
     "Escape": ("Escape", 27, ""),
+    "PageDown": ("PageDown", 34, ""),
+    "Home": ("Home", 36, ""),
 }
 
 
