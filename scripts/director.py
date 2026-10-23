@@ -410,7 +410,10 @@ class Tab:
             await asyncio.sleep(pause)
 
     async def front(self) -> None:
-        await self.send("Page.bringToFront")
+        # A tab whose session has died (a crashed tab, a closed window) must not end the take:
+        # the shot goes on without it, and the log already says which.
+        with contextlib.suppress(Exception):
+            await self.send("Page.bringToFront")
         with contextlib.suppress(Exception):  # a page still loading may not answer yet
             await self.park()
 
