@@ -92,6 +92,20 @@ async def page_down(tab: "Tab") -> None:
     await tab.evaluate("window.scrollBy({top: innerHeight * 0.75, behavior: 'smooth'})")
 
 
+async def scroll_through(tab: "Tab", seconds: float = 6.0, start: float = 0.8) -> None:
+    """Scroll gradually through the whole page, like a viewer reading it. The wheel events
+    go through CDP as real input, so they scroll whatever the pointer is over: the page,
+    the studio's feed, or the portal's own workbook container."""
+    await asyncio.sleep(start)
+    steps = max(1, int(seconds / 0.12))
+    for _ in range(steps):
+        await tab.send(
+            "Input.dispatchMouseEvent",
+            {"type": "mouseWheel", "x": 768, "y": 432, "deltaX": 0, "deltaY": 100},
+        )
+        await asyncio.sleep(0.12)
+
+
 async def ask(tab: "Tab", question: str) -> None:
     await tab.click("[data-ask] input[name=question]:not([disabled])")
     await tab.type(question)
@@ -129,7 +143,7 @@ def shots() -> list[Shot]:
             "it's wrong. HUDHUD checks every line against the match before it airs.",
             url=f"{SITE}/",
             preroll=5,
-            actions=[(4.5, lambda t: scroll_to(t, ".front-three"))],
+            actions=[(2, lambda t: scroll_through(t, seconds=4.5))],
         ),
         Shot(
             9,
@@ -140,14 +154,9 @@ def shots() -> list[Shot]:
             url=studio(
                 **match, start=44, speed=60, lang="en", club="home", player="h09", metric="xg"
             ),
-            preroll=20,  # lines on air and the desk already refusing at the cut
-            data="[data-cues] .cue",  # a line on air before the cut, not a quiet feed
-            actions=[  # section by section: the feed, the desk, the receipts, the ledger panel
-                (5, lambda t: scroll_to(t, ".desk")),
-                (11, lambda t: page_down(t)),
-                (15, lambda t: page_down(t)),
-                (19, scroll_top),
-            ],
+            preroll=20,
+            data="[data-cues] .cue",
+            actions=[(4, lambda t: scroll_through(t, seconds=14))],
         ),
         Shot(
             31,
@@ -156,13 +165,13 @@ def shots() -> list[Shot]:
             "from the Law and recomputed by the Critic, pinned where it happened. Commentators "
             "and fans get lenses of their own.",
             url=studio("hud", **match, lens="referee", start=50, speed=30, view="stand"),
-            preroll=15,  # the penalty's call (54') is on screen while the line describes it
-            actions=[  # pins freeze in a background tab: the call is waited for on camera
+            preroll=15,
+            actions=[
                 (1.5, lambda t: t.wait_for("[data-pins] > *", timeout=8)),
                 (10, lambda t: t.press("2")),
                 (13, lambda t: t.press("3")),
             ],
-            close_after=16.5,  # just after the next shot is in front, so no other tab flashes
+            close_after=16.5,
         ),
         Shot(
             47,
@@ -179,12 +188,10 @@ def shots() -> list[Shot]:
             "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not "
             "add a number or change a name.",
             url=studio(**match, start=54, speed=30, lang="ur"),
-            preroll=20,  # lines already on air at the cut
+            preroll=20,
             data="[data-cues] .cue",
-            # Hear, just after the cut: Chrome holds a click for a hidden tab until it's shown, and
-            # ticking it reads the line on air
             actions=[(0.3, lambda t: t.click("[data-hear]"))],
-            close_after=9.5,  # the spoken line finishes: closing earlier cut it mid-sentence
+            close_after=9.5,
         ),
         Shot(
             66,
@@ -194,7 +201,7 @@ def shots() -> list[Shot]:
             preroll=20,
             data="[data-cues] .cue",
             actions=[(0.3, lambda t: t.click("[data-hear]"))],
-            close_after=9.5,  # as Urdu: let the sentence finish
+            close_after=9.5,
         ),
         Shot(
             72,
@@ -211,11 +218,11 @@ def shots() -> list[Shot]:
                 q="Who has completed the most passes?",
             ),
             preroll=20,
-            data=".reply",  # the first answer is on screen before the cut
-            actions=[  # the proof, then the sealed answer, section by section
+            data=".reply",
+            actions=[
                 (2, lambda t: t.click(".reply.verified .proof .quiet")),
                 (5, lambda t: ask(t, "What are the odds on Brackenfield?")),
-                (9, lambda t: page_down(t)),
+                (8, lambda t: scroll_through(t, seconds=5)),
             ],
         ),
         Shot(
@@ -225,13 +232,9 @@ def shots() -> list[Shot]:
             "traced. The control room tells the whole story: what became of every alert, why "
             "the Critic refused, what each match cost.",
             url=portal("HUDHUD control room"),
-            warm=45,  # a background tab doesn't draw the portal's workbook; queries need their time
+            warm=45,
             hide=ACCOUNT,
-            actions=[  # the workbook, section by section — the portal scrolls by keyboard
-                (2, lambda t: t.press("PageDown")),
-                (5.5, lambda t: t.press("PageDown")),
-                (8.5, lambda t: t.press("PageDown")),
-            ],
+            actions=[(1.5, lambda t: scroll_through(t, seconds=7.5))],
         ),
         Shot(
             96,
@@ -249,7 +252,7 @@ def shots() -> list[Shot]:
             url=f"{SITE}/#/goal",
             preroll=10,
             data=".lanes",
-            actions=[(1.5, lambda t: page_down(t))],
+            actions=[(1.5, lambda t: scroll_through(t, seconds=3))],
         ),
         Shot(
             104,
@@ -259,7 +262,7 @@ def shots() -> list[Shot]:
             url=f"{SITE}/#/roadmap",
             preroll=10,
             data=".stairs",
-            actions=[(1.5, lambda t: page_down(t))],
+            actions=[(1.5, lambda t: scroll_through(t, seconds=3.5))],
         ),
         Shot(
             109,
@@ -269,7 +272,7 @@ def shots() -> list[Shot]:
             url=f"{SITE}/#/who",
             preroll=10,
             data=".profile",
-            actions=[(2, lambda t: scroll_to(t, ".kit"))],
+            actions=[(1.5, lambda t: scroll_through(t, seconds=2.5))],
         ),
         Shot(
             113,
