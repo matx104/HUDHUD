@@ -27,6 +27,8 @@ def configure(service: str = "court") -> bool:
     connection = os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING")
     if not connection:
         return False
+    import logging
+
     from azure.monitor.opentelemetry import configure_azure_monitor
     from opentelemetry.sdk.resources import Resource
 
@@ -35,6 +37,17 @@ def configure(service: str = "court") -> bool:
     if not in_azure():
         # Off Azure, the Azure VM detector's metadata probe only fails and shows up as an error.
         os.environ.setdefault("OTEL_EXPERIMENTAL_RESOURCE_DETECTORS", "otel")
+
+    # The exporter's own talk (transmissions, retries, urllib3's request dumps) must never be
+    # captured as telemetry: logged, exported, and logged again, it once filled a day's ingestion
+    # quota with itself by the afternoon, and the day's matches never landed (docs/azure.md).
+    for noisy in (
+        "azure.monitor.opentelemetry.exporter",
+        "azure.monitor.opentelemetry",
+        "urllib3",
+        "opentelemetry",
+    ):
+        logging.getLogger(noisy).setLevel(logging.WARNING)
 
     configure_azure_monitor(
         connection_string=connection,
