@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{name}}: the announcement card</title>
+  <!-- The LinkedIn post image: 1200 by 1500 (4:5), rendered by scripts/drive_kit.py -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;600&family=JetBrains+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400&display=swap">
+  <style>
+    html, body { margin: 0; }
+    .card {
+      position: relative; width: 1200px; height: 1500px; overflow: hidden;
+      color: #F4F1E8;
+      background:
+        radial-gradient(520px 380px at 12% 0%, rgba(184, 245, 61, 0.10), transparent 70%),
+        radial-gradient(560px 420px at 100% 88%, rgba(201, 162, 39, 0.16), transparent 70%),
+        #0A1F2E;
+    }
+    .pitch { position: absolute; inset: 34px; border: 1px solid rgba(244, 241, 232, 0.09); border-radius: 8px; }
+    .pitch::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px solid rgba(244, 241, 232, 0.07); }
+    .pitch::after { content: ""; position: absolute; left: calc(50% - 130px); top: 190px; width: 260px; height: 260px; border: 1px solid rgba(244, 241, 232, 0.07); border-radius: 50%; }
+    .kicker { position: absolute; left: 0; right: 0; top: 78px; text-align: center; font: 500 21px/1 "JetBrains Mono", monospace; color: #B8F53D; letter-spacing: 0.14em; }
+    .crest { position: absolute; left: calc(50% - 170px); top: 128px; width: 340px; height: 340px; filter: drop-shadow(0 0 60px rgba(184, 245, 61, 0.22)); }
+    .word { position: absolute; left: 0; right: 0; top: 494px; text-align: center; font: 900 188px/0.9 "Big Shoulders Display", sans-serif; letter-spacing: 0.01em; }
+    .promise { position: absolute; left: 0; right: 0; top: 700px; text-align: center; font: 700 56px/1 "Big Shoulders Display", sans-serif; color: #C9A227; }
+    .claim {
+      position: absolute; left: 90px; right: 90px; top: 806px; padding: 42px 46px;
+      background: #0F2A3D; border: 1px solid rgba(244, 241, 232, 0.16); border-left: 6px solid #B8F53D; border-radius: 14px;
+    }
+    .claim-meta { display: flex; justify-content: space-between; font: 500 22px/1 "JetBrains Mono", monospace; color: #B8F53D; }
+    .claim-text { margin: 26px 0 0; font: 400 31px/1.5 "Hanken Grotesk", sans-serif; color: #F4F1E8; }
+    .claim-proof { display: flex; align-items: center; gap: 14px; margin-top: 30px; }
+    .chip { font: 500 21px/1 "JetBrains Mono", monospace; color: #B8F53D; border: 1px solid rgba(184, 245, 61, 0.5); border-radius: 999px; padding: 9px 18px; }
+    .verified { margin-left: auto; font: 500 20px/1.3 "JetBrains Mono", monospace; color: #C9A227; text-align: right; }
+    .claim-note { margin-top: 20px; font: 400 22px/1.4 "Hanken Grotesk", sans-serif; color: rgba(244, 241, 232, 0.62); font-style: italic; }
+    .agents { position: absolute; left: 0; right: 0; top: 1218px; display: flex; justify-content: center; gap: 16px; }
+    .agents span { font: 500 23px/1 "JetBrains Mono", monospace; border: 1px solid rgba(244, 241, 232, 0.25); border-radius: 999px; padding: 12px 24px; color: rgba(244, 241, 232, 0.85); }
+    .agents .critic { color: #C9A227; border-color: rgba(201, 162, 39, 0.6); }
+    .foot { position: absolute; left: 90px; right: 90px; top: 1364px; display: flex; justify-content: space-between; align-items: baseline; }
+    .langs { font: 400 26px/1.4 "Hanken Grotesk", "Noto Naskh Arabic", sans-serif; color: rgba(244, 241, 232, 0.75); }
+    .site { font: 500 30px/1 "JetBrains Mono", monospace; color: #B8F53D; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="pitch"></div>
+    <p class="kicker">MICROSOFT × PREMIER LEAGUE · INSIDE THE GAME · AN INDEPENDENT ENTRY</p>
+    <svg class="crest" viewBox="0 0 240 240" aria-hidden="true">
+      <defs>
+        <path id="p78" d="M0 0C4.2-19.5 11-42 7.6-56Q0-74-7.6-56C-11-42-4.2-19.5 0 0Z"/>
+        <path id="p96" d="M0 0C4.8-22.5 13-49 9-67.5Q0-89-9-67.5C-13-49-4.8-22.5 0 0Z"/>
+        <path id="p112" d="M0 0C5-24 13.5-51.5 9.6-74.5Q0-95-9.6-74.5C-13.5-51.5-5-24 0 0Z"/>
+        <path id="t-root" d="M107.9 167.5 L132.1 167.5 L139.6 149.2 L120 137.9 L100.4 149.2 Z"/>
+        <path id="t-top" d="M100.4 101 L120 113.8 L139.6 101 L132.1 80.3 L107.9 80.3 Z"/>
+        <path id="t-left" d="M68.7 141.9 L80.8 136.4 L80.8 112.3 L68.7 102.9 L61.2 121.2 Z"/>
+        <path id="t-right" d="M159.2 136.4 L171.3 141.9 L178.8 121.2 L171.3 102.9 L159.2 112.3 Z"/>
+        <path id="t-seams" d="M132.1 80.3 Q120 76.7 107.9 80.3 M132.1 80.3 Q137.3 88 139.6 101 M132.1 80.3 Q139.8 71.5 144.2 70.9 M107.9 167.5 Q100.2 174.9 95.8 173 M107.9 167.5 Q102.7 161.9 100.4 149.2 M107.9 167.5 Q120 171.9 132.1 167.5 M95.8 70.9 Q82.8 72.6 76.2 82.2 M95.8 70.9 Q100.2 71.5 107.9 80.3 M95.8 70.9 Q100.2 61.3 107.9 61.5 M76.2 82.2 Q68.1 90 68.7 102.9 M107.9 80.3 Q102.7 88 100.4 101 M132.1 61.5 Q120 56.1 107.9 61.5 M132.1 61.5 Q139.8 61.3 144.2 70.9 M178.8 121.2 Q180.1 111.3 171.3 102.9 M178.8 121.2 Q180.1 132.6 171.3 141.9 M163.8 160.2 Q157.2 170.9 144.2 173 M163.8 160.2 Q171.9 153.9 171.3 141.9 M139.6 149.2 Q130.7 145.7 120 137.9 M139.6 149.2 Q137.3 161.9 132.1 167.5 M139.6 149.2 Q152.1 144.9 159.2 136.4 M80.8 112.3 Q77.2 124.8 80.8 136.4 M80.8 112.3 Q70.6 106.5 68.7 102.9 M80.8 112.3 Q87.9 105.4 100.4 101 M120 113.8 Q130.7 106.2 139.6 101 M120 113.8 Q120 126.4 120 137.9 M120 113.8 Q109.3 106.2 100.4 101 M61.2 121.2 Q59.9 132.6 68.7 141.9 M61.2 121.2 Q59.9 111.3 68.7 102.9 M144.2 173 Q139.8 174.9 132.1 167.5 M80.8 136.4 Q70.6 140.9 68.7 141.9 M80.8 136.4 Q87.9 144.9 100.4 149.2 M139.6 101 Q152.1 105.4 159.2 112.3 M163.8 82.2 Q171.9 90 171.3 102.9 M163.8 82.2 Q157.2 72.6 144.2 70.9 M95.8 173 Q82.8 170.9 76.2 160.2 M171.3 102.9 Q169.4 106.5 159.2 112.3 M120 137.9 Q109.3 145.7 100.4 149.2 M68.7 141.9 Q68.1 153.9 76.2 160.2 M159.2 112.3 Q162.8 124.8 159.2 136.4 M171.3 141.9 Q169.4 140.9 159.2 136.4"/>
+        <clipPath id="ballCut"><circle cx="120" cy="120" r="60"/></clipPath>
+      </defs>
+      <g fill="none" stroke="#F4F1E8">
+        <circle cx="120" cy="120" r="104" stroke-width="1.5" stroke-opacity=".4"/>
+        <g stroke-width="2.2" stroke-opacity=".85" stroke-linecap="round">
+          <line x1="6" y1="120" x2="16" y2="120"/>
+          <line x1="224" y1="120" x2="234" y2="120"/>
+        </g>
+      </g>
+      <g clip-path="url(#ballCut)">
+        <circle cx="120" cy="120" r="60" fill="#F4F1E8"/>
+        <use href="#t-seams" fill="none" stroke="#0A1F2E" stroke-width="1.4" stroke-opacity=".55"/>
+        <g fill="#1E7B45"><use href="#t-root"/><use href="#t-top"/><use href="#t-left"/><use href="#t-right"/></g>
+      </g>
+      <g transform="translate(120 156)" fill="#B8F53D" stroke="#0A1F2E" stroke-width="2" stroke-linejoin="round">
+        <use href="#p78" transform="rotate(-52)"/>
+        <use href="#p96" transform="rotate(-26)"/>
+        <use href="#p96" transform="rotate(26)"/>
+        <use href="#p78" transform="rotate(52)"/>
+        <use href="#p112" fill="#C9A227"/>
+      </g>
+      <circle cx="120" cy="154" r="10.5" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.5"/>
+      <circle cx="120" cy="154" r="2.6" fill="#C9A227"/>
+    </svg>
+    <h1 class="word">{{name}}</h1>
+    <p class="promise">Every call comes with its evidence.</p>
+    <div class="claim">
+      <div class="claim-meta"><span>5' · GREAT PASS</span><span>DUN 0–0 HAR</span></div>
+      <p class="claim-text">Sami Pellvik picks out Cian Falsen in the box with a 40 m pass, difficulty 48 of 100 and 99% accurate. The shot is kept out by the keeper.</p>
+      <div class="claim-proof">
+        <span class="chip">e00050</span><span class="chip">e00051</span>
+        <span class="verified">✓ VERIFIED BY THE CRITIC — 2ND ATTEMPT</span>
+      </div>
+      <p class="claim-note">The first draft cited an event that hadn't happened yet. It never aired.</p>
+    </div>
+    <div class="agents">
+      <span>Scout</span><span>Narrator</span><span class="critic">Critic</span><span>Localizer</span><span>Orchestrator</span>
+    </div>
+    <div class="foot">
+      <span class="langs">English · اردو · العربية — written and spoken</span>
+      <span class="site">{{site}}</span>
+    </div>
+  </div>
+</body>
+</html>

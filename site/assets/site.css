@@ -890,27 +890,25 @@ pre {
 .sub-board strong { font: 800 clamp(1.5rem, 3vw, 2.25rem) / 1 var(--display); transition: color 0.2s; }
 .sub-board:hover strong { color: var(--lime); }
 
-/* The front three, on the home page: one in the spotlight, the other two blurred, waiting */
+/* The front three, on the home page: the shirt, the name, the job */
 .front-three { padding-top: clamp(3rem, 7vw, 5rem); }
-.front-three h2 { margin-bottom: 0.6rem; }
-.front-note { margin: 0 0 1.5rem; color: var(--chalk-dim); font-size: 0.9375rem; }
-.front-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: 1.25rem; }
-.front-cards li { display: grid; }
-.front-cards li:has(> a[data-active="true"]) { grid-column: 1; grid-row: 1 / span 2; }
-.front-cards li:not(:has(> a[data-active="true"])) { grid-column: 2; }
-.front-cards a { position: relative; display: grid; gap: 0.35rem; align-content: start; padding: 0 0 1rem; text-decoration: none; border-bottom: 2px solid var(--chalk-faint); transition: border-color 0.2s, filter 0.35s var(--ease-out); }
-.front-cards a[data-active="true"] { border-bottom-color: var(--lime); }
-.front-cards img { width: 100%; object-fit: cover; object-position: center 30%; border-radius: 6px; border: 1px solid var(--chalk-faint); margin-bottom: 0.4rem; }
-.front-cards .card-hud img, .front-cards .card-ask img { aspect-ratio: 2.05; }
-.front-cards .card-ledger img { aspect-ratio: 3.6; }
-.front-cards li:not(:has(> a[data-active="true"])) a { filter: blur(2.5px) brightness(0.7); }
-.front-cards li:not(:has(> a[data-active="true"])) img { aspect-ratio: 16 / 9; min-height: 6.5rem; }
-.front-cards li:not(:has(> a[data-active="true"])):hover a { filter: blur(1px) brightness(0.9); border-color: var(--lime); }
-.front-cards li:not(:has(> a[data-active="true"])):hover strong { color: var(--lime); }
-.front-cards .shirt { position: absolute; top: 0.6rem; left: 0.75rem; font: 900 3.5rem / 0.8 var(--display); color: var(--chalk); -webkit-text-stroke: 1px var(--navy); text-shadow: 0 4px 18px rgba(0, 0, 0, 0.7); }
+.front-three h2 { margin-bottom: 1.5rem; }
+.front-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+.front-cards a {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.2rem 1.1rem; align-items: center;
+  padding: 1.35rem 1.35rem 1.2rem; text-decoration: none;
+  border: 1px solid var(--chalk-faint); border-radius: 10px; background: var(--navy-raised);
+  transition: border-color 0.2s, transform 0.2s;
+}
+.front-cards .shirt {
+  grid-row: 1 / span 2; display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border-radius: 50%;
+  background: var(--chalk); color: var(--navy); font: 900 1.9rem / 1 var(--display); transition: background 0.2s;
+}
 .front-cards strong { font: 800 1.75rem / 1 var(--display); }
-.front-cards span:last-child { color: var(--chalk-dim); font-size: 0.9375rem; }
-.front-cards a[data-active="true"]:hover strong { color: var(--lime); }
+.front-cards span:last-child { grid-column: 2; color: var(--chalk-dim); font-size: 0.9375rem; }
+.front-cards a:hover { border-color: var(--lime); transform: translateY(-2px); }
+.front-cards a:hover strong { color: var(--lime); }
+.front-cards a:hover .shirt { background: var(--lime); }
 
 /* ---------- the demos: the studio's own pages, replaying a recorded match ---------- */
 .demo { display: grid; gap: 0.75rem; margin-bottom: clamp(2.5rem, 6vw, 4rem); }
@@ -1212,8 +1210,9 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
   .chapter-index, .projects, .principles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .formation { grid-template-columns: minmax(0, 1fr); }
   .formation-pitch { max-height: none; width: min(100%, 30rem); justify-self: center; }
-  .front-cards, .lens-cards, .flow, .road, .blocks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .front-cards li:has(> a[data-active="true"]) { grid-column: 1 / -1; grid-row: auto; }
+  .lens-cards, .flow, .road, .blocks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .front-cards { grid-template-columns: minmax(0, 1fr); }
+  .front-cards a { grid-template-columns: minmax(0, 1fr); }
   .block + .block::before { display: none; }
   .demo-frame.is-playing { aspect-ratio: 3 / 4; }
   .lanes li { grid-template-columns: minmax(0, 1fr) auto; }
