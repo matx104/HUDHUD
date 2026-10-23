@@ -39,6 +39,9 @@
 
   identity();
   const hooks = {};
+  // Declared here, above startRouter: a deep link straight to #/ledger runs its hook during
+  // startRouter, before the ledger chapter's own lines below would have initialized this.
+  let ledgerLoad = null;
   if (chain) {
     drawBoard();
     drawSteps();
@@ -101,7 +104,6 @@
   // The match ledger's chapter: a real match's ledger (demo/ledger.json), its first and last blocks
   // drawn, and every hash in it checked by this browser on request (demo/ledger-core.js, the
   // studio's own checker). Loaded once, the first time the chapter opens.
-  let ledgerLoad = null;
   function ledgerPage() {
     if (ledgerLoad || !window.Ledger) return;
     ledgerLoad = fetch("demo/ledger.json").then((r) => r.json());

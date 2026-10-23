@@ -65,6 +65,7 @@ class Shot:
     tab: str | None = None  # which earlier shot's tab, when url is None
     preroll: float = 4.0  # seconds before `at` the tab opens, so it's live on its cut
     warm: float | None = None  # instead: opened before the take, this long on screen to draw
+    data: str | None = None  # a selector with real content on it before the tab is brought front
     ready: list[Action] = field(default_factory=list)  # then these, before the take begins
     actions: list[tuple[float, Action]] = field(default_factory=list)  # seconds after `at`
     close_after: float | None = None  # seconds after `at` its tab closes, ending its match
@@ -132,9 +133,10 @@ def shots() -> list[Shot]:
             "each line from facts my code computed. Every line carries its evidence and a "
             "receipt, and the Critic's desk shows what it refused, and why.",
             url=studio(
-                **match, start=40, speed=60, lang="en", club="home", player="h09", metric="xg"
+                **match, start=44, speed=60, lang="en", club="home", player="h09", metric="xg"
             ),
-            preroll=8,  # running behind the site's shot, so lines are on air at the cut
+            preroll=20,  # behind the site's shot: lines on air, the desk already refusing, at the cut
+            data="[data-cues] .cue",  # a line on air before the cut, not a quiet feed
             actions=[(12, lambda t: scroll_to(t, ".desk")), (19, scroll_top)],
         ),
         Shot(
@@ -145,6 +147,7 @@ def shots() -> list[Shot]:
             "and fans get lenses of their own.",
             url=studio("hud", **match, lens="referee", start=50, speed=30, view="stand"),
             preroll=15,  # the penalty's call (54') is on screen while the line describes it
+            data="[data-pins] > *",  # the call pinned where it happened
             actions=[(10, lambda t: t.press("2")), (13, lambda t: t.press("3"))],
             close_after=16.5,  # just after the next shot is in front, so no other tab flashes
         ),
@@ -163,7 +166,8 @@ def shots() -> list[Shot]:
             "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not "
             "add a number or change a name.",
             url=studio(**match, start=54, speed=30, lang="ur"),
-            preroll=9,  # lines already on air at the cut
+            preroll=14,  # lines already on air at the cut
+            data="[data-cues] .cue",
             # Hear, just after the cut: Chrome holds a click for a hidden tab until it's shown, and
             # ticking it reads the line on air
             actions=[(0.3, lambda t: t.click("[data-hear]"))],
@@ -174,7 +178,8 @@ def shots() -> list[Shot]:
             "Arabic",
             "",
             url=studio(**match, start=54, speed=30, lang="ar"),
-            preroll=9,
+            preroll=14,
+            data="[data-cues] .cue",
             actions=[(0.3, lambda t: t.click("[data-hear]"))],
             close_after=6.5,
         ),
@@ -193,6 +198,7 @@ def shots() -> list[Shot]:
                 q="Who has completed the most passes?",
             ),
             preroll=14,
+            data=".reply",  # the first answer is on screen before the cut
             actions=[
                 (2, lambda t: t.click(".reply.verified .proof .quiet")),
                 (5, lambda t: ask(t, "What are the odds on Brackenfield?")),
@@ -218,19 +224,21 @@ def shots() -> list[Shot]:
             hide=ACCOUNT,
         ),
         Shot(
-            100,
+            98,
             "the ledger",
             "",
             url=f"{SITE}/#/ledger",
-            preroll=4,
+            preroll=10,
+            data="[data-ledger-squares] li",  # the ledger's blocks drawn, not a bare page
             actions=[(1, lambda t: t.click("[data-ledger-verify]"))],
         ),
         Shot(
-            104,
+            105,
             "the team sheet",
             "HUDHUD. Built by one engineer. Every call comes with its evidence.",
             url=f"{SITE}/#/",
-            preroll=3,
+            preroll=4,
+            data=".menu-button",
             actions=[(1, lambda t: t.click(".menu-button"))],
         ),
     ]
@@ -644,6 +652,13 @@ async def take(
         else:  # warmed, or an earlier shot's tab: it is open by the time this one is due
             await at(s.at - 0.5)
         tab = tabs[s.tab or s.name]
+        # real data before the cut: a page that hasn't drawn its content yet isn't brought front.
+        # The wait can't hold the cut up (it lives inside the preroll), but it is logged if missed.
+        if s.data:
+            try:
+                await tab.wait_for(s.data, timeout=max(0.5, started + s.at - time.monotonic() - 0.3))
+            except TimeoutError:
+                print(f"\n  ! {s.name}: no data for {s.data} at its cut", flush=True)
         # what happens before the cut runs on its own: a page slow to answer can't hold the cut up
         early = [asyncio.create_task(soon(s, o, a, tab)) for o, a in s.actions if o < 0]
         await at(s.at)
