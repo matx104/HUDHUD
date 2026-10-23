@@ -70,8 +70,9 @@
     const SOURCES = {
       hud: (lens) => `demo/hud.html?lens=${lens}&view=stand&autostart=1`,
       ask: () => `demo/ask.html?autostart=1&q=${encodeURIComponent("Who has completed the most passes?")}`,
+      broadcast: () => `demo/broadcast.html?autostart=1`,
     };
-    const TITLES = { hud: "HUD², replaying a match recorded from the studio", ask: "Ask the match, on a match recorded from the studio" };
+    const TITLES = { hud: "HUD², replaying a match recorded from the studio", ask: "Ask the match, on a match recorded from the studio", broadcast: "The program feed, from a match recorded from the studio" };
     for (const demo of $$("[data-demo]")) {
       const kind = demo.dataset.demo;
       const frame = $("[data-demo-frame]", demo);

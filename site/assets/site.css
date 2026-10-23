@@ -921,6 +921,7 @@ pre {
 .demo-frame iframe { width: 100%; height: 100%; border: 0; background: var(--navy-deep); }
 .demo-frame.is-playing { aspect-ratio: 16 / 9; }
 [data-demo="ask"] .demo-frame.is-playing { aspect-ratio: 16 / 12; }
+[data-demo="broadcast"] .demo-frame.is-playing { aspect-ratio: 5 / 4; }
 .demo-start { grid-area: 1 / 1; padding: 0.9rem 1.5rem; border: 0; border-radius: 999px; background: var(--lime); color: var(--navy); font: 800 1.25rem / 1 var(--display); cursor: pointer; box-shadow: 0 0 0 8px rgba(184, 245, 61, 0.18), 0 10px 40px rgba(0, 0, 0, 0.6); }
 .demo-start:hover { background: #CBFA6E; }
 .demo-note { font-size: 0.875rem; color: var(--chalk-dim); max-width: 70ch; }

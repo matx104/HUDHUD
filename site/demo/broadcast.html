@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The program feed — for broadcasters</title>
+  <meta name="description" content="The same checked lines a broadcaster's graphics system receives: a program feed rendered from the cue stream's own JSON contract — headline, evidence, receipt, player tags, the referee's call.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#06141F">
+  <link rel="icon" href="../assets/crest.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="broadcast.css">
+</head>
+<body>
+  <header class="top">
+    <span class="badge">HUD² <b>program feed</b></span>
+    <span class="meet">Synthetic League · Saltmarsh Rovers v Brackenfield · seed 21, recorded from the live studio</span>
+    <span class="controls">
+      <button type="button" id="play" aria-pressed="false">▶ Play</button>
+      <button type="button" id="next">⏭ Next line</button>
+      <button type="button" id="reset">⟲ Restart</button>
+    </span>
+  </header>
+
+  <main class="wall">
+    <section class="program" aria-label="The program feed">
+      <div class="frame">
+        <div class="pitch-lines" aria-hidden="true"></div>
+        <div class="bug">
+          <span class="bug-team" id="homeShort">SAL</span>
+          <span class="bug-score" id="score">0–0</span>
+          <span class="bug-team" id="awayShort">BRK</span>
+          <span class="bug-minute" id="minute">50'</span>
+        </div>
+        <p class="onair" id="onair"><span class="dot" aria-hidden="true"></span>ON AIR</p>
+        <div class="lower" id="lower" hidden>
+          <p class="strap" id="strap"></p>
+          <p class="line" id="line"></p>
+          <p class="cites" id="cites"></p>
+          <p class="meta" id="meta"></p>
+          <div class="players" id="players"></div>
+        </div>
+        <p class="idle" id="idle">The match is playing. The next checked line airs here, exactly as a graphics system would draw it.</p>
+        <p class="tc" id="tc">00:00:00:00</p>
+      </div>
+    </section>
+
+    <aside class="contract" aria-label="The cue contract, live">
+      <h2>The contract, live</h2>
+      <p class="contract-note">This is the JSON your system receives for every line — the panel updates as each cue airs on the left.</p>
+      <pre id="json">waiting for the first line…</pre>
+      <dl class="fields">
+        <div><dt>id · alert_id</dt><dd>stable ids: dedupe, group, replay</dd></div>
+        <div><dt>minute · t</dt><dd>match clock and stream time, for sync</dd></div>
+        <div><dt>headline · text · lang · mode</dt><dd>the strap, the line, its language and register</dd></div>
+        <div><dt>evidence</dt><dd>the event ids the line stands on</dd></div>
+        <div><dt>status · attempts</dt><dd>verified or spiked, and on which try</dd></div>
+        <div><dt>priority · ttl_s</dt><dd>how hard to push it, how long to hold it</dd></div>
+        <div><dt>receipt</dt><dd>writer, numbers checked, tokens, cost, latency</dd></div>
+        <div><dt>players</dt><dd>tags with shirt, position, role, badges</dd></div>
+        <div><dt>call</dt><dd>for fouls: the likely restart, card, strictness</dd></div>
+      </dl>
+      <p class="contract-note">The committed JSON Schema, the SSE stream, the read-only MCP tools and the A2A agent are in the repository: a graphics system builds once, against a contract.</p>
+    </aside>
+  </main>
+
+  <script src="broadcast.js"></script>
+</body>
+</html>

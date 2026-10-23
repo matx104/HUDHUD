@@ -1520,6 +1520,50 @@
       </div>
     </section>
 
+    <!-- ============ FOR BROADCAST (the fourth audience) ============ -->
+    <section class="page wrap" data-page="broadcast" data-shirt="22" data-group="play" data-role="Substitute" data-title="For broadcast" data-summary="The program feed a graphics system draws from the cue contract" aria-labelledby="broadcast-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">17</span>
+        <h1 id="broadcast-title" tabindex="-1">For broadcasters and streaming platforms</h1>
+        <p class="lede">The challenge names four audiences — fans, studios, broadcasters, streaming platforms — and this page is for the last two. The same checked lines, delivered as a program feed: nothing here is drawn by hand. Every strap, citation, receipt, player tag and card on the left is rendered from the cue stream's own JSON, the way a graphics system would draw it.</p>
+      </header>
+
+      <div class="demo" data-demo="broadcast" data-reveal>
+        <div class="demo-frame demo-wide" data-demo-frame>
+          <img src="assets/screens/studio-live.webp" alt="The program feed: a broadcast frame with the score bug and a checked line as a lower third, driven by the cue contract." loading="lazy" width="1600" height="758">
+          <button class="demo-start" type="button" data-demo-start>Play the program feed</button>
+        </div>
+        <p class="demo-note">A match recorded from the live studio, replayed by the studio's own stream. Play the take, or step line by line with Next line — the panel on the right is the JSON your system receives for every cue, live.</p>
+      </div>
+
+      <div class="two-lists">
+        <section data-reveal>
+          <h2>What a partner receives</h2>
+          <ul>
+            <li>Timed, prioritised cues with the line, its evidence, its status and its time-to-live — a JSON Schema contract, committed and drift-checked in CI, to build a graphics system against once.</li>
+            <li>Player tags with shirt number, position, role in the moment and threshold badges — ready for rosters and touchscreens.</li>
+            <li>The referee's likely call for fouls that carry one: restart, card, the strictness profile it was read at.</li>
+            <li>A receipt on every line: who wrote it, what was checked, what it cost, how long it took.</li>
+            <li>English, Urdu and Arabic from the same contract, on screen and spoken; casual or analyst register; every viewer's personal view still passes the same Critic.</li>
+          </ul>
+        </section>
+        <section data-reveal>
+          <h2>Ways to integrate</h2>
+          <ul>
+            <li>The cue stream itself (SSE) or the whole match as JSON — both carry the identical contract.</li>
+            <li>The Critic as a read-only MCP server: your assistant reads a match and puts any claim to the same court before it airs.</li>
+            <li>The Critic as an A2A agent: your pipeline hands it claims or questions as a peer, with no model inside to be talked round.</li>
+            <li>The audit trail on Azure Cosmos DB — every cue, refusal and answer, kept 90 days.</li>
+            <li>Recaps as standalone pages per match, printable to PDF, every line checked.</li>
+          </ul>
+        </section>
+      </div>
+
+      <blockquote class="pledge" data-reveal>
+        <p>Both lanes of the brief's law, served: the metrics have an audience — this feed — and the personalisation has something to personalise — the same checked lines.</p>
+      </blockquote>
+    </section>
+
     <!-- ============ LIMITS ============ -->
     <section class="page wrap" data-page="limits" data-shirt="12" data-group="data" data-role="Substitute" data-title="What this can't tell you" data-summary="The limits, stated plainly" aria-labelledby="limits-title">
       <header class="page-head">
