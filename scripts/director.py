@@ -147,8 +147,11 @@ def shots() -> list[Shot]:
             "and fans get lenses of their own.",
             url=studio("hud", **match, lens="referee", start=50, speed=30, view="stand"),
             preroll=15,  # the penalty's call (54') is on screen while the line describes it
-            data="[data-pins] > *",  # the call pinned where it happened
-            actions=[(10, lambda t: t.press("2")), (13, lambda t: t.press("3"))],
+            actions=[  # pins freeze in a background tab: wait for the call on camera, then the lenses
+                (1.5, lambda t: t.wait_for("[data-pins] > *", timeout=8)),
+                (10, lambda t: t.press("2")),
+                (13, lambda t: t.press("3")),
+            ],
             close_after=16.5,  # just after the next shot is in front, so no other tab flashes
         ),
         Shot(
@@ -178,7 +181,7 @@ def shots() -> list[Shot]:
             "Arabic",
             "",
             url=studio(**match, start=54, speed=30, lang="ar"),
-            preroll=14,
+            preroll=20,
             data="[data-cues] .cue",
             actions=[(0.3, lambda t: t.click("[data-hear]"))],
             close_after=6.5,
@@ -197,7 +200,7 @@ def shots() -> list[Shot]:
                 autostart=1,
                 q="Who has completed the most passes?",
             ),
-            preroll=14,
+            preroll=20,
             data=".reply",  # the first answer is on screen before the cut
             actions=[
                 (2, lambda t: t.click(".reply.verified .proof .quiet")),
@@ -228,7 +231,7 @@ def shots() -> list[Shot]:
             "the ledger",
             "",
             url=f"{SITE}/#/ledger",
-            preroll=10,
+            preroll=14,
             data="[data-ledger-squares] li",  # the ledger's blocks drawn, not a bare page
             actions=[(1, lambda t: t.click("[data-ledger-verify]"))],
         ),
