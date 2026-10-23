@@ -169,12 +169,12 @@ def shots() -> list[Shot]:
             "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not "
             "add a number or change a name.",
             url=studio(**match, start=54, speed=30, lang="ur"),
-            preroll=14,  # lines already on air at the cut
+            preroll=20,  # lines already on air at the cut
             data="[data-cues] .cue",
             # Hear, just after the cut: Chrome holds a click for a hidden tab until it's shown, and
             # ticking it reads the line on air
             actions=[(0.3, lambda t: t.click("[data-hear]"))],
-            close_after=6.5,
+            close_after=9.5,  # the spoken line finishes: closing earlier cut it mid-sentence
         ),
         Shot(
             66,
@@ -184,7 +184,7 @@ def shots() -> list[Shot]:
             preroll=20,
             data="[data-cues] .cue",
             actions=[(0.3, lambda t: t.click("[data-hear]"))],
-            close_after=6.5,
+            close_after=9.5,  # as Urdu: let the sentence finish
         ),
         Shot(
             72,
@@ -214,7 +214,7 @@ def shots() -> list[Shot]:
             "Foundry's own evaluators. Every call traced, every claim kept on Cosmos DB, and the "
             "Critic open to any assistant over MCP and any agent over A2A.",
             url=portal("HUDHUD control room"),
-            warm=25,  # a background tab doesn't draw the portal's workbook
+            warm=45,  # a background tab doesn't draw the portal's workbook; queries need their time
             hide=ACCOUNT,
         ),
         Shot(
@@ -222,7 +222,7 @@ def shots() -> list[Shot]:
             "every model call",
             "",
             url=portal("Every model call"),
-            warm=25,
+            warm=45,
             ready=[lambda t: t.press("Escape")],  # Logs opens its queries hub over the query
             hide=ACCOUNT,
         ),

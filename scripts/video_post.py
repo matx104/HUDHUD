@@ -290,12 +290,16 @@ def render(
     for line in lines:
         inputs += ["-i", str(line.audio)]
         delay = round((line.start - start) * 1000)
-        chain.append(f"[{count}:a]aformat=channel_layouts=stereo,adelay={delay}|{delay}[a{count}]")
+        chain.append(f"[{count}:a]volume=2.2,aformat=channel_layouts=stereo,adelay={delay}|{delay}[a{count}]")
         voices.append(f"[a{count}]")
         count += 1
     chain.append(f"{''.join(voices)}amix=inputs={len(voices)}:normalize=0,asplit[vo][key]")
-    # the take's own sound, turned down while the narrator speaks
-    chain.append("[0:a][key]sidechaincompress=threshold=0.015:ratio=10:attack=15:release=450[room]")
+    # the take's own sound, gentler and turned down while the narrator speaks: the studio's
+    # Urdu and Arabic lines must duck, not vanish mid-sentence
+    chain.append(
+        "[0:a]volume=0.6[desk];"
+        "[desk][key]sidechaincompress=threshold=0.03:ratio=6:attack=25:release=650[room]"
+    )
     chain.append("[room][vo]amix=inputs=2:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11[mix]")
     out.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
