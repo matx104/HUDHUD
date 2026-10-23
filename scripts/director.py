@@ -50,7 +50,7 @@ OBS_SECRET = Path.home() / ".config" / "obs-studio-mcp" / "credentials.json"
 OPS = ROOT / "site" / "data" / "ops.js"
 STUDIO = STUDIO_URL.rstrip("/")
 SITE = SITE_URL.rstrip("/")
-LENGTH = 104.0  # seconds: under two minutes, hard (task.md)
+LENGTH = 117.0  # seconds: under two minutes, hard (task.md)
 BLANK = "data:text/html,<body style='background:%2306141F'>"  # the site's navy, between shots
 
 Action = Callable[["Tab"], Awaitable[None]]
@@ -85,6 +85,11 @@ async def scroll_to(tab: "Tab", selector: str) -> None:
 
 async def scroll_top(tab: "Tab") -> None:
     await tab.evaluate("window.scrollTo({top: 0, behavior: 'smooth'})")
+
+
+async def page_down(tab: "Tab") -> None:
+    """One screen down, smoothly: a section at a time, so the video dwells on each."""
+    await tab.evaluate("window.scrollBy({top: innerHeight * 0.75, behavior: 'smooth'})")
 
 
 async def ask(tab: "Tab", question: str) -> None:
@@ -130,14 +135,19 @@ def shots() -> list[Shot]:
             9,
             "the studio",
             "This is my studio, live on Azure Container Apps. A model on Microsoft Foundry writes "
-            "each line from facts my code computed. Every line carries its evidence and a "
-            "receipt, and the Critic's desk shows what it refused, and why.",
+            "each line from facts my code computed, and every line carries its evidence and a "
+            "receipt. The Critic's desk shows what it refused, and why.",
             url=studio(
                 **match, start=44, speed=60, lang="en", club="home", player="h09", metric="xg"
             ),
             preroll=20,  # lines on air and the desk already refusing at the cut
             data="[data-cues] .cue",  # a line on air before the cut, not a quiet feed
-            actions=[(12, lambda t: scroll_to(t, ".desk")), (19, scroll_top)],
+            actions=[  # section by section: the feed, the desk, the receipts, the ledger panel
+                (5, lambda t: scroll_to(t, ".desk")),
+                (11, lambda t: page_down(t)),
+                (15, lambda t: page_down(t)),
+                (19, scroll_top),
+            ],
         ),
         Shot(
             31,
@@ -190,8 +200,8 @@ def shots() -> list[Shot]:
             72,
             "ask the match",
             "Ask the match anything, typed or out loud. Code counts every number, the Critic "
-            "checks the answer, and it's sealed in the match's ledger, so your browser can "
-            "verify it. And it never helps anyone bet.",
+            "checks the answer, and it's sealed in the match's ledger. And it never helps "
+            "anyone bet.",
             url=studio(
                 "ask",
                 seed=21,
@@ -202,35 +212,71 @@ def shots() -> list[Shot]:
             ),
             preroll=20,
             data=".reply",  # the first answer is on screen before the cut
-            actions=[
+            actions=[  # the proof, then the sealed answer, section by section
                 (2, lambda t: t.click(".reply.verified .proof .quiet")),
                 (5, lambda t: ask(t, "What are the odds on Brackenfield?")),
+                (9, lambda t: page_down(t)),
             ],
         ),
         Shot(
             86,
             "Azure",
-            "Five agents on Microsoft Agent Framework, models chosen by evaluation and judged "
-            "by Foundry's own evaluators. Every call traced, every claim kept on Cosmos DB.",
+            "Five agents on Microsoft Agent Framework, models chosen by evaluation, every call "
+            "traced. The control room tells the whole story: what became of every alert, why "
+            "the Critic refused, what each match cost.",
             url=portal("HUDHUD control room"),
             warm=45,  # a background tab doesn't draw the portal's workbook; queries need their time
             hide=ACCOUNT,
+            actions=[  # the workbook, section by section: tiles, alerts, refusals, cost, models
+                (2, page_down),
+                (5.5, page_down),
+                (8.5, page_down),
+            ],
         ),
         Shot(
-            93,
+            96,
             "the ledger",
             "",
             url=f"{SITE}/#/ledger",
             preroll=14,
-            data="[data-ledger-squares] li",  # the ledger's blocks drawn, not a bare page
+            data="[data-ledger-squares] li",
             actions=[(1, lambda t: t.click("[data-ledger-verify]"))],
         ),
         Shot(
-            99,
+            100,
+            "the goal",
+            "Six awards, one engineer, every lane built to win.",
+            url=f"{SITE}/#/goal",
+            preroll=10,
+            data=".lanes",
+            actions=[(1.5, lambda t: page_down(t))],
+        ),
+        Shot(
+            104,
+            "the roadmap",
+            "And this is stage one. The road goes on: the decision explainer, perception from "
+            "cameras, all the way to an AI fourth official beside the referee.",
+            url=f"{SITE}/#/roadmap",
+            preroll=10,
+            data=".stairs",
+            actions=[(1.5, lambda t: page_down(t))],
+        ),
+        Shot(
+            109,
+            "who",
+            "Muhammad Abdullah Tariq, Principal Software Engineer, from Karachi. Every agent, "
+            "every line, built alone.",
+            url=f"{SITE}/#/who",
+            preroll=10,
+            data=".profile",
+            actions=[(2, lambda t: scroll_to(t, ".kit"))],
+        ),
+        Shot(
+            113,
             "the team sheet",
-            "HUDHUD. Built by one engineer. Every call comes with its evidence.",
+            "HUDHUD. Every call comes with its evidence. hudhud.com.pk.",
             url=f"{SITE}/#/",
-            preroll=4,
+            preroll=5,
             data=".menu-button",
             actions=[(1, lambda t: t.click(".menu-button"))],
         ),

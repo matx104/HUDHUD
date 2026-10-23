@@ -52,6 +52,9 @@ TITLES = {
     "ask the match": "Ask the match: checked, sealed, verified in your browser",
     "Azure": "The control room on Azure",
     "the ledger": "The match ledger, checked in your browser",
+    "the goal": "Six awards, one engineer, every lane built to win",
+    "the roadmap": "Onwards: the AI fourth official",
+    "who": "Built by one engineer, from Karachi",
     "the team sheet": "hudhud.com.pk",
 }
 TOP: set[str] = set()  # shots whose captions sit at the top, clear of what's at the bottom
