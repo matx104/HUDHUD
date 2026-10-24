@@ -5,7 +5,8 @@ line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+# PLE: errors Python raises only at compile time, e.g. a global used before its declaration
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "PLE"]
 # Urdu and Arabic text is meant: the full stop, Eastern digit zero and decimal separator.
 allowed-confusables = ["\u06d4", "\u0660", "\u066b"]
 

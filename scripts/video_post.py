@@ -30,8 +30,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from xml.sax.saxutils import escape
 
+import director  # director.LENGTH is read at use: --walkthrough changes it
 from _azure import ROOT, az
-from director import LENGTH, shots
+from director import shots
 
 WORK = ROOT / "dist" / "video"
 VOICE = ("en-US", "en-US-AndrewMultilingualNeural")  # the narrator; the studio's own is en-GB-Ryan
@@ -149,17 +150,17 @@ def narration(token: str | None, start: float) -> list[Line]:
 
 def report(lines: list[Line]) -> None:
     # where each shot's narration should end: the next shot with a line of its own
-    plan = shots()
+    plan, length = shots(), director.LENGTH
     after = {
-        s.name: next((n.at for n in plan[i + 1 :] if n.say), LENGTH) for i, s in enumerate(plan)
+        s.name: next((n.at for n in plan[i + 1 :] if n.say), length) for i, s in enumerate(plan)
     }
     for line in lines:
         end = line.start + line.seconds
-        over = end - after.get(line.shot, LENGTH)
+        over = end - after.get(line.shot, length)
         flag = f"  runs {over:.1f} s into the next shot" if over > 0 else ""
         print(f"  {line.start:6.1f}-{end:6.1f}  [{line.shot}] {line.text[:64]}{flag}")
-        if end > LENGTH:
-            print(f"  ! ends at {end:.1f} s, after the video's {LENGTH:.0f}")
+        if end > length:
+            print(f"  ! ends at {end:.1f} s, after the video's {length:.0f}")
 
 
 # --- the picture ----------------------------------------------------------------------------
@@ -354,14 +355,10 @@ def main() -> int:
     parser.add_argument("--walkthrough", action="store_true", help="the audience cut")
     parser.add_argument("--plan", action="store_true", help="print the timings only")
     args = parser.parse_args()
-    start = args.start if args.start is not None else LENGTH - duration(args.take)
     if args.walkthrough:
-        import director
-
         director._WALKTHROUGH = True
-        global LENGTH
-        LENGTH = director.LENGTH_WALKTHROUGH
-        start = args.start if args.start is not None else LENGTH - duration(args.take)
+        director.LENGTH = director.LENGTH_WALKTHROUGH
+    start = args.start if args.start is not None else director.LENGTH - duration(args.take)
     print(f"the take began at {start:.2f} s on the director's clock")
     lines = narration(None if args.plan else speech_token(), start)
     report(lines)
