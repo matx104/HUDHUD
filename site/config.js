@@ -7,7 +7,7 @@ window.SITE = {
   siteUrl: "https://hudhud.com.pk/", // canonical address: the project's own domain since 2026-10-19 (was matx104.github.io/HUDHUD, which redirects here)
   repoUrl: "https://github.com/matx104/HUDHUD",
   repoPublic: false, // flip at submission: shows the Code links (a private repo 404s for visitors)
-  videoUrl: null, // the 110-second demo, once it has a public URL
+  videoUrl: "https://youtu.be/oervsMUGJYs", // the judges' cut, 100 seconds
   kitUrl: "https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y", // the public media kit: video, screenshots, brand (scripts/drive_kit.py)
   studioUrl: "https://studio.hudhud.com.pk/", // the live studio, behind Cloudflare Access (docs/azure.md, "The wall"): the Control room links it
   studioPublic: false, // owner-only (2026-10-19): true would put "Watch a live match" on the public pages
