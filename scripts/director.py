@@ -50,7 +50,7 @@ OBS_SECRET = Path.home() / ".config" / "obs-studio-mcp" / "credentials.json"
 OPS = ROOT / "site" / "data" / "ops.js"
 STUDIO = STUDIO_URL.rstrip("/")
 SITE = SITE_URL.rstrip("/")
-LENGTH = 117.0  # seconds: under two minutes, hard (task.md)
+LENGTH = 100.0  # the judges' cut: under two minutes, tight, complete
 BLANK = "data:text/html,<body style='background:%2306141F'>"  # the site's navy, between shots
 
 Action = Callable[["Tab"], Awaitable[None]]
@@ -134,81 +134,36 @@ ACCOUNT = '[class*="avatarmenu"], [class*="fxs-avatar"]'  # the portal's top bar
 
 
 def shots() -> list[Shot]:
+    """The judges' cut: six beats, each earning its time, under two minutes."""
     match = {"seed": 21, "narration": "foundry", "stress": 1, "autostart": 1}
     return [
+        # 1. the hook: AI that proves every claim (12s)
         Shot(
             0,
             "the site",
-            "AI can commentate a football match. The trouble is, it sounds just as sure when "
-            "it's wrong. HUDHUD checks every line against the match before it airs.",
+            "AI can commentate a football match. And it sounds just as sure when it's wrong. "
+            "HUDHUD proves every claim before it airs.",
             url=f"{SITE}/",
-            preroll=5,
-            actions=[(2, lambda t: scroll_through(t, seconds=4.5))],
+            preroll=6,
+            actions=[(5, lambda t: scroll_through(t, seconds=5))],
         ),
+        # 2. HUD²: the match through three lenses (18s)
         Shot(
-            9,
-            "the studio",
-            "This is my studio, live on Azure Container Apps. A model on Microsoft Foundry writes "
-            "each line from facts my code computed, and every line carries its evidence and a "
-            "receipt. The Critic's desk shows what it refused, and why.",
-            url=studio(
-                **match, start=44, speed=60, lang="en", club="home", player="h09", metric="xg"
-            ),
-            preroll=20,
-            data="[data-cues] .cue",
-            actions=[(4, lambda t: scroll_through(t, seconds=14))],
-        ),
-        Shot(
-            31,
-            "HUD², the referee",
-            "HUD², the referee's lens. A foul in the box: likely a penalty and a yellow, read "
-            "from the Law and recomputed by the Critic, pinned where it happened. Commentators "
-            "and fans get lenses of their own.",
+            12,
+            "HUD²",
+            "HUD² shows the same match through three lenses. The referee sees the foul, the "
+            "likely penalty pinned where it happened, recomputed from the Law.",
             url=studio("hud", **match, lens="referee", start=50, speed=30, view="stand"),
-            preroll=15,
-            actions=[
-                (1.5, lambda t: t.wait_for("[data-pins] > *", timeout=8)),
-                (10, lambda t: t.press("2")),
-                (13, lambda t: t.press("3")),
-            ],
-            close_after=16.5,
+            preroll=18,
+            actions=[(4, lambda t: t.wait_for("[data-pins] > *", timeout=10))],
+            close_after=17.5,
         ),
+        # 3. Ask the match: checked, sealed, safe (18s)
         Shot(
-            47,
-            "off air",
-            "Now I take the narrator off air. The broadcast keeps going on the Scout's own "
-            "facts, says so, and brings the commentary back.",
-            tab="the studio",
-            actions=[(2, lambda t: t.click("[data-pull]")), (3, back_on_air)],
-            close_after=13.5,
-        ),
-        Shot(
-            60,
-            "Urdu",
-            "The same law holds in Urdu and Arabic, on screen and spoken: a translation may not "
-            "add a number or change a name.",
-            url=studio(**match, start=54, speed=30, lang="ur"),
-            preroll=20,
-            data="[data-cues] .cue",
-            actions=[(0.3, lambda t: t.click("[data-hear]"))],
-            close_after=9.5,
-        ),
-        Shot(
-            66,
-            "Arabic",
-            "",
-            url=studio(**match, start=54, speed=30, lang="ar"),
-            preroll=20,
-            data="[data-cues] .cue",
-            actions=[(0.3, lambda t: t.click("[data-hear]"))],
-            close_after=9.5,
-        ),
-        Shot(
-            72,
+            30,
             "ask the match",
-            "Ask the match anything, typed or out loud. Code counts every number, the Critic "
-            "checks the answer, and it's sealed in the match's ledger. And it never helps "
-            "anyone bet.",
+            "Ask the match anything. Code counts every number, the Critic checks the answer, "
+            "and it's sealed in the match's ledger. And it never helps anyone bet.",
             url=studio(
                 "ask",
                 seed=21,
@@ -217,71 +172,52 @@ def shots() -> list[Shot]:
                 autostart=1,
                 q="Who has completed the most passes?",
             ),
-            preroll=20,
+            preroll=22,
             data=".reply",
             actions=[
-                (2, lambda t: t.click(".reply.verified .proof .quiet")),
-                (5, lambda t: ask(t, "What are the odds on Brackenfield?")),
-                (8, lambda t: scroll_through(t, seconds=5)),
+                (4, lambda t: t.click(".reply.verified .proof .quiet")),
+                (9, lambda t: ask(t, "What are the odds on Brackenfield?")),
             ],
         ),
+        # 4. the ledger: verified in the browser (12s)
         Shot(
-            86,
-            "Azure",
-            "Five agents on Microsoft Agent Framework, models chosen by evaluation, every call "
-            "traced. The control room tells the whole story: what became of every alert, why "
-            "the Critic refused, what each match cost.",
-            url=portal("HUDHUD control room"),
-            warm=45,
-            hide=ACCOUNT,
-            actions=[(1.5, lambda t: scroll_through(t, seconds=7.5))],
-        ),
-        Shot(
-            96,
+            48,
             "the ledger",
             "",
             url=f"{SITE}/#/ledger",
-            preroll=14,
+            preroll=16,
             data="[data-ledger-squares] li",
-            actions=[(1, lambda t: t.click("[data-ledger-verify]"))],
+            actions=[(2, lambda t: t.click("[data-ledger-verify]"))],
         ),
+        # 5. the control room on Azure (22s)
         Shot(
-            100,
-            "the goal",
-            "Six awards, one engineer, every lane built to win.",
-            url=f"{SITE}/#/goal",
-            preroll=10,
-            data=".lanes",
-            actions=[(1.5, lambda t: scroll_through(t, seconds=3))],
+            60,
+            "Azure",
+            "The control room on Azure: every match, every alert, what became of it, why the "
+            "Critic refused, what it cost.",
+            url=portal("HUDHUD control room"),
+            warm=50,
+            hide=ACCOUNT,
+            actions=[(3, lambda t: scroll_through(t, seconds=16))],
         ),
+        # 6. the builder + the close (18s)
         Shot(
-            104,
-            "the roadmap",
-            "And this is stage one. The road goes on: the decision explainer, perception from "
-            "cameras, all the way to an AI fourth official beside the referee.",
-            url=f"{SITE}/#/roadmap",
-            preroll=10,
-            data=".stairs",
-            actions=[(1.5, lambda t: scroll_through(t, seconds=3.5))],
-        ),
-        Shot(
-            109,
+            82,
             "who",
-            "Muhammad Abdullah Tariq, Principal Software Engineer, from Karachi. Every agent, "
-            "every line, built alone.",
+            "Built by one engineer, from Karachi. Every agent, every line.",
             url=f"{SITE}/#/who",
-            preroll=10,
+            preroll=14,
             data=".profile",
-            actions=[(1.5, lambda t: scroll_through(t, seconds=2.5))],
+            actions=[(3, lambda t: scroll_through(t, seconds=5))],
         ),
         Shot(
-            113,
+            90,
             "the team sheet",
             "HUDHUD. Every call comes with its evidence. hudhud.com.pk.",
             url=f"{SITE}/#/",
-            preroll=5,
+            preroll=8,
             data=".menu-button",
-            actions=[(1, lambda t: t.click(".menu-button"))],
+            actions=[(2, lambda t: t.click(".menu-button"))],
         ),
     ]
 

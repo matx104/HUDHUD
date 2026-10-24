@@ -44,16 +44,10 @@ SPOKEN = {"HUDHUD": "Hudhud", "HUD²": "HUD squared"}
 # Each shot's title over its captions; where the captions sit, clear of what the shot shows.
 TITLES = {
     "the site": "HUDHUD: AI commentary that proves every call",
-    "the studio": "The studio, live on Azure Container Apps",
-    "HUD², the referee": "HUD²: the referee's lens",
-    "off air": "The narrator, taken off air",
-    "Urdu": "Urdu, on screen and spoken",
-    "Arabic": "Arabic, on screen and spoken",
+    "HUD²": "HUD²: the match through your lens",
     "ask the match": "Ask the match: checked, sealed, verified in your browser",
-    "Azure": "The control room on Azure",
     "the ledger": "The match ledger, checked in your browser",
-    "the goal": "Six awards, one engineer, every lane built to win",
-    "the roadmap": "Onwards: the AI fourth official",
+    "Azure": "The control room on Azure",
     "who": "Built by one engineer, from Karachi",
     "the team sheet": "hudhud.com.pk",
 }
