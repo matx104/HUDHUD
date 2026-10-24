@@ -67,8 +67,9 @@ referee and shows its evidence, and today's Critic, ref's call and ledger are it
 
 ## Links
 
-- Demo video (under 2:00): **TO FILL: the YouTube URL**
-- Code: https://github.com/matx104/HUDHUD (public at submission)
+- Demo video (under 2:00): https://youtu.be/a9_2oL63PBw
+- Full walkthrough (4 minutes): https://youtu.be/gQ50gp8kVg4
+- Code: https://github.com/matx104/HUDHUD
 - Showcase site, with replays of a match recorded from the live studio: https://hudhud.com.pk/
 - A recap the match wrote itself: https://hudhud.com.pk/recap/seed-21.html
 - Media kit (video, screenshots, brand): https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y
