@@ -1136,6 +1136,14 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
 .kit-away .js-name { fill: #F4F1E8; }
 .kit-away .js-number { fill: #124A2C; }
 
+/* ---------- the LinkedIn announcement, embedded on the who page ---------- */
+.social-proof { margin-top: clamp(2.5rem, 6vw, 4rem); }
+.social-embed {
+  display: flex; justify-content: center; padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid var(--chalk-faint); border-radius: 10px; background: var(--navy-raised);
+}
+.social-embed iframe { max-width: 100%; border-radius: 6px; }
+
 /* ---------- the videos: two cards, inline players ---------- */
 .watch { padding-top: clamp(3rem, 7vw, 5rem); }
 .watch h2 { margin-bottom: 1.5rem; }
