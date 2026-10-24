@@ -288,16 +288,14 @@
     $("[data-proof-shots]").hidden = false;
   }
 
-  // The hackathon clock: counts to the submission deadline in config.js, then says so.
+  // The hackathon clock: the entry is in, so it counts to the results in config.js, then says so.
   function startCountdown() {
-    const end = Date.parse(site.deadline ?? "");
+    const end = Date.parse(site.resultsAt ?? "");
     const clocks = $$("[data-countdown]");
     if (Number.isNaN(end)) return clocks.forEach((c) => { c.hidden = true; });
-    const when = $("[data-countdown-when]");
-    if (when) {
-      const local = new Date(end).toLocaleString(undefined, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" });
-      when.textContent = `Closes Tuesday 27 October at 11:59 PM Pacific, which is ${local} where you are.`;
-    }
+    $$("[data-countdown-when]").forEach((when) => {
+      when.textContent = "Winners are announced on Friday 20 November. This entry went in on 24 October, three days before the close; the judges review from 27 October to 10 November.";
+    });
     const pad = (n) => String(n).padStart(2, "0");
     let timer = 0;
     const tick = () => {
@@ -305,12 +303,14 @@
       const s = Math.floor(left / 1000);
       for (const clock of clocks) {
         clock.dataset.state = left ? "open" : "closed";
+        // The header's clock is the compact one: days, hours and minutes.
+        const seconds = clock.classList.contains("countdown-head") ? "" : `:${pad(s % 60)}`;
         $("[data-countdown-clock]", clock).textContent = left
-          ? `${Math.floor(s / 86400)}d ${pad(Math.floor(s / 3600) % 24)}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`
-          : "Top six notified by 10 November";
+          ? `${Math.floor(s / 86400)}d ${pad(Math.floor(s / 3600) % 24)}:${pad(Math.floor(s / 60) % 60)}${seconds}`
+          : "Results day";
         $("[data-countdown-label]", clock).textContent = left
-          ? clock.classList.contains("countdown-head") ? "Closes in" : "Submissions close in"
-          : "Submissions closed";
+          ? clock.classList.contains("countdown-head") ? "Results in" : "Winners announced in"
+          : "Winners announced";
       }
       if (!left) clearInterval(timer);
     };

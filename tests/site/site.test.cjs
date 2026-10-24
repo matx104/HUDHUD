@@ -57,6 +57,16 @@ test("the countdown ends at the official close: Oct 27, 11:59 PM Pacific", () =>
   assert.equal(pacific, "10/27/2026, 23:59");
 });
 
+test("the entry is in: the countdown runs to the results, Nov 20, Pacific", () => {
+  const pacific = new Date(config.resultsAt).toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false,
+  });
+  assert.equal(pacific, "11/20/2026, 00:00");
+  assert.ok(Date.parse(config.submitted) < Date.parse(config.deadline));
+  assert.match(html, /Submitted 24 October/);
+  assert.match(read("assets/site.js"), /site\.resultsAt/);
+});
+
 test("the control room says who its buttons are for, and its links name no account", () => {
   // The buttons are the owner's shortcuts, published by choice: the page says they need the
   // owner's accounts, and the links carry IDs only, never the email-based domain. The Cloudflare

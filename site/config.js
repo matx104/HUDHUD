@@ -13,4 +13,6 @@ window.SITE = {
   studioUrl: "https://studio.hudhud.com.pk/", // the live studio, behind Cloudflare Access (docs/azure.md, "The wall"): the Control room links it
   studioPublic: false, // owner-only (2026-10-19): true would put "Watch a live match" on the public pages
   deadline: "2026-10-28T06:59:00Z", // submissions close: Oct 27, 11:59 PM Pacific (official rules §1)
+  submitted: "2026-10-24", // this entry went in, Karachi time: three days before the close
+  resultsAt: "2026-11-20T08:00:00Z", // winners announced Nov 20 (no hour published): the countdown runs to its start, Pacific
 };

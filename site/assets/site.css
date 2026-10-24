@@ -86,7 +86,7 @@ code { font-family: var(--mono); }
 .menu-button {
   display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.5rem 0.85rem;
   font: 600 0.9375rem / 1 var(--body); color: var(--chalk); background: transparent;
-  border: 1px solid var(--chalk-faint); border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--chalk-faint); border-radius: 6px; cursor: pointer; white-space: nowrap;
 }
 .menu-button:hover, .menu-button[aria-expanded="true"] { border-color: var(--lime); color: var(--lime); }
 .menu-icon, .menu-icon::before { display: block; width: 1rem; height: 2px; background: currentColor; position: relative; }
@@ -568,6 +568,15 @@ pre {
 .countdown-big .countdown-label { font-size: 0.9375rem; }
 .countdown-big .countdown-clock { margin-top: 0.5rem; font: 800 clamp(3rem, 9vw, 6rem) / 1 var(--display); letter-spacing: 0.02em; text-shadow: 0 0 40px rgba(184, 245, 61, 0.3); }
 .countdown-big .countdown-when { margin-top: 0.75rem; font-size: 0.9375rem; color: var(--chalk-dim); }
+/* The entry is in: a gold chip in the header, a status line on the home page */
+.entry-chip {
+  align-self: center; padding: 0.2rem 0.55rem; border-radius: 999px;
+  border: 1px solid rgba(201, 162, 39, 0.6); background: rgba(201, 162, 39, 0.12);
+  color: var(--gold); font: 600 0.6875rem / 1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.entry-status { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.6rem; margin-top: 1.5rem; font-size: 0.9375rem; color: var(--chalk-dim); }
+.entry-status strong { color: var(--gold); font-weight: 600; }
+.entry-dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.18); }
 
 /* ---------- footer and pager ---------- */
 .foot { border-top: 1px solid var(--chalk-faint); padding-block: 2rem 3rem; }
@@ -785,7 +794,7 @@ pre {
 .sheet-button {
   display: inline-flex; align-items: baseline; gap: 0.35rem; padding: 0.45rem 0.6rem;
   border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--chalk-dim);
-  font: 700 1.125rem / 1 var(--display); letter-spacing: 0.01em; cursor: pointer;
+  font: 700 1.125rem / 1 var(--display); letter-spacing: 0.01em; cursor: pointer; white-space: nowrap;
 }
 .sheet-button small { font: 500 0.6875rem / 1 var(--mono); color: var(--lime); }
 .sheet-button:hover { color: var(--chalk); }
