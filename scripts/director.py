@@ -50,7 +50,7 @@ OBS_SECRET = Path.home() / ".config" / "obs-studio-mcp" / "credentials.json"
 OPS = ROOT / "site" / "data" / "ops.js"
 STUDIO = STUDIO_URL.rstrip("/")
 SITE = SITE_URL.rstrip("/")
-LENGTH = 100.0  # the judges' cut: under two minutes, tight, complete
+LENGTH = 102.0  # the judges' cut: under two minutes, two seconds of settling at the end
 BLANK = "data:text/html,<body style='background:%2306141F'>"  # the site's navy, between shots
 
 Action = Callable[["Tab"], Awaitable[None]]
@@ -183,11 +183,12 @@ def shots() -> list[Shot]:
         Shot(
             48,
             "the ledger",
-            "",
+            "Every match seals into a ledger chained by hashes — the same Merkle roots behind "
+            "Certificate Transparency. One click, and your browser verifies every block.",
             url=f"{SITE}/#/ledger",
             preroll=16,
             data="[data-ledger-squares] li",
-            actions=[(2, lambda t: t.click("[data-ledger-verify]"))],
+            actions=[(3, lambda t: t.click("[data-ledger-verify]"))],
         ),
         # 5. the control room on Azure (22s)
         Shot(
@@ -198,6 +199,7 @@ def shots() -> list[Shot]:
             url=portal("HUDHUD control room"),
             warm=50,
             hide=ACCOUNT,
+            close_after=21.5,  # closes as the who page fronts, so no desktop flash
             actions=[(3, lambda t: scroll_through(t, seconds=16))],
         ),
         # 6. the builder + the close (18s)
@@ -215,9 +217,9 @@ def shots() -> list[Shot]:
             "the team sheet",
             "HUDHUD. Every call comes with its evidence. hudhud.com.pk.",
             url=f"{SITE}/#/",
-            preroll=8,
+            preroll=10,
             data=".menu-button",
-            actions=[(2, lambda t: t.click(".menu-button"))],
+            actions=[(3, lambda t: t.click(".menu-button"))],
         ),
     ]
 
@@ -678,7 +680,7 @@ async def take(
     async def recording() -> None:
         await at(-0.5)
         await obs.call("StartRecord")
-        await at(LENGTH)
+        await at(LENGTH - 0.8)  # a beat before the take ends, so no transition is caught
         saved = await obs.call("StopRecord")
         print(f"\n  recorded: {saved.get('outputPath', '(see OBS)')}", flush=True)
 
