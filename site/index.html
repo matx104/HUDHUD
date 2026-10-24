@@ -120,6 +120,7 @@
         <a href="#/roadmap">Roadmap</a>
         <a href="#/challenge">The challenge</a>
         <a href="#/report">Deliverables</a>
+        <a href="#/demo">The demo</a>
         <a href="#/who">Who</a>
         <a data-repo-link data-when-repo="public" href="#">Code</a>
       </nav>
@@ -292,6 +293,30 @@
             </div>
             <noscript><p class="claim">The evidence chain needs JavaScript to draw.</p></noscript>
             <figcaption>A real exchange from synthetic match seed 7. Switch to the first draft to see what the Critic caught.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="watch wrap" data-reveal>
+        <h2>Watch</h2>
+        <div class="watch-grid">
+          <figure class="watch-card" data-reveal>
+            <div class="watch-frame">
+              <iframe src="https://www.youtube-nocookie.com/embed/a9_2oL63PBw" title="HUDHUD: AI match commentary that proves every claim — the 100-second demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <figcaption>
+              <strong>The demo</strong>
+              <span>101 seconds — the hook, HUD², ask the match, the ledger verified, the control room on Azure, the builder.</span>
+            </figcaption>
+          </figure>
+          <figure class="watch-card" data-reveal>
+            <div class="watch-frame">
+              <iframe src="https://www.youtube-nocookie.com/embed/gQ50gp8kVg4" title="HUDHUD: the full walkthrough — every page, every feature, 4 minutes" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <figcaption>
+              <strong>The walkthrough</strong>
+              <span>4 minutes — the studio live, the recovery when a model fails, Urdu and Arabic spoken, the roadmap to the AI fourth official.</span>
+            </figcaption>
           </figure>
         </div>
       </div>
@@ -2065,6 +2090,70 @@
         <h2 class="section-title">The Azure side, as it looks</h2>
         <p class="lede proof-lede">Screenshots from the Azure portal. Identifiers, account names and email addresses are covered. Full-size copies are in the <a data-kit-link hidden href="#">media kit on Google Drive</a>.</p>
         <div class="shot-grid" data-proof-grid></div>
+      </div>
+    </section>
+
+    <!-- ============ THE DEMO PAGE ============ -->
+    <section class="page wrap" data-page="demo" data-shirt="23" data-group="play" data-role="Substitute" data-title="The demo" data-summary="Everything you need to see HUDHUD work, in one place" aria-labelledby="demo-title">
+      <header class="page-head">
+        <span class="chapter-no" aria-hidden="true">18</span>
+        <h1 id="demo-title" tabindex="-1">The demo room</h1>
+        <p class="lede">Everything you need to see HUDHUD work — the videos, the interactive demos you can run right now, the evidence, and the code. Nothing to install for most of it; the full studio runs on any machine with one command.</p>
+      </header>
+
+      <div class="watch-grid demo-videos" data-reveal>
+        <figure class="watch-card" data-reveal>
+          <div class="watch-frame">
+            <iframe src="https://www.youtube-nocookie.com/embed/a9_2oL63PBw" title="HUDHUD: the 100-second demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+          <figcaption>
+            <strong>The demo</strong>
+            <span>101 seconds. The whole story.</span>
+          </figcaption>
+        </figure>
+        <figure class="watch-card" data-reveal>
+          <div class="watch-frame">
+            <iframe src="https://www.youtube-nocookie.com/embed/gQ50gp8kVg4" title="HUDHUD: the full 4-minute walkthrough" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+          <figcaption>
+            <strong>The walkthrough</strong>
+            <span>4 minutes. Every page, every feature.</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <h2 class="section-title" data-reveal>Try it now — nothing to install</h2>
+      <p class="section-lede" data-reveal>These run in your browser, on a match recorded from the live studio. The lines, the refusals and the ledger are real; the studio itself is private.</p>
+      <div class="demo-actions" data-reveal>
+        <a class="button" href="demo/studio.html?autostart=1" target="_blank" rel="noopener">Replay the studio</a>
+        <a class="button button-quiet" href="demo/hud.html?lens=referee&amp;autostart=1" target="_blank" rel="noopener">Replay HUD²</a>
+        <a class="button button-quiet" href="demo/ask.html?autostart=1" target="_blank" rel="noopener">Ask the match</a>
+        <a class="button button-quiet" href="demo/broadcast.html?autostart=1" target="_blank" rel="noopener">The program feed</a>
+        <a class="button button-quiet" href="#/ledger">Verify the ledger</a>
+        <a class="button button-quiet" href="recap/seed-21.html">Read a recap</a>
+      </div>
+
+      <h2 class="section-title" data-reveal>Run the full studio</h2>
+      <p class="section-lede" data-reveal>The same studio, on your machine, no Azure account needed:</p>
+      <pre data-reveal><code>git clone https://github.com/matx104/HUDHUD.git
+cd HUDHUD
+make setup
+make studio-offline</code></pre>
+      <p class="aside" data-reveal>Then open <code>http://localhost:8091</code>. Pick a match, kick off, take the narrator off air and watch the broadcast recover. With Azure: <code>make studio</code> runs it narrated by the Foundry models.</p>
+
+      <h2 class="section-title" data-reveal>The evidence</h2>
+      <ul class="adopt">
+        <li data-reveal><h3>The deliverables report</h3><p>Every ask of the challenge, met and linked to its evidence. <a href="#/report">Read it</a> or <a data-kit-link hidden href="#">download the PDF</a>.</p></li>
+        <li data-reveal><h3>The ledger, verified</h3><p>1,815 events sealed into 111 blocks chained by hashes. Your browser recomputes every hash. <a href="#/ledger">Try it</a>.</p></li>
+        <li data-reveal><h3>The audit trail</h3><p>Every cue, refusal and answer kept on Azure Cosmos DB, 90 days. The control room on Azure shows the matches, the alerts, the costs.</p></li>
+        <li data-reveal><h3>The tests</h3><p>273 tests on every push: the generator's realism, the Critic's rulebook, the workflow loop, the site and the studio. <code>make test</code>.</p></li>
+        <li data-reveal><h3>The media kit</h3><p>Both videos, the screenshots, the brand sheet, the deliverables report as PDF. <a data-kit-link hidden href="#">Download the kit</a>.</p></li>
+        <li data-reveal><h3>The code</h3><p>Public on GitHub at submission. Every agent, every test, every script. <a data-repo-link data-when-repo="public" href="#">Source on GitHub</a>.</p></li>
+      </ul>
+
+      <div class="actions" data-reveal>
+        <a class="button" href="#/">Start from the beginning</a>
+        <a class="button button-quiet" href="#/explained">The ideas, animated</a>
       </div>
     </section>
 

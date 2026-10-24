@@ -8,6 +8,7 @@ window.SITE = {
   repoUrl: "https://github.com/matx104/HUDHUD",
   repoPublic: false, // flip at submission: shows the Code links (a private repo 404s for visitors)
   videoUrl: "https://youtu.be/a9_2oL63PBw", // the judges' cut, 101 seconds
+  walkthroughUrl: "https://youtu.be/gQ50gp8kVg4", // the full walkthrough, 4 minutes
   kitUrl: "https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y", // the public media kit: video, screenshots, brand (scripts/drive_kit.py)
   studioUrl: "https://studio.hudhud.com.pk/", // the live studio, behind Cloudflare Access (docs/azure.md, "The wall"): the Control room links it
   studioPublic: false, // owner-only (2026-10-19): true would put "Watch a live match" on the public pages

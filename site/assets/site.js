@@ -37,6 +37,9 @@
     return p;
   };
 
+  // The videos: walkthrough appears beside the demo once it has a public URL.
+  $$("a[data-walkthrough-link]").forEach((n) => { n.href = site.walkthroughUrl ?? "#"; n.hidden = !site.walkthroughUrl; });
+
   identity();
   const hooks = {};
   // Declared here, above startRouter: a deep link straight to #/ledger runs its hook during

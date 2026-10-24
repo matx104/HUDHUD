@@ -1136,6 +1136,19 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
 .kit-away .js-name { fill: #F4F1E8; }
 .kit-away .js-number { fill: #124A2C; }
 
+/* ---------- the videos: two cards, inline players ---------- */
+.watch { padding-top: clamp(3rem, 7vw, 5rem); }
+.watch h2 { margin-bottom: 1.5rem; }
+.watch-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.watch-card { margin: 0; display: grid; gap: 0.75rem; }
+.watch-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--chalk-faint); background: var(--navy-deep); }
+.watch-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.watch-card figcaption { display: grid; gap: 0.2rem; }
+.watch-card strong { font: 800 1.35rem / 1.1 var(--display); }
+.watch-card span { font-size: 0.875rem; color: var(--chalk-dim); }
+.demo-videos { margin-bottom: clamp(2.5rem, 6vw, 4rem); }
+.demo-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: clamp(2.5rem, 6vw, 4rem); }
+
 /* ---------- the deliverables report: for the judges, first ---------- */
 .judge-box {
   display: grid; gap: 0.9rem; margin-bottom: clamp(2.5rem, 6vw, 4rem);
@@ -1230,6 +1243,7 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
   .control, .shot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .doctor-list { columns: 1; }
   .receipt { position: relative; top: auto; max-width: 26rem; }
+  .watch-grid { grid-template-columns: minmax(0, 1fr); }
   .pillars, .flow-five { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .prizes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .report-row { grid-template-columns: minmax(0, 1fr); }
