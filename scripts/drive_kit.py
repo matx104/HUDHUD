@@ -181,6 +181,7 @@ def build(info: dict, folder_url: str) -> None:
         [
             ("deliverables.html", OUT / "Deliverables report.pdf"),
             ("linkedin-card.html", OUT / BRAND / "linkedin-post-1200x1500.png"),
+            ("video-script.html", OUT / BRAND / "Video script.pdf"),
             ("read-me.html", OUT / "Read me.pdf"),
             ("brand-sheet.html", OUT / BRAND / "Brand sheet.pdf"),
             ("thumbnail.html", OUT / BRAND / "video-thumbnail-1280x720.png"),
