@@ -6,7 +6,7 @@ window.SITE = {
   productMark: "HUD²", // the short form: monogram, app icon
   siteUrl: "https://hudhud.com.pk/", // canonical address: the project's own domain since 2026-10-19 (was matx104.github.io/HUDHUD, which redirects here)
   repoUrl: "https://github.com/matx104/HUDHUD",
-  repoPublic: false, // flip at submission: shows the Code links (a private repo 404s for visitors)
+  repoPublic: true, // submitted Oct 27, 2026: the repo is public, the Code links are live
   videoUrl: "https://youtu.be/a9_2oL63PBw", // the judges' cut, 101 seconds
   walkthroughUrl: "https://youtu.be/gQ50gp8kVg4", // the full walkthrough, 4 minutes
   kitUrl: "https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y", // the public media kit: video, screenshots, brand (scripts/drive_kit.py)
