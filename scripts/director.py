@@ -50,7 +50,10 @@ OBS_SECRET = Path.home() / ".config" / "obs-studio-mcp" / "credentials.json"
 OPS = ROOT / "site" / "data" / "ops.js"
 STUDIO = STUDIO_URL.rstrip("/")
 SITE = SITE_URL.rstrip("/")
-LENGTH = 102.0  # the judges' cut: under two minutes, two seconds of settling at the end
+LENGTH_JUDGES = 102.0  # the judges' cut: under two minutes
+LENGTH_WALKTHROUGH = 240.0  # the audience walkthrough: about four minutes, every page
+LENGTH = LENGTH_JUDGES  # video_post imports this; the director's --walkthrough overrides
+_WALKTHROUGH = False  # set by --walkthrough; shots() reads it
 BLANK = "data:text/html,<body style='background:%2306141F'>"  # the site's navy, between shots
 
 Action = Callable[["Tab"], Awaitable[None]]
@@ -133,7 +136,7 @@ def portal(label: str) -> str:
 ACCOUNT = '[class*="avatarmenu"], [class*="fxs-avatar"]'  # the portal's top bar: who's signed in
 
 
-def shots() -> list[Shot]:
+def judges_shots() -> list[Shot]:
     """The judges' cut: six beats, each earning its time, under two minutes."""
     match = {"seed": 21, "narration": "foundry", "stress": 1, "autostart": 1}
     return [
@@ -222,6 +225,171 @@ def shots() -> list[Shot]:
             actions=[(3, lambda t: t.click(".menu-button"))],
         ),
     ]
+
+
+def walkthrough_shots() -> list[Shot]:
+    """The audience walkthrough: every page, the full story, about four minutes."""
+    match = {"seed": 21, "narration": "foundry", "stress": 1, "autostart": 1}
+    return [
+        Shot(
+            0,
+            "the site",
+            "AI can commentate a football match. And it sounds just as sure when it's wrong. "
+            "HUDHUD is a broadcast that refuses to air a claim it can't prove. Every call "
+            "comes with its evidence — the events it stands on, and a receipt showing what "
+            "was checked.",
+            url=f"{SITE}/",
+            preroll=8,
+            actions=[(8, lambda t: scroll_through(t, seconds=8))],
+        ),
+        Shot(
+            20,
+            "the studio",
+            "This is my studio, live on Azure Container Apps. A model on Microsoft Foundry "
+            "writes each line, from facts my code computed. And a Critic — a second agent — "
+            "recomputes every number from the raw match events before anything airs. If a "
+            "claim can't be proven, it goes back with the reasons, or it's spiked on screen.",
+            url=studio(
+                **match, start=44, speed=60, lang="en", club="home", player="h09", metric="xg"
+            ),
+            preroll=24,
+            data="[data-cues] .cue",
+            actions=[(10, lambda t: scroll_through(t, seconds=16))],
+        ),
+        Shot(
+            50,
+            "HUD²",
+            "HUD² shows the same match through three lenses. The referee sees the foul, the "
+            "likely penalty pinned where it happened, recomputed from the Law. Commentators "
+            "and fans get lenses of their own.",
+            url=studio("hud", **match, lens="referee", start=50, speed=30, view="stand"),
+            preroll=18,
+            actions=[
+                (5, lambda t: t.wait_for("[data-pins] > *", timeout=10)),
+                (13, lambda t: t.press("2")),
+                (16, lambda t: t.press("3")),
+            ],
+            close_after=19.5,
+        ),
+        Shot(
+            70,
+            "off air",
+            "What happens when the model fails? Watch. The broadcast drops to the Scout's own "
+            "facts — cited, marked unverified — says so on air, and brings the commentary "
+            "back when the model recovers. The feed never goes dark.",
+            tab="the studio",
+            actions=[(3, lambda t: t.click("[data-pull]")), (4, back_on_air)],
+            close_after=14.5,
+        ),
+        Shot(
+            85,
+            "Urdu",
+            "The same law holds in Urdu: a translation may not add a number or change a name. "
+            "On screen, and spoken.",
+            url=studio(**match, start=54, speed=30, lang="ur"),
+            preroll=24,
+            data="[data-cues] .cue",
+            actions=[(0.5, lambda t: t.click("[data-hear]"))],
+            close_after=11.5,
+        ),
+        Shot(
+            97,
+            "Arabic",
+            "",
+            url=studio(**match, start=54, speed=30, lang="ar"),
+            preroll=24,
+            data="[data-cues] .cue",
+            actions=[(0.5, lambda t: t.click("[data-hear]"))],
+            close_after=11.5,
+        ),
+        Shot(
+            107,
+            "ask the match",
+            "Ask the match anything. Code counts every number, the Critic checks the answer, "
+            "and it's sealed in the match's ledger, verified in your browser. And it never "
+            "helps anyone bet.",
+            url=studio(
+                "ask",
+                seed=21,
+                when="full",
+                narration="foundry",
+                autostart=1,
+                q="Who has completed the most passes?",
+            ),
+            preroll=24,
+            data=".reply",
+            actions=[
+                (5, lambda t: t.click(".reply.verified .proof .quiet")),
+                (11, lambda t: ask(t, "What are the odds on Brackenfield?")),
+                (15, lambda t: scroll_through(t, seconds=4)),
+            ],
+        ),
+        Shot(
+            127,
+            "the ledger",
+            "Every match seals into a ledger chained by hashes — the same Merkle roots behind "
+            "Certificate Transparency. One click, and your browser verifies every block.",
+            url=f"{SITE}/#/ledger",
+            preroll=18,
+            data="[data-ledger-squares] li",
+            actions=[(4, lambda t: t.click("[data-ledger-verify]"))],
+        ),
+        Shot(
+            142,
+            "Azure",
+            "The control room on Azure: every match, every alert, what became of it, why the "
+            "Critic refused, what it cost. The system's heartbeat, visible to anyone.",
+            url=portal("HUDHUD control room"),
+            warm=55,
+            hide=ACCOUNT,
+            close_after=29.5,
+            actions=[(5, lambda t: scroll_through(t, seconds=22))],
+        ),
+        Shot(
+            172,
+            "the goal",
+            "Six awards. One engineer. Every lane built to win.",
+            url=f"{SITE}/#/goal",
+            preroll=14,
+            data=".lanes",
+            actions=[(3, lambda t: scroll_through(t, seconds=5))],
+        ),
+        Shot(
+            182,
+            "the roadmap",
+            "And this is stage one. The road goes on: the decision explainer, then perception "
+            "from cameras, all the way to an AI fourth official beside the referee. It "
+            "advises. The human decides.",
+            url=f"{SITE}/#/roadmap",
+            preroll=14,
+            data=".stairs",
+            actions=[(3, lambda t: scroll_through(t, seconds=10))],
+        ),
+        Shot(
+            197,
+            "who",
+            "Muhammad Abdullah Tariq. Principal Software Engineer, from Karachi. Every agent, "
+            "every line, built alone.",
+            url=f"{SITE}/#/who",
+            preroll=14,
+            data=".profile",
+            actions=[(4, lambda t: scroll_through(t, seconds=7))],
+        ),
+        Shot(
+            209,
+            "the team sheet",
+            "HUDHUD. Every call comes with its evidence. hudhud.com.pk.",
+            url=f"{SITE}/#/",
+            preroll=10,
+            data=".menu-button",
+            actions=[(3, lambda t: t.click(".menu-button"))],
+        ),
+    ]
+
+
+def shots(walkthrough: bool | None = None) -> list[Shot]:
+    use_walkthrough = walkthrough if walkthrough is not None else _WALKTHROUGH
+    return walkthrough_shots() if use_walkthrough else judges_shots()
 
 
 # --- Chrome, over the DevTools Protocol ----------------------------------------------------
@@ -700,6 +868,11 @@ async def take(
 async def run(args: argparse.Namespace) -> int:
     import websockets
 
+    global LENGTH, _WALKTHROUGH
+    if args.walkthrough:
+        LENGTH = LENGTH_WALKTHROUGH
+        _WALKTHROUGH = True
+
     wall = {k: v for k, v in through_the_wall().items() if k.startswith("CF-Access")}
     frames = Path(args.frames) if args.frames else None
     if frames:
@@ -760,6 +933,7 @@ def main() -> int:
     parser.add_argument("--control", help="one connection, many takes: wait on this file")
     parser.add_argument("--obs-host", help="OBS's address (default: the Windows host)")
     parser.add_argument("--headless", action="store_true", help="a local Chromium: test shots")
+    parser.add_argument("--walkthrough", action="store_true", help="the audience cut")
     parser.add_argument(
         "--frames", help="save each shot as it looks two and six seconds in, to this folder"
     )

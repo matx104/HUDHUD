@@ -44,10 +44,16 @@ SPOKEN = {"HUDHUD": "Hudhud", "HUD²": "HUD squared"}
 # Each shot's title over its captions; where the captions sit, clear of what the shot shows.
 TITLES = {
     "the site": "HUDHUD: AI commentary that proves every call",
+    "the studio": "The studio, live on Azure",
     "HUD²": "HUD²: the match through your lens",
+    "off air": "The narrator, taken off air",
+    "Urdu": "Urdu, on screen and spoken",
+    "Arabic": "Arabic, on screen and spoken",
     "ask the match": "Ask the match: checked, sealed, verified in your browser",
     "the ledger": "The match ledger, checked in your browser",
     "Azure": "The control room on Azure",
+    "the goal": "Six awards, one engineer",
+    "the roadmap": "Onwards: the AI fourth official",
     "who": "Built by one engineer, from Karachi",
     "the team sheet": "hudhud.com.pk",
 }
@@ -345,9 +351,17 @@ def main() -> int:
     parser.add_argument("-o", "--out", type=Path, default=WORK / "hudhud-demo.mp4")
     parser.add_argument("--start", type=float, help="the director's clock when OBS began")
     parser.add_argument("--swap", action="append", default=[], help="AT=FILE: a shot re-shot")
+    parser.add_argument("--walkthrough", action="store_true", help="the audience cut")
     parser.add_argument("--plan", action="store_true", help="print the timings only")
     args = parser.parse_args()
     start = args.start if args.start is not None else LENGTH - duration(args.take)
+    if args.walkthrough:
+        import director
+
+        director._WALKTHROUGH = True
+        global LENGTH
+        LENGTH = director.LENGTH_WALKTHROUGH
+        start = args.start if args.start is not None else LENGTH - duration(args.take)
     print(f"the take began at {start:.2f} s on the director's clock")
     lines = narration(None if args.plan else speech_token(), start)
     report(lines)
