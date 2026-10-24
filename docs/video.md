@@ -1,4 +1,4 @@
-# The demo video: 110 seconds
+# The demo video: the judges' cut, 101 seconds
 
 The hackathon's video is the judges' first look, and they need not watch past two minutes. This is
 the kit for recording it: the rules, the checklist, the shots with their voiceover, and the
@@ -41,8 +41,9 @@ first line aired on the Scout's facts alone before going back on air.
 
 **Once:**
 
-1. OBS: **Tools → WebSocket Server Settings** → enable (port 4455). Its password goes in
-   `~/.config/obs-studio-mcp/credentials.json` as `{"password": "..."}`.
+1. OBS: **Tools → WebSocket Server Settings** → enable (port 4455). Its password goes in the
+   repo's `.env` as `OBS_MCP_PASSWORD` (gitignored; see `.env.example`), where the director and the
+   OBS MCP server both read it.
 2. Windows PowerShell, as administrator, so WSL can reach OBS (WSL's NAT network is 172.27.240.0/20):
    `New-NetFirewallRule -DisplayName "OBS WebSocket from WSL" -Direction Inbound -Protocol TCP -LocalPort 4455 -RemoteAddress 172.27.240.0/20 -Action Allow`
 3. OBS: one scene with a **Display Capture** of the screen (cursor hidden) and **Desktop Audio**

@@ -23,7 +23,7 @@ studio's own host; nothing else sees it.
 With --control, after each take the director waits for FILE to say rehearse, record or quit.
 
 OBS (on Windows): Tools > WebSocket Server Settings, enable it (port 4455). The password goes in
-~/.config/obs-studio-mcp/credentials.json as {"password": "..."}, the file the OBS MCP server reads.
+the repo's .env as OBS_MCP_PASSWORD (gitignored; .env.example), which the OBS MCP server reads too.
 From WSL's NAT networking OBS is at the Windows host's address, so Windows Firewall must let TCP
 4455 in from WSL.
 """
@@ -34,6 +34,7 @@ import base64
 import contextlib
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -46,7 +47,7 @@ from urllib.parse import quote
 
 from _azure import ROOT, SITE_URL, STUDIO_URL, through_the_wall
 
-OBS_SECRET = Path.home() / ".config" / "obs-studio-mcp" / "credentials.json"
+ENV_FILE = ROOT / ".env"  # owner only, gitignored: OBS_MCP_PASSWORD (.env.example)
 OPS = ROOT / "site" / "data" / "ops.js"
 STUDIO = STUDIO_URL.rstrip("/")
 SITE = SITE_URL.rstrip("/")
@@ -705,6 +706,17 @@ def windows_host() -> str:
     return route.stdout.split()[2]
 
 
+def obs_password() -> str:
+    """OBS_MCP_PASSWORD, from the environment or the repo's .env: the one place it lives."""
+    if password := os.environ.get("OBS_MCP_PASSWORD"):
+        return password
+    for line in ENV_FILE.read_text().splitlines() if ENV_FILE.exists() else []:
+        key, _, value = line.partition("=")
+        if key.strip() == "OBS_MCP_PASSWORD" and value.strip():
+            return value.strip().strip("'\"")
+    raise SystemExit("set OBS_MCP_PASSWORD in .env (see .env.example), the OBS WebSocket password")
+
+
 # --- the run -------------------------------------------------------------------------------
 
 
@@ -879,8 +891,7 @@ async def run(args: argparse.Namespace) -> int:
         frames.mkdir(parents=True, exist_ok=True)
     obs = None
     if args.record or args.control or (frames and not args.headless):
-        password = json.loads(OBS_SECRET.read_text())["password"]
-        obs = await Obs(args.obs_host or windows_host(), 4455, password).__aenter__()
+        obs = await Obs(args.obs_host or windows_host(), 4455, obs_password()).__aenter__()
         print(f"OBS {(await obs.call('GetVersion'))['obsVersion']}: connected", flush=True)
 
     with tempfile.TemporaryDirectory() as folder:

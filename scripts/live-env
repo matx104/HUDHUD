@@ -1,17 +1,21 @@
 # Sourced by scripts/live and scripts/studio: the project's Azure CLI first on PATH, the tenant
 # pinned, and the endpoints of the Foundry project, the audit trail and Application Insights.
 # Nothing here is a secret; the connection string is read at run time, never stored.
+# A .env at the repo root (from .env.example) is read first: what it sets wins, and a service it
+# leaves empty stays off. Anything it doesn't name falls back to the owner's resources below.
 here="$(cd "$(dirname "$0")/.." && pwd)"
+if [ -f "$here/.env" ]; then set -a; . "$here/.env"; set +a; fi
+unset OBS_MCP_PASSWORD  # the director's, never the studio's
 export AZURE_CONFIG_DIR="${AZURE_CONFIG_DIR:-$HOME/.azure-hudhud}"
 export PATH="$HOME/.local/bin:$PATH"
-export AZURE_TENANT_ID="${AZURE_TENANT_ID:-$("$here/scripts/az" account show --query tenantId -o tsv)}"
-export FOUNDRY_PROJECT_ENDPOINT="${FOUNDRY_PROJECT_ENDPOINT:-https://hudhud-foundry.services.ai.azure.com/api/projects/hudhud}"
+export AZURE_TENANT_ID="${AZURE_TENANT_ID-$("$here/scripts/az" account show --query tenantId -o tsv)}"
+export FOUNDRY_PROJECT_ENDPOINT="${FOUNDRY_PROJECT_ENDPOINT-https://hudhud-foundry.services.ai.azure.com/api/projects/hudhud}"
 export FOUNDRY_MODELS="${FOUNDRY_MODELS:-gpt-4.1-mini,gpt-5-mini}"  # primary first (ADR 0005)
-export COSMOS_ENDPOINT="${COSMOS_ENDPOINT:-https://hudhud-audit.documents.azure.com:443/}"
+export COSMOS_ENDPOINT="${COSMOS_ENDPOINT-https://hudhud-audit.documents.azure.com:443/}"
 # Traces go to Application Insights (keys off: the exporter signs in as the CLI). The connection
 # string is read at run time, never stored in the repo.
-export APPLICATIONINSIGHTS_CONNECTION_STRING="${APPLICATIONINSIGHTS_CONNECTION_STRING:-$("$here/scripts/az" monitor app-insights component show --app hudhud-insights -g rg-hudhud --query connectionString -o tsv 2>/dev/null)}"
+export APPLICATIONINSIGHTS_CONNECTION_STRING="${APPLICATIONINSIGHTS_CONNECTION_STRING-$("$here/scripts/az" monitor app-insights component show --app hudhud-insights -g rg-hudhud --query connectionString -o tsv 2>/dev/null)}"
 # The voice (court.speech): Azure AI Speech on the same Foundry resource, signed in with Entra ID.
-export SPEECH_RESOURCE_ID="${SPEECH_RESOURCE_ID:-$("$here/scripts/az" cognitiveservices account show -n hudhud-foundry -g rg-hudhud --query id -o tsv 2>/dev/null)}"
+export SPEECH_RESOURCE_ID="${SPEECH_RESOURCE_ID-$("$here/scripts/az" cognitiveservices account show -n hudhud-foundry -g rg-hudhud --query id -o tsv 2>/dev/null)}"
 export SPEECH_REGION="${SPEECH_REGION:-uaenorth}"
-export CONTENT_SAFETY_ENDPOINT="${CONTENT_SAFETY_ENDPOINT:-https://hudhud-foundry.cognitiveservices.azure.com/}"
+export CONTENT_SAFETY_ENDPOINT="${CONTENT_SAFETY_ENDPOINT-https://hudhud-foundry.cognitiveservices.azure.com/}"
