@@ -88,7 +88,7 @@ make eval    # the Scout's momentum calls scored against hidden ground truth (un
 scripts/live run --seed 21 --narrator foundry   # prints the cues and what the match cost
 make demo    # one synthetic match, all five agents, in the console
 make studio-offline  # the studio at http://localhost:8091, no Azure: a live match, the Critic's desk, the off-air switch
-make studio  # the same, narrated by the Foundry models (Azure sign-in)
+make studio  # the same, narrated by the Foundry models (Azure sign-in; your own: cp .env.example .env)
 make site    # the showcase site at http://localhost:8000
 scripts/live narrator-eval --seeds 5   # the models compete for the job (ADR 0005)
 scripts/deploy-studio                  # ship the studio to Azure Container Apps
@@ -116,7 +116,7 @@ scripts/edge                           # the Cloudflare Worker in front of it (d
 - **brand.md** — naming program, identity system, video compliance laws
 - **project-names.md** — verified candidate register (all roots, live RDAP-checked 2026-10-16 and 2026-10-17); HUDHUD chosen
 - **projects.md** — the reusable arsenal: existing projects → patterns → which idea they feed
-- **awards.md** — the six prize lanes: official per-member packages, FMV, sweep math
+- **awards.md** — the six prize lanes: official per-member packages, FMV, and the most one entry can win (§4.2)
 - **goals.md** — the Grand Slam doctrine: all-six declaration, award→feature build contract, public-intention language, kill criteria
 - **docs/submission.md** — the submission's text, ready to paste: pitch, links, testing instructions, the last checklist
 - **roadmap.md** — Onwards & Upwards: the stages beyond the hackathon, from evidence-checked commentary to an AI fourth official that advises the referee
@@ -139,11 +139,16 @@ the fonts (SIL Open Font License), and Claude Code and GitHub Copilot agent mode
 
 ## Build window
 
-Oct 18–20 explore/architect · Oct 21–25 build · Oct 26 polish + 110s video · **Oct 27 submit** · winners Nov 20.
+Oct 16–19 groundwork (the field studied, the name chosen, the generator calibrated) · Oct 18–24 the build · Oct 20–24 the two videos · **Oct 24 submitted, three days before the deadline** · judging Oct 27–Nov 10 · winners Nov 20.
 
 ## Rules that bind
 
 - Synthetic data only — no real PL match data
-- Demo video < 2:00 hard cap · public URL
-- Repo goes **public** at submission (private until showcase-ready)
+- Demo video < 2:00 hard cap · public URL (the judges' cut is 101 seconds)
+- The repo went **public** at submission, on Oct 24
 - New code — patterns reused from existing projects, never the repos themselves
+
+## License
+
+The code in this repo is MIT ([LICENSE](LICENSE)). The work it builds on keeps its own license: the
+fonts, libraries, data and talks are listed under Credits above and on the site's `#/credits` page.
