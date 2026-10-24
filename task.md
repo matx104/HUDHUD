@@ -43,12 +43,12 @@
 - **Demo video < 2:00 HARD** — judges NOT required to watch past two minutes; public URL (YouTube/Vimeo/Facebook/Youku); shows the project functioning; **no third-party trademarks, no copyrighted/unlicensed music**
 - **GitHub repo must be PUBLIC** — entry not considered otherwise
 
-## The official rules: what binds us (read 2026-10-18)
+## The official rules: what binds this entry (read 2026-10-18)
 
 - **Judging period:** Oct 27, 9:00 AM PT – Nov 10, 11:59 PM PT. Two stages:
   - Stage One is pass/fail: does it fit the theme and apply the required technologies?
   - Stage Two scores the five equally weighted criteria below.
-- **Prizes per project:** **at most one Grand Prize and one Category Prize** (§4.2, §8). We can't sweep six; we aim for one of each.
+- **Prizes per project:** **at most one Grand Prize and one Category Prize** (§4.2, §8). Every lane is still built to win (goals.md); the cap is a plain fact, and which lanes win is the judges' call.
 - **Testing access (§4.8):**
   - Judges must be able to reach a **working project** (a website, functioning demo or test build), free and without restriction, **until the judging period ends on Nov 10**.
   - A private site needs login credentials in the testing instructions.
@@ -69,7 +69,7 @@
   - auto-eventing from video (optional);
   - control vs chaos, pressure changes and game rhythm;
   - personal modes: favourite club, favourite player, player focus, a single metric.
-  - Our generator already emits pass distance, accuracy, difficulty, ball speed and shot speed, but the cues don't surface them yet.
+  - My generator already emits pass distance, accuracy, difficulty, ball speed and shot speed, but the cues don't surface them yet.
 
 ## A secondary summary (pasted 2026-10-18): useful themes, two errors
 
@@ -77,7 +77,7 @@ A third-party summary of the hackathon (it reads as an AI assistant's answer) li
 team play styles and tactics, **counterattack and match-flow analysis** (transitions, high-press
 efficiency), player performance and spatial AI, and automated recaps and narratives. It also lists
 AKS/ACA, Azure SQL, PostgreSQL, Cosmos DB, Azure AI Search vector search, Azure OpenAI, Foundry and
-Semantic Kernel. **Two claims in it are wrong for this hackathon and must not steer us:**
+Semantic Kernel. **Two claims in it are wrong for this hackathon and must not steer me:**
 - "official football data" and "30+ seasons of historical data": the rules require synthetic data
   (§4.7);
 - Semantic Kernel: its successor, Microsoft Agent Framework, is the named hero technology.
@@ -92,7 +92,7 @@ ideas are in plan.md.
 | Sep 29 | | registration opens |
 | Oct 6 | | hacking period starts, submissions open |
 | **Oct 20, 12:00 PM** | **Oct 21, 00:00** | **registration deadline** (invitation to Innovation Studio follows) |
-| **Oct 27, 11:59 PM** | **Oct 28, 11:59 AM** | **submissions close.** We submit on the evening of Oct 27 PKT, with a buffer |
+| **Oct 27, 11:59 PM** | **Oct 28, 11:59 AM** | **submissions close.** I submitted on Oct 24 PKT, three days early |
 | Oct 27, 9:00 AM – Nov 10, 11:59 PM | | **judging period: the live demo must stay up and free to use** |
 | by Nov 10 | | **top six projects selected and notified** |
 | Nov 20 | | winners announced |
@@ -117,7 +117,7 @@ They should create AI-powered applications and agents that:
 5. deliver insights for fans around the world in multiple languages;
 6. deliver personalized experiences for studios, streaming platforms and fans.
 
-**Where we stand against that list (2026-10-18):**
+**Where I stand against that list (2026-10-18):**
 - **Covered or planned:** 1 (the Scout, live), 3 (the Critic-checked claims, the momentum ADR), 4 (the seeded generator with hidden ground truth *is* dataset expansion), 5 (EN now, UR/AR in Phase 3), 6 (analyst and casual modes), Foundry (Phase A), cloud-native (Phase 3).
 - **Decided by the Monarch (2026-10-18):**
   - **Registered** for the hackathon (the deadline was Oct 20, 12:00 PM PT).
@@ -125,7 +125,7 @@ They should create AI-powered applications and agents that:
   - **The audit trail** is on Azure Cosmos DB's free tier (ADR 0004). **Microsoft Fabric** was considered for analytics over it, mirrored into OneLake, and left out of scope on 2026-10-19: open for later, as the project grows.
   - Recaps (2) are planned for Phase 3.
 
-## Constraints we've set ourselves
+## Constraints I've set myself
 
 - **Solo build** (Monarch's decision — prize math + full ownership)
 - **Azure spend discipline** — don't break the bank on a non-guaranteed win; free-tier/credits first, cheapest credible footprint; Azure credit status needs review before architecture locks
@@ -161,7 +161,7 @@ They should create AI-powered applications and agents that:
 
 ## Competition intel (first pass, from gallery card names)
 
-Crowded lanes: match-intelligence dashboards (MatchMind ×2, MatchPulse, MatchLens, TactIQ/TactiCore, Touchline AI), multilingual commentary (Sauti, Msimulizi — Swahili lane taken), accessibility (Audio Eyes), what-if (Second Guess). **The example card project "Synthetic Match Insights Engine" IS our fusion shape — multi-agent pipeline + studio UI + multilingual + overlays + personalized.** Validation + warning in one: the shape is right, and it is no longer differentiating by itself. Differentiators to press: evidence-chain explainability (Critic/isnad — adversarial verification, few will build it), enterprise/production-readiness discipline, broadcast-overlay machine-readability. Full study: inspiration.md once the gallery extraction lands.
+Crowded lanes: match-intelligence dashboards (MatchMind ×2, MatchPulse, MatchLens, TactIQ/TactiCore, Touchline AI), multilingual commentary (Sauti, Msimulizi — Swahili lane taken), accessibility (Audio Eyes), what-if (Second Guess). **The example card project "Synthetic Match Insights Engine" IS my fusion shape — multi-agent pipeline + studio UI + multilingual + overlays + personalized.** Validation + warning in one: the shape is right, and it is no longer differentiating by itself. Differentiators to press: evidence-chain explainability (Critic/isnad — adversarial verification, few will build it), enterprise/production-readiness discipline, broadcast-overlay machine-readability. Full study: inspiration.md once the gallery extraction lands.
 
 ## Open unknowns
 

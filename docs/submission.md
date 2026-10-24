@@ -1,8 +1,8 @@
 # The submission: the text, ready to paste
 
-Drafted 2026-10-21 for Innovation Studio. Submissions close **Oct 27, 11:59 PM PT (Oct 28,
-11:59 AM PKT)**; I submit on the evening of Oct 27 PKT (plan.md, Phase 5). Every public word is
-first person singular (goals.md). The claims here were checked against the repo on the day.
+Drafted 2026-10-21 for Innovation Studio and **submitted on Oct 24 PKT**, three days before
+submissions close (**Oct 27, 11:59 PM PT; Oct 28, 11:59 AM PKT**). Every public word is first person
+singular (goals.md). The claims here were checked against the repo on the day.
 
 ## Title
 
@@ -97,10 +97,12 @@ Foundry models.
 
 ## Before pressing Submit (the owner's steps)
 
-- [ ] The video is on YouTube (public or unlisted), under 2:00, no third-party marks or music;
-      its URL is in **Links** above and in `site/config.js` (`videoUrl`)
-- [ ] The repo is public on GitHub, and `site/config.js` has `repoPublic: true` (the site's Code
+- [x] The video is on YouTube (public or unlisted), under 2:00, no third-party marks or music;
+      its URL is in **Links** above and in `site/config.js` (`videoUrl`): the judges' cut, 101 s
+- [x] The repo is public on GitHub, and `site/config.js` has `repoPublic: true` (the site's Code
       links work only once the repo is public)
-- [ ] https://hudhud.com.pk/#/screens replays play in a private window
-- [ ] A fresh clone passes `make setup && make test` and `make studio-offline` serves a match
-- [ ] Submitted on Innovation Studio by the evening of Oct 27 PKT, with this page's text
+- [x] https://hudhud.com.pk/#/screens replays play in a private window (re-checked 2026-10-25 in a
+      fresh browser: lines air, the Critic's refusals show)
+- [x] A fresh clone passes `make setup && make test` and `make studio-offline` serves a match
+      (re-checked 2026-10-25: 273 tests pass; seed 21 streams lines, shots and ledger blocks)
+- [x] Submitted on Innovation Studio on Oct 24 PKT, three days early, with this page's text

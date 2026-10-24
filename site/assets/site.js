@@ -336,7 +336,7 @@
     $$("a[data-video-link]").forEach((n) => { n.href = site.videoUrl ?? "#"; n.hidden = !site.videoUrl; });
     const note = $(".video-note");
     if (site.videoUrl && note) {
-      $(".page-home .actions").append(Object.assign(el("a", "button button-quiet", "Watch the 110-second demo"), { href: site.videoUrl }));
+      $(".page-home .actions").append(Object.assign(el("a", "button button-quiet", "Watch the 101-second demo"), { href: site.videoUrl }));
       note.remove();
     }
     $("[data-skip]").addEventListener("click", (e) => {

@@ -270,7 +270,7 @@
               <a class="button button-quiet" href="#/explained">New here? The ideas, animated</a>
               <a class="button button-quiet" href="#/how">See how it works</a>
             </div>
-            <p class="video-note" data-video-link>The 110-second demo video is coming soon.</p>
+            <p class="video-note" data-video-link>The 101-second demo video is coming soon.</p>
             <div class="countdown countdown-line" data-countdown role="timer" aria-label="Time until hackathon submissions close">
               <span class="countdown-label" data-countdown-label>Submissions close in</span>
               <span class="countdown-clock" data-countdown-clock>--</span>
@@ -467,14 +467,14 @@
         </li>
       </ol>
 
-      <h2 class="section-title" data-reveal>Ten days, six phases</h2>
+      <h2 class="section-title" data-reveal>Eight days, six phases</h2>
       <ol class="timeline">
         <li data-status="done" data-reveal><time>Oct 17–19</time><strong>Groundwork</strong><span>The field studied, the name chosen, a synthetic match generator calibrated over 100 seeds.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–20</time><strong>Skeleton</strong><span>All five agents run a match end to end with offline backends, tested on every push.</span></li>
         <li data-status="done" data-reveal><time>Oct 18–23</time><strong>Core build</strong><span>Live detection, the Critic's full rulebook, the overlay cue stream, analyst and casual modes.</span></li>
-        <li data-status="progress" data-reveal><time>Oct 18–25</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, Urdu and Arabic, personal modes, the recap, breaks, the high press, the ref's call, ask the match, HUD² and a realism check are live.</span></li>
-        <li data-status="planned" data-reveal><time>Oct 26</time><strong>Ship kit</strong><span>The 110-second video, the README, the repo made public.</span></li>
-        <li data-status="planned" data-reveal><time>Oct 27</time><strong>Submit</strong><span>A day early, never on deadline day.</span></li>
+        <li data-status="done" data-reveal><time>Oct 18–24</time><strong>Differentiators</strong><span>The on-camera recovery demo, the cost meter, Urdu and Arabic, personal modes, the recap, breaks, the high press, the ref's call, ask the match, HUD², the ledger, the program feed and a realism check, all live.</span></li>
+        <li data-status="done" data-reveal><time>Oct 20–24</time><strong>Ship kit</strong><span>The 101-second judges' cut and a four-minute walkthrough on YouTube, the README, the media kit, the repo made public.</span></li>
+        <li data-status="done" data-reveal><time>Oct 24</time><strong>Submitted</strong><span>Three days before the deadline, never on deadline day.</span></li>
       </ol>
 
       <blockquote class="pledge" data-reveal>
@@ -570,7 +570,7 @@
         <li data-status="done" data-reveal><time>Sep 29</time><strong>Registration opens</strong><span>On Microsoft's Innovation Studio.</span></li>
         <li data-status="done" data-reveal><time>Oct 6</time><strong>Hacking begins</strong><span>Submissions open the same day.</span></li>
         <li data-status="done" data-reveal><time>Oct 20</time><strong>Registration closes</strong><span>12:00 PM Pacific.</span></li>
-        <li data-status="progress" data-reveal><time>Oct 27</time><strong>Submissions close</strong><span>11:59 PM Pacific; judging begins 9:00 AM. This entry submits on the 27th, Karachi time, with a buffer.</span></li>
+        <li data-status="progress" data-reveal><time>Oct 27</time><strong>Submissions close</strong><span>11:59 PM Pacific; judging begins 9:00 AM. This entry went in on October 24, Karachi time, three days early.</span></li>
         <li data-status="planned" data-reveal><time>Oct 27–Nov 10</time><strong>Judging</strong><span>The live demo must stay up and free to use (§4.8).</span></li>
         <li data-status="planned" data-reveal><time>Nov 20</time><strong>Winners announced</strong><span>The top six projects are notified by November 10.</span></li>
       </ol>
@@ -667,10 +667,10 @@
 
       <div class="judge-box" data-reveal>
         <h2>For the judges, first</h2>
-        <p>Everything checkable in one place. This report ships as a PDF inside the media kit — one click below — beside the 110-second video, the screenshots and the brand. The studio runs on any machine with <code>make studio-offline</code>, no Azure needed; the live studio's credentials are in the testing instructions.</p>
+        <p>Everything checkable in one place. This report ships as a PDF inside the media kit — one click below — beside the 101-second video, the screenshots and the brand. The studio runs on any machine with <code>make studio-offline</code>, no Azure needed; the live studio's credentials are in the testing instructions.</p>
         <div class="actions">
           <a class="button" data-kit-link hidden href="#">Download the judges' pack</a>
-          <a class="button button-quiet" data-video-link hidden href="#">Watch the 110-second demo</a>
+          <a class="button button-quiet" data-video-link hidden href="#">Watch the 101-second demo</a>
           <a class="button button-quiet" data-repo-link data-when-repo="public" href="#">The code on GitHub</a>
         </div>
       </div>
@@ -1663,6 +1663,11 @@
         <div class="log-lists">
           <h2 class="log-heading">Live</h2>
           <ol class="log">
+            <li data-reveal><time>Oct 24</time><div><strong>Submitted, and the code is public</strong><p>The entry went in on October 24, three days before the deadline, and the repository went public with it, under the MIT licence. Every Code link on this site now opens the source.</p></div></li>
+            <li data-reveal><time>Oct 24</time><div><strong>The demo room</strong><p>Both videos side by side, on my channel, <a href="https://www.youtube.com/@monarch-_-mat">MATX104</a>: the 101-second judges' cut and a four-minute walkthrough of every page. A script recorded them from the live studio, driving the browser and OBS on one clock, and Azure AI Speech voiced and captioned them. Every replay is one click away beside them, in <a href="#/demo">the demo room</a>.</p></div></li>
+            <li data-reveal><time>Oct 24</time><div><strong>For broadcast</strong><p>The program feed for broadcasters and streaming platforms: a 16:9 frame that draws every strap, citation, receipt, player tag and card from the cue stream's own JSON, nothing placed by hand, with a replay player over a match recorded from the live studio.</p></div></li>
+            <li data-reveal><time>Oct 22</time><div><strong>The deliverables report</strong><p>Every ask of the challenge, row by row: what the brief required, what shipped, how it works underneath and where it goes next, each linked to its evidence. The same report is a PDF in the media kit.</p></div></li>
+            <li data-reveal><time>Oct 22</time><div><strong>The ideas, animated</strong><p>Eight scenes teach the gap, the evidence law and the hash chain to anyone new, and the challenge page sets out the ask, the rules and the rewards.</p></div></li>
             <li data-reveal><time>Oct 21</time><div><strong>Control or chaos</strong><p>In a settled match the ball changes hands about seven times in five minutes of open play. When it changes hands eleven times or more and both sides have had a shot, the match has broken open, and the Scout calls it end to end: about one match in two, never on a goal, because the goal is the news. The Critic recomputes it from the cited ball wins and both sides' shots, and HUD²'s commentator lens shows the index live, from settled to broken open. The studio's feed can now be read by the biggest moments first as well as the latest.</p></div></li>
             <li data-reveal><time>Oct 20</time><div><strong>HUD², the match through your lens</strong><p>The same match on one heads-up screen, through the referee's, the commentator's or the fan's lens. The referee sees every foul with its distance from goal, the pressing, and the zones a likely call is read against at the competition's strictness. The commentator sees who's on the ball, the passes and shots, and the last five minutes in numbers. The fan sees who's on top, where each side has played, and plain words for anyone new to football. Every checked line is pinned where the events it cites happened, the Critic's lock closing on the spot, and every refusal is struck where it was aimed. Each viewer switches layers on or off, and the choice is kept. Today a screen; next glasses, then lenses.</p></div></li>
             <li data-reveal><time>Oct 19</time><div><strong>The Critic, for other agents</strong><p>The Critic now talks Agent2Agent (A2A) as well as MCP. Another agent reads its card, then hands it a claim or a question as a peer: Microsoft Agent Framework serves it, with no model inside, so its verdicts are computed and can't be talked round. Agent Framework's own A2A client checked it: a claim verified, the same claim a minute early refused, a question answered.</p></div></li>
@@ -1695,7 +1700,7 @@
 
           <h2 class="log-heading">Next</h2>
           <ol class="log log-next">
-            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>The video, on YouTube</strong><p>The 110-second demo, on my channel, <a href="https://www.youtube.com/@monarch-_-mat">MATX104</a>, and in the media kit.</p></div></li>
+            <li data-reveal><span class="chip" data-status="next">Next</span><div><strong>The decision explainer</strong><p>Stage two on <a href="#/roadmap">the roadmap</a>: when the referee makes a call, <span data-product-name></span> explains it to the crowd and the viewers, with the evidence and the Law it rests on, in their language.</p></div></li>
           </ol>
 
           <h2 class="log-heading">Considered, for later</h2>

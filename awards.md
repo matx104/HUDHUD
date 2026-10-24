@@ -1,6 +1,6 @@
 # AWARDS — The Six Prize Lanes
 
-> Official register (from the Innovation Studio rules page, received 2026-10-15). Winners announced **Nov 20, 2026**. One winning team per category; the same team CAN take multiple. All cash prizes ship as e-Gift Cards (Hackathon Rules §8.3), split equally among team members — **we are solo, so every package lands undivided.**
+> Official register (from the Innovation Studio rules page, received 2026-10-15). Winners announced **Nov 20, 2026**. One winning team per category, and one project takes home at most **one Grand Prize and one Category Prize** (Official Rules §4.2, §8; task.md). All cash prizes ship as e-Gift Cards (Hackathon Rules §8.3), split equally among team members — **I'm solo, so every package lands undivided.**
 
 ## 🏆 Grand Prize — First Place
 - **~$4,000 cash** per member
@@ -35,7 +35,8 @@
 - **For:** Azure cloud-native services (AKS, Container Apps, Functions, Logic Apps, AI-optimized data platforms) — scalable, resilient, event-driven, operational excellence
 - Solo FMV: **~$1,550**
 
-## The sweep math (solo)
+## Built for every lane, capped by the rules (solo)
 
-- Full six-lane sweep (Grand 1st + all four categories): **~$10,000 cash + PL ticket + 4× voucher + social features ≈ $11,200+ FMV**
-- Six lanes = six independent shots; the same build aims all of them (see goals.md for the feature mapping)
+- Every lane is built to win: the same build aims at all six (goals.md maps each award to the features that earn it). What one project takes home is capped by the rules, and which lanes it wins is the judges' call.
+- The most one entry can take home: Grand Prize First Place + one category prize: **~$5,500 cash + PL ticket + 2× voucher + social features ≈ $6,600 FMV**
+- The submission names **Best Use of Microsoft Foundry** as its category (docs/submission.md)

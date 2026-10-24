@@ -50,7 +50,7 @@ https://hudhud.com.pk
 
 ## First comment (post immediately after)
 
-The media kit — the 110-second demo video, screenshots, the brand sheet and the deliverables report (every ask of the challenge, met and linked to its evidence):
+The media kit — the 101-second demo video, screenshots, the brand sheet and the deliverables report (every ask of the challenge, met and linked to its evidence):
 https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y
 
 ## Notes

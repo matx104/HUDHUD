@@ -24,7 +24,7 @@
 | Budget | `hudhud-credit`: $100, alerts to the Owner role at 25/50/75/90% actual and 100% forecast (created 2026-10-18) |
 
 **Dates that matter:**
-- **Submission:** Oct 27, 11:59 PM PT, which is Oct 28, 11:59 AM PKT. The plan submits on the evening of Oct 27, PKT.
+- **Submission:** Oct 27, 11:59 PM PT, which is Oct 28, 11:59 AM PKT. Submitted on Oct 24, PKT, three days early.
 - **Judging:** the hackathon runs until Nov 21, but the credit expires on Nov 13. Anything live for the judges after Nov 13 needs the renewal, or the demo has to work without Azure (the offline backends already do).
 - **The spending limit cuts both ways:** it can't overspend, but when the credit runs out the subscription is disabled and everything stops. Spending the credit before the deadline would take the demo down.
 
