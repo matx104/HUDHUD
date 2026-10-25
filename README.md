@@ -84,7 +84,7 @@ make test    # pytest: generator realism, Critic checks, workflow loop, warm-pat
 make eval    # the Scout's momentum calls scored against hidden ground truth (unseen seeds)
 
 # live, on the models deployed in Foundry (Azure sign-in via scripts/az; see docs/azure.md)
-.venv/bin/pip install -e "apps/api[foundry]"
+.venv/bin/pip install -e "apps/api[foundry,audit,telemetry]"   # the models, the audit trail, the traces
 scripts/live run --seed 21 --narrator foundry   # prints the cues and what the match cost
 make demo    # one synthetic match, all five agents, in the console
 make studio-offline  # the studio at http://localhost:8091, no Azure: a live match, the Critic's desk, the off-air switch
