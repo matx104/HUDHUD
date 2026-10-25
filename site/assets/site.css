@@ -182,7 +182,6 @@ code { font-family: var(--mono); }
 .hero .lede { margin-top: 1.5rem; max-width: 34ch; }
 .live { display: inline-flex; align-items: center; gap: 0.6rem; font: 500 0.875rem / 1 var(--mono); color: var(--lime); }
 .live-dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--lime); }
-.video-note { margin-top: 1rem; font-size: 0.875rem; color: var(--chalk-dim); }
 
 /* the evidence board */
 .board {
@@ -897,6 +896,21 @@ pre {
 .sub-off b { color: var(--gold); text-shadow: 0 0 12px rgba(201, 162, 39, 0.8); }
 .sub-on b { color: var(--lime); text-shadow: 0 0 12px rgba(184, 245, 61, 0.8); }
 .sub-board strong { font: 800 clamp(1.5rem, 3vw, 2.25rem) / 1 var(--display); transition: color 0.2s; }
+.sub-hook { max-width: 22rem; text-align: right; font-size: 0.9375rem; color: var(--chalk-dim); }
+
+/* For the judges, on the home page: the five pillars, each with where to see its evidence */
+.judges { padding-top: clamp(3rem, 7vw, 5rem); }
+.judges h2 { margin-bottom: 0.5rem; }
+.judges-lede { margin-bottom: 1.5rem; color: var(--chalk-dim); }
+.pillars-proof li { display: flex; flex-direction: column; }
+.pillars-proof .proof-links { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; margin-top: auto; padding-top: 0.9rem; font-size: 0.875rem; }
+.pillars-proof .proof-links a { color: var(--lime); text-decoration: none; }
+.pillars-proof .proof-links a::after { content: " →"; }
+.pillars-proof .proof-links a:hover { text-decoration: underline; }
+
+/* The team sheet on the home page: how to read it, and where to start */
+.sheet-lede { max-width: 46rem; margin: -0.75rem 0 1.75rem; color: var(--chalk-dim); }
+.sheet-kickoff { margin-top: 2rem; }
 .sub-board:hover strong { color: var(--lime); }
 
 /* The front three, on the home page: the shirt, the name, the job */

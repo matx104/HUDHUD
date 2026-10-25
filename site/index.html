@@ -267,11 +267,10 @@
             <p class="promise">Every call comes with its evidence.</p>
             <p class="lede">AI agents commentate a live football match. Before any line goes to air, a Critic agent checks it against the raw match events. If a claim can't be proven, it's rewritten or dropped.</p>
             <div class="actions">
-              <a class="button" href="#/problem">Start with the problem</a>
-              <a class="button button-quiet" href="#/explained">New here? The ideas, animated</a>
-              <a class="button button-quiet" href="#/how">See how it works</a>
+              <a class="button" href="#/problem">Kick off the story</a>
+              <a class="button button-quiet" data-video-link hidden href="#">Watch the 101-second demo</a>
+              <a class="button button-quiet" href="#/screens">Replay the studio</a>
             </div>
-            <p class="video-note" data-video-link>The 101-second demo video is coming soon.</p>
             <p class="entry-status"><span class="entry-dot" aria-hidden="true"></span><strong>Submitted 24 October</strong><span>ready for the judges' review, awaiting the results</span></p>
             <div class="countdown countdown-line" data-countdown role="timer" aria-label="Time until the hackathon's winners are announced">
               <span class="countdown-label" data-countdown-label>Winners announced in</span>
@@ -304,7 +303,7 @@
         <div class="watch-grid">
           <figure class="watch-card" data-reveal>
             <div class="watch-frame">
-              <iframe src="https://www.youtube-nocookie.com/embed/a9_2oL63PBw" title="HUDHUD: AI match commentary that proves every claim — the 100-second demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              <iframe src="https://www.youtube-nocookie.com/embed/a9_2oL63PBw" title="HUDHUD: AI match commentary that proves every claim — the 101-second demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
             </div>
             <figcaption>
               <strong>The demo</strong>
@@ -332,14 +331,28 @@
         </ol>
       </div>
 
+      <div class="judges wrap" data-reveal>
+        <h2>For the judges</h2>
+        <p class="judges-lede">Five pillars, a fifth of the score each, and where to see the evidence for every one.</p>
+        <ol class="pillars pillars-proof">
+          <li><span class="pct">20%</span><strong>Technological implementation</strong><p>Microsoft Foundry and Agent Framework at the core, 274 tests on every push, and the whole studio on any machine with no Azure.</p><p class="proof-links"><a href="#/report">The deliverables</a><a href="#/demo">Run it yourself</a></p></li>
+          <li><span class="pct">20%</span><strong>Agentic design &amp; innovation</strong><p>Five agents, and a Critic that recomputes every number before a line airs. When a model fails, the Orchestrator keeps the broadcast on.</p><p class="proof-links"><a href="#/how">How it works</a><a href="#/recovery">When an agent fails</a></p></li>
+          <li><span class="pct">20%</span><strong>Real-world impact</strong><p>Trust is the product: nothing unverified airs, in English, Urdu or Arabic, and a broadcaster plugs in through a cue contract.</p><p class="proof-links"><a href="#/why">Why it matters</a><a href="#/broadcast">For broadcast</a></p></li>
+          <li><span class="pct">20%</span><strong>User experience</strong><p>Replay the studio, see the match through three lenses, ask it a question, and verify its ledger in your browser.</p><p class="proof-links"><a href="#/screens">The screens</a><a href="#/hud">HUD²</a></p></li>
+          <li><span class="pct">20%</span><strong>Adherence to category</strong><p>Best Use of Microsoft Foundry: gpt-4.1-mini writes, gpt-5-mini stands by, and Foundry's evaluators judge the lines that aired.</p><p class="proof-links"><a href="#/report">The deliverables</a><a href="#/goal">The goal</a></p></li>
+        </ol>
+      </div>
+
       <div class="home-chapters wrap" data-reveal>
         <h2>The team sheet</h2>
+        <p class="sheet-lede">Read it like a match. The story moves up the pitch: the stakes at the back, the engine in midfield, the front three to finish, then the second half from the bench.</p>
         <ol class="chapter-index" data-chapter-index></ol>
+        <p class="sheet-kickoff"><a class="button" href="#/problem">Kick off at number 2</a></p>
       </div>
     </section>
 
     <!-- ============ IN PLAIN WORDS ============ -->
-    <section class="page wrap" data-page="about" data-shirt="19" data-group="match" data-role="Reserve" data-tier="reserve" data-title="In plain words" data-summary="What this is, why, and the hackathon behind it" aria-labelledby="about-title">
+    <section class="page wrap" data-page="about" data-shirt="22" data-group="match" data-role="Reserve" data-tier="reserve" data-title="In plain words" data-summary="What this is, why, and the hackathon behind it" aria-labelledby="about-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">01</span>
         <h1 id="about-title" tabindex="-1">AI football commentary that shows its working</h1>
@@ -383,7 +396,7 @@
     </section>
 
     <!-- ============ THE PROBLEM ============ -->
-    <section class="page wrap" data-page="problem" data-shirt="3" data-group="match" data-role="Centre back" data-title="The problem" data-summary="Fluent AI commentary that can't prove what it says" aria-labelledby="problem-title">
+    <section class="page wrap" data-page="problem" data-shirt="2" data-group="match" data-role="Right back" data-title="The problem" data-summary="Fluent AI commentary that can't prove what it says" aria-labelledby="problem-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">02</span>
         <h1 id="problem-title" tabindex="-1">AI can talk about football. It can't prove what it says.</h1>
@@ -423,7 +436,7 @@
     </section>
 
     <!-- ============ THE GOAL ============ -->
-    <section class="page wrap" data-page="goal" data-shirt="5" data-group="match" data-role="Left back" data-title="The goal" data-summary="Six awards, one engineer, built to win them all" aria-labelledby="goal-title">
+    <section class="page wrap" data-page="goal" data-shirt="17" data-group="match" data-role="Substitute" data-title="The goal" data-summary="Six awards, one engineer, built to win them all" aria-labelledby="goal-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">03</span>
         <h1 id="goal-title" tabindex="-1">Built to win every award.</h1>
@@ -459,7 +472,7 @@
         </li>
         <li data-reveal>
           <h2>Best enterprise solution</h2>
-          <p>Private by default: Cloudflare Access in front, and the studio checks Cloudflare's signature on every request. Prompt Shields screen every viewer's question before a model reads it. An audit trail on Azure Cosmos DB for every claim, refusal, cue and answer, kept 90 days and then deleted by policy, a receipt on every line, traces and a workbook in Application Insights, a daily model budget under a $100 ceiling, and a 36-point health check before every recording.</p>
+          <p>Private by default: Cloudflare Access in front, and the studio checks Cloudflare's signature on every request. Prompt Shields screen every viewer's question before a model reads it. An audit trail on Azure Cosmos DB for every claim, refusal, cue and answer, kept 90 days and then deleted by policy, a receipt on every line, traces and a workbook in Application Insights, a daily model budget under a $100 ceiling, and a 38-point health check before every recording.</p>
           <span class="chip" data-status="star">Built to win</span>
         </li>
         <li data-reveal>
@@ -492,7 +505,7 @@
     </section>
 
     <!-- ============ THE CHALLENGE ============ -->
-    <section class="page wrap" data-page="challenge" data-shirt="8" data-group="season" data-role="Midfield" data-title="The challenge" data-summary="The hackathon, its rules and its rewards, in the open" aria-labelledby="challenge-title">
+    <section class="page wrap" data-page="challenge" data-shirt="23" data-group="season" data-role="Reserve" data-tier="reserve" data-title="The challenge" data-summary="The hackathon, its rules and its rewards, in the open" aria-labelledby="challenge-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">15</span>
         <h1 id="challenge-title" tabindex="-1">The challenge this is built for</h1>
@@ -660,7 +673,7 @@
     </section>
 
     <!-- ============ DELIVERABLES: THE REPORT ============ -->
-    <section class="page wrap" data-page="report" data-shirt="4" data-group="season" data-role="Centre back" data-title="Deliverables" data-summary="What was needed, what was delivered, how, and what's next" aria-labelledby="report-title">
+    <section class="page wrap" data-page="report" data-shirt="15" data-group="season" data-role="Substitute" data-title="Deliverables" data-summary="What was needed, what was delivered, how, and what's next" aria-labelledby="report-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">16</span>
         <h1 id="report-title" tabindex="-1">What was needed, what was delivered</h1>
@@ -680,8 +693,8 @@
       <dl class="stats" data-reveal>
         <div><dt>Asks answered</dt><dd>8 / 8</dd></div>
         <div><dt>Hard requirements</dt><dd>7 / 7</dd></div>
-        <div><dt>Tests on every push</dt><dd>273</dd></div>
-        <div><dt>Demo video</dt><dd>109.1 s</dd></div>
+        <div><dt>Tests on every push</dt><dd>274</dd></div>
+        <div><dt>Demo video</dt><dd>101 s</dd></div>
       </dl>
 
       <ol class="report-rows">
@@ -787,10 +800,10 @@
       <ol class="report-checks" data-reveal>
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Synthetic data only (§4.7).</strong> Every club, player and match is generated by this repo's own seeded generator; no real match data anywhere. <a href="#/data">See the data</a>.</div></li>
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>New code, new repository.</strong> Built October 18–27, 2026, for this entry alone; patterns carried over, no old repos.</div></li>
-        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Demo video under 2:00.</strong> Recorded at 109.1 seconds, at a public URL, showing the project functioning — no third-party trademarks, no licensed music.</div></li>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Demo video under 2:00.</strong> Recorded at 101 seconds, at a public URL, showing the project functioning — no third-party trademarks, no licensed music.</div></li>
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Public repository at submission.</strong> Private until the showcase is final; one config flag flips every Code link on this site.</div></li>
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Free judge access through November 10 (§4.8).</strong> The studio runs behind Cloudflare Access with credentials in the testing instructions — and <code>make studio-offline</code> runs the same studio on any machine, no Azure needed at all.</div></li>
-        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Installs and runs consistently (§4.3).</strong> One <code>make setup</code>; 273 tests on every push; a 36-point doctor and a smoke script that streams a whole match and checks every part.</div></li>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Installs and runs consistently (§4.3).</strong> One <code>make setup</code>; 274 tests on every push; a 38-point doctor and a smoke script that streams a whole match and checks every part.</div></li>
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>The entrant's own work, in English (§4.9).</strong> A solo build; the pitch, video and test instructions in English — Urdu and Arabic are outputs, on purpose.</div></li>
       </ol>
 
@@ -965,7 +978,7 @@
 	    </section>
 
     <!-- ============ EXPLAINED: THE IDEAS, ANIMATED (the story for new readers) ============ -->
-    <section class="page wrap" data-page="explained" data-shirt="2" data-group="play" data-role="Right back" data-title="Explained" data-summary="The gap, the law and the hash chain, in eight animated scenes" aria-labelledby="explained-title">
+    <section class="page wrap" data-page="explained" data-shirt="3" data-group="play" data-role="Centre back" data-title="Explained" data-summary="The gap, the law and the hash chain, in eight animated scenes" aria-labelledby="explained-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">14</span>
         <h1 id="explained-title" tabindex="-1">The ideas, animated</h1>
@@ -1364,7 +1377,7 @@
 	    </section>
 
     <!-- ============ DATA ============ -->
-    <section class="page wrap" data-page="data" data-shirt="21" data-group="data" data-role="Reserve" data-tier="reserve" data-title="Synthetic by design" data-summary="Invented clubs, real volumes, every match reproducible" aria-labelledby="data-title">
+    <section class="page wrap" data-page="data" data-shirt="5" data-group="data" data-role="Left back" data-title="Synthetic by design" data-summary="Invented clubs, real volumes, every match reproducible" aria-labelledby="data-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">06</span>
         <h1 id="data-title" tabindex="-1">Synthetic by design</h1>
@@ -1526,7 +1539,7 @@
     </section>
 
     <!-- ============ THE SCREENS (a substitute: every screen, recorded) ============ -->
-    <section class="page wrap" data-page="screens" data-shirt="13" data-group="play" data-role="Substitute" data-title="The screens" data-summary="Every screen, recorded from the live studio, and replays you can play" aria-labelledby="screens-title">
+    <section class="page wrap" data-page="screens" data-shirt="4" data-group="play" data-role="Centre back" data-title="The screens" data-summary="Every screen, recorded from the live studio, and replays you can play" aria-labelledby="screens-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">13</span>
         <h1 id="screens-title" tabindex="-1">Every screen</h1>
@@ -1548,7 +1561,7 @@
     </section>
 
     <!-- ============ FOR BROADCAST (the fourth audience) ============ -->
-    <section class="page wrap" data-page="broadcast" data-shirt="22" data-group="play" data-role="Substitute" data-title="For broadcast" data-summary="The program feed a graphics system draws from the cue contract" aria-labelledby="broadcast-title">
+    <section class="page wrap" data-page="broadcast" data-shirt="8" data-group="play" data-role="Midfield" data-title="For broadcast" data-summary="The program feed a graphics system draws from the cue contract" aria-labelledby="broadcast-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">17</span>
         <h1 id="broadcast-title" tabindex="-1">For broadcasters and streaming platforms</h1>
@@ -1592,7 +1605,7 @@
     </section>
 
     <!-- ============ LIMITS ============ -->
-    <section class="page wrap" data-page="limits" data-shirt="12" data-group="data" data-role="Substitute" data-title="What this can't tell you" data-summary="The limits, stated plainly" aria-labelledby="limits-title">
+    <section class="page wrap" data-page="limits" data-shirt="13" data-group="data" data-role="Substitute" data-title="What this can't tell you" data-summary="The limits, stated plainly" aria-labelledby="limits-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">07</span>
         <h1 id="limits-title" tabindex="-1">What this data can't tell you</h1>
@@ -1616,7 +1629,7 @@
     </section>
 
     <!-- ============ WHY ============ -->
-    <section class="page wrap" data-page="why" data-shirt="20" data-group="match" data-role="Reserve" data-tier="reserve" data-title="Why it matters" data-summary="Trust is the product" aria-labelledby="why-title">
+    <section class="page wrap" data-page="why" data-shirt="12" data-group="match" data-role="Substitute" data-title="Why it matters" data-summary="Trust is the product" aria-labelledby="why-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">08</span>
         <h1 id="why-title" tabindex="-1">Trust is the product</h1>
@@ -1638,7 +1651,7 @@
     </section>
 
     <!-- ============ BUILD LOG ============ -->
-    <section class="page wrap" data-page="log" data-shirt="14" data-group="season" data-role="Substitute" data-title="Build log" data-summary="What runs today, and what's next" aria-labelledby="log-title">
+    <section class="page wrap" data-page="log" data-shirt="18" data-group="season" data-role="Substitute" data-title="Build log" data-summary="What runs today, and what's next" aria-labelledby="log-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">09</span>
         <h1 id="log-title" tabindex="-1">What runs today, and what's next</h1>
@@ -1714,7 +1727,7 @@
     </section>
 
     <!-- ============ ROADMAP ============ -->
-    <section class="page wrap" data-page="roadmap" data-shirt="15" data-group="season" data-role="Substitute" data-title="Onwards & upwards" data-summary="From checking claims to an AI fourth official" aria-labelledby="roadmap-title">
+    <section class="page wrap" data-page="roadmap" data-shirt="14" data-group="season" data-role="Substitute" data-title="Onwards & upwards" data-summary="From checking claims to an AI fourth official" aria-labelledby="roadmap-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">10</span>
         <h1 id="roadmap-title" tabindex="-1">Onwards &amp; upwards</h1>
@@ -1788,7 +1801,7 @@
 
     <!-- ============ THE NAME ============ -->
     <!-- Non-English strings (lang="ur", lang="ar") are marked data-owner-review: the owner signs them off. -->
-    <section class="page name wrap" data-page="name" data-shirt="16" data-group="club" data-role="Substitute" data-title="The name" data-summary="The messenger who came back with proof" aria-labelledby="name-title">
+    <section class="page name wrap" data-page="name" data-shirt="19" data-group="club" data-role="Substitute" data-title="The name" data-summary="The messenger who came back with proof" aria-labelledby="name-title">
       <div class="name-head">
         <div class="name-copy">
           <p class="nastaliq" lang="ur" dir="rtl" data-owner-review>ہدہد</p>
@@ -1873,7 +1886,7 @@
     </section>
 
     <!-- ============ WHO ============ -->
-    <section class="page wrap" data-page="who" data-shirt="17" data-group="club" data-role="Substitute" data-title="Who's building it" data-summary="One engineer, from Karachi" aria-labelledby="who-title">
+    <section class="page wrap" data-page="who" data-shirt="20" data-group="club" data-role="Substitute" data-title="Who's building it" data-summary="One engineer, from Karachi" aria-labelledby="who-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">12</span>
         <h1 id="who-title" tabindex="-1">Built by one engineer, from Karachi</h1>
@@ -1983,7 +1996,7 @@
     </section>
 
     <!-- ============ CREDITS ============ -->
-    <section class="page wrap" data-page="credits" data-shirt="18" data-group="club" data-role="Substitute" data-title="Credits" data-summary="The data, people and tools this stands on" aria-labelledby="credits-title">
+    <section class="page wrap" data-page="credits" data-shirt="21" data-group="club" data-role="Substitute" data-title="Credits" data-summary="The data, people and tools this stands on" aria-labelledby="credits-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">13</span>
         <h1 id="credits-title" tabindex="-1">Credits</h1>
@@ -2108,7 +2121,7 @@
     </section>
 
     <!-- ============ THE DEMO PAGE ============ -->
-    <section class="page wrap" data-page="demo" data-shirt="23" data-group="play" data-role="Substitute" data-title="The demo" data-summary="Everything you need to see HUDHUD work, in one place" aria-labelledby="demo-title">
+    <section class="page wrap" data-page="demo" data-shirt="16" data-group="play" data-role="Substitute" data-title="The demo" data-summary="Everything you need to see HUDHUD work, in one place" aria-labelledby="demo-title">
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">18</span>
         <h1 id="demo-title" tabindex="-1">The demo room</h1>
@@ -2118,7 +2131,7 @@
       <div class="watch-grid demo-videos" data-reveal>
         <figure class="watch-card" data-reveal>
           <div class="watch-frame">
-            <iframe src="https://www.youtube-nocookie.com/embed/a9_2oL63PBw" title="HUDHUD: the 100-second demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            <iframe src="https://www.youtube-nocookie.com/embed/a9_2oL63PBw" title="HUDHUD: the 101-second demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
           </div>
           <figcaption>
             <strong>The demo</strong>
@@ -2160,7 +2173,7 @@ make studio-offline</code></pre>
         <li data-reveal><h3>The deliverables report</h3><p>Every ask of the challenge, met and linked to its evidence. <a href="#/report">Read it</a> or <a data-kit-link hidden href="#">download the PDF</a>.</p></li>
         <li data-reveal><h3>The ledger, verified</h3><p>1,815 events sealed into 111 blocks chained by hashes. Your browser recomputes every hash. <a href="#/ledger">Try it</a>.</p></li>
         <li data-reveal><h3>The audit trail</h3><p>Every cue, refusal and answer kept on Azure Cosmos DB, 90 days. The control room on Azure shows the matches, the alerts, the costs.</p></li>
-        <li data-reveal><h3>The tests</h3><p>273 tests on every push: the generator's realism, the Critic's rulebook, the workflow loop, the site and the studio. <code>make test</code>.</p></li>
+        <li data-reveal><h3>The tests</h3><p>274 tests on every push: the generator's realism, the Critic's rulebook, the workflow loop, the site and the studio. <code>make test</code>.</p></li>
         <li data-reveal><h3>The media kit</h3><p>Both videos, the screenshots, the brand sheet, the deliverables report as PDF. <a data-kit-link hidden href="#">Download the kit</a>.</p></li>
         <li data-reveal><h3>The code</h3><p>Public on GitHub at submission. Every agent, every test, every script. <a data-repo-link data-when-repo="public" href="#">Source on GitHub</a>.</p></li>
       </ul>

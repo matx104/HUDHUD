@@ -334,11 +334,6 @@
     $$("[data-kit-link]").forEach((n) => { n.href = site.kitUrl ?? "#"; n.hidden = !site.kitUrl; });
     // The demo video: anchors with data-video-link fill and appear once it has a public URL.
     $$("a[data-video-link]").forEach((n) => { n.href = site.videoUrl ?? "#"; n.hidden = !site.videoUrl; });
-    const note = $(".video-note");
-    if (site.videoUrl && note) {
-      $(".page-home .actions").append(Object.assign(el("a", "button button-quiet", "Watch the 101-second demo"), { href: site.videoUrl }));
-      note.remove();
-    }
     $("[data-skip]").addEventListener("click", (e) => {
       e.preventDefault(); // a bare #main would read as a route
       $("#main").focus();
@@ -785,7 +780,7 @@
     // The next chapter, as the fourth official's board shows a change: this one off, the next on.
     function substitution(off, on) {
       const link = Object.assign(el("a", "sub-board"), { href: `#/${on.dataset.page}` });
-      link.setAttribute("aria-label", `Next chapter: ${on.dataset.title}`);
+      link.setAttribute("aria-label", `Next chapter: ${on.dataset.title}, ${on.dataset.summary}`);
       const number = (page, cls, word) => {
         const side = el("span", `sub-${cls}`);
         side.append(el("b", "", String(shirt(page)).padStart(2, "0")), el("small", "", word));
@@ -793,7 +788,8 @@
       };
       const board = el("span", "sub-led");
       board.append(number(off, "off", "off"), number(on, "on", "on"));
-      link.append(board, el("strong", "", on.dataset.title));
+      // The title, then the hook: what the next chapter promises, so every page hands on the story.
+      link.append(board, el("strong", "", on.dataset.title), el("span", "sub-hook", on.dataset.summary));
       return link;
     }
 

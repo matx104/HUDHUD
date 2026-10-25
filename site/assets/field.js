@@ -52,6 +52,9 @@
     const m = 24;
     const pw = w - m * 2;
     const ph = h - m * 2;
+    // Mid-resize the canvas can be smaller than its margins: no pitch to draw, and a negative
+    // radius would throw out of the animation loop and freeze the field.
+    if (pw <= 0 || ph <= 0) return;
     const box = pw * 0.16;
     const tall = ph * 0.6;
     ctx.strokeStyle = `rgba(${RGB.chalk}, ${0.06 * level()})`;
