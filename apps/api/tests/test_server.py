@@ -1,10 +1,14 @@
 """The studio streams a match with every agent's work, and its controls do what they say."""
 
+import hashlib
 import json
+import re
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
+import court.server
 from court.contracts import Cue, Degradation
 from court.narrator import TemplateNarrator
 from court.orchestrator import run_match
@@ -232,6 +236,18 @@ def test_questions_are_capped_and_checked_for_size(client, monkeypatch):
     assert client.post(ask, json={"question": "Shots?"}).status_code == 200
     assert client.post(ask, json={"question": "Shots?"}).status_code == 429
     assert client.post("/api/sessions/nope/ask", json={"question": "Shots?"}).status_code == 404
+
+
+def test_each_page_names_its_files_by_their_content(client):
+    # Browsers keep /static/ files for hours: a changed file must arrive under a new address.
+    studio = Path(court.server.__file__).parent / "studio"
+    for path in ("/", "/hud", "/ask"):
+        page = client.get(path)
+        assert page.headers["cache-control"] == "no-cache"
+        loads = re.findall(r'"/static/([\w.-]+?)(?:\?v=([0-9a-f]{10}))?"', page.text)
+        assert loads, path
+        for name, version in loads:
+            assert version == hashlib.sha256((studio / name).read_bytes()).hexdigest()[:10], name
 
 
 def test_the_ask_page_is_served_and_suggests_from_the_match(client):

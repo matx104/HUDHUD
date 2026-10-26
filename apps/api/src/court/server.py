@@ -60,7 +60,7 @@ from typing import Any, Literal
 
 import jwt
 from fastapi import Body, FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, PlainTextResponse, Response, StreamingResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from mcp.server.transport_security import TransportSecuritySettings
 from opentelemetry import trace
@@ -569,6 +569,19 @@ def _players(meta: MatchMeta) -> list[dict[str, Any]]:
     return [{**{f: getattr(p, f) for f in fields}, "team": p.team.value} for p in meta.players]
 
 
+def _page(name: str) -> HTMLResponse:
+    """A studio page, each file it loads from /static/ named with its content's hash. Browsers keep
+    those files for four hours under one address, so a deploy that changes one gives it a new
+    address, and nobody gets this deploy's page with the last one's stylesheet. Hashed on every
+    request (a few files, under a millisecond), so an edit shows without a restart."""
+    html = (STUDIO / name).read_text()
+    for path in STUDIO.iterdir():
+        if path.suffix in (".css", ".js"):
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()[:10]
+            html = html.replace(f'"/static/{path.name}"', f'"/static/{path.name}?v={digest}"')
+    return HTMLResponse(html, headers={"Cache-Control": "no-cache"})
+
+
 def _sse(kind: str, data: dict[str, Any]) -> str:
     return f"event: {kind}\ndata: {json.dumps(data)}\n\n"
 
@@ -612,18 +625,18 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     @app.get("/")
-    def index() -> FileResponse:
-        return FileResponse(STUDIO / "index.html")
+    def index() -> HTMLResponse:
+        return _page("index.html")
 
     @app.get("/ask")
-    def ask_page() -> FileResponse:
+    def ask_page() -> HTMLResponse:
         """Ask the match on its own page: a conversation with one match, every answer checked."""
-        return FileResponse(STUDIO / "ask.html")
+        return _page("ask.html")
 
     @app.get("/hud")
-    def hud_page() -> FileResponse:
+    def hud_page() -> HTMLResponse:
         """HUD²: one match on one screen, through the referee's, commentator's or fan's lens."""
-        return FileResponse(STUDIO / "hud.html")
+        return _page("hud.html")
 
     @app.get("/api/config")
     def config() -> dict[str, Any]:
