@@ -51,7 +51,6 @@
     .then((r) => r.json())
     .then((config) => {
       document.querySelectorAll("[data-product]").forEach((n) => (n.textContent = config.product));
-      document.querySelectorAll("[data-mark-link]").forEach((n) => (n.textContent = config.mark));
       document.title = `Ask the match: ${config.product}`;
       matches = config.matches;
       for (const m of matches) $("[data-matches]").append(Object.assign(el("option", "", `${m.home.name} v ${m.away.name}`), { value: m.seed }));
