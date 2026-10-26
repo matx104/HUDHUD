@@ -76,8 +76,15 @@ referee and shows its evidence, and today's Critic, ref's call and ledger are it
 
 ## Testing instructions
 
-The live studio on Azure is private (docs/azure.md, "The wall"). Three ways to see HUDHUD work,
-none of which needs an account:
+**Judges: the live studio is open to you** (added 2026-10-26; docs/azure.md, "The wall"). Open
+https://studio.hudhud.com.pk/ and sign in with your @microsoft.com email address: Cloudflare Access
+emails a one-time code, with no password and no account. Pick a match and press Kick off: the
+Foundry models narrate it live, the Critic's refusals show as they happen, "Stress-test the Critic"
+corrupts drafts on purpose, and "Take the narrator off air" shows the broadcast degrade and recover.
+HUD² is at /hud, Ask the match at /ask. It stays open through November 10.
+
+For everyone else the live studio is private. Three ways to see HUDHUD work, none of which needs an
+account:
 
 1. **In the browser, nothing to install:** https://hudhud.com.pk/#/screens. "Replay the studio",
    "Replay HUD²" and "Ask the recorded match" run the studio's own pages and code on a match
@@ -106,3 +113,6 @@ Foundry models.
 - [x] A fresh clone passes `make setup && make test` and `make studio-offline` serves a match
       (re-checked 2026-10-25: 273 tests pass; seed 21 streams lines, shots and ledger blocks)
 - [x] Submitted on Innovation Studio on Oct 24 PKT, three days early, with this page's text
+- [ ] The judges' sign-in (the first paragraph of **Testing instructions**) pasted into the
+      submission on Innovation Studio, if it can still be edited before the close (Oct 28, 11:59 AM
+      PKT); the site's judges' door and the README say it either way

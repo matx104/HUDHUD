@@ -81,11 +81,14 @@ test("the control room says who its buttons are for, and its links name no accou
 });
 
 test("the private studio stays off the public pages", () => {
-  // Owner-only behind Cloudflare Access: a visitor would meet a sign-in page, so only the Control
-  // room links it (from ops.js), and "Watch a live match" appears only if studioPublic is true.
+  // Behind Cloudflare Access: a visitor would meet a sign-in page, so only the Control room links it
+  // (from ops.js), and "Watch a live match" appears only if studioPublic is true. The judges get
+  // their own door, from the config too: the address never sits in the page itself.
   assert.equal(config.studioPublic, false);
   assert.doesNotMatch(html, /studio\.hudhud\.com\.pk/);
   assert.match(read("assets/site.js"), /site\.studioUrl && site\.studioPublic/);
+  assert.match(read("assets/site.js"), /site\.studioUrl && site\.studioJudges/);
+  assert.match(html, /data-judges-door hidden/);
 });
 
 test("the media kit is a public Drive folder, and the site points at it", () => {

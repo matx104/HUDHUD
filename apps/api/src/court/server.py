@@ -30,8 +30,9 @@ HUD² (/hud, court.hud) is the same match on one heads-up screen, through the re
 commentator's or the fan's lens. Its stream (`hud=1`) adds every action placed on the pitch and,
 each minute, both sides' counts; the lines it draws are the same verified cues.
 
-On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner in at
-studio.hudhud.com.pk, and a Worker (edge/) carries each request on to Azure. With `ACCESS_TEAM` and
+On Azure the studio is private (docs/azure.md, "The wall"): Cloudflare Access signs the owner, and
+through the judging period the judges, in at studio.hudhud.com.pk, and a Worker (edge/) carries
+each request on to Azure. With `ACCESS_TEAM` and
 `ACCESS_AUD` set, the studio refuses any request that doesn't carry a token Access signed for it, so
 its own Azure address is no way around the wall.
 

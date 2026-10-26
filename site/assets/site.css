@@ -902,6 +902,8 @@ pre {
 .judges { padding-top: clamp(3rem, 7vw, 5rem); }
 .judges h2 { margin-bottom: 0.5rem; }
 .judges-lede { margin-bottom: 1.5rem; color: var(--chalk-dim); }
+.judges-door { max-width: 46rem; margin: -0.5rem 0 1.75rem; padding: 0.9rem 1.1rem; border-left: 3px solid var(--lime); background: rgba(184, 245, 61, 0.06); }
+.judges-door a { color: var(--lime); font-family: var(--mono); }
 .pillars-proof li { display: flex; flex-direction: column; }
 .pillars-proof .proof-links { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; margin-top: auto; padding-top: 0.9rem; font-size: 0.875rem; }
 .pillars-proof .proof-links a { color: var(--lime); text-decoration: none; }

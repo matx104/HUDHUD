@@ -331,6 +331,11 @@
       $(".page-home .actions .button[href='#/problem']")?.classList.add("button-quiet");
       $$("[data-studio-link]").forEach((n) => { n.href = site.studioUrl; n.hidden = false; });
     }
+    // The judges' door: the live studio, for the addresses Access lets in (docs/azure.md, "The wall").
+    if (site.studioUrl && site.studioJudges) {
+      $$("[data-judges-studio]").forEach((n) => { n.href = site.studioUrl; n.textContent = new URL(site.studioUrl).host; });
+      $$("[data-judges-door]").forEach((n) => { n.hidden = false; });
+    }
     $$("[data-kit-link]").forEach((n) => { n.href = site.kitUrl ?? "#"; n.hidden = !site.kitUrl; });
     // The demo video: anchors with data-video-link fill and appear once it has a public URL.
     $$("a[data-video-link]").forEach((n) => { n.href = site.videoUrl ?? "#"; n.hidden = !site.videoUrl; });

@@ -334,6 +334,7 @@
       <div class="judges wrap" data-reveal>
         <h2>For the judges</h2>
         <p class="judges-lede">Five pillars, a fifth of the score each, and where to see the evidence for every one.</p>
+        <p class="judges-door" data-judges-door hidden><strong>The live studio is open to you.</strong> Sign in at <a data-judges-studio href="#">the studio</a> with your @microsoft.com address: Cloudflare Access emails a one-time code, with no password and no account. The Foundry models narrate every match there, live, through November 10.</p>
         <ol class="pillars pillars-proof">
           <li><span class="pct">20%</span><strong>Technological implementation</strong><p>Microsoft Foundry and Agent Framework at the core, 274 tests on every push, and the whole studio on any machine with no Azure.</p><p class="proof-links"><a href="#/report">The deliverables</a><a href="#/demo">Run it yourself</a></p></li>
           <li><span class="pct">20%</span><strong>Agentic design &amp; innovation</strong><p>Five agents, and a Critic that recomputes every number before a line airs. When a model fails, the Orchestrator keeps the broadcast on.</p><p class="proof-links"><a href="#/how">How it works</a><a href="#/recovery">When an agent fails</a></p></li>
@@ -802,7 +803,7 @@
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>New code, new repository.</strong> Built October 18–27, 2026, for this entry alone; patterns carried over, no old repos.</div></li>
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Demo video under 2:00.</strong> Recorded at 101 seconds, at a public URL, showing the project functioning — no third-party trademarks, no licensed music.</div></li>
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Public repository at submission.</strong> Private until the showcase is final; one config flag flips every Code link on this site.</div></li>
-        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Free judge access through November 10 (§4.8).</strong> The studio runs behind Cloudflare Access with credentials in the testing instructions — and <code>make studio-offline</code> runs the same studio on any machine, no Azure needed at all.</div></li>
+        <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Free judge access through November 10 (§4.8).</strong> The live studio runs behind Cloudflare Access, and any @microsoft.com address signs in with a one-time code, as the testing instructions say — and <code>make studio-offline</code> runs the same studio on any machine, no Azure needed at all.</div></li>
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>Installs and runs consistently (§4.3).</strong> One <code>make setup</code>; 274 tests on every push; a 38-point doctor and a smoke script that streams a whole match and checks every part.</div></li>
         <li data-reveal><span class="chip" data-status="done">Met</span><div><strong>The entrant's own work, in English (§4.9).</strong> A solo build; the pitch, video and test instructions in English — Urdu and Arabic are outputs, on purpose.</div></li>
       </ol>
@@ -1424,7 +1425,7 @@
           <img src="assets/screens/hud-commentator.webp" alt="HUD² through the commentator's lens: the pitch in perspective, two checked lines pinned where they happened, a refused draft struck in red, the last five minutes in numbers." loading="lazy" width="1600" height="758">
           <button class="demo-start" type="button" data-demo-start>Play the recorded match</button>
         </div>
-        <p class="demo-note">A match recorded from the live studio on October 20, replayed by the studio's own code. The lines, the refusals and the ledger are real; the studio itself is private.</p>
+        <p class="demo-note">A match recorded from the live studio on October 20, replayed by the studio's own code. The lines, the refusals and the ledger are real; the studio itself is open to the judges only.</p>
       </div>
 
       <ul class="lens-cards">
@@ -1543,7 +1544,7 @@
       <header class="page-head">
         <span class="chapter-no" aria-hidden="true">13</span>
         <h1 id="screens-title" tabindex="-1">Every screen</h1>
-        <p class="lede">The studio is private, so here it is: every screen recorded from it on October 20, and replays that run its own code in your browser.</p>
+        <p class="lede">The live studio is open to the judges only, so here it is for everyone: every screen recorded from it on October 20, and replays that run its own code in your browser.</p>
       </header>
       <div class="replays" data-reveal>
         <a class="button" href="demo/studio.html?autostart=1" target="_blank" rel="noopener">Replay the studio</a>
@@ -1678,6 +1679,7 @@
         <div class="log-lists">
           <h2 class="log-heading">Live</h2>
           <ol class="log">
+            <li data-reveal><time>Oct 26</time><div><strong>The doors open for the judges</strong><p>The live studio is open to the judges through November 10: any @microsoft.com address signs in with a one-time code from Cloudflare Access. Every other visitor still meets the wall, and the daily model budget still caps what an open studio can spend.</p></div></li>
             <li data-reveal><time>Oct 24</time><div><strong>Submitted, and the code is public</strong><p>The entry went in on October 24, three days before the deadline, and the repository went public with it, under the MIT licence. Every Code link on this site now opens the source.</p></div></li>
             <li data-reveal><time>Oct 24</time><div><strong>The demo room</strong><p>Both videos side by side, on my channel, <a href="https://www.youtube.com/@monarch-_-mat">MATX104</a>: the 101-second judges' cut and a four-minute walkthrough of every page. A script recorded them from the live studio, driving the browser and OBS on one clock, and Azure AI Speech voiced and captioned them. Every replay is one click away beside them, in <a href="#/demo">the demo room</a>.</p></div></li>
             <li data-reveal><time>Oct 24</time><div><strong>For broadcast</strong><p>The program feed for broadcasters and streaming platforms: a 16:9 frame that draws every strap, citation, receipt, player tag and card from the cue stream's own JSON, nothing placed by hand, with a replay player over a match recorded from the live studio.</p></div></li>
@@ -2103,7 +2105,7 @@
 
       <aside class="caveat" role="note">
         <h2>Most of these buttons work only for me</h2>
-        <p>The site and the media kit are public. The studio and the Critic's MCP endpoint are private, behind Cloudflare Access: only my email address can sign in, and a machine needs a token only I hold. The Azure and Cloudflare buttons open dashboards in my own accounts. To follow them you'd have to be signed in as a member, with access granted to you. Anyone else gets a sign-in page or a "no access" message. They're on this page to make my own work easier, not for visitors to browse.</p>
+        <p>The site and the media kit are public. The studio and the Critic's MCP endpoint are private, behind Cloudflare Access: only my email address and, through the judging period, the judges' @microsoft.com addresses can sign in, and a machine needs a token only I hold. The Azure and Cloudflare buttons open dashboards in my own accounts. To follow them you'd have to be signed in as a member, with access granted to you. Anyone else gets a sign-in page or a "no access" message. They're on this page to make my own work easier, not for visitors to browse.</p>
         <p>The Azure links contain my subscription's and resources' identifiers, which grant nothing without access; the Cloudflare links leave the account out. Nothing in the project holds a key: every Azure service signs in with Microsoft Entra ID, and the studio checks Cloudflare's signature on each visit instead of a password. For everyone else, the proof is further down this page.</p>
       </aside>
 
@@ -2150,7 +2152,7 @@
       </div>
 
       <h2 class="section-title" data-reveal>Try it now — nothing to install</h2>
-      <p class="section-lede" data-reveal>These run in your browser, on a match recorded from the live studio. The lines, the refusals and the ledger are real; the studio itself is private.</p>
+      <p class="section-lede" data-reveal>These run in your browser, on a match recorded from the live studio. The lines, the refusals and the ledger are real; the studio itself is open to the judges only.</p>
       <div class="demo-actions" data-reveal>
         <a class="button" href="demo/studio.html?autostart=1" target="_blank" rel="noopener">Replay the studio</a>
         <a class="button button-quiet" href="demo/hud.html?lens=referee&amp;autostart=1" target="_blank" rel="noopener">Replay HUD²</a>

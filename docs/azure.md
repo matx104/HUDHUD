@@ -172,18 +172,25 @@ doctor and `make smoke` check it.
 - **Retention:** audit records expire 90 days after their last write (the container's default
   TTL, 7,776,000 s), past the judging period. Checked by `make doctor`.
 
-## The wall: the studio is owner-only (Cloudflare Access)
+## The wall: the owner and the judges only (Cloudflare Access)
 
-Decided 2026-10-19 by the owner: the studio stays private, through the judging period too. The
-rules let judges judge on the text, images and video alone (§4.8); the video shows the studio at
-work, and the code, public at submission, runs the same studio on any machine
-(`make studio-offline`, no Azure).
+Decided 2026-10-19 by the owner: the studio stays private. **Revised 2026-10-26:** the judges get in
+for the judging period. The rules ask for free judge access through Nov 10, with credentials for a
+private demo (§4.8), and the judges of a Microsoft hackathon sign in with Microsoft addresses. Every
+other visitor still meets the wall; they have the video, the replays on the site, and the code,
+which runs the same studio on any machine (`make studio-offline`, no Azure). The daily model budget
+(`STUDIO_DAILY_MODEL_MATCHES`, then the offline narrator) caps what an open studio can spend.
 
-- **Access application** `HUDHUD studio` on the account's Zero Trust organisation (Free plan),
-  covering `studio.hudhud.com.pk` and `mcp.hudhud.com.pk`. Two policies: `HUDHUD owner` lets in the
-  owner's email address, signed in by a one-time code sent to it (24-hour sessions); `HUDHUD
-  machines` (Service Auth) lets in one service token, for the smoke test, the doctor and MCP
-  clients. Machines get a 401, not a sign-in page. The sign-in page shows the account's team name.
+- **Access application** `HUDHUD studio` on the account's Zero Trust organisation (Free plan, 50
+  seats), covering `studio.hudhud.com.pk` and `mcp.hudhud.com.pk`. Three reusable policies:
+  `HUDHUD owner` lets in the owner's email address, signed in by a one-time code sent to it
+  (24-hour sessions); `HUDHUD machines` (Service Auth) lets in one service token, for the smoke
+  test, the doctor and MCP clients; `HUDHUD judges` (2026-10-26) lets in any `@microsoft.com`
+  address, by the same one-time code. Machines get a 401, not a sign-in page. The sign-in page shows
+  the account's team name.
+- **Closing the judges' door** after the results (Nov 20): detach `HUDHUD judges` from the
+  application and delete it (`cf zero-trust access policies delete`), set `studioJudges: false` in
+  `site/config.js`, and the site's judges' door disappears with it.
 - **The service token** lives only on the owner's machine, in `~/.config/hudhud/access-token.json`
   (mode 600), read by `scripts/_azure.py`; it expires 2027-10-19. A script sends its two headers
   (`CF-Access-Client-Id`, `CF-Access-Client-Secret`) and a User-Agent of its own: Cloudflare turns
