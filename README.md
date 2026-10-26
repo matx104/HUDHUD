@@ -3,7 +3,7 @@
 > Microsoft × Premier League — **Inside the Game: Developer Hackathon** (Oct 2026)
 > AI match intelligence on synthetic football-realistic data. **Solo build.**
 
-![HUD², the commentator's lens: a draft that cites no events is refused on screen with its reasons, and the rewrite airs, checked: 3 numbers, 1 event cited, on attempt 2](site/assets/screens/hud-commentator.webp)
+![HUD², the commentator's lens at full time: a draft that called a red card is refused on screen with its reason (at standard strictness the Law gives a yellow), and the rewrite airs, checked: 1 number, 1 event cited, on attempt 2](site/assets/screens/hud-commentator.webp)
 
 *The Critic at work, live on Microsoft Foundry: a draft cites no events and its numbers don't match, so it is refused on screen with the reasons, and the rewrite airs with its evidence (HUD², the commentator's lens).*
 
