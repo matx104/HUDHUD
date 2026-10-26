@@ -28,7 +28,7 @@ test("the demo pages are the studio's, with only its paths changed", () => {
 });
 
 test("the demo's scripts and styles are the studio's, byte for byte", () => {
-  for (const file of ["studio.css", "studio.js", "hud.css", "hud.js", "hud-core.js", "ask.css", "ask.js", "ledger-core.js", "voice.js"]) {
+  for (const file of ["studio.css", "studio.js", "hud.css", "hud.js", "hud-core.js", "ask.css", "ask.js", "ledger-core.js", "voice.js", "nav.css", "nav.js"]) {
     assert.equal(read(DEMO, file), read(STUDIO, file), `${file}: run scripts/site_demo.py --copy-only`);
   }
 });

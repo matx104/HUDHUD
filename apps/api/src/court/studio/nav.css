@@ -1,0 +1,82 @@
+/* The rooms: one bar across the studio, the HUD and Ask the match, so a visitor always knows
+   where they are and where else to go. Each room is a camera on the gallery's wall: the one
+   you're in has its tally light lit, lime as live air is everywhere else. Loaded before each
+   page's own stylesheet, on the same tokens, so a page can tune the bar. */
+.topnav {
+  position: relative; z-index: 20;
+  display: flex; align-items: stretch; gap: 0 2rem;
+  min-height: 3.5rem; padding: 0 1.25rem;
+  background: var(--navy); border-bottom: 1px solid var(--chalk-faint);
+}
+
+/* The lockup: the badge (the crest on the ball, no ring: at this size the ring would halve the
+   ball, as on the favicon) and the wordmark, as on the showcase */
+.topnav-brand { display: flex; align-items: center; gap: 0.55rem; color: var(--chalk); text-decoration: none; }
+.topnav-badge { width: 2.25rem; height: 2.25rem; flex: none; filter: drop-shadow(0 0 8px rgba(184, 245, 61, 0.35)); }
+.topnav-word { font: 900 1.75rem / 1 var(--display); letter-spacing: 0.02em; }
+
+/* The three rooms */
+.topnav-rooms { display: flex; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+.topnav-rooms a {
+  position: relative; display: flex; align-items: center; gap: 0.5rem; height: 100%;
+  padding: 0 0.9rem; color: var(--chalk-dim); text-decoration: none;
+  font: 700 1.25rem / 1 var(--display); letter-spacing: 0.02em; white-space: nowrap;
+}
+.topnav-rooms a:hover { color: var(--chalk); }
+.topnav-tally { width: 0.5rem; height: 0.5rem; flex: none; border-radius: 50%; background: var(--chalk-faint); transition: background 0.2s; }
+.topnav-rooms a:hover .topnav-tally { background: rgba(244, 241, 232, 0.45); }
+.topnav-rooms [aria-current="page"] { color: var(--chalk); }
+.topnav-rooms [aria-current="page"] .topnav-tally { background: var(--lime); box-shadow: 0 0 0 3px rgba(184, 245, 61, 0.18), 0 0 10px var(--lime); }
+.topnav-rooms [aria-current="page"]::after { content: ""; position: absolute; left: 0.9rem; right: 0.9rem; bottom: -1px; height: 2px; background: var(--lime); }
+
+/* The judges' guide: what to try in each room, a click away on every page */
+.topnav-guide { position: relative; align-self: center; margin-left: auto; }
+.topnav-guide summary {
+  display: flex; align-items: center; gap: 0.45rem; padding: 0.4rem 0.8rem;
+  border: 1px solid var(--chalk-faint); border-radius: 4px; list-style: none; cursor: pointer;
+  color: var(--chalk-dim); font-size: 0.875rem; font-weight: 600; white-space: nowrap;
+}
+.topnav-guide summary::-webkit-details-marker { display: none; }
+.topnav-guide summary::before {
+  content: "?"; display: grid; place-items: center; width: 1.15rem; height: 1.15rem; border-radius: 50%;
+  border: 1.5px solid currentColor; font: 700 0.75rem / 1 var(--body);
+}
+.topnav-guide summary:hover, .topnav-guide[open] summary { color: var(--lime); border-color: rgba(184, 245, 61, 0.5); }
+/* Not read yet (nav.js): the guide's own tally is lit, until it is opened once */
+.topnav-guide[data-fresh] summary { color: var(--lime); border-color: var(--lime); box-shadow: 0 0 0 3px rgba(184, 245, 61, 0.14), 0 0 14px rgba(184, 245, 61, 0.3); }
+.topnav-panel {
+  position: absolute; right: 0; top: calc(100% + 0.6rem); width: min(27rem, calc(100vw - 2rem));
+  padding: 1.1rem 1.2rem 1rem; background: var(--navy-raised); color: var(--chalk);
+  border: 1px solid var(--chalk-faint); border-radius: 6px; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  font: 400 0.9375rem / 1.45 var(--body); text-align: left;
+}
+.topnav-panel h2 { margin: 0 0 0.3rem; font: 800 1.5rem / 1.05 var(--display); color: var(--chalk); }
+.topnav-panel > p { margin: 0; color: var(--chalk-dim); font-size: 0.875rem; }
+.topnav-panel ol { display: grid; gap: 0.8rem; margin: 0.9rem 0; padding: 0; list-style: none; counter-reset: room; }
+.topnav-panel li { position: relative; padding-left: 2.1rem; counter-increment: room; color: var(--chalk-dim); font-size: 0.875rem; }
+.topnav-panel li::before {
+  content: counter(room); position: absolute; left: 0; top: 0.05rem; display: grid; place-items: center;
+  width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--lime); color: var(--navy-deep);
+  font: 800 0.875rem / 1 var(--display);
+}
+.topnav-panel li a { display: block; margin-bottom: 0.1rem; color: var(--chalk); font: 700 1.125rem / 1.2 var(--display); letter-spacing: 0.02em; text-decoration: none; }
+.topnav-panel li a:hover { color: var(--lime); }
+.topnav-panel li b { color: var(--chalk); font-weight: 600; }
+.topnav-panel .topnav-more { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; padding-top: 0.8rem; border-top: 1px solid var(--chalk-faint); }
+.topnav-more a { color: var(--lime); font-weight: 600; text-decoration: none; }
+.topnav-more a:hover { text-decoration: underline; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .topnav-guide[open] .topnav-panel { animation: topnav-drop 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
+}
+@keyframes topnav-drop { from { opacity: 0; transform: translateY(-6px); } }
+
+/* A narrow screen: the lockup and the guide on one line, the rooms across the full width below */
+@media (max-width: 52rem) {
+  .topnav { flex-wrap: wrap; padding: 0 1rem; }
+  .topnav-brand { min-height: 3.25rem; }
+  .topnav-rooms { order: 3; flex: 1 0 100%; gap: 0; margin-inline: -1rem; border-top: 1px solid var(--chalk-faint); }
+  .topnav-rooms li { flex: auto; }
+  .topnav-rooms a { justify-content: center; gap: 0.4rem; padding: 0.75rem 0.25rem; font-size: 1.0625rem; }
+  .topnav-rooms [aria-current="page"]::after { left: 0.5rem; right: 0.5rem; }
+}

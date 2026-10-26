@@ -42,6 +42,8 @@ ASSETS = (
     "ask.js",
     "ledger-core.js",
     "voice.js",
+    "nav.css",
+    "nav.js",
 )
 STREAM = "seed=21&narration=foundry&speed=30&start=50&stress=0.25&hud=1&mode=analyst&lang=en"
 QUESTIONS = (

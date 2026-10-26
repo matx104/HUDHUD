@@ -26,7 +26,7 @@ body[data-lens="commentator"] { --accent: var(--lime); }
 html, body { height: 100%; }
 body {
   margin: 0; color: var(--chalk); font: 400 1rem / 1.5 var(--body);
-  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; min-height: 100vh;
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto; min-height: 100vh;
   background:
     radial-gradient(70rem 42rem at 50% 55%, rgba(184, 245, 61, 0.06), transparent 65%),
     var(--navy-deep);
@@ -45,12 +45,20 @@ button, select, input { font: inherit; color: inherit; }
 .visor i:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
 .visor i:nth-child(4) { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
 
-/* ---------- top: the mark, the score bug, the Critic's meter ---------- */
-.top { display: flex; align-items: center; gap: 1rem 1.75rem; padding: 0.9rem 1.75rem 0.5rem; flex-wrap: wrap; }
-.brand { display: flex; align-items: center; gap: 0.6rem; color: inherit; text-decoration: none; }
-.brand-crest { width: 2.4rem; height: 2.4rem; filter: drop-shadow(0 0 10px rgba(184, 245, 61, 0.4)); }
-.brand-mark { font: 900 2.2rem / 0.9 var(--display); letter-spacing: 0.01em; }
-.brand-sub { align-self: flex-end; margin-bottom: 0.15rem; font: 500 0.75rem / 1 var(--mono); color: var(--accent); }
+/* ---------- the rooms' bar (nav.css), see-through so the visor still frames it ---------- */
+/* The right side clears the visor's top corner, which would otherwise cut through the guide */
+.topnav { grid-row: 1; padding-inline: 1.75rem 3rem; background: transparent; }
+.topnav-rooms [aria-current="page"] .topnav-tally { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+.topnav-rooms [aria-current="page"]::after { background: var(--accent); }
+
+/* ---------- top, in play: the score bug and the Critic's meter ---------- */
+/* Three columns, so the bug sits in the middle of the screen and the meter at the right */
+.top { grid-row: 2; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem 1.75rem; padding: 0.6rem 1.75rem 0.5rem; }
+.top .bug { grid-column: 2; }
+.top .meter { grid-column: 3; justify-self: end; }
+body[data-state="slate"] .top { display: none; }
+.stage { grid-row: 3; }
+.deck { grid-row: 4; }
 .bug { display: flex; align-items: center; gap: 0.9rem; margin-inline: auto; padding: 0.35rem 1rem; background: var(--glass); border: 1px solid var(--chalk-faint); border-radius: 4px; backdrop-filter: blur(6px); }
 .bug-team { display: flex; align-items: center; gap: 0.5rem; font: 800 1.6rem / 1 var(--display); }
 .bug-team i { width: 0.55rem; height: 1.5rem; border-radius: 1px; background: var(--team, var(--chalk-dim)); box-shadow: 0 0 12px var(--team, transparent); }
@@ -66,9 +74,6 @@ button, select, input { font: inherit; color: inherit; }
 .meter-ok dd { color: var(--lime); }
 .meter-no dd { color: var(--card); }
 .meter-chain dd { color: var(--gold); }
-.to-studio + .to-studio { margin-left: 0; }
-.to-studio { margin-left: auto; padding: 0.35rem 0.75rem; border: 1px solid var(--chalk-faint); border-radius: 4px; color: var(--chalk-dim); text-decoration: none; font-size: 0.875rem; }
-.to-studio:hover { color: var(--lime); border-color: rgba(184, 245, 61, 0.5); }
 
 /* ---------- the stage: readouts, the field, the log ---------- */
 .stage { position: relative; display: grid; grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr) minmax(15rem, 19rem); grid-template-areas: "read field log"; gap: 1rem; padding: 0.5rem 1.75rem 0.75rem; min-height: 0; }
@@ -219,13 +224,14 @@ body[data-state="slate"] .stage { grid-template-columns: minmax(0, 1fr); grid-te
 @media (max-width: 64rem) {
   /* A phone scrolls: the field first, then the log and the readouts at their own height. */
   html, body { height: auto; }
-  body { overflow: auto; grid-template-rows: auto auto auto; }
+  body { overflow: auto; grid-template-rows: auto auto auto auto; }
   .stage { min-height: auto; }
   .rail { max-height: 70vh; }
   .stage { grid-template-columns: minmax(0, 1fr); grid-template-areas: "field" "log" "read"; padding: 0.5rem 1rem; }
   .field-box { height: min(62vw, 70vh); }
   body[data-state="slate"] .field-box { height: auto; min-height: 0; }
-  .top, .deck { padding-inline: 1rem; }
+  .topnav, .top, .deck { padding-inline: 1rem; }
+  .top { display: flex; flex-wrap: wrap; }
   .bug { margin-inline: 0; order: 3; }
   .lens-cards { grid-template-columns: minmax(0, 1fr); }
   .slate-head { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }

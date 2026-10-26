@@ -117,6 +117,8 @@
       if (value !== null && [...select.options].some((o) => o.value === value)) select.value = value;
       if (name === "player") focusable();
     }
+    // A take that makes it yours shows how: the folded personal modes open.
+    if (["club", "player", "focus", "metric"].some((name) => params.get(name))) $("[data-yours]").open = true;
     if (params.has("stress")) $("[data-stress]").checked = params.get("stress") === "1";
     if (params.has("casual")) $("[data-casual]").checked = params.get("casual") === "1";
     if (params.get("autostart") === "1") start();

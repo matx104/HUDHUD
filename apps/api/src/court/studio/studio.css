@@ -19,7 +19,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 body {
   margin: 0; min-height: 100vh; color: var(--chalk); font: 400 1rem / 1.5 var(--body);
-  display: grid; grid-template-rows: auto auto 1fr auto;
+  display: grid; grid-template-rows: auto auto auto 1fr auto;
   /* The gallery's light: lime from the crest's side, gold from the verdict's */
   background:
     radial-gradient(60rem 40rem at 0% 0%, rgba(184, 245, 61, 0.07), transparent 60%),
@@ -33,14 +33,10 @@ button, select, input { font: inherit; color: inherit; }
 h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .hint { margin: 0.35rem 0 1rem; color: var(--chalk-dim); font-size: 0.875rem; }
 
-/* ---------- top bar ---------- */
-.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; padding: 0.75rem 1.25rem; background: var(--navy); border-bottom: 1px solid var(--chalk-faint); }
-/* The brand lockup: crest, wordmark, and what this is */
-.brand { display: flex; align-items: center; gap: 0.6rem; color: inherit; text-decoration: none; }
-.brand-crest { width: 2.6rem; height: 2.6rem; filter: drop-shadow(0 0 10px rgba(184, 245, 61, 0.35)); }
-.brand-word { font: 900 2.1rem / 0.9 var(--display); letter-spacing: 0.02em; }
-.brand-sub { align-self: flex-end; margin-bottom: 0.15rem; font: 500 0.8125rem / 1 var(--mono); color: var(--lime); }
-.setup { display: flex; flex-wrap: wrap; align-items: end; gap: 0.6rem 1rem; margin-left: auto; }
+/* ---------- the match bar: pick a match, kick off (the brand rides the rooms' bar above, nav.css) ---------- */
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; padding: 0.75rem 1.25rem; background: var(--navy-raised); border-bottom: 1px solid var(--chalk-faint); }
+.setup { flex: 1; display: flex; flex-wrap: wrap; align-items: end; gap: 0.6rem 1rem; }
+.setup .go { margin-left: auto; padding-inline: 1.6rem; }
 .setup label { display: grid; gap: 0.15rem; font-size: 0.75rem; color: var(--chalk-dim); }
 .setup select { padding: 0.4rem 0.5rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: var(--navy-raised); font-size: 0.9375rem; }
 .go, .pull { padding: 0.55rem 1.1rem; border: 0; border-radius: 4px; font-weight: 600; cursor: pointer; }
@@ -48,8 +44,15 @@ h2 { margin: 0; font: 800 1.5rem / 1.1 var(--display); letter-spacing: 0.01em; }
 .go:disabled { opacity: 0.5; cursor: progress; }
 
 /* ---------- personal modes: make it yours ---------- */
-.yours { display: flex; flex-wrap: wrap; align-items: end; gap: 0.6rem 1rem; margin: 0; padding: 0.6rem 1.25rem 0.7rem; border: 0; border-bottom: 1px solid var(--chalk-faint); background: rgba(15, 42, 61, 0.6); }
-.yours legend { float: left; margin-right: 0.5rem; padding: 0; font: 800 1.125rem / 2.1 var(--display); color: var(--gold); }
+/* Folded until wanted: one line under the match bar, open for the club, the player, the number */
+.yours { padding: 0.45rem 1.25rem; border-bottom: 1px solid var(--chalk-faint); background: rgba(15, 42, 61, 0.6); }
+.yours summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.75rem; width: fit-content; cursor: pointer; list-style: none; font: 800 1.125rem / 1.6 var(--display); color: var(--gold); }
+.yours summary::-webkit-details-marker { display: none; }
+.yours summary::before { content: ""; align-self: center; width: 0.45rem; height: 0.45rem; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(-45deg); transition: transform 0.2s; }
+.yours[open] summary::before { transform: rotate(45deg); }
+.yours summary span { font: 400 0.8125rem / 1.4 var(--body); color: var(--chalk-dim); }
+.yours summary:hover span { color: var(--chalk); }
+.yours-fields { display: flex; flex-wrap: wrap; align-items: end; gap: 0.6rem 1rem; padding: 0.5rem 0 0.35rem; }
 .yours label { display: grid; gap: 0.15rem; font-size: 0.75rem; color: var(--chalk-dim); }
 .yours select { padding: 0.35rem 0.5rem; border: 1px solid var(--chalk-faint); border-radius: 4px; background: var(--navy-raised); font-size: 0.875rem; max-width: 16rem; }
 .yours-note { flex: 1 1 18rem; margin: 0; font-size: 0.75rem; color: var(--chalk-dim); align-self: center; }

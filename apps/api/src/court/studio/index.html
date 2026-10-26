@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Nastaliq+Urdu:wght@400;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap">
+  <link rel="stylesheet" href="/static/nav.css">
   <link rel="stylesheet" href="/static/studio.css">
 </head>
 <body>
@@ -54,15 +55,50 @@
         </g>
         <circle cx="120" cy="154" r="2" fill="#C9A227"/>
       </symbol>
+      <!-- The badge: the crest on the ball without the ring, for small sizes, as on the favicon -->
+      <symbol id="badge" viewBox="54 54 132 132">
+        <circle cx="120" cy="120" r="60" fill="#F4F1E8"/>
+        <g fill="#1E7B45" stroke="#1E7B45" stroke-width="2" stroke-linejoin="round"><use href="#t-root"/><use href="#t-top"/><use href="#t-left"/><use href="#t-right"/></g>
+        <g transform="translate(120 156)" fill="#B8F53D" stroke="#0A1F2E" stroke-width="2" stroke-linejoin="round">
+          <use href="#p78" transform="rotate(-52)"/>
+          <use href="#p96" transform="rotate(-26)"/>
+          <use href="#p96" transform="rotate(26)"/>
+          <use href="#p78" transform="rotate(52)"/>
+          <use href="#p112" fill="#C9A227"/>
+        </g>
+        <circle cx="120" cy="154" r="9" fill="#0A1F2E" stroke="#C9A227" stroke-width="2.8"/>
+        <circle cx="120" cy="154" r="2.6" fill="#C9A227"/>
+      </symbol>
     </defs>
   </svg>
 
-  <header class="bar">
-    <a class="brand" href="/" aria-label="Studio home">
-      <svg class="brand-crest" aria-hidden="true"><use href="#crest"/></svg>
-      <span class="brand-word" data-product></span>
-      <span class="brand-sub">studio</span>
+  <!-- The rooms: the same bar on every page of the studio (nav.css, nav.js); tests/studio keeps the three in step -->
+  <nav class="topnav" aria-label="The studio's rooms">
+    <a class="topnav-brand" href="/">
+      <svg class="topnav-badge" aria-hidden="true"><use href="#badge"/></svg>
+      <span class="topnav-word" data-product>HUDHUD</span>
     </a>
+    <ul class="topnav-rooms">
+      <li><a href="/" aria-current="page"><i class="topnav-tally" aria-hidden="true"></i>Studio</a></li>
+      <li><a href="/hud"><i class="topnav-tally" aria-hidden="true"></i>HUD²</a></li>
+      <li><a href="/ask"><i class="topnav-tally" aria-hidden="true"></i>Ask the match</a></li>
+    </ul>
+    <details class="topnav-guide" data-guide>
+      <summary>Judges' guide</summary>
+      <div class="topnav-panel">
+        <h2>Three rooms, one match</h2>
+        <p>The football is synthetic: invented clubs and players. Every line you see was checked by the Critic first.</p>
+        <ol>
+          <li><a href="/">Studio</a>Press <b>Kick off</b>. Checked lines air in the feed with their evidence; claims the Critic refused land on its desk as red cards. Then take the narrator off air and watch the broadcast carry on.</li>
+          <li><a href="/hud">HUD²</a>Choose whose eyes: the referee's, the commentator's or the fan's. Every checked line is pinned where it happened. Keys 1 to 3 switch the lens, V the camera.</li>
+          <li><a href="/ask">Ask the match</a>Open a match and ask who had the better chances. Code counts the numbers, the Critic checks the answer, and the ledger verifies in your browser.</li>
+        </ol>
+        <p class="topnav-more"><a href="https://hudhud.com.pk/">The showcase site</a><a href="https://youtu.be/a9_2oL63PBw">The 101-second video</a></p>
+      </div>
+    </details>
+  </nav>
+
+  <header class="bar">
     <form class="setup" id="setup" data-setup autocomplete="off">
       <label>Match <select name="seed" data-matches></select></label>
       <label>Commentary
@@ -98,30 +134,33 @@
     </form>
   </header>
 
-  <!-- Personal modes (§4.1): the same verified broadcast, one viewer's way. Part of the setup form. -->
-  <fieldset class="yours" data-yours>
-    <legend>Make it yours</legend>
-    <label>Your club <select name="club" form="setup" data-club>
-      <option value="">Neither</option>
-      <option value="home" data-side="home">Home</option>
-      <option value="away" data-side="away">Away</option>
-    </select></label>
-    <label>Your player <select name="player" form="setup" data-player><option value="">Nobody in particular</option></select></label>
-    <label>Follow <select name="focus" form="setup" data-focus>
-      <option value="match">The whole match</option>
-      <option value="player">Only your player</option>
-    </select></label>
-    <label>One number <select name="metric" form="setup" data-metric>
-      <option value="">Off</option>
-      <option value="xg">Expected goals (xG)</option>
-      <option value="shots">Shots</option>
-      <option value="box_entries">Passes into the box</option>
-      <option value="final_third_passes">Passes ending in the final third</option>
-      <option value="passes_completed">Passes completed</option>
-      <option value="pass_completion">Pass completion (%)</option>
-    </select></label>
-    <p class="yours-note">Changes what airs first and what's marked as yours, never what's true: every line still passed the Critic.</p>
-  </fieldset>
+  <!-- Personal modes (§4.1): the same verified broadcast, one viewer's way. Part of the setup form,
+       folded until wanted: a first visit needs only a match and Kick off. -->
+  <details class="yours" data-yours>
+    <summary>Make it yours <span>Optional: your club, your player, one number to follow</span></summary>
+    <div class="yours-fields">
+      <label>Your club <select name="club" form="setup" data-club>
+        <option value="">Neither</option>
+        <option value="home" data-side="home">Home</option>
+        <option value="away" data-side="away">Away</option>
+      </select></label>
+      <label>Your player <select name="player" form="setup" data-player><option value="">Nobody in particular</option></select></label>
+      <label>Follow <select name="focus" form="setup" data-focus>
+        <option value="match">The whole match</option>
+        <option value="player">Only your player</option>
+      </select></label>
+      <label>One number <select name="metric" form="setup" data-metric>
+        <option value="">Off</option>
+        <option value="xg">Expected goals (xG)</option>
+        <option value="shots">Shots</option>
+        <option value="box_entries">Passes into the box</option>
+        <option value="final_third_passes">Passes ending in the final third</option>
+        <option value="passes_completed">Passes completed</option>
+        <option value="pass_completion">Pass completion (%)</option>
+      </select></label>
+      <p class="yours-note">Changes what airs first and what's marked as yours, never what's true: every line still passed the Critic.</p>
+    </div>
+  </details>
 
   <main class="studio">
     <!-- Before kick-off: the opening slate -->
@@ -261,6 +300,7 @@
     <p class="fine">Every club and player is invented. Matches are synthetic, generated by code.</p>
   </footer>
 
+  <script src="/static/nav.js"></script>
   <script src="/static/ledger-core.js"></script>
   <script src="/static/voice.js"></script>
   <script src="/static/studio.js"></script>
