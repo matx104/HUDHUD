@@ -176,7 +176,7 @@ doctor and `make smoke` check it.
 
 Decided 2026-10-19 by the owner: the studio stays private. **Revised 2026-10-26:** the judges get in
 for the judging period. The rules ask for free judge access through Nov 10, with credentials for a
-private demo (§4.8), and the judges of a Microsoft hackathon sign in with Microsoft addresses. Every
+private demo (§4.8), and the judges of a Microsoft and Premier League hackathon sign in with their addresses there. Every
 other visitor still meets the wall; they have the video, the replays on the site, and the code,
 which runs the same studio on any machine (`make studio-offline`, no Azure). The daily model budget
 (`STUDIO_DAILY_MODEL_MATCHES`, then the offline narrator) caps what an open studio can spend.
@@ -186,7 +186,7 @@ which runs the same studio on any machine (`make studio-offline`, no Azure). The
   `HUDHUD owner` lets in the owner's email address, signed in by a one-time code sent to it
   (24-hour sessions); `HUDHUD machines` (Service Auth) lets in one service token, for the smoke
   test, the doctor and MCP clients; `HUDHUD judges` (2026-10-26) lets in any `@microsoft.com`
-  address, by the same one-time code. Machines get a 401, not a sign-in page. The sign-in page shows
+  or `@premierleague.com` address, by the same one-time code. Machines get a 401, not a sign-in page. The sign-in page shows
   the account's team name.
 - **Closing the judges' door** after the results (Nov 20): detach `HUDHUD judges` from the
   application and delete it (`cf zero-trust access policies delete`), set `studioJudges: false` in

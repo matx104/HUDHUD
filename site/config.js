@@ -12,7 +12,7 @@ window.SITE = {
   kitUrl: "https://drive.google.com/drive/folders/1gR1Umn8_yD58q-qaiEW2jR1co1S3AO9Y", // the public media kit: video, screenshots, brand (scripts/drive_kit.py)
   studioUrl: "https://studio.hudhud.com.pk/", // the live studio, behind Cloudflare Access (docs/azure.md, "The wall"): the Control room links it
   studioPublic: false, // not for every visitor (2026-10-19): true would put "Watch a live match" on the public pages
-  studioJudges: true, // open to the judges (2026-10-26): any @microsoft.com address signs in by a one-time code, through Nov 10
+  studioJudges: true, // open to the judges (2026-10-26): any @microsoft.com or @premierleague.com address signs in by a one-time code, through Nov 10
   deadline: "2026-10-28T06:59:00Z", // submissions close: Oct 27, 11:59 PM Pacific (official rules §1)
   submitted: "2026-10-24", // this entry went in, Karachi time: three days before the close
   resultsAt: "2026-11-20T08:00:00Z", // winners announced Nov 20 (no hour published): the countdown runs to its start, Pacific

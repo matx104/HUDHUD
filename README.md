@@ -14,8 +14,8 @@
 ## For the judges
 
 **The live studio is open to you:** https://studio.hudhud.com.pk/ . Sign in with your @microsoft.com
-address: Cloudflare Access emails a one-time code, with no password and no account. The Foundry
-models narrate every match live, through November 10. Without a Microsoft address, the
+or @premierleague.com address: Cloudflare Access emails a one-time code, with no password and no account. The Foundry
+models narrate every match live, through November 10. Without one of those addresses, the
 [replays](https://hudhud.com.pk/#/screens) run the studio's own code in your browser, and
 `make studio-offline` runs the whole studio on your machine ([Quickstart](#quickstart)).
 

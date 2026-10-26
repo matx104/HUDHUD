@@ -77,7 +77,7 @@ referee and shows its evidence, and today's Critic, ref's call and ledger are it
 ## Testing instructions
 
 **Judges: the live studio is open to you** (added 2026-10-26; docs/azure.md, "The wall"). Open
-https://studio.hudhud.com.pk/ and sign in with your @microsoft.com email address: Cloudflare Access
+https://studio.hudhud.com.pk/ and sign in with your @microsoft.com or @premierleague.com email address: Cloudflare Access
 emails a one-time code, with no password and no account. Pick a match and press Kick off: the
 Foundry models narrate it live, the Critic's refusals show as they happen, "Stress-test the Critic"
 corrupts drafts on purpose, and "Take the narrator off air" shows the broadcast degrade and recover.
