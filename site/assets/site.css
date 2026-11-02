@@ -467,21 +467,28 @@ pre {
 .star-crest { width: clamp(6rem, 14vw, 10rem); height: auto; filter: drop-shadow(0 0 24px rgba(201, 162, 39, 0.45)); }
 .north-star h2 { max-width: none; font-size: clamp(1.75rem, 3.5vw, 2.75rem); color: var(--gold); }
 .north-star p { margin-top: 0.75rem; font-size: var(--step-1); color: var(--chalk-dim); max-width: 56ch; }
-.stairs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+.stairs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; align-items: start; }
 .stairs li {
   display: grid; gap: 0.6rem; align-content: start; padding: 1.25rem; border-radius: 8px;
   background: var(--navy-raised); border: 1px solid var(--chalk-faint);
 }
 /* each stage stands a step higher than the last: onwards and upwards */
-.stairs li[data-stage="1"] { margin-top: 9rem; border-top: 3px solid var(--gold); }
-.stairs li[data-stage="2"] { margin-top: 6rem; }
-.stairs li[data-stage="3"] { margin-top: 3rem; }
-.stairs li[data-stage="4"] { border-color: rgba(201, 162, 39, 0.55); box-shadow: 0 0 60px rgba(201, 162, 39, 0.15); }
+.stairs li[data-stage="1"] { margin-top: 12rem; border-top: 3px solid var(--gold); }
+.stairs li[data-stage="2"] { margin-top: 9rem; }
+.stairs li[data-stage="3"] { margin-top: 6rem; }
+.stairs li[data-stage="4"] { margin-top: 3rem; }
+.stairs li[data-stage="5"] { border-color: rgba(201, 162, 39, 0.55); box-shadow: 0 0 60px rgba(201, 162, 39, 0.15); }
 .stairs h2 { font-size: 1.75rem; }
 .stairs time { font: 500 0.8125rem / 1.2 var(--mono); color: var(--chalk-dim); }
 .stairs p { font-size: 0.9375rem; color: var(--chalk-dim); }
 .stairs .gate { padding-top: 0.6rem; border-top: 1px solid var(--chalk-faint); }
 .stairs .gate strong { color: var(--chalk); }
+/* five steps grow too narrow below 72rem: pair them, with the north star across the row */
+@media (max-width: 72rem) {
+  .stairs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stairs li[data-stage] { margin-top: 0; }
+  .stairs li[data-stage="5"] { grid-column: 1 / -1; }
+}
 .principles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem 2rem; }
 .principles li { color: var(--chalk-dim); padding-left: 1.1rem; border-left: 2px solid var(--lime); }
 .principles strong { display: block; color: var(--chalk); font: 700 1.25rem / 1.2 var(--display); }
@@ -665,7 +672,7 @@ pre {
   .scene.is-live .sd, .scene.is-live .sd-goal { animation: pop 0.45s var(--ease-out) both; animation-delay: calc(var(--i) * 0.3s + 0.4s); }
   .scene.is-live .sd-ring { animation: ring 0.7s var(--ease-out) both; animation-delay: calc(var(--i) * 0.3s + 0.6s); }
 
-  .scene.is-live .r-ball { animation: climb 9s var(--ease-out) infinite; }
+  .scene.is-live .r-ball { animation: climb 11s var(--ease-out) infinite; }
 }
 @media (prefers-reduced-motion: reduce) {
   .d-packets, .sig-head { display: none; }
@@ -700,11 +707,12 @@ pre {
 }
 @keyframes march { to { stroke-dashoffset: -11; } }
 @keyframes climb {
-  0%, 16% { transform: translate(135px, 218px); }
-  22%, 38% { transform: translate(365px, 153px); }
-  44%, 60% { transform: translate(595px, 88px); }
-  66%, 86% { transform: translate(825px, 23px); }
-  92%, 100% { transform: translate(825px, 23px) scale(0.9); opacity: 0.5; }
+  0%, 13% { transform: translate(113px, 236px); }
+  18%, 31% { transform: translate(296px, 184px); }
+  36%, 49% { transform: translate(479px, 132px); }
+  54%, 67% { transform: translate(662px, 80px); }
+  72%, 88% { transform: translate(845px, 28px); }
+  94%, 100% { transform: translate(845px, 28px) scale(0.9); opacity: 0.5; }
 }
 
 /* ---------- build log ---------- */
@@ -1116,7 +1124,7 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
 .r-t--gold { fill: var(--gold); }
 .r-star-t { font: 800 26px var(--display); fill: var(--gold); }
 .r-ground { stroke: var(--chalk-faint); }
-.r-ball { fill: var(--chalk); stroke: var(--navy-deep); stroke-width: 2; transform: translate(135px, 218px); }
+.r-ball { fill: var(--chalk); stroke: var(--navy-deep); stroke-width: 2; transform: translate(113px, 236px); }
 
 /* ---------- the kit: the builder's shirt, home and away ---------- */
 .kit {
@@ -1267,8 +1275,6 @@ button.button { font: inherit; font-weight: 600; cursor: pointer; }
   .reading-wide { display: block; }
   .ayat { margin-top: 1rem; }
   .crest svg { max-width: 18rem; }
-  .stairs { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
-  .stairs li[data-stage] { margin-top: 0; }
   .states { grid-template-columns: minmax(0, 1fr); }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .north-star { grid-template-columns: minmax(0, 1fr); }

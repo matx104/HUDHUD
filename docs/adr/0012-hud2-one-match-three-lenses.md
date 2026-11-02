@@ -39,7 +39,7 @@
 ## Consequences
 
 - The data limits what can be drawn: events, not video. HUD² knows where each action happened, not
-  where all 22 players are, so it marks the play, not the shape. Tracking (roadmap Stage 3) is what
+  where all 22 players are, so it marks the play, not the shape. Tracking (roadmap Stage 4) is what
   lets a mark sit on a real player in a real stadium.
 - The stream is about 1,800 more small messages a match (about 360 KB), only for a HUD session.
 - Words stay under one law across surfaces: the studio, the recap, questions, MCP, A2A and the HUD

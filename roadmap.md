@@ -21,13 +21,13 @@ An official that watches every moment of the match and judges calls in a blink, 
 7. **Add, never take away.** The game keeps its flow, its drama and its people. Nothing HUDHUD does may slow a restart, mute a celebration or stand between the referee and the players; it earns its place only by adding understanding.
 8. **Never a betting tool.** HUDHUD tells what has happened, never what will: no predicted results, scores or next goals, no odds, and no help to anyone placing a bet. Asked about bets or odds, it says so in fixed words, before any model reads the question, and steers away from gambling. Set by the Monarch, 2026-10-20.
 
-## Stage 1 — The court of claims (the hackathon, Oct 17–27, 2026) · IN PROGRESS
+## Stage 1 — The court of claims (the hackathon, Oct 17–27, 2026) · DELIVERED
 
 Commentary that proves every claim. Five agents (Orchestrator, Scout, Narrator, Critic, Localizer) work over synthetic match events. The Critic rejects anything it can't verify, the broadcast survives agent failure, and cues go out as overlay cues for analysts and casual fans in English, with Urdu and Arabic to follow. Phases and dates are in plan.md.
 
 - **Bridge item, "Ref's call": live since 2026-10-19.** The Scout flags a foul that carries a card or a penalty, the Narrator states the likely decision, and the Critic recomputes it from the cited foul under a lenient, standard or strict profile (court/referee.py). It proves the official's loop on today's agents. The restart has ground truth in the generator; cards wait for Stage 2's generator.
 - **HUD²: live since 2026-10-20.** The same match on one central screen, through the referee's, the commentator's or the fan's lens, with overlays, markings and annotations (ADR 0012). Today's first step of the HUD² road below.
-- **Exit gate:** entry submitted, repo public, the 110-second video live on YouTube (the owner's channel, MATX104: @monarch-_-mat).
+- **Exit gate: passed 2026-10-24.** Entry submitted, repo public, the 110-second video live on YouTube (the owner's channel, MATX104: @monarch-_-mat).
 
 ## Stage 2 — The decision explainer (after submission, Nov 2026 → Q1 2027)
 
@@ -40,7 +40,27 @@ When the referee makes a call, HUDHUD explains it.
 - **Evaluation:** agreement with ground-truth decisions over many seeds. The target is set after the first baseline, never before it. Explanations are reviewed by a panel of qualified referees.
 - **Exit gate:** the baseline is measured and published, and the referee panel signs off the explanations of one complete match.
 
-## Stage 3 — Perception: the Scout gets eyes (2027)
+## Stage 3 — Every sport (after the competition, win or lose · from 2027)
+
+The same court for every game that has laws and a record of what happened. Football is HUDHUD's first sport, not its only one. This stage starts once Stage 2 has passed its gate and the competition is over, whatever the result. Set by the Monarch, 2026-11-02.
+
+- **The seam: one pack per sport.** The Orchestrator, the rewrite loop, the ledger and the cue stream already know nothing about football. What a sport brings is a pack: its event schema, a seeded generator with hidden ground truth, the Scout's detectors, the facts the Critic recomputes, its Laws as checkable rules with strictness profiles, its words in English, Urdu and Arabic, and its field of play drawn for HUD².
+- **Cricket first.** It is the furthest from football that is still a team game with written Laws, so it proves the pack is not football-shaped. It comes ball by ball, its commentary runs on numbers (run rates, averages, partnerships), where an invented statistic is most tempting, and its reviews give the Ref's call a second sport.
+- **Then every other sport, family by family.** Sports in a family share a shape, so the first pack in a family makes the rest cheaper. Within a family, the games with the biggest audiences in English, Urdu and Arabic go first. The lists are where to start, not where to stop: any sport with laws and a record of play qualifies.
+  - **Team games on a field, court or ice:** field hockey, basketball, rugby union and league, American football, ice hockey, handball, futsal, netball, water polo, Australian rules, Gaelic games, lacrosse, kabaddi, polo.
+  - **Bat and ball:** baseball and softball, after cricket.
+  - **Net and racket:** tennis, badminton, squash, table tennis, padel, volleyball, beach volleyball.
+  - **Combat:** boxing, mixed martial arts, wrestling, judo, taekwondo, karate, fencing.
+  - **Timed and measured:** athletics, swimming, cycling, rowing, canoeing, skiing, motorsport, sailing, triathlon.
+  - **Target and cue:** golf, archery, shooting, darts, snooker and pool, bowling, curling.
+  - **Judged:** gymnastics, figure skating, diving, ski jumping, surfing, skateboarding. The Critic checks every score and deduction against the published scoring code; the judges' own marks are flagged as judgment (principle 4).
+  - **Esports:** every title with published rules and a complete event log, already first on the fourth official's pilot path.
+  - **Para sports:** inside their sport's pack, with their own classifications and rules.
+- **Every pack meets football's bar.** A sport goes live only when its generator's results are checked against real ones (as `docs/realism.md` does for football), its Scout is scored against hidden ground truth on unseen seeds, and its Critic refuses on its own sport's facts. A sport that can't meet the bar waits; it is never faked. Principle 8 holds in every sport, including those whose coverage is built around betting.
+- **The later stages, sport by sport.** The decision explainer, perception and the fourth official reach each sport through its own gates, in the order its pack matures.
+- **Exit gate:** cricket runs end to end (a live synthetic match in the studio and on HUD², every line checked by its Critic, its realism checked against real results, a review explained under the Laws of Cricket), and one sport from a family unlike both football and cricket runs on the same seam with no change to the court's code. After the gate, the remaining sports keep coming, a pack at a time, alongside the stages that follow.
+
+## Stage 4 — Perception: the Scout gets eyes (2027)
 
 From event logs to seeing the incident.
 
@@ -48,7 +68,7 @@ From event logs to seeing the incident.
 - **Models:** foul type and severity classified from multiple camera angles, benchmarked against published results. The cited evidence becomes clip and frame references, so the evidence chain survives the jump from events to video.
 - **Exit gate:** the system matches published baselines on a public benchmark, and every prediction carries its cited frames.
 
-## Stage 4 — The fourth official (the north star)
+## Stage 5 — The fourth official (the north star)
 
 Real-time advice to the referee team.
 
@@ -64,7 +84,7 @@ Real-time advice to the referee team.
 Everything above has to reach people's eyes. HUD² is how: one match, each viewer's own lens. Set by the Monarch, 2026-10-20.
 
 - **Today, a screen (built).** One central display with overlays, markings and annotations, through three lenses: the referee's, the commentator's and the fan's. Every action is drawn where it happened, every line is checked by the Critic and pinned to the events it cites, and each viewer switches layers on or off, kept for next time.
-- **Next, glasses.** The same lenses on a head-worn display, with the marks anchored to the real pitch instead of a drawing of it. That needs Stage 3's eyes: where the ball and every player are, from the cameras.
+- **Next, glasses.** The same lenses on a head-worn display, with the marks anchored to the real pitch instead of a drawing of it. That needs Stage 4's eyes: where the ball and every player are, from the cameras.
 - **Then, contact lenses,** as the hardware arrives.
 - **Further out, neural interfaces,** only with consent and only once they are proven safe.
 - **The end state:** everyone sees the match through a lens shaped to their own needs and preferences: the referee's decision support, the commentator's spotter board, a newcomer's plain-words guide, each in their own language.
@@ -74,7 +94,6 @@ Everything above has to reach people's eyes. HUD² is how: one match, each viewe
 
 - **Referee development:** match replays with the official's reasoning, for training and assessment.
 - **Consistency analytics:** how strictly each competition is really refereed, measured from the evidence.
-- **Other sports:** the same court for any game with laws and evidence.
 
 ## What carries forward from today's code
 
@@ -87,6 +106,7 @@ Everything above has to reach people's eyes. HUD² is how: one match, each viewe
 | Orchestrator: retries, degrades, recovers | Meets the latency budget and never goes silent |
 | Evidence chain | Decision audit trail |
 | HUD²: one screen, three lenses | Each viewer's own lens: glasses, then contact lenses |
+| One sport: football | Every sport with laws and a record of play, one pack each |
 
 ## Read along the way
 
@@ -97,4 +117,6 @@ Everything above has to reach people's eyes. HUD² is how: one match, each viewe
 - **Rights:** footage and tracking data are owned. Research licences cover research, not deployment.
 - **Liability and acceptance:** referees' bodies, competitions and the law-making body decide what an advisory system may do.
 - **Bias:** strictness must not drift by team, player or crowd. It has to be measured and published.
+- **Breadth against depth:** every sport added is one the Critic must know as well as it knows football. A thin pack would air claims it can't truly check, so the bar holds for each pack, never for a release as a whole.
+- **Laws and data, sport by sport:** each sport's Laws belong to its governing body and its data to its owners. Every pack works within their terms.
 - **Latency:** "in a blink" is a hard engineering budget, not a slogan.
